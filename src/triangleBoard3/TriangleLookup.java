@@ -2,7 +2,9 @@ package triangleBoard3;
 
 public class TriangleLookup {
 
-	public static long convertToNumberAssumeCloseToStart(boolean triangle[][], int numPiecesLeft) {
+	//TODO: for larger triangles, this lookup could break, so be careful
+	
+	public static long convertToNumber(boolean triangle[][], int numPiecesLeft) {
 		
 		//TODO: maybe take advantage of the 6 fold symmetries...
 			//Look up will take x6 longer, but it will save x6 the space.
@@ -32,5 +34,11 @@ public class TriangleLookup {
 		
 		return ret;
 	}
+	
+	//TODO
+	/*
+	public static long convertToNumberWithSymmetries(boolean triangle[][], int numPiecesLeft) {
+		
+	}*/
 	
 }

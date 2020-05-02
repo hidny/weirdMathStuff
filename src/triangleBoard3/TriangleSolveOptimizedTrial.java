@@ -49,6 +49,7 @@ import java.util.HashMap;
 //**************************************************************************
 
 //NEW IDEAS 2:
+
 //FORGET IT: Reintroduce concept of impossible to get there? (somehow... and very carefully)
 	//Prove that there will be a return of inv first....
 	//I don't actually think there's a huge return on inv... it might just go a max of x5 faster...
@@ -65,7 +66,18 @@ import java.util.HashMap;
 //MEH IDEA 4: make board moves reversable and save space
 //MEH IDEA 5: make board moves/processing more efficient
 
+//STILL IN THE RUNNING: order move list from longest to shortest (longest are probably better)
+//STILL IN THE RUNNING: use conway math to a) figure out min num moves left
+											//b) figure out if position is impossible to complete
 
+//FUNDAMENTAL IDEA: use breadth-first search... :(
+//It might take too much memory though...
+//Current solution takes about 1hr and 5 minutes...
+
+
+//BETTER IDEA do: Iterative deepening depth-first search
+
+//IDEA: Improve how much gets recorded in the lookup table to not go over nay space limits
 
 public class TriangleSolveOptimizedTrial {
 
@@ -74,8 +86,9 @@ public class TriangleSolveOptimizedTrial {
 	public static void main(String args[]) {
 		
 		//int LENGTH = 4;
-		int LENGTH = 5;
+		//int LENGTH = 4;
 		//int LENGTH = 6;
+		int LENGTH = 7;
 		
 		boolean SET_SLOW = false;
 		if(SET_SLOW) {
@@ -174,7 +187,8 @@ public class TriangleSolveOptimizedTrial {
 		numFunctionCallForDEBUG++;
 		if(numFunctionCallForDEBUG % 1000000 == 0) {
 			//System.out.println("FAST");
-			//board.draw();
+			board.draw();
+			System.out.println("Best path so far: " + bestGlobalSolution);
 		}
 		
 		if(board.getNumPiecesLeft() == 1) {
@@ -183,14 +197,9 @@ public class TriangleSolveOptimizedTrial {
 			return null;
 		}
 
-		//CHECKPOINT LOGIC
+		//Save progress:
 		//TODO: use
-		boolean atCheckpointPosition = false;
-		
-		//TODO: all points are checkpoints because why not?
-		//if(getTriangleNumber(board.length()) - board.getNumPiecesLeft() == NUM_EMPTY_PIECE_WHEN_RECORD) {
-			//TODO: record it maybe?
-			atCheckpointPosition = true;
+		if(board.length() <= 6 || Math.min(getTriangleNumber(board.length()) - board.getNumPiecesLeft(), board.getNumPiecesLeft()) <= 8) {
 			//System.out.println("Reached checkpoint");
 			//board.draw();
 			
@@ -215,7 +224,7 @@ public class TriangleSolveOptimizedTrial {
 				recordedTriangles[board.getNumPiecesLeft()].put(lookup, new triangleRecord(board.getNumMovesMade()));
 			}
 			
-		//}
+		}
 		//END CHECKPOINT LOGIC
 		
 		TriangleBoard currentBestSol = null;
