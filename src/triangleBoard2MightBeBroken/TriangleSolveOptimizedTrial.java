@@ -1,4 +1,4 @@
-package triangleBoard2;
+package triangleBoard2MightBeBroken;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -55,8 +55,8 @@ public class TriangleSolveOptimizedTrial {
 	
 	public static void main(String args[]) {
 		
-		int LENGTH = 4;
-		//int LENGTH = 5;
+		//int LENGTH = 4;
+		int LENGTH = 5;
 		//int LENGTH = 6;
 		
 		boolean SET_SLOW = true;

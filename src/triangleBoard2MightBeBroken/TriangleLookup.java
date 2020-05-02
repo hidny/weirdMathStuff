@@ -1,4 +1,4 @@
-package triangleBoard2;
+package triangleBoard2MightBeBroken;
 
 public class TriangleLookup {
 
