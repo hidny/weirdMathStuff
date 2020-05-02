@@ -382,7 +382,7 @@ public class TriangleBoard {
 	}
 	
 	public long getLookupNumber() {
-		return TriangleLookup.convertToNumberAssumeCloseToStart(triangle);
+		return TriangleLookup.convertToNumberAssumeCloseToStart(triangle, numPiecesLeft);
 	}
 	
 	public int length() {

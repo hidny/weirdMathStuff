@@ -26,6 +26,8 @@ public class TriangleSolveOptimizedTrial {
 		
 		//int LENGTH = 4;
 		int LENGTH = 6;
+		
+		
 		System.out.println("Trying " + LENGTH);
 		TriangleBoard board = new TriangleBoard(LENGTH);
 		
@@ -33,7 +35,8 @@ public class TriangleSolveOptimizedTrial {
 			for(int j=0; j<=i; j++) {
 				board = new TriangleBoard(LENGTH);
 				board.removePiece(i * LENGTH + j);
-				
+
+				initRecordedTriangles(LENGTH);
 				//TriangleBoard boardSol = getBestMoveListSlow(board);
 				TriangleBoard boardSol = getBestMoveList(board);
 				
@@ -87,9 +90,17 @@ public class TriangleSolveOptimizedTrial {
 	
 	public static final int NUM_EMPTY_PIECE_WHEN_RECORD = 8;
 	
-	public static HashMap<Long, triangleRecord> recordedTriangles = new HashMap<Long, triangleRecord>();
+	public static HashMap<Long, triangleRecord>[] recordedTriangles;
 	
 	public static int bestGlobalSolution = Integer.MAX_VALUE;
+	
+	
+	public static void initRecordedTriangles(int length) {
+		recordedTriangles = new HashMap[getTriangleNumber(length)];
+		for(int i=0; i<recordedTriangles.length; i++) {
+			recordedTriangles[i] = new HashMap<Long, triangleRecord>();
+		}
+	}
 	
 	//TODO: this is looking for just 1 solution...
 	// try finding more all optimal solutions later...
@@ -110,7 +121,8 @@ public class TriangleSolveOptimizedTrial {
 		boolean atCheckpointPosition = false;
 		boolean disallowNewMoveAtCheckpointPosition = false;
 		
-		if(getTriangleNumber(board.length()) - board.getNumPiecesLeft() == NUM_EMPTY_PIECE_WHEN_RECORD) {
+		//TODO: all points are checkpoints because why not?
+		//if(getTriangleNumber(board.length()) - board.getNumPiecesLeft() == NUM_EMPTY_PIECE_WHEN_RECORD) {
 			//TODO: record it maybe?
 			atCheckpointPosition = true;
 			//System.out.println("Reached checkpoint");
@@ -118,8 +130,8 @@ public class TriangleSolveOptimizedTrial {
 			
 			long lookup = board.getLookupNumber();
 			
-			if(recordedTriangles.containsKey(lookup)) {
-				triangleRecord prevRecordedCheckpoint = recordedTriangles.get(lookup);
+			if(recordedTriangles[board.getNumPiecesLeft()].containsKey(lookup)) {
+				triangleRecord prevRecordedCheckpoint = recordedTriangles[board.getNumPiecesLeft()].get(lookup);
 				
 				//Check if number of moves to get there is ok:
 				if(board.getNumMovesMade() > prevRecordedCheckpoint.getNumMovesToGetToPos()) {
@@ -139,9 +151,9 @@ public class TriangleSolveOptimizedTrial {
 				}
 				
 			} else {
-				recordedTriangles.put(lookup, new triangleRecord(board.getNumMovesMade(), board.getLastJumpCode()));
+				recordedTriangles[board.getNumPiecesLeft()].put(lookup, new triangleRecord(board.getNumMovesMade(), board.getLastJumpCode()));
 			}
-		}
+		//}
 		//END CHECKPOINT LOGIC
 		
 		TriangleBoard currentBestSol = null;
