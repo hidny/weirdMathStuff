@@ -8,15 +8,24 @@ import java.util.HashMap;
 //IDEA 1: keep track of spaces impossible to jump into
 //    because it might lead us to realize which positions are impossible to finish
 
-//BETTER IDEA:
+//BETTER IDEA: (DONE)
 //Keep track of early states and keep a record of how many moves it took to get there and how many moves left
 // Try to at least eliminate the need for the trial of a new move sometimes
+// (TODO: Make it record all the starting points tried (not just one)
+
 // IDEA3: (Also keep tract of the current best solution, so we know what were aiming for and know when to give up...)
 
 //IDEA 4: make board moves reversable and save space
 //IDEA 5: make board moves/processing more efficient
-//IDEA 6: Record state 5 moves in and then compare to other attempts (Maybe take advantage of symmetries...)
+//IDEA 6: Record state 5 moves in and then compare to other attempts (DONE)
 
+//IDEA 7: (Maybe take advantage of symmetries... but be careful to move the starting point appropriately)
+
+
+//IDEA 8: add tricky isImpossible logic
+//		It has to fail to find anything and check if it ever suceeded before
+// (It could fail to find something because it was trying to be better than what's already found...)
+//This is complicated...
 public class TriangleSolveOptimizedTrial {
 
 	
@@ -38,7 +47,7 @@ public class TriangleSolveOptimizedTrial {
 
 				initRecordedTriangles(LENGTH);
 				//TriangleBoard boardSol = getBestMoveListSlow(board);
-				TriangleBoard boardSol = getBestMoveList(board);
+				TriangleBoard boardSol = getBestMoveList(board).getBestSolution();
 				
 				if(boardSol != null) {
 					System.out.println("Solution when removing piece " + (i * LENGTH + j));
@@ -105,15 +114,15 @@ public class TriangleSolveOptimizedTrial {
 	//TODO: this is looking for just 1 solution...
 	// try finding more all optimal solutions later...
 	//TODO:
-	public static TriangleBoard getBestMoveList(TriangleBoard board) {
+	public static TriangleReturnPackage getBestMoveList(TriangleBoard board) {
 		numFunctionCallForDEBUG++;
-		if(numFunctionCallForDEBUG % 10000 == 0) {
+		if(numFunctionCallForDEBUG % 1000000 == 0) {
 			//board.draw();
 		}
 		
 		if(board.getNumPiecesLeft() == 1) {
 			
-			return board;
+			return new TriangleReturnPackage(true, board);
 		}
 
 		//CHECKPOINT LOGIC
@@ -133,10 +142,18 @@ public class TriangleSolveOptimizedTrial {
 			if(recordedTriangles[board.getNumPiecesLeft()].containsKey(lookup)) {
 				triangleRecord prevRecordedCheckpoint = recordedTriangles[board.getNumPiecesLeft()].get(lookup);
 				
+				//If it's proven to be impossible, don't try:
+				if(prevRecordedCheckpoint.isFindingSolImpossible()) {
+					//System.out.println("Cutting short 0");
+					return new TriangleReturnPackage(false, null);
+				}
+				
 				//Check if number of moves to get there is ok:
 				if(board.getNumMovesMade() > prevRecordedCheckpoint.getNumMovesToGetToPos()) {
+					
 					//System.out.println("Cutting short 1");
-					return null;
+					return new TriangleReturnPackage(true, null);
+
 				} else if(board.getNumMovesMade() == prevRecordedCheckpoint.getNumMovesToGetToPos()) {
 					disallowNewMoveAtCheckpointPosition = true;
 				}
@@ -145,46 +162,64 @@ public class TriangleSolveOptimizedTrial {
 				if(board.getLastJumpCode() == prevRecordedCheckpoint.getCurSelectedPieceCode()) {
 					//If we are, keep going if it took less moves to get there:
 					if(board.getNumMovesMade() >= prevRecordedCheckpoint.getNumMovesToGetToPos()) {
+						
+
 						//System.out.println("Cutting short 2");
-						return null;
+						return new TriangleReturnPackage(true, null);
 					}
 				}
 				
 			} else {
 				recordedTriangles[board.getNumPiecesLeft()].put(lookup, new triangleRecord(board.getNumMovesMade(), board.getLastJumpCode()));
 			}
+			
+			triangleRecord currentRecordedPos = recordedTriangles[board.getNumPiecesLeft()].get(lookup);
 		//}
 		//END CHECKPOINT LOGIC
 		
 		TriangleBoard currentBestSol = null;
+		boolean confirmedSolutionExists = false;
 		
 		ArrayList<String> moves = board.getMoves();
+		
 		
 		for(int i=0; i<moves.size(); i++) {
 
 			TriangleBoard possibleBest = null;
 			
-			//COMPLICATED
 			if(atCheckpointPosition && isNotANewMove(moves.get(i), board) && disallowNewMoveAtCheckpointPosition) {
 				//System.out.println("Cutting short 3");
 				possibleBest = null;
+				confirmedSolutionExists = true;
+				
+				
 			} else {
-				possibleBest = getBestMoveList(board.move(moves.get(i)));
+				
+				TriangleReturnPackage tmp = getBestMoveList(board.move(moves.get(i)));
+				possibleBest = tmp.getBestSolution();
+				
+				if(tmp.HasSolution()) {
+					confirmedSolutionExists = true;
+				}
 			}
 				
 			if(possibleBest != null) {
 				if(currentBestSol == null 
 				|| possibleBest.getNumMovesMade() < currentBestSol.getNumMovesMade()) {
-					
 					currentBestSol = possibleBest;
-					
 					
 				}
 			}
 			
 		}
 		
-		return currentBestSol;
+		if(confirmedSolutionExists == false) {
+			currentRecordedPos.setImpossibleIfUncertain();
+		} else {
+			currentRecordedPos.setPossible();
+		}
+		
+		return new TriangleReturnPackage(confirmedSolutionExists, currentBestSol);
 		
 	}
 	

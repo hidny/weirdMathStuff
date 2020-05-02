@@ -8,11 +8,15 @@ public class triangleRecord {
 	//TODO: make into a set of all starting points tried.
 	//LATER
 	private int curSelectedPieceCode;
+	
+	boolean isFindingSolUncertain = true;
+	boolean isFindingSolImpossible = false;
 
 	public triangleRecord(int numMovesToGetToPos, int curSelectedPieceCode) {
 
 		this.numMovesToGetToPos = numMovesToGetToPos;
 		this.curSelectedPieceCode = curSelectedPieceCode;
+		this.isFindingSolImpossible = false;
 
 	}
 	
@@ -25,6 +29,25 @@ public class triangleRecord {
 		this.numMovesToGetToPos = numMovesToGetToPos;
 	}
 	
+	
+	public boolean isFindingSolImpossible() {
+		return isFindingSolImpossible;
+	}
+
+	public void setPossible() {
+		this.isFindingSolUncertain = false;
+		this.isFindingSolImpossible = false;
+	}
+
+	public void setImpossibleIfUncertain() {
+		if(this.isFindingSolUncertain) {
+			this.isFindingSolImpossible = true;
+		} else {
+			System.err.println("ERROR: this condition should not be possible to reach!");
+			System.exit(1);
+		}
+	}
+
 	public int getNumMovesToGetToPos() {
 		return numMovesToGetToPos;
 	}
