@@ -385,4 +385,7 @@ public class TriangleBoard {
 		return TriangleLookup.convertToNumberAssumeCloseToStart(triangle);
 	}
 	
+	public int length() {
+		return triangle.length;
+	}
 }

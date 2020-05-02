@@ -11,7 +11,7 @@ public class TriangleLookup {
 	public static long convertToNumberAssumeCloseToStart(boolean triangle[][]) {
 		
 		//TODO: maybe take advantage of the 6 fold symmetries...
-			//Looup will take x6 longer, but it will save x6 the space.
+			//Look up will take x6 longer, but it will save x6 the space.
 		
 		//(rotational and reflective)
 		
