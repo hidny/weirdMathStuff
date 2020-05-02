@@ -1,11 +1,12 @@
-package triangleBoard;
+package triangleBoard1BROKEN;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 
-//TODO:
-//IDEA 1: keep track of spaces impossible to jump into
+//Old ideas:
+//****************************************************************************
+//DONE: IDEA 1: keep track of spaces impossible to jump into
 //    because it might lead us to realize which positions are impossible to finish
 
 //BETTER IDEA: (DONE)
@@ -13,24 +14,49 @@ import java.util.HashMap;
 // Try to at least eliminate the need for the trial of a new move sometimes
 // (TODO: Make it record all the starting points tried (not just one)
 
-// IDEA3: (Also keep tract of the current best solution, so we know what were aiming for and know when to give up...)
 
-//IDEA 4: make board moves reversable and save space
-//IDEA 5: make board moves/processing more efficient
-//IDEA 6: Record state 5 moves in and then compare to other attempts (DONE)
+//MAYBE IDEA3: (Also keep tract of the current best solution, so we know what were aiming for and know when to give up...)
+
+
+//DONE: IDEA 6: Record state 5 moves in and then compare to other attempts (DONE)
+
 
 //IDEA 7: (Maybe take advantage of symmetries... but be careful to move the starting point appropriately)
+//Meh... just let it be 6x slower to KISS
 
 
-//IDEA 8: add tricky isImpossible logic (DONE with the help of TriangleReturnPackage)
+//DONE: IDEA 8: add tricky isImpossible logic (DONE with the help of TriangleReturnPackage)
+
+//****************************************************************************
+
+
+//NEW IDEAS:
+//IDEA 1: use math/logic to figure out if a position is not going to produce a solution (Think Conway's soldiers)
+
+
+//IDEA 2: keep a record of all starting locations tried for position, so we could cut the search short more often
+
+//IDEA 3: keep a record how many moves left from the position and stop searching if it's move than current best solution (FROM BEFORE)
+//			(This could get complicated because the position could be in the middle of a move)
+
+//AHA MOMENT for idea 2 adn 3: It would be easier if I disallowed in-between moves
+//I'm going to rewrite logic without worrying too much about position in the middle of a series of jumps.
+//It's going to keep life simple.
+
+
+//MEH IDEA 4: make board moves reversable and save space
+//MEH IDEA 5: make board moves/processing more efficient
+//MEH IDEA 6:  Maybe take advantage of symmetries... but be careful to move the starting point appropriately (Meh... just let it be 6x slower to KISS)
+
+
 public class TriangleSolveOptimizedTrial {
 
 	
 	
 	public static void main(String args[]) {
 		
-		//int LENGTH = 4;
-		int LENGTH = 6;
+		int LENGTH = 4;
+		//int LENGTH = 6;
 		
 		
 		System.out.println("Trying " + LENGTH);
@@ -144,6 +170,7 @@ public class TriangleSolveOptimizedTrial {
 				//If it's proven to be impossible, don't try:
 				if(prevRecordedCheckpoint.isFindingSolImpossible()) {
 					//System.out.println("Cutting short 0");
+					
 					return new TriangleReturnPackage(NO_SOLUTION, null);
 				}
 				
@@ -213,7 +240,8 @@ public class TriangleSolveOptimizedTrial {
 		}
 		
 		if(isConfirmedSolutionExists == false) {
-			currentRecordedPos.setImpossibleIfUncertain();
+			//TODO TEST take away
+			//currentRecordedPos.setImpossibleIfUncertain();
 		} else {
 			currentRecordedPos.setPossible();
 		}

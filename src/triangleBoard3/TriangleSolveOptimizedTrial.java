@@ -1,4 +1,4 @@
-package triangleBoard2;
+package triangleBoard3;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -55,16 +55,17 @@ public class TriangleSolveOptimizedTrial {
 	
 	public static void main(String args[]) {
 		
-		int LENGTH = 4;
+		//int LENGTH = 4;
 		//int LENGTH = 5;
-		//int LENGTH = 6;
+		int LENGTH = 6;
 		
-		boolean SET_SLOW = true;
+		boolean SET_SLOW = false;
 		if(SET_SLOW) {
 			System.out.println("WARNING: is slow!");
 		}
 		
-		System.out.println("Trying " + LENGTH);
+		System.out.println("Trying " + LENGTH + " in TriangleSolveOptimizedTrial3");
+
 		TriangleBoard board = new TriangleBoard(LENGTH);
 		
 		for(int i=0; i<LENGTH; i++) {
@@ -79,7 +80,7 @@ public class TriangleSolveOptimizedTrial {
 					boardSol = getBestMoveListSlow(board);
 				} else {
 					bestGlobalSolution = Integer.MAX_VALUE;
-					boardSol = getBestMoveList(board).getBestSolution();
+					boardSol = getBestMoveList(board);
 				}
 				
 				//TriangleBoard boardSol = getBestMoveList(board).getBestSolution();
@@ -135,14 +136,10 @@ public class TriangleSolveOptimizedTrial {
 
 	//Optimized:
 	
-	public static final int NUM_EMPTY_PIECE_WHEN_RECORD = 8;
-	
 	public static HashMap<Long, triangleRecord>[] recordedTriangles;
 	
 	public static int bestGlobalSolution = Integer.MAX_VALUE;
 	
-	public static final boolean HAS_SOLUTION = true;
-	public static final boolean NO_SOLUTION = false;
 	
 	
 	public static void initRecordedTriangles(int length) {
@@ -155,15 +152,17 @@ public class TriangleSolveOptimizedTrial {
 	//TODO: this is looking for just 1 solution...
 	// try finding more all optimal solutions later...
 	//TODO:
-	public static TriangleReturnPackage getBestMoveList(TriangleBoard board) {
+	public static TriangleBoard getBestMoveList(TriangleBoard board) {
 		numFunctionCallForDEBUG++;
 		if(numFunctionCallForDEBUG % 1000000 == 0) {
-			//board.draw();
+			//System.out.println("FAST");
+			board.draw();
 		}
 		
 		if(board.getNumPiecesLeft() == 1) {
-			
-			return new TriangleReturnPackage(HAS_SOLUTION, board);
+			return board;
+		} else if(board.getNumMovesMade() >= bestGlobalSolution) {
+			return null;
 		}
 
 		//CHECKPOINT LOGIC
@@ -179,33 +178,29 @@ public class TriangleSolveOptimizedTrial {
 			
 			long lookup = board.getLookupNumber();
 			
+			triangleRecord checkpoint = null;
+			
 			if(recordedTriangles[board.getNumPiecesLeft()].containsKey(lookup)) {
-				triangleRecord prevRecordedCheckpoint = recordedTriangles[board.getNumPiecesLeft()].get(lookup);
+				checkpoint = recordedTriangles[board.getNumPiecesLeft()].get(lookup);
 				
-				//If it's proven to be impossible, don't try:
-				if(prevRecordedCheckpoint.isFindingSolImpossible()) {
+				
+				if(board.getNumMovesMade() >= checkpoint.getNumMovesToGetToPos()) {
+						
 					//System.out.println("Cutting short 0");
-					return new TriangleReturnPackage(NO_SOLUTION, null);
-					
-
-					//Check if number of moves to current pos was already done before:
-				} else if(board.getNumMovesMade() >= prevRecordedCheckpoint.getNumMovesToGetToPos()) {
-					
-					//System.out.println("Cutting short 1");
-					return new TriangleReturnPackage(HAS_SOLUTION, null);
+					return null;
 				}
+				
+				//TODO: if conway math says impossible: dont try.
 				
 				
 			} else {
 				recordedTriangles[board.getNumPiecesLeft()].put(lookup, new triangleRecord(board.getNumMovesMade()));
 			}
 			
-			triangleRecord currentRecordedPos = recordedTriangles[board.getNumPiecesLeft()].get(lookup);
 		//}
 		//END CHECKPOINT LOGIC
 		
 		TriangleBoard currentBestSol = null;
-		boolean isConfirmedSolutionExists = false;
 		
 		ArrayList<String> moves = board.getFullMoves();
 		
@@ -214,14 +209,8 @@ public class TriangleSolveOptimizedTrial {
 
 			TriangleBoard possibleBest = null;
 			
-			TriangleReturnPackage tmp = getBestMoveList(board.doOneMove(moves.get(i)));
-			possibleBest = tmp.getBestSolution();
+			possibleBest = getBestMoveList(board.doOneMove(moves.get(i)));
 			
-			if(tmp.HasSolution()) {
-				isConfirmedSolutionExists = true;
-			}
-			
-				
 			if(possibleBest != null) {
 				if(currentBestSol == null 
 				|| possibleBest.getNumMovesMade() < currentBestSol.getNumMovesMade()) {
@@ -236,14 +225,7 @@ public class TriangleSolveOptimizedTrial {
 			
 		}
 		
-		if(isConfirmedSolutionExists == false) {
-			currentRecordedPos.setImpossibleIfUncertain();
-		} else {
-			currentRecordedPos.setPossible();
-		}
-		
-		return new TriangleReturnPackage(isConfirmedSolutionExists, currentBestSol);
-		
+		return currentBestSol;
 	}
 	
 	public static int getTriangleNumber(int n) {
