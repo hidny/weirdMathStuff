@@ -16,7 +16,6 @@ public class triangleRecord {
 
 		this.numMovesToGetToPos = numMovesToGetToPos;
 		this.curSelectedPieceCode = curSelectedPieceCode;
-		this.isFindingSolImpossible = false;
 
 	}
 	

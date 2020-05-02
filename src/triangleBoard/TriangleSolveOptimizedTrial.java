@@ -22,14 +22,10 @@ import java.util.HashMap;
 //IDEA 7: (Maybe take advantage of symmetries... but be careful to move the starting point appropriately)
 
 
-//IDEA 8: add tricky isImpossible logic
-//		It has to fail to find anything and check if it ever suceeded before
-// (It could fail to find something because it was trying to be better than what's already found...)
-//This is complicated...
+//IDEA 8: add tricky isImpossible logic (DONE with the help of TriangleReturnPackage)
 public class TriangleSolveOptimizedTrial {
 
 	
-	public int NO_SOLUTION = Integer.MAX_VALUE;
 	
 	public static void main(String args[]) {
 		
@@ -103,6 +99,9 @@ public class TriangleSolveOptimizedTrial {
 	
 	public static int bestGlobalSolution = Integer.MAX_VALUE;
 	
+	public static final boolean HAS_SOLUTION = true;
+	public static final boolean NO_SOLUTION = false;
+	
 	
 	public static void initRecordedTriangles(int length) {
 		recordedTriangles = new HashMap[getTriangleNumber(length)];
@@ -122,7 +121,7 @@ public class TriangleSolveOptimizedTrial {
 		
 		if(board.getNumPiecesLeft() == 1) {
 			
-			return new TriangleReturnPackage(true, board);
+			return new TriangleReturnPackage(HAS_SOLUTION, board);
 		}
 
 		//CHECKPOINT LOGIC
@@ -145,14 +144,14 @@ public class TriangleSolveOptimizedTrial {
 				//If it's proven to be impossible, don't try:
 				if(prevRecordedCheckpoint.isFindingSolImpossible()) {
 					//System.out.println("Cutting short 0");
-					return new TriangleReturnPackage(false, null);
+					return new TriangleReturnPackage(NO_SOLUTION, null);
 				}
 				
 				//Check if number of moves to get there is ok:
 				if(board.getNumMovesMade() > prevRecordedCheckpoint.getNumMovesToGetToPos()) {
 					
 					//System.out.println("Cutting short 1");
-					return new TriangleReturnPackage(true, null);
+					return new TriangleReturnPackage(HAS_SOLUTION, null);
 
 				} else if(board.getNumMovesMade() == prevRecordedCheckpoint.getNumMovesToGetToPos()) {
 					disallowNewMoveAtCheckpointPosition = true;
@@ -165,7 +164,7 @@ public class TriangleSolveOptimizedTrial {
 						
 
 						//System.out.println("Cutting short 2");
-						return new TriangleReturnPackage(true, null);
+						return new TriangleReturnPackage(HAS_SOLUTION, null);
 					}
 				}
 				
@@ -178,7 +177,7 @@ public class TriangleSolveOptimizedTrial {
 		//END CHECKPOINT LOGIC
 		
 		TriangleBoard currentBestSol = null;
-		boolean confirmedSolutionExists = false;
+		boolean isConfirmedSolutionExists = false;
 		
 		ArrayList<String> moves = board.getMoves();
 		
@@ -190,7 +189,7 @@ public class TriangleSolveOptimizedTrial {
 			if(atCheckpointPosition && isNotANewMove(moves.get(i), board) && disallowNewMoveAtCheckpointPosition) {
 				//System.out.println("Cutting short 3");
 				possibleBest = null;
-				confirmedSolutionExists = true;
+				isConfirmedSolutionExists = true;
 				
 				
 			} else {
@@ -199,7 +198,7 @@ public class TriangleSolveOptimizedTrial {
 				possibleBest = tmp.getBestSolution();
 				
 				if(tmp.HasSolution()) {
-					confirmedSolutionExists = true;
+					isConfirmedSolutionExists = true;
 				}
 			}
 				
@@ -213,13 +212,13 @@ public class TriangleSolveOptimizedTrial {
 			
 		}
 		
-		if(confirmedSolutionExists == false) {
+		if(isConfirmedSolutionExists == false) {
 			currentRecordedPos.setImpossibleIfUncertain();
 		} else {
 			currentRecordedPos.setPossible();
 		}
 		
-		return new TriangleReturnPackage(confirmedSolutionExists, currentBestSol);
+		return new TriangleReturnPackage(isConfirmedSolutionExists, currentBestSol);
 		
 	}
 	
