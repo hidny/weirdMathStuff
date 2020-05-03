@@ -1,4 +1,4 @@
-package triangleBoard3;
+package triangleBoard4;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -67,15 +67,18 @@ import java.util.HashMap;
 //MEH IDEA 5: make board moves/processing more efficient
 
 //STILL IN THE RUNNING: order move list from longest to shortest (longest are probably better)
+
 //STILL IN THE RUNNING: use conway math to a) figure out min num moves left
 											//b) figure out if position is impossible to complete
 
+//*********************
 //FUNDAMENTAL IDEA: use breadth-first search... :(
 //It might take too much memory though...
 //Current solution takes about 1hr and 5 minutes...
 
+//DONE BETTER IDEA: Iterative deepening depth-first search
+//************************
 
-//BETTER IDEA: Do Iterative deepening depth-first search
 
 //IDEA: Improve how much gets recorded in the lookup table to not go over nay space limits
 
@@ -86,16 +89,17 @@ public class TriangleSolveOptimizedTrial {
 	public static void main(String args[]) {
 		
 		//int LENGTH = 4;
-		//int LENGTH = 4;
-		int LENGTH = 6;
-		//int LENGTH = 7;
+		//int LENGTH = 5;
+		//int LENGTH = 6;
+		int LENGTH = 7;
 		
 		boolean SET_SLOW = false;
 		if(SET_SLOW) {
 			System.out.println("WARNING: is slow!");
 		}
 		
-		System.out.println("Trying " + LENGTH + " in TriangleSolveOptimizedTrial3");
+		System.out.println("Trying " + LENGTH + " in TriangleSolveOptimizedTrial4");
+		System.out.println("Giving up after reaching a max depth of " + MAX_DEPTH);
 
 		TriangleBoard board = new TriangleBoard(LENGTH);
 		
@@ -110,11 +114,8 @@ public class TriangleSolveOptimizedTrial {
 				if(SET_SLOW) {
 					boardSol = getBestMoveListSlow(board);
 				} else {
-					bestGlobalSolution = Integer.MAX_VALUE;
 					boardSol = getBestMoveList(board);
 				}
-				
-				//TriangleBoard boardSol = getBestMoveList(board).getBestSolution();
 				
 				if(boardSol != null) {
 					System.out.println("Solution when removing piece " + (i * LENGTH + j));
@@ -124,7 +125,6 @@ public class TriangleSolveOptimizedTrial {
 					System.out.println("No solution when removing piece " + (i * LENGTH + j));
 					System.out.println();
 				}
-				//to do: depth first search
 			}
 		}
 		
@@ -163,14 +163,9 @@ public class TriangleSolveOptimizedTrial {
 		
 	}
 	
-	
-
 	//Optimized:
 	
 	public static HashMap<Long, triangleRecord>[] recordedTriangles;
-	
-	public static int bestGlobalSolution = Integer.MAX_VALUE;
-	
 	
 	
 	public static void initRecordedTriangles(int length) {
@@ -183,41 +178,64 @@ public class TriangleSolveOptimizedTrial {
 	//TODO: this is looking for just 1 solution...
 	// try finding more all optimal solutions later...
 	//TODO:
+	
+	//Invent a number:
+	public static int MAX_DEPTH = 12;
 	public static TriangleBoard getBestMoveList(TriangleBoard board) {
+
+		initRecordedTriangles(board.length());
+		
+		TriangleBoard answer = null;
+		for(int i=1; i<=MAX_DEPTH; i++) {
+			//System.out.println("i: " + i);
+			
+			//TODO: instead of doing an init after every iteration, maybe just save it and reuse it.
+			// I don't know how much time it will save, but it's probably better than current sol.
+			initRecordedTriangles(board.length());
+			
+			answer = getBestMoveList(board, i);
+			if(answer != null) {
+				break;
+			}
+		}
+		
+		return answer;
+		
+	}
+	
+	public static TriangleBoard getBestMoveList(TriangleBoard board, int maxDepth) {
 		numFunctionCallForDEBUG++;
 		if(numFunctionCallForDEBUG % 1000000 == 0) {
 			//System.out.println("FAST");
+			System.out.println("Current depth: " + (maxDepth + board.getNumMovesMade()) + " out of " + MAX_DEPTH);
 			board.draw();
-			System.out.println("Best path so far: " + bestGlobalSolution);
 		}
 		
 		if(board.getNumPiecesLeft() == 1) {
 			return board;
-		} else if(board.getNumMovesMade() >= bestGlobalSolution) {
+		} else if(maxDepth == 0) {
 			return null;
 		}
 
 		//Save progress:
-		//TODO: use
 		if(board.length() <= 6 || Math.min(getTriangleNumber(board.length()) - board.getNumPiecesLeft(), board.getNumPiecesLeft()) <= 8) {
 			//System.out.println("Reached checkpoint");
 			//board.draw();
 			
 			long lookup = board.getLookupNumber();
 			
-			triangleRecord checkpoint = null;
 			
 			if(recordedTriangles[board.getNumPiecesLeft()].containsKey(lookup)) {
-				checkpoint = recordedTriangles[board.getNumPiecesLeft()].get(lookup);
 				
+				triangleRecord previouslyFoundNode = recordedTriangles[board.getNumPiecesLeft()].get(lookup);
 				
-				if(board.getNumMovesMade() >= checkpoint.getNumMovesToGetToPos()) {
+				if(board.getNumMovesMade() >= previouslyFoundNode.getNumMovesToGetToPos()) {
 						
 					//System.out.println("Cutting short 0");
 					return null;
 				} else {
 					
-					checkpoint.updateNumMovesToGetToPos(board.getNumMovesMade());
+					previouslyFoundNode.updateNumMovesToGetToPos(board.getNumMovesMade());
 				}
 				
 				//TODO: if conway math says impossible: dont try.
@@ -230,32 +248,20 @@ public class TriangleSolveOptimizedTrial {
 		}
 		//END CHECKPOINT LOGIC
 		
-		TriangleBoard currentBestSol = null;
 		
 		ArrayList<String> moves = board.getFullMoves();
 		
-		
 		for(int i=0; i<moves.size(); i++) {
 
-			TriangleBoard possibleBest = null;
-			
-			possibleBest = getBestMoveList(board.doOneMove(moves.get(i)));
+			TriangleBoard possibleBest = getBestMoveList(board.doOneMove(moves.get(i)), maxDepth - 1);
 			
 			if(possibleBest != null) {
-				if(currentBestSol == null 
-				|| possibleBest.getNumMovesMade() < currentBestSol.getNumMovesMade()) {
-					currentBestSol = possibleBest;
-					
-					if(currentBestSol.getNumMovesMade() < bestGlobalSolution) {
-						bestGlobalSolution = currentBestSol.getNumMovesMade();
-					}
-					
-				}
+				return possibleBest;
 			}
 			
 		}
 		
-		return currentBestSol;
+		return null;
 	}
 	
 	public static int getTriangleNumber(int n) {
