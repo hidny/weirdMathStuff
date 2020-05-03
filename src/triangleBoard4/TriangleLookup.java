@@ -1,5 +1,7 @@
 package triangleBoard4;
 
+import eulerBook.UtilityFunctions;
+
 public class TriangleLookup {
 
 	//TODO: for larger triangles, this lookup could break, so be careful
@@ -36,10 +38,30 @@ public class TriangleLookup {
 	}
 	
 	//TODO
-	/*
-	public static long convertToNumberWithSymmetries(boolean triangle[][], int numPiecesLeft) {
+	
+	public static long pascalsTriangle[][] = UtilityFunctions.createPascalTriangle(100);
+	
+	public static long convertToNumberWithComboTricks(boolean triangle[][]) {
+		long ret = 0;
 		
-	}*/
+		int curIndex=0;
+		int numFocusedFound = 0;
+		
+		for(int i=0; i<triangle.length; i++) {
+			for(int j=0; j<triangle[i].length; j++) {
+				if(triangle[i][j]) {
+					
+					numFocusedFound++;
+					if(curIndex >= numFocusedFound) {
+						ret += pascalsTriangle[curIndex][numFocusedFound];
+					}
+				}
+				curIndex++;
+			}
+		}
+		
+		return ret;
+	}
 	
 	//TODO: make a better lookup algo that gets the combo number. I did something like that before...
 	

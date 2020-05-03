@@ -6,6 +6,7 @@ public class TriangleBoard {
 	//Only hard-copies allow
 	
 	public static void main(String args[]) {
+		//TESTING code:
 		TriangleBoard board = new TriangleBoard(4);
 
 		board.removePiece(0);
@@ -93,6 +94,7 @@ public class TriangleBoard {
 			}
 			
 		}
+		//END TESTING CODE
 	}
 	
 	private boolean triangle[][];
@@ -346,7 +348,7 @@ public class TriangleBoard {
 	}
 	
 	public long getLookupNumber() {
-		return TriangleLookup.convertToNumber(triangle, numPiecesLeft);
+		return TriangleLookup.convertToNumberWithComboTricks(triangle);
 	}
 	
 	public int length() {
