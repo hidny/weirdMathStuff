@@ -86,11 +86,11 @@ public class TriangleSolveOptimizedTrial {
 	public static void main(String args[]) {
 		
 		//int LENGTH = 4;
-		//int LENGTH = 4;
-		int LENGTH = 6;
+		int LENGTH = 5;
+		//int LENGTH = 6;
 		//int LENGTH = 7;
 		
-		boolean SET_SLOW = false;
+		boolean SET_SLOW = true;
 		if(SET_SLOW) {
 			System.out.println("WARNING: is slow!");
 		}

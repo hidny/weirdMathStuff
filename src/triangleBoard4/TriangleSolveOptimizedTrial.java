@@ -71,6 +71,8 @@ import java.util.HashMap;
 //STILL IN THE RUNNING: use conway math to a) figure out min num moves left
 											//b) figure out if position is impossible to complete
 
+//DONE: don't waste precious recordings... might save lots of time by not tossing them out...
+
 //*********************
 //FUNDAMENTAL IDEA: use breadth-first search... :(
 //It might take too much memory though...
@@ -90,8 +92,8 @@ public class TriangleSolveOptimizedTrial {
 		
 		//int LENGTH = 4;
 		//int LENGTH = 5;
-		//int LENGTH = 6;
-		int LENGTH = 7;
+		int LENGTH = 6;
+		//int LENGTH = 7;
 		
 		boolean SET_SLOW = false;
 		if(SET_SLOW) {
@@ -177,10 +179,9 @@ public class TriangleSolveOptimizedTrial {
 	
 	//TODO: this is looking for just 1 solution...
 	// try finding more all optimal solutions later...
-	//TODO:
-	
-	//Invent a number:
+	//Invent a number that seems high enough:
 	public static int MAX_DEPTH = 12;
+	
 	public static TriangleBoard getBestMoveList(TriangleBoard board) {
 
 		initRecordedTriangles(board.length());
@@ -189,9 +190,9 @@ public class TriangleSolveOptimizedTrial {
 		for(int i=1; i<=MAX_DEPTH; i++) {
 			//System.out.println("i: " + i);
 			
-			//TODO: instead of doing an init after every iteration, maybe just save it and reuse it.
-			// I don't know how much time it will save, but it's probably better than current sol.
-			initRecordedTriangles(board.length());
+			//Instead of doing an init after every iteration, just save it and reuse it.
+			// I don't know how much time it will save, but it's probably better than nothing.
+			//initRecordedTriangles(board.length());
 			
 			answer = getBestMoveList(board, i);
 			if(answer != null) {
@@ -203,17 +204,17 @@ public class TriangleSolveOptimizedTrial {
 		
 	}
 	
-	public static TriangleBoard getBestMoveList(TriangleBoard board, int maxDepth) {
+	public static TriangleBoard getBestMoveList(TriangleBoard board, int curMaxDepth) {
 		numFunctionCallForDEBUG++;
 		if(numFunctionCallForDEBUG % 1000000 == 0) {
 			//System.out.println("FAST");
-			System.out.println("Current depth: " + (maxDepth + board.getNumMovesMade()) + " out of " + MAX_DEPTH);
-			board.draw();
+			//System.out.println("Current depth: " + getMaxDepthUsed(board, curMaxDepth) + " out of " + MAX_DEPTH);
+			//board.draw();
 		}
 		
 		if(board.getNumPiecesLeft() == 1) {
 			return board;
-		} else if(maxDepth == 0) {
+		} else if(curMaxDepth == 0) {
 			return null;
 		}
 
@@ -229,20 +230,28 @@ public class TriangleSolveOptimizedTrial {
 				
 				triangleRecord previouslyFoundNode = recordedTriangles[board.getNumPiecesLeft()].get(lookup);
 				
-				if(board.getNumMovesMade() >= previouslyFoundNode.getNumMovesToGetToPos()) {
+				if(board.getNumMovesMade() > previouslyFoundNode.getNumMovesToGetToPos()) {
 						
 					//System.out.println("Cutting short 0");
 					return null;
+				} else if(board.getNumMovesMade() == previouslyFoundNode.getNumMovesToGetToPos()){
+					
+					if(previouslyFoundNode.getDepthUsedToFindRecord() == getMaxDepthUsed(board, curMaxDepth)) {
+						return null;
+					} else {
+						previouslyFoundNode.updateNumMovesToGetToPos(board.getNumMovesMade(), board, curMaxDepth);
+					}
+					
 				} else {
 					
-					previouslyFoundNode.updateNumMovesToGetToPos(board.getNumMovesMade());
+					previouslyFoundNode.updateNumMovesToGetToPos(board.getNumMovesMade(), board, curMaxDepth);
 				}
 				
 				//TODO: if conway math says impossible: dont try.
 				
 				
 			} else {
-				recordedTriangles[board.getNumPiecesLeft()].put(lookup, new triangleRecord(board.getNumMovesMade()));
+				recordedTriangles[board.getNumPiecesLeft()].put(lookup, new triangleRecord(board.getNumMovesMade(), board, curMaxDepth));
 			}
 			
 		}
@@ -253,7 +262,7 @@ public class TriangleSolveOptimizedTrial {
 		
 		for(int i=0; i<moves.size(); i++) {
 
-			TriangleBoard possibleBest = getBestMoveList(board.doOneMove(moves.get(i)), maxDepth - 1);
+			TriangleBoard possibleBest = getBestMoveList(board.doOneMove(moves.get(i)), curMaxDepth - 1);
 			
 			if(possibleBest != null) {
 				return possibleBest;
@@ -266,5 +275,9 @@ public class TriangleSolveOptimizedTrial {
 	
 	public static int getTriangleNumber(int n) {
 		return n * (n+1) / 2;
+	}
+	
+	public static int getMaxDepthUsed(TriangleBoard board, int curMaxDepth) {
+		return board.getNumMovesMade() + curMaxDepth;
 	}
 }
