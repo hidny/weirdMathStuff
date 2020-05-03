@@ -83,6 +83,11 @@ import java.util.HashMap;
 //DONE: Improve how much gets recorded in the lookup table to not go over nay space limits
 // Then make recording only based on how many moves were done (Don't record complicated middle part if space is an issue)
 
+//TODO: great idea:
+// Do a backwards search that goes back 2-3 moves and save the results.
+//That way, if the forwards search ever gets with 2-3 moves from goal, it will end.
+// This could potentially make it 100x faster
+
 public class TriangleSolveOptimizedTrial {
 
 	
@@ -182,7 +187,8 @@ public class TriangleSolveOptimizedTrial {
 	//This is looking for just 1 solution...
 	// TODO: try finding all optimal solutions later...
 	//Invent a number that seems high enough:
-	public static int MAX_DEPTH = 14;
+	//public static int MAX_DEPTH = 14;
+	public static int MAX_DEPTH = 11;
 	
 	public static TriangleBoard getBestMoveList(TriangleBoard board) {
 
@@ -211,9 +217,12 @@ public class TriangleSolveOptimizedTrial {
 		if(numFunctionCallForDEBUG % 1000000 == 0) {
 			//System.out.println("FAST");
 
-			System.out.println("Current depth: " + getMaxDepthUsed(board, curMaxDepth) + " out of " + MAX_DEPTH);
-			System.out.println("Num records saved: " + numRecordsSavedForDEBUG);
-			board.draw();
+			//System.out.println("Current depth: " + getMaxDepthUsed(board, curMaxDepth) + " out of " + MAX_DEPTH);
+
+			//For now, it's stuck at 6680931 and still running fast, so this is good
+			//TODO: see what happens after implementing conway math...
+			//System.out.println("Num records saved: " + numRecordsSavedForDEBUG);
+			//board.draw();
 		}
 		
 		if(board.getNumPiecesLeft() == 1) {

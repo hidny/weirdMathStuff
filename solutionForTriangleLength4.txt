@@ -1,0 +1,64 @@
+Trying 4 in TriangleSolveOptimizedTrial4
+Giving up after reaching a max depth of 14
+No solution when removing piece 0
+
+Solution when removing piece 4
+    _ 
+   _ G 
+  _ _ _ 
+ _ _ _ _ 
+Num pieces left: 1
+Num moves Made: 5
+Move list:   12-4  0-8  14-12-4  10-0-8-10  15-5
+
+Solution when removing piece 5
+    _ 
+   G _ 
+  _ _ _ 
+ _ _ _ _ 
+Num pieces left: 1
+Num moves Made: 5
+Move list:   15-5  0-10  13-15-5  8-0-10-8  12-4
+
+Solution when removing piece 8
+    _ 
+   _ _ 
+  _ _ _ 
+ _ G _ _ 
+Num pieces left: 1
+Num moves Made: 5
+Move list:   0-8  12-4  10-0-8  14-4-12-14  15-13
+
+No solution when removing piece 9
+
+Solution when removing piece 10
+    _ 
+   _ _ 
+  _ _ _ 
+ _ _ G _ 
+Num pieces left: 1
+Num moves Made: 5
+Move list:   0-10  15-5  8-0-10  13-5-15-13  12-14
+
+No solution when removing piece 12
+
+Solution when removing piece 13
+    _ 
+   _ _ 
+  G _ _ 
+ _ _ _ _ 
+Num pieces left: 1
+Num moves Made: 5
+Move list:   15-13  12-14  5-15-13  4-12-14-4  0-8
+
+Solution when removing piece 14
+    _ 
+   _ _ 
+  _ _ G 
+ _ _ _ _ 
+Num pieces left: 1
+Num moves Made: 5
+Move list:   12-14  15-13  4-12-14  5-13-15-5  0-10
+
+No solution when removing piece 15
+

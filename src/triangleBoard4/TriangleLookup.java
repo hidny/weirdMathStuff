@@ -6,7 +6,7 @@ public class TriangleLookup {
 
 	//TODO: for larger triangles, this lookup could break, so be careful
 	
-	public static long convertToNumber(boolean triangle[][], int numPiecesLeft) {
+	public static long convertToNumberBad(boolean triangle[][], int numPiecesLeft) {
 		
 		//TODO: maybe take advantage of the 6 fold symmetries...
 			//Look up will take x6 longer, but it will save x6 the space.
@@ -36,11 +36,11 @@ public class TriangleLookup {
 		
 		return ret;
 	}
-	
-	//TODO
+
 	
 	public static long pascalsTriangle[][] = UtilityFunctions.createPascalTriangle(100);
-	
+
+	//this is an algo that get the lookup number based on which combination is being used:
 	public static long convertToNumberWithComboTricks(boolean triangle[][]) {
 		long ret = 0;
 		
@@ -60,9 +60,34 @@ public class TriangleLookup {
 			}
 		}
 		
+		//I don't want to take advantage of symmetries all of the time, but I could do it at the beginning at least:
+		if(numFocusedFound > TriangleSolveOptimizedTrial.getTriangleNumber(triangle.length) - 7) {
+			ret = Math.min(ret, getComboNumAfterReflection(triangle));
+		}
+		
 		return ret;
 	}
 	
-	//TODO: make a better lookup algo that gets the combo number. I did something like that before...
+	public static int getComboNumAfterReflection(boolean triangle[][]) {
+		//TODO: reflection!
+		int ret2 = 0;
+		int curIndex=0;
+		int numFocusedFound = 0;
+		
+		for(int i=0; i<triangle.length; i++) {
+			for(int j=0; j<triangle[i].length; j++) {
+				if(triangle[i][triangle[i].length - j - 1]) {
+					
+					numFocusedFound++;
+					if(curIndex >= numFocusedFound) {
+						ret2 += pascalsTriangle[curIndex][numFocusedFound];
+					}
+				}
+				curIndex++;
+			}
+		}
+		
+		return ret2;
+	}
 	
 }
