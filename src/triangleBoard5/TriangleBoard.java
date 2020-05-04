@@ -6,6 +6,7 @@ public class TriangleBoard {
 	//Only hard-copies allow
 	
 	public static void main(String args[]) {
+		/*
 		//TESTING code:
 		TriangleBoard board = new TriangleBoard(4);
 
@@ -95,6 +96,33 @@ public class TriangleBoard {
 			
 		}
 		//END TESTING CODE
+		*/
+		
+
+		//Backwards solution test:
+		System.out.println("Test backwards solution:");
+		String solution = "20-10  5-15  22-10  24-22  21-23  12-24  24-22  22-12  6-18  15-5  0-10  10-12  12-24";
+		String moveTokens[] = solution.split(" ");
+		
+		TriangleBoard board = new TriangleBoard(5);
+		board.removePiece(Integer.parseInt(moveTokens[0].split("-")[1]));
+
+		board.draw();
+		for(int i=0; i<moveTokens.length; i++) {
+			if(moveTokens[i].trim().equals("")) {
+				continue;
+			}
+			System.out.println("Making move" + "(" + moveTokens[i] + ")");
+			board = board.doOneMove(moveTokens[i]);
+			board.draw();
+		}
+		
+		if(board.numPiecesLeft != 1) {
+			System.out.println("ERROR: solution did not work!");
+		} else {
+			System.out.println("PASS");
+		}
+		board.draw();
 	}
 	
 	private boolean triangle[][];
@@ -166,6 +194,7 @@ public class TriangleBoard {
 		}
 		
 		this.numPiecesLeft--;
+		
 	}
 	
 	public ArrayList<String> getFullMoves() {
