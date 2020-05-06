@@ -12,18 +12,36 @@ public class triangleRecord {
 
 		this.numMovesToGetToPos = numMovesToGetToPos;
 		
-		this.depthUsedToFindRecord = TriangleSolveOptimizedTrial.getMaxDepthUsed(board, curMaxDepth);
+		this.depthUsedToFindRecord = utilFunctions.getMaxDepthUsed(board, curMaxDepth);
+
+	}
+	
+	public triangleRecord(int numMovesToGetToPos, BackwardsTriangleBoard board, int curMaxDepth) {
+
+		this.numMovesToGetToPos = numMovesToGetToPos;
+		
+		this.depthUsedToFindRecord = utilFunctions.getMaxDepthUsed(board, curMaxDepth);
 
 	}
 	
 	public void updateNumMovesToGetToPos(int numMovesToGetToPos, TriangleBoard board, int curMaxDepth) {
-		if(numMovesToGetToPos >= this.numMovesToGetToPos && TriangleSolveOptimizedTrial.getMaxDepthUsed(board, curMaxDepth) == depthUsedToFindRecord) {
+		if(numMovesToGetToPos >= this.numMovesToGetToPos && utilFunctions.getMaxDepthUsed(board, curMaxDepth) == depthUsedToFindRecord) {
 			System.err.println("ERROR: updating numMovesToGetThere when there wasn't an improvement");
 			System.exit(1);
 		}
 		
 		this.numMovesToGetToPos = numMovesToGetToPos;
-		this.depthUsedToFindRecord = TriangleSolveOptimizedTrial.getMaxDepthUsed(board, curMaxDepth);
+		this.depthUsedToFindRecord = utilFunctions.getMaxDepthUsed(board, curMaxDepth);
+	}
+	
+	public void updateNumMovesToGetToPos(int numMovesToGetToPos, BackwardsTriangleBoard board, int curMaxDepth) {
+		/*if(numMovesToGetToPos >= this.numMovesToGetToPos && utilFunctions.getMaxDepthUsed(board, curMaxDepth) == depthUsedToFindRecord) {
+			System.err.println("ERROR: updating numMovesToGetThere when there wasn't an improvement");
+			System.exit(1);
+		}*/
+		
+		this.numMovesToGetToPos = numMovesToGetToPos;
+		this.depthUsedToFindRecord = utilFunctions.getMaxDepthUsed(board, curMaxDepth);
 	}
 	
 	

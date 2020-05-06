@@ -1,4 +1,4 @@
-package triangleBoard4;
+package triangleBoard6;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -96,15 +96,15 @@ public class TriangleSolveOptimizedTrial {
 		
 		//int LENGTH = 4;
 		//int LENGTH = 5;
-		int LENGTH = 6;
-		//int LENGTH = 7;
+		//int LENGTH = 6;
+		int LENGTH = 7;
 		
 		boolean SET_SLOW = false;
 		if(SET_SLOW) {
 			System.out.println("WARNING: is slow!");
 		}
 		
-		System.out.println("Trying " + LENGTH + " in TriangleSolveOptimizedTrial4");
+		System.out.println("Trying " + LENGTH + " in TriangleSolveOptimizedTrial6");
 		System.out.println("Giving up after reaching a max depth of " + MAX_DEPTH);
 
 		TriangleBoard board = new TriangleBoard(LENGTH);
@@ -188,14 +188,16 @@ public class TriangleSolveOptimizedTrial {
 	// TODO: try finding all optimal solutions later...
 	//Invent a number that seems high enough:
 	//public static int MAX_DEPTH = 14;
-	public static int MAX_DEPTH = 11;
+	
+	public static int START_DEPTH = 11;
+	public static int MAX_DEPTH = 13;
 	
 	public static TriangleBoard getBestMoveList(TriangleBoard board) {
 
 		initRecordedTriangles(board.length());
 		
 		TriangleBoard answer = null;
-		for(int i=1; i<=MAX_DEPTH; i++) {
+		for(int i=START_DEPTH; i<=MAX_DEPTH; i++) {
 			//System.out.println("i: " + i);
 			
 			//Instead of doing an init after every iteration, just save it and reuse it.
@@ -211,18 +213,44 @@ public class TriangleSolveOptimizedTrial {
 		return answer;
 		
 	}
+
+	//TODO: is 11 too high?
+	public static final int MEMORIZING_DEPTH = 10;
+
+	//Num memorized if MEMORIZING_DEPTH is 10 and board length is 7 (and 1st taken is top): 11773014
+
+	//Note: num might change if I insist on doing the getNecessaryMovesToCheck only
+	// if I insist on doing the getNecessaryMovesToCheck only: 11338817
+	// I don't know where the 3 extra came from...
+	//AHA: it came from positions found near the end (when there less than n pegs left)
+	//Took less than 20 minutes to get there
 	
+	//Taking away piece 7 on length 7:
+    /*G 
+   _ _ 
+  _ _ _ 
+ _ G _ _ 
+G _ _ _ _ 
+G _ _ _ G _ 
+G _ _ G G G _ 
+Num pieces left: 9
+Num moves Made: 12
+Move list:   22-8  24-22  37-23  8-24  21-37  45-29  7-21-37  43-45  32-30-44  45-31  48-32-16-30  31-29-43-45
+Current depth: 12 out of 13
+Num records saved: 16675013
+    G 
+    */
 	public static TriangleBoard getBestMoveList(TriangleBoard board, int curMaxDepth) {
 		numFunctionCallForDEBUG++;
 		if(numFunctionCallForDEBUG % 1000000 == 0) {
 			//System.out.println("FAST");
 
-			//System.out.println("Current depth: " + getMaxDepthUsed(board, curMaxDepth) + " out of " + MAX_DEPTH);
+			System.out.println("Current depth: " + getMaxDepthUsed(board, curMaxDepth) + " out of " + MAX_DEPTH);
 
 			//For now, it's stuck at 6680931 and still running fast, so this is good
 			//TODO: see what happens after implementing conway math...
-			//System.out.println("Num records saved: " + numRecordsSavedForDEBUG);
-			//board.draw();
+			System.out.println("Num records saved: " + numRecordsSavedForDEBUG);
+			board.draw();
 		}
 		
 		if(board.getNumPiecesLeft() == 1) {
@@ -246,6 +274,9 @@ public class TriangleSolveOptimizedTrial {
 				if(previouslyFoundNode.getDepthUsedToFindRecord() == getMaxDepthUsed(board, curMaxDepth)) {
 					return null;
 				} else {
+					//System.out.println("GOT TO MORE THAN 1 START DEPTH! (Good if not just testing 1 start depth)");
+					//System.exit(1);
+
 					previouslyFoundNode.updateNumMovesToGetToPos(board.getNumMovesMade(), board, curMaxDepth);
 				}
 				
@@ -261,21 +292,30 @@ public class TriangleSolveOptimizedTrial {
 		
 		//Record position if worthwhile:
 		//(Only record if it won't affect memory requirements too much)
+		
 		if(board.length() <= 6
-				|| (getTriangleNumber(board.length()) - board.getNumPiecesLeft() <= 6 || board.getNumMovesMade() < 10)
-			) {
+				|| (getTriangleNumber(board.length()) - board.getNumPiecesLeft() <= 6 || board.getNumMovesMade() <= MEMORIZING_DEPTH))
+			 {
 		
 			if(recordedTriangles[board.getNumPiecesLeft()].containsKey(lookup) == false) {
 				recordedTriangles[board.getNumPiecesLeft()].put(lookup, new triangleRecord(board.getNumMovesMade(), board, curMaxDepth));
 				
 				numRecordsSavedForDEBUG++;
+			} else {
+				//TODO: count the misses!
 			}
 		}
 			
 		//END CHECKPOINT LOGIC
 		
 		
-		ArrayList<String> moves = board.getFullMoves();
+		ArrayList<String> moves;
+		//if(board.getNumMovesMade() > MEMORIZING_DEPTH && curMaxDepth > 1) {
+			moves = board.getNecessaryMovesToCheck();
+		//} else {
+		//	moves = board.getFullMoves();
+		//}
+		
 		
 		for(int i=0; i<moves.size(); i++) {
 
@@ -298,3 +338,35 @@ public class TriangleSolveOptimizedTrial {
 		return board.getNumMovesMade() + curMaxDepth;
 	}
 }
+
+/*mem level 11 after 1 hour 20 mins
+ *        G 
+      G _ 
+     _ _ _ 
+    _ _ _ _ 
+   _ _ G _ G 
+  G _ G _ _ G 
+ G G _ _ _ _ G 
+Num pieces left: 10
+Num moves Made: 12
+Move list:   14-0  16-14  21-7  32-16  46-32  23-21  38-22  8-24-38  28-14-30  44-46  47-45  30-46-44-28-30
+Current depth: 13 out of 13
+Num records saved: 9209933
+*/
+
+/*Mem level 10 after 7 hours
+(Mem level 11 is better...)
+(With getNecessaryMovesToCheck)
+Current depth: 13 out of 13
+Num records saved: 3075674
+       G 
+      G _ 
+     _ _ G 
+    _ _ G G 
+   _ _ _ _ G 
+  _ _ _ G _ _ 
+ _ G _ _ G G _ 
+Num pieces left: 10
+Num moves Made: 13
+Move list:   14-0  16-14  21-7  32-16  8-24  30-16  28-30  45-29  43-45  48-32  42-28-44  45-43  39-23-37-21-23
+*/

@@ -282,7 +282,7 @@ public class BackwardsTriangleBoard {
 			newBoard.numBackwardsMovesMade = this.numBackwardsMovesMade + 1;
 			newBoard.historicMoveList =  backwardsMove + "  " + newBoard.historicMoveList;
 		}
-		newBoard.internalLastJumpCodeForMultiJumpMoves = to;
+		newBoard.internalLastJumpCodeForMultiJumpMoves = from;
 		
 		return newBoard;
 	}

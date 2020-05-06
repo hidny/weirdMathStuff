@@ -1,4 +1,4 @@
-package triangleBoard5;
+package triangleBoard6;
 
 import eulerBook.UtilityFunctions;
 
@@ -61,7 +61,7 @@ public class TriangleLookup {
 		}
 		
 		//I don't want to take advantage of symmetries all of the time, but I could do it at the beginning at least:
-		if(numFocusedFound > utilFunctions.getTriangleNumber(triangle.length) - 7) {
+		if(numFocusedFound > TriangleSolveOptimizedTrial.getTriangleNumber(triangle.length) - 7) {
 			ret = Math.min(ret, getComboNumAfterReflection(triangle));
 		}
 		

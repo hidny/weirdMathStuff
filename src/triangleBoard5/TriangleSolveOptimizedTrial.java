@@ -95,8 +95,8 @@ public class TriangleSolveOptimizedTrial {
 	public static void main(String args[]) {
 		
 		//int LENGTH = 4;
-		int LENGTH = 5;
-		//int LENGTH = 6;
+		//int LENGTH = 5;
+		int LENGTH = 6;
 		//int LENGTH = 7;
 		
 		boolean SET_SLOW = false;
@@ -174,6 +174,7 @@ public class TriangleSolveOptimizedTrial {
 
 	public static int numFunctionCallForDEBUG = 0;
 	public static int numRecordsSavedForDEBUG = 0;
+	public static int numBackwardsRecordsSavedForDEBUG = 0;
 	
 	public static TriangleBoard getBestMoveListSlow(TriangleBoard board) {
 		numFunctionCallForDEBUG++;
@@ -215,7 +216,7 @@ public class TriangleSolveOptimizedTrial {
 			//board.draw();
 		}
 		
-		if(board.getNumPiecesLeft() == getTriangleNumber(board.length()) - 1) {
+		if(board.getNumPiecesLeft() == utilFunctions.getTriangleNumber(board.length()) - 1) {
 			return board;
 		}
 		
@@ -246,13 +247,26 @@ public class TriangleSolveOptimizedTrial {
 	public static HashMap<Long, triangleRecord>[] recordedTriangles;
 	
 	
-	public static void initRecordedTriangles(int length) {
+	public static void initRecordedTriangles(int boardLength) {
 		numRecordsSavedForDEBUG = 0;
-		recordedTriangles = new HashMap[getTriangleNumber(length)];
+		recordedTriangles = new HashMap[utilFunctions.getTriangleNumber(boardLength)];
 		for(int i=0; i<recordedTriangles.length; i++) {
 			recordedTriangles[i] = new HashMap<Long, triangleRecord>();
 		}
 	}
+	
+	public static HashMap<Long, triangleRecord>[] recordedBackwardsTriangles;
+	
+	
+	public static void initRecordedBackwardsTriangles(int boardLength) {
+		numBackwardsRecordsSavedForDEBUG = 0;
+		recordedBackwardsTriangles = new HashMap[utilFunctions.getTriangleNumber(boardLength)];
+		for(int i=0; i<recordedBackwardsTriangles.length; i++) {
+			recordedBackwardsTriangles[i] = new HashMap<Long, triangleRecord>();
+		}
+	}
+	
+	
 	
 	//This is looking for just 1 solution...
 	// TODO: try finding all optimal solutions later...
@@ -313,7 +327,7 @@ public class TriangleSolveOptimizedTrial {
 				return null;
 			} else if(board.getNumMovesMade() == previouslyFoundNode.getNumMovesToGetToPos()){
 				
-				if(previouslyFoundNode.getDepthUsedToFindRecord() == getMaxDepthUsed(board, curMaxDepth)) {
+				if(previouslyFoundNode.getDepthUsedToFindRecord() == utilFunctions.getMaxDepthUsed(board, curMaxDepth)) {
 					return null;
 				} else {
 					previouslyFoundNode.updateNumMovesToGetToPos(board.getNumMovesMade(), board, curMaxDepth);
@@ -332,7 +346,7 @@ public class TriangleSolveOptimizedTrial {
 		//Record position if worthwhile:
 		//(Only record if it won't affect memory requirements too much)
 		if(board.length() <= 6
-				|| (getTriangleNumber(board.length()) - board.getNumPiecesLeft() <= 6 || board.getNumMovesMade() < 10)
+				|| (utilFunctions.getTriangleNumber(board.length()) - board.getNumPiecesLeft() <= 6 || board.getNumMovesMade() < 10)
 			) {
 		
 			if(recordedTriangles[board.getNumPiecesLeft()].containsKey(lookup) == false) {
@@ -360,11 +374,35 @@ public class TriangleSolveOptimizedTrial {
 		return null;
 	}
 	
-	public static int getTriangleNumber(int n) {
-		return n * (n+1) / 2;
-	}
+
 	
-	public static int getMaxDepthUsed(TriangleBoard board, int curMaxDepth) {
-		return board.getNumMovesMade() + curMaxDepth;
+	
+	
+	//********************************
+	//********************************
+	//********************************
+	
+	
+
+	
+
+	
+	
+	
+
+	//********************************
+	//********************************
+	//********************************
+	
+	
+	
+	//TODO: 
+	
+	public static HashMap<Long, triangleRecord>[] forwardSavedTriangles;
+	
+	public static void doOptimizedSearchForwardSaveBackwardSearch() {
+		//TODO MIRROR IMAGE LATER
+		
+		
 	}
 }
