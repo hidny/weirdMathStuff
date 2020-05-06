@@ -96,8 +96,8 @@ public class TriangleSolveOptimizedTrial {
 		
 		//int LENGTH = 4;
 		//int LENGTH = 5;
-		//int LENGTH = 6;
-		int LENGTH = 7;
+		int LENGTH = 6;
+		//int LENGTH = 7;
 		
 		boolean SET_SLOW = false;
 		if(SET_SLOW) {
@@ -189,7 +189,7 @@ public class TriangleSolveOptimizedTrial {
 	//Invent a number that seems high enough:
 	//public static int MAX_DEPTH = 14;
 	
-	public static int START_DEPTH = 11;
+	public static int START_DEPTH = 1;
 	public static int MAX_DEPTH = 13;
 	
 	public static TriangleBoard getBestMoveList(TriangleBoard board) {
@@ -245,12 +245,12 @@ Num records saved: 16675013
 		if(numFunctionCallForDEBUG % 1000000 == 0) {
 			//System.out.println("FAST");
 
-			System.out.println("Current depth: " + getMaxDepthUsed(board, curMaxDepth) + " out of " + MAX_DEPTH);
+			//System.out.println("Current depth: " + getMaxDepthUsed(board, curMaxDepth) + " out of " + MAX_DEPTH);
 
 			//For now, it's stuck at 6680931 and still running fast, so this is good
 			//TODO: see what happens after implementing conway math...
-			System.out.println("Num records saved: " + numRecordsSavedForDEBUG);
-			board.draw();
+			//System.out.println("Num records saved: " + numRecordsSavedForDEBUG);
+			//board.draw();
 		}
 		
 		if(board.getNumPiecesLeft() == 1) {

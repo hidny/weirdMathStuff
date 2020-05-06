@@ -421,7 +421,8 @@ public class TriangleBoard {
 	}
 	
 	public long getLookupNumber() {
-		return TriangleLookup.convertToNumberWithComboTricks(triangle);
+		//return TriangleLookup.convertToNumberWithComboTricks(triangle);
+		return TriangleLookup.convertToNumberWithComboTricksAndSymmetry(triangle, numPiecesLeft);
 	}
 	
 	public int length() {
