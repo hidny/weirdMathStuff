@@ -2,6 +2,7 @@ package triangleBoard6;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 
 //Old ideas:
@@ -90,14 +91,14 @@ import java.util.HashMap;
 
 public class TriangleSolveOptimizedTrial {
 
-	
+	public static HashSet<Long> startingPositionSearched = new HashSet<Long>();
 	
 	public static void main(String args[]) {
 		
 		//int LENGTH = 4;
 		//int LENGTH = 5;
-		int LENGTH = 6;
-		//int LENGTH = 7;
+		//int LENGTH = 6;
+		int LENGTH = 7;
 		
 		boolean SET_SLOW = false;
 		if(SET_SLOW) {
@@ -114,6 +115,16 @@ public class TriangleSolveOptimizedTrial {
 				board = new TriangleBoard(LENGTH);
 				board.removePiece(i * LENGTH + j);
 				initRecordedTriangles(LENGTH);
+				
+				long lookup = board.getLookupNumber();
+				
+				if(LENGTH >=7 && startingPositionSearched.contains(lookup)) {
+					System.out.println("SKIPING (" + i + ", " + j + ")");
+					continue;
+				} else {
+					startingPositionSearched.add(lookup);
+				}
+				
 				
 				TriangleBoard boardSol = null;
 				
@@ -217,8 +228,10 @@ public class TriangleSolveOptimizedTrial {
 	//TODO: is 11 too high?
 	public static final int MEMORIZING_DEPTH = 10;
 
-	//Num memorized if MEMORIZING_DEPTH is 10 and board length is 7 (and 1st taken is top): 11773014
-
+	//Num memorized if MEMORIZING_DEPTH is 10 and board length is 7 (and 1st taken is top): 11773014 (without rotational symmetry)
+	//                                                            with rotational symmetry: 4067860
+	
+	
 	//Note: num might change if I insist on doing the getNecessaryMovesToCheck only
 	// if I insist on doing the getNecessaryMovesToCheck only: 11338817
 	// I don't know where the 3 extra came from...
