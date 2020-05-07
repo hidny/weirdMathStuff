@@ -98,7 +98,7 @@ public class TriangleSolveOptimizedTrial {
 		//int LENGTH = 4;
 		//int LENGTH = 5;
 		//int LENGTH = 6;
-		int LENGTH = 7;
+		int LENGTH = 8;
 		
 		boolean SET_SLOW = false;
 		if(SET_SLOW) {
@@ -226,11 +226,13 @@ public class TriangleSolveOptimizedTrial {
 	}
 
 	//TODO: is 11 too high?
-	public static final int MEMORIZING_DEPTH = 10;
+	public static final int MEMORIZING_DEPTH = 9;
 
 	//Num memorized if MEMORIZING_DEPTH is 10 and board length is 7 (and 1st taken is top): 11773014 (without rotational symmetry)
 	//                                                            with rotational symmetry: 4067860
 	
+	//For triangle length 8, I think I'm stuct with depth 9...
+	//TODO: make MEM_DEPTH DYNAMIC... (i.e. give up once it reaches 19 M elements)
 	
 	//Note: num might change if I insist on doing the getNecessaryMovesToCheck only
 	// if I insist on doing the getNecessaryMovesToCheck only: 11338817
@@ -322,12 +324,7 @@ Num records saved: 16675013
 		//END CHECKPOINT LOGIC
 		
 		
-		ArrayList<String> moves;
-		//if(board.getNumMovesMade() > MEMORIZING_DEPTH && curMaxDepth > 1) {
-			moves = board.getNecessaryMovesToCheck();
-		//} else {
-		//	moves = board.getFullMoves();
-		//}
+		ArrayList<String> moves = board.getNecessaryMovesToCheck();
 		
 		
 		for(int i=0; i<moves.size(); i++) {
@@ -351,35 +348,3 @@ Num records saved: 16675013
 		return board.getNumMovesMade() + curMaxDepth;
 	}
 }
-
-/*mem level 11 after 1 hour 20 mins
- *        G 
-      G _ 
-     _ _ _ 
-    _ _ _ _ 
-   _ _ G _ G 
-  G _ G _ _ G 
- G G _ _ _ _ G 
-Num pieces left: 10
-Num moves Made: 12
-Move list:   14-0  16-14  21-7  32-16  46-32  23-21  38-22  8-24-38  28-14-30  44-46  47-45  30-46-44-28-30
-Current depth: 13 out of 13
-Num records saved: 9209933
-*/
-
-/*Mem level 10 after 7 hours
-(Mem level 11 is better...)
-(With getNecessaryMovesToCheck)
-Current depth: 13 out of 13
-Num records saved: 3075674
-       G 
-      G _ 
-     _ _ G 
-    _ _ G G 
-   _ _ _ _ G 
-  _ _ _ G _ _ 
- _ G _ _ G G _ 
-Num pieces left: 10
-Num moves Made: 13
-Move list:   14-0  16-14  21-7  32-16  8-24  30-16  28-30  45-29  43-45  48-32  42-28-44  45-43  39-23-37-21-23
-*/
