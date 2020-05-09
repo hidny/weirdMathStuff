@@ -2,6 +2,8 @@ package triangleBoard5;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 
 
 //Bad ideas
@@ -18,13 +20,72 @@ import java.util.HashMap;
 public class TriangleSolveLongBackSaveThenForward {
 
 
-	public static long STANDARD_MEM_LIMIT = 200000000L;
+	public static int STANDARD_MEM_LIMIT = 19000000;
 	
 	public static void main(String args[]) {
-		getPositionDepthNAwayFromGoal(7);
+		getPositionDepthNAwayFromGoal(7, 0, 0);
 	}
 	
 
+	
+
+	public static int MAX_DEPTH = 4;
+	
+	//TODO: try all start and end positions (filter out symmetric though)
+	public static void getPositionDepthNAwayFromGoal(int triangleLength, int endi, int endj) {
+		
+		
+		initSavedPosForCurrentDir(triangleLength);
+		boolean memLimitReached = false;
+		int saveDepth;
+		for(saveDepth = 0; saveDepth<=MAX_DEPTH; saveDepth++) {
+			
+			System.out.println("TRYING saveDepth of " + saveDepth);
+
+			numPosSavedForPreviousDepths = numPosSaveTotal;
+			
+			memLimitReached = doBackwardSearchAndSaveDeepAtDepthD(triangleLength, saveDepth, endi, endj);
+			
+			if(memLimitReached) {
+				break;
+			} else {
+				
+				//TODO: setup for opposite search
+			}
+			
+		}
+		if(memLimitReached || saveDepth > MAX_DEPTH) {
+			saveDepth--;
+		}
+		
+		//TODO: List All records length saveDepth here
+		
+		HashSet<Long>[] savedPosAtDepthD = new HashSet[utilFunctions.getTriangleNumber(triangleLength)];
+		
+		
+		int numCopied = 0;
+		
+		for(int i=0; i<savedPosForCurrentSearchDir.length; i++) {
+			
+			savedPosAtDepthD[i] = new HashSet<Long>();
+			
+			Iterator<Long> it = savedPosForCurrentSearchDir[i].keySet().iterator();
+			while(it.hasNext()) {
+				long key = it.next();
+				if(savedPosForCurrentSearchDir[i].get(key).getNumMovesToGetToPos() == saveDepth) {
+					savedPosAtDepthD[i].add(key);
+					numCopied++;
+				}
+			}
+		}
+		
+		System.out.println("Num copied: " + numCopied);
+		
+		
+		
+		
+	}
+	
 	private static int numFunctionCallForDEBUG = 0;
 	private static int numPosSavedForPreviousDepths = 0;
 	private static int numPosSaveTotal = 0;
@@ -38,38 +99,6 @@ public class TriangleSolveLongBackSaveThenForward {
 		}
 	}
 	
-
-	//TODO: try all start and end positions (filter out symmetric though)
-	public static void getPositionDepthNAwayFromGoal(int triangleLength) {
-		
-		
-		initSavedPosForCurrentDir(triangleLength);
-		
-		int endi=0;
-		int endj=0;
-		
-		int saveDepth;
-		for(saveDepth = 0; saveDepth<=3; saveDepth++) {
-			
-			System.out.println("TRYING saveDepth of " + saveDepth);
-
-			numPosSavedForPreviousDepths = numPosSaveTotal;
-			
-			boolean memLimitReached = doBackwardSearchAndSaveDeepAtDepthD(triangleLength, saveDepth, endi, endj);
-			
-			if(memLimitReached) {
-				break;
-			} else {
-				
-				//TODO: setup for opposite search
-			}
-			
-		}
-		saveDepth--;
-		savedPosForCurrentSearchDir = null;
-		
-		
-	}
 	
 	//Remove a peg and save all position depth D away for the answer:
 	public static boolean doBackwardSearchAndSaveDeepAtDepthD(int triangleLength, int saveDepth, int endi, int endj) {
@@ -107,12 +136,12 @@ public class TriangleSolveLongBackSaveThenForward {
 		if(numFunctionCallForDEBUG % 10000000 == 0) {
 			//System.out.println("FAST");
 
-			//System.out.println("Current depth: " + curMaxDepth + " out of " + utilFunctions.getMaxDepthUsed(board, curMaxDepth));
+			System.out.println("Current depth: " + curMaxDepth + " out of " + utilFunctions.getMaxDepthUsed(board, curMaxDepth));
 
-			//System.out.println("Debug: end of search with depth " + curMaxDepth + " and triangle length " + board.length());
-			//System.out.println("Num records saved for prev depths: " + numPosSavedForPreviousDepths);
-			//System.out.println("Num records saved total: " + numPosSaveTotal);
-			//board.draw();
+			System.out.println("Debug: end of search with depth " + curMaxDepth + " and triangle length " + board.length());
+			System.out.println("Num records saved for prev depths: " + numPosSavedForPreviousDepths);
+			System.out.println("Num records saved total: " + numPosSaveTotal);
+			board.draw();
 		}
 		
 		
@@ -162,14 +191,16 @@ public class TriangleSolveLongBackSaveThenForward {
 				return false;
 			}
 		} else if(board.getNumPiecesLeft() == utilFunctions.getTriangleNumber(board.length()) - 1) {
+			System.out.println("ERROR: tried to save depth " + utilFunctions.getMaxDepthUsed(board, curMaxDepth) + "and found a solution");
+			System.exit(1);
 			//If found solution, let the forward search find it.
 			return true;
 		}
 
 		
 		//TODO: why aren't they the SAME???
-		//ArrayList<String> moves = board.getFullBackwardsMoves();
-		ArrayList<String> moves = board.getNecessaryFullBackwardsMovesToCheck();
+		ArrayList<String> moves = board.getFullBackwardsMoves();
+		//ArrayList<String> moves = board.getNecessaryFullBackwardsMovesToCheck();
 		
 		for(int i=0; i<moves.size(); i++) {
 
