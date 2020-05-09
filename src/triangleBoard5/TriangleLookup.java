@@ -90,4 +90,142 @@ public class TriangleLookup {
 		return ret2;
 	}
 	
+	
+	
+	public static long convertToNumberWithComboTricksAndSymmetry(boolean triangle[][], int numPiecesLeft) {
+
+		long ret = 0;
+		int startIndex = utilFunctions.getTriangleNumber(triangle.length) - 1;
+		
+		int curIndex= startIndex;
+		int numFocusedFound = numPiecesLeft;
+		
+		for(int i=0; i<triangle.length; i++) {
+			for(int j=0; j<triangle[i].length; j++) {
+				if(triangle[i][j]) {
+					
+					numFocusedFound--;
+					if(curIndex >= numFocusedFound) {
+						ret += pascalsTriangle[curIndex][numFocusedFound];
+					}
+				}
+				curIndex--;
+			}
+		}
+		if(numFocusedFound != 0) {
+			System.out.println("ERROR: incorrect number of pieces left given to convertToNumberWithComboTricksAndSymmetry function");
+		}
+		
+		//Reflection:
+		curIndex= startIndex;
+		numFocusedFound = numPiecesLeft;
+
+		int LAST_INDEX = triangle.length - 1;
+		
+		long reflection = 0;
+
+		for(int i=0; i<triangle.length && reflection < ret; i++) {
+			for(int j=0; j<triangle[i].length && reflection < ret; j++) {
+				if(triangle[i][i - j]) {
+					
+					numFocusedFound--;
+					if(curIndex >= numFocusedFound) {
+						reflection += pascalsTriangle[curIndex][numFocusedFound];
+					}
+				}
+				curIndex--;
+			}
+		}
+		
+		ret = Math.min(ret, reflection);
+		
+		//Rotation Clockwise:
+		curIndex= startIndex;
+		numFocusedFound = numPiecesLeft;
+		
+		long rotClockwise = 0;
+
+		for(int i=0; i<triangle.length && rotClockwise < ret; i++) {
+			for(int j=0; j<triangle[i].length && rotClockwise < ret; j++) {
+					if(triangle[LAST_INDEX-i+j][LAST_INDEX-i]) {
+					
+					numFocusedFound--;
+					if(curIndex >= numFocusedFound) {
+						rotClockwise += pascalsTriangle[curIndex][numFocusedFound];
+					}
+				}
+				curIndex--;
+			}
+		}
+		
+		ret = Math.min(ret, rotClockwise);
+
+		//Rotation Clockwise:with reflection:
+		curIndex= startIndex;
+		numFocusedFound = numPiecesLeft;
+		
+		long rotClockwiseReflection = 0;
+
+		for(int i=0; i<triangle.length && rotClockwiseReflection < ret; i++) {
+			for(int j=0; j<triangle[i].length && rotClockwiseReflection < ret; j++) {
+				if(triangle[LAST_INDEX-j][LAST_INDEX-i]) {
+					
+					numFocusedFound--;
+					if(curIndex >= numFocusedFound) {
+						rotClockwiseReflection += pascalsTriangle[curIndex][numFocusedFound];
+					}
+				}
+				curIndex--;
+			}
+		}
+		
+		ret = Math.min(ret, rotClockwiseReflection);
+		
+		//Rotation Counter-Clockwise:
+		curIndex= startIndex;
+		numFocusedFound = numPiecesLeft;
+		
+		long rotCounterClockwise = 0;
+
+		for(int i=0; i<triangle.length && rotCounterClockwise < ret; i++) {
+			for(int j=0; j<triangle[i].length && rotCounterClockwise < ret; j++) {
+
+				if(triangle[LAST_INDEX - j][i - j]) {
+					numFocusedFound--;
+					if(curIndex >= numFocusedFound) {
+						rotCounterClockwise += pascalsTriangle[curIndex][numFocusedFound];
+					}
+				}
+				curIndex--;
+			}
+		}
+		
+		ret = Math.min(ret, rotCounterClockwise);
+
+		//Rotation Counter-Clockwise with reflection:
+		curIndex= startIndex;
+		numFocusedFound = numPiecesLeft;
+		
+		long rotCounterClockwiseReflection = 0;
+
+		for(int i=0; i<triangle.length && rotCounterClockwiseReflection < ret; i++) {
+			for(int j=0; j<triangle[i].length && rotCounterClockwiseReflection < ret; j++) {
+					if(triangle[LAST_INDEX -i + j][j]) {
+					
+					numFocusedFound--;
+					if(curIndex >= numFocusedFound) {
+						rotCounterClockwiseReflection += pascalsTriangle[curIndex][numFocusedFound];
+					}
+				}
+				curIndex--;
+			}
+		}
+		
+		ret = Math.min(ret, rotCounterClockwiseReflection);
+		
+		
+		return ret;
+	}
+	
+	
 }

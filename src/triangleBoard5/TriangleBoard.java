@@ -1,12 +1,15 @@
 package triangleBoard5;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
+//Hard limit on number of records:
+//20344823
 public class TriangleBoard {
 	//Only hard-copies allow
 	
 	public static void main(String args[]) {
-		/*
 		//TESTING code:
 		TriangleBoard board = new TriangleBoard(4);
 
@@ -96,33 +99,6 @@ public class TriangleBoard {
 			
 		}
 		//END TESTING CODE
-		*/
-		
-
-		//Backwards solution test:
-		System.out.println("Test backwards solution:");
-		String solution = "20-10  5-15  22-10  24-22  21-23  12-24  24-22  22-12  6-18  15-5  0-10  10-12  12-24";
-		String moveTokens[] = solution.split(" ");
-		
-		TriangleBoard board = new TriangleBoard(5);
-		board.removePiece(Integer.parseInt(moveTokens[0].split("-")[1]));
-
-		board.draw();
-		for(int i=0; i<moveTokens.length; i++) {
-			if(moveTokens[i].trim().equals("")) {
-				continue;
-			}
-			System.out.println("Making move" + "(" + moveTokens[i] + ")");
-			board = board.doOneMove(moveTokens[i]);
-			board.draw();
-		}
-		
-		if(board.numPiecesLeft != 1) {
-			System.out.println("ERROR: solution did not work!");
-		} else {
-			System.out.println("PASS");
-		}
-		board.draw();
 	}
 	
 	private boolean triangle[][];
@@ -194,8 +170,70 @@ public class TriangleBoard {
 		}
 		
 		this.numPiecesLeft--;
-		
 	}
+	
+
+	private TriangleBoard prevLocation = null;
+	private HashSet<String> moveList = null;
+	
+	private static int TESTtotalFull = 0;
+	private static int TESTtotalNeeded = 0;
+	
+	
+	public ArrayList<String> getNecessaryMovesToCheck() {
+		
+		
+		ArrayList<String> fullList = getFullMoves();
+
+		ArrayList<String> neededList = new ArrayList<String>();
+		
+		
+		//Get previous 1st jump locations to give some idea of an order:
+		ArrayList<Integer> prevJumpLocations = new ArrayList<Integer>();
+		TriangleBoard tmpBoard = this;
+		while(tmpBoard.prevLocation != null) {
+			String moves[] = tmpBoard.historicMoveList.split(" ");
+			prevJumpLocations.add(Integer.parseInt(moves[moves.length - 1].split("-")[1]));
+
+			tmpBoard = tmpBoard.prevLocation;
+		}
+		
+		//Filter out moves whose 1st jumps are "out of order"
+		//TODO: does this even work?
+		for(int i=0; i<fullList.size(); i++) {
+			
+			boolean dontNeedToCheck = false;
+			tmpBoard = this;
+			int j=0;
+			while(tmpBoard.prevLocation != null &&  tmpBoard.prevLocation.moveList.contains(fullList.get(i))) {
+				
+				if(Integer.parseInt(fullList.get(i).split("-")[1]) < prevJumpLocations.get(j)) {
+
+					//Should have done prev move(s) first because they are indep and prev move starts jump at a smaller numbered location
+					dontNeedToCheck = true;
+					
+					break;
+				}
+				tmpBoard = tmpBoard.prevLocation;
+				j++;
+				
+			}
+					
+				
+			if(dontNeedToCheck == false) {
+				neededList.add(fullList.get(i));
+			}
+		}
+		
+		//System.out.println("Testing branching improvement: " + fullList.size() + " vs " + neededList.size());
+		//TESTtotalFull += fullList.size();
+		//TESTtotalNeeded += neededList.size();
+		
+		//System.out.println("Ratio: " + ((1.0*TESTtotalFull)/(1.0 * TESTtotalNeeded)));
+		
+		return neededList;
+	}
+	
 	
 	public ArrayList<String> getFullMoves() {
 		
@@ -208,6 +246,9 @@ public class TriangleBoard {
 				}
 			}
 		}
+		
+		moveList = new HashSet<String>();
+		moveList.addAll(ret);
 		
 		return ret;
 		
@@ -304,6 +345,8 @@ public class TriangleBoard {
 		
 		newBoard.numMovesMade = this.numMovesMade + 1;
 		
+		newBoard.prevLocation = this;
+		
 		return newBoard;
 		
 	}
@@ -331,17 +374,14 @@ public class TriangleBoard {
 		
 		if(newBoard.triangle[fromI][fromJ] == false) {
 			System.out.println("ERROR move 1");
-			System.exit(1);
 		}
 		
 		if(newBoard.triangle[(fromI+toI)/2][(fromJ+toJ)/2] == false) {
 			System.out.println("ERROR move 2");
-			System.exit(1);
 		}
 		
 		if(newBoard.triangle[toI][toJ] == true) {
 			System.out.println("ERROR move 3");
-			System.exit(1);
 		}
 		
 		newBoard.triangle[fromI][fromJ] = false;
@@ -380,32 +420,11 @@ public class TriangleBoard {
 	}
 	
 	public long getLookupNumber() {
-		return TriangleLookup.convertToNumberWithComboTricks(triangle);
+		//return TriangleLookup.convertToNumberWithComboTricks(triangle);
+		return TriangleLookup.convertToNumberWithComboTricksAndSymmetry(triangle, numPiecesLeft);
 	}
 	
 	public int length() {
 		return triangle.length;
 	}
 }
-
-/* From stackoverflow
-This is possible with the menu items Window>Editor>Toggle Split Editor.
-
-Current shortcut for splitting is:
-
-Azerty keyboard:
-
-Ctrl + _ for split horizontally, and
-Ctrl + { for split vertically.
-Qwerty US keyboard:
-
-Ctrl + Shift + - (accessing _) for split horizontally, and
-Ctrl + Shift + [ (accessing {) for split vertically.
-MacOS - Qwerty US keyboard:
-
-⌘ + Shift + - (accessing _) for split horizontally, and
-⌘ + Shift + [ (accessing {) for split vertically.
-On any other keyboard if a required key is unavailable (like { on a german Qwertz keyboard), the following generic approach may work:
-
-Alt + ASCII code + Ctrl then release Alt
-*/

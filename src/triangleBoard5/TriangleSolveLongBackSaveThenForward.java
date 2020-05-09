@@ -3,240 +3,181 @@ package triangleBoard5;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+
+//Bad ideas
+//This could be more efficient if we could limit the length of the move... BUT IT WOULD BE MORE COMPLICATED!
+
+
+//TODO: See what happens after implementing conway math... (and acknowledging that there's 4 position classes according to me...)
+//TODO: Add your own logic to filter out impossible jump location, then impossible to finish location
+//TODO: Look at paper to get even better filters
+//(See loose paper for more clarification)
+
+
+//TODO: DO A SIMPLE BFS!!!!
 public class TriangleSolveLongBackSaveThenForward {
 
 
 	public static long STANDARD_MEM_LIMIT = 200000000L;
 	
 	public static void main(String args[]) {
-		doOptimizedSearchBackSaveForwardSearch(7);
+		getPositionDepthNAwayFromGoal(7);
 	}
 	
+
 	private static int numFunctionCallForDEBUG = 0;
-	private static int numBackwardsRecordsSavedForCurrentDirForDEBUG = 0;
+	private static int numPosSavedForPreviousDepths = 0;
+	private static int numPosSaveTotal = 0;
 	
+	public static HashMap<Long, triangleRecord>[] savedPosForCurrentSearchDir;
 	
-	public static HashMap<Long, triangleRecord>[] recordedBackwardsTrianglesForCurrentDir;
-	
-	public static void initRecordedBackwardsTriangles(int boardLength) {
-		numBackwardsRecordsSavedForCurrentDirForDEBUG = 0;
-		recordedBackwardsTrianglesForCurrentDir = new HashMap[utilFunctions.getTriangleNumber(boardLength)];
-		for(int i=0; i<recordedBackwardsTrianglesForCurrentDir.length; i++) {
-			recordedBackwardsTrianglesForCurrentDir[i] = new HashMap<Long, triangleRecord>();
-		}
-	}
-	
-	
-	private static int numPrevBackwardsSavedTrianglesForOppositeDir;
-	private static int numBackwardsSavedTrianglesForOppositeDir;
-	
-	public static HashMap<Long, triangleRecord>[] prevBackwardSavedTrianglesForOppositeDir;
-	public static HashMap<Long, triangleRecord>[] backwardSavedTrianglesForOppositeDir;
-	
-	public static void initBackwardSavedTrianglesForOppositeDir(int boardLength) {
-		numBackwardsSavedTrianglesForOppositeDir = 0;
-		backwardSavedTrianglesForOppositeDir = new HashMap[utilFunctions.getTriangleNumber(boardLength)];
-		for(int i=0; i<backwardSavedTrianglesForOppositeDir.length; i++) {
-			backwardSavedTrianglesForOppositeDir[i] = new HashMap<Long, triangleRecord>();
+	public static void initSavedPosForCurrentDir(int boardLength) {
+		savedPosForCurrentSearchDir = new HashMap[utilFunctions.getTriangleNumber(boardLength)];
+		for(int i=0; i<savedPosForCurrentSearchDir.length; i++) {
+			savedPosForCurrentSearchDir[i] = new HashMap<Long, triangleRecord>();
 		}
 	}
 	
 
-	
-	public static void doOptimizedSearchBackSaveForwardSearch(int triangleLength) {
+	//TODO: try all start and end positions (filter out symmetric though)
+	public static void getPositionDepthNAwayFromGoal(int triangleLength) {
+		
+		
+		initSavedPosForCurrentDir(triangleLength);
+		
+		int endi=0;
+		int endj=0;
 		
 		int saveDepth;
-		for(saveDepth = 4; true; saveDepth++) {
+		for(saveDepth = 0; saveDepth<=3; saveDepth++) {
 			
 			System.out.println("TRYING saveDepth of " + saveDepth);
-			boolean memLimitReached = doBackwardSearchAndSaveDeepAtDepthD(triangleLength, saveDepth);
+
+			numPosSavedForPreviousDepths = numPosSaveTotal;
+			
+			boolean memLimitReached = doBackwardSearchAndSaveDeepAtDepthD(triangleLength, saveDepth, endi, endj);
 			
 			if(memLimitReached) {
 				break;
 			} else {
 				
-				numPrevBackwardsSavedTrianglesForOppositeDir = numBackwardsSavedTrianglesForOppositeDir;
-				prevBackwardSavedTrianglesForOppositeDir = backwardSavedTrianglesForOppositeDir;
+				//TODO: setup for opposite search
 			}
 			
 		}
 		saveDepth--;
-		backwardSavedTrianglesForOppositeDir = prevBackwardSavedTrianglesForOppositeDir;
-		prevBackwardSavedTrianglesForOppositeDir = null;
+		savedPosForCurrentSearchDir = null;
 		
-		
-		System.out.println("Save depth: " + saveDepth);
-		
-		
-		
-		for(int curDepth=1; true; curDepth++) {
-			
-			if(curDepth > saveDepth) {
-				//must increase saveDepth by 1... unfortunately
-			}
-			//TODO:
-			break;
-		}
 		
 	}
 	
-	//TODO: later: only go backwards on single end node...
-	public static boolean doBackwardSearchAndSaveDeepAtDepthD(int triangleLength, int saveDepth) {
-		
-
-		initBackwardSavedTrianglesForOppositeDir(triangleLength);
+	//Remove a peg and save all position depth D away for the answer:
+	public static boolean doBackwardSearchAndSaveDeepAtDepthD(int triangleLength, int saveDepth, int endi, int endj) {
 		
 		BackwardsTriangleBoard board;
 
+		board = new BackwardsTriangleBoard(triangleLength);
+		board.addPiece(board.getCode(endi, endj));
+
+
+		boolean memLimitReached = doBackwardSearchAndSaveDeepAtDepthD(board, saveDepth);
+
+		System.out.println("Debug: end of search with depth " + saveDepth + " and triangle length " + triangleLength);
+		System.out.println("Num records saved for prev depths: " + numPosSavedForPreviousDepths);
+		System.out.println("Num records saved total: " + numPosSaveTotal);
 		
+		if(memLimitReached) {
+			return true;
+		}
 		
-		//for(int i=0; i<triangleLength; i++) {
-		//	for(int j=0; j<=i; j++) {
-		//What if the end goal is top:
-				board = new BackwardsTriangleBoard(triangleLength);
-				board.addPiece(board.getCode(0, 0));
-				
-				//TODO: Just initialize once... could save time (WARN: logic might be messed up though)
-				initRecordedBackwardsTriangles(triangleLength);
-				//END TODO
-				
-				boolean memLimitReached = doBackwardSearchAndSaveDeepAtDepthD(board, saveDepth);
-				
-				if(memLimitReached) {
-					return true;
-				}
-				
-				System.out.println("DONE");
-				
-				//TODO:
-				System.exit(1);
-		//	}
-	//	}
+		System.out.println("DONE");
+	
 		
 		return false;
 	}
 	
-	public static boolean doBackwardSearchAndSaveDeepAtDepthD(BackwardsTriangleBoard board, int saveDepthRemaining) {
+	public static boolean doBackwardSearchAndSaveDeepAtDepthD(BackwardsTriangleBoard board, int curMaxDepth) {
 	
-		if(board.getNumMovesMade() > utilFunctions.getMaxDepthUsed(board, saveDepthRemaining)) {
+		if(board.getNumMovesMade() > utilFunctions.getMaxDepthUsed(board, curMaxDepth)) {
 			System.out.println("WHAT?");
 			System.exit(1);
 		}
 		
 		numFunctionCallForDEBUG++;
-		if(numFunctionCallForDEBUG % 100000 == 0) {
+		if(numFunctionCallForDEBUG % 10000000 == 0) {
 			//System.out.println("FAST");
 
-			System.out.println("Current depth: " + saveDepthRemaining + " out of " + utilFunctions.getMaxDepthUsed(board, saveDepthRemaining));
+			//System.out.println("Current depth: " + curMaxDepth + " out of " + utilFunctions.getMaxDepthUsed(board, curMaxDepth));
 
-			//TODO: see what happens after implementing conway math...
-			System.out.println("Num records saved for search: " + numBackwardsRecordsSavedForCurrentDirForDEBUG);
-			System.out.println("Num records saved for search other direction: " + numBackwardsSavedTrianglesForOppositeDir);
-			board.draw();
+			//System.out.println("Debug: end of search with depth " + curMaxDepth + " and triangle length " + board.length());
+			//System.out.println("Num records saved for prev depths: " + numPosSavedForPreviousDepths);
+			//System.out.println("Num records saved total: " + numPosSaveTotal);
+			//board.draw();
 		}
-		
-		if(board.getNumPiecesLeft() == utilFunctions.getTriangleNumber(board.length()) - 1) {
-			//If found solution, let the forward search find it.
-			return true;
-		}
-		//TODO: SAVE HERE
 		
 		
 		long lookup = board.getLookupNumber();
 		
-		if(  board.getNumPiecesLeft() <= utilFunctions.getTriangleNumber(board.length())  
-				&& backwardSavedTrianglesForOppositeDir[board.getNumPiecesLeft()].containsKey(lookup) == false
-				) {
-
-			//IF: 1)possible and 2)IF 2*(pegs remaining) >= NumPegs
-			// 3) not already saved
-			//Save the position for a backwards search:
+		if( savedPosForCurrentSearchDir[board.getNumPiecesLeft()].containsKey(lookup)) {
 			
-			
-			//TODO: SAVING WONT WORK...
-			backwardSavedTrianglesForOppositeDir[board.getNumPiecesLeft()].put(lookup, new triangleRecord(board.getNumMovesMade(), board, saveDepthRemaining));
-			
-			numBackwardsSavedTrianglesForOppositeDir++;
-		}
-			
-	
-		if(saveDepthRemaining == 0) {
-			if(numBackwardsSavedTrianglesForOppositeDir > STANDARD_MEM_LIMIT) {
-				return true;
-			} else {	
-				return false;
-			}
-		}
-
-		/*
-		if(recordedBackwardsTrianglesForCurrentDir[board.getNumPiecesLeft()].containsKey(lookup)) {
-			
-			triangleRecord previouslyFoundNode = recordedBackwardsTrianglesForCurrentDir[board.getNumPiecesLeft()].get(lookup);
-			
-			//TODO: figure this out maybe only look for records by the numMovesMade.
-			//if(board.getNumMovesMade() > previouslyFoundNode.getNumMovesToGetToPos()) {
+			triangleRecord previouslyFoundNode = savedPosForCurrentSearchDir[board.getNumPiecesLeft()].get(lookup);
+		
+			if(board.getNumMovesMade() > previouslyFoundNode.getNumMovesToGetToPos()) {
 					
 				//System.out.println("Cutting short 0");
-				//return false;
+				return false;
 			} else if(board.getNumMovesMade() == previouslyFoundNode.getNumMovesToGetToPos()){
 				
-				if(previouslyFoundNode.getDepthUsedToFindRecord() == utilFunctions.getMaxDepthUsed(board, saveDepthRemaining)) {
+				if(previouslyFoundNode.getDepthUsedToFindRecord() == utilFunctions.getMaxDepthUsed(board, curMaxDepth)) {
 					return false;
 				} else {
-					previouslyFoundNode.updateNumMovesToGetToPos(board.getNumMovesMade(), board, saveDepthRemaining);
+					previouslyFoundNode.updateNumMovesToGetToPos(board.getNumMovesMade(), board, curMaxDepth);
 				}
 				
 			} else {
 				
-				previouslyFoundNode.updateNumMovesToGetToPos(board.getNumMovesMade(), board, saveDepthRemaining);
+				System.err.println("ERROR: this case should not happen");
+				System.exit(1);
 			}
-		}*/
-		
-
-		//TODO: if conway math says impossible: dont try.
-		//And record impossible if recording is applicable...
-		
-		//Record position if worthwhile:
-		//(Only record if it won't affect memory requirements too much)
-		
-		/*
-		if(board.length() <= 6
-				|| (utilFunctions.getTriangleNumber(board.length()) - board.getNumPiecesLeft() <= 6 || board.getNumMovesMade() < 10)
-			) {
-		
-			if(recordedBackwardsTrianglesForCurrentDir[board.getNumPiecesLeft()].containsKey(lookup) == false) {
-
-				recordedBackwardsTrianglesForCurrentDir[board.getNumPiecesLeft()].put(lookup, new triangleRecord(board.getNumMovesMade(), board, saveDepthRemaining));
 				
-				numBackwardsRecordsSavedForCurrentDirForDEBUG++;
+			
+		} else {
+
+			numPosSaveTotal++;
+			savedPosForCurrentSearchDir[board.getNumPiecesLeft()].put(lookup, new triangleRecord(board.getNumMovesMade(), board, curMaxDepth));
+			
+			//board.draw();
+			
+			if(curMaxDepth > 0) {
+				System.out.println("ERROR: backwardSavedTrianglesForOppositeDir should only add positions of the last possible depth!");
+				System.exit(1);
 			}
 		}
-		*/
-		//END CHECKPOINT LOGIC
 		
-		
-		
-		//TODO: this could be more efficient if we could limit the length of the move...
-		ArrayList<String> moves = board.getFullBackwardsMoves();
-		//END TODO
+	
+		if(curMaxDepth == 0) {
+			if(numPosSaveTotal > STANDARD_MEM_LIMIT) {
+				return true;
+			} else {	
+				return false;
+			}
+		} else if(board.getNumPiecesLeft() == utilFunctions.getTriangleNumber(board.length()) - 1) {
+			//If found solution, let the forward search find it.
+			return true;
+		}
 
-		//System.out.println(moves.size());
-
-		//for(int i=0; i<moves.size(); i++) {
-		//	System.out.println(moves.get(i));
-		//}
-		//System.out.println(moves.size());
+		
+		//TODO: why aren't they the SAME???
+		//ArrayList<String> moves = board.getFullBackwardsMoves();
+		ArrayList<String> moves = board.getNecessaryFullBackwardsMovesToCheck();
 		
 		for(int i=0; i<moves.size(); i++) {
 
 			BackwardsTriangleBoard tmp = board.doOneBackwardsMove(moves.get(i));
-			if(2 * (tmp.getNumPiecesLeft() + saveDepthRemaining - 1) <= utilFunctions.getTriangleNumber(board.length())){
-				
-				boolean wentOverMemLimit = doBackwardSearchAndSaveDeepAtDepthD(board.doOneBackwardsMove(moves.get(i)), saveDepthRemaining - 1);
-				
-				if(wentOverMemLimit) {
-					return true;
-				}
+			boolean wentOverMemLimit = doBackwardSearchAndSaveDeepAtDepthD(board.doOneBackwardsMove(moves.get(i)), curMaxDepth - 1);
+			
+			if(wentOverMemLimit) {
+				return true;
 			}
 		}
 		

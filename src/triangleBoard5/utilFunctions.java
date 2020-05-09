@@ -9,6 +9,7 @@ public class utilFunctions {
 		return board.getNumMovesMade() + curMaxDepth;
 	}
 	
+
 	public static int getMaxDepthUsed(BackwardsTriangleBoard board, int curMaxDepth) {
 		return board.getNumMovesMade() + curMaxDepth;
 	}

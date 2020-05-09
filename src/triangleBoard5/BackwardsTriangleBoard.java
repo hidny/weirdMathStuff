@@ -1,6 +1,7 @@
 package triangleBoard5;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class BackwardsTriangleBoard {
 	//Only hard-copies allow
@@ -24,6 +25,39 @@ public class BackwardsTriangleBoard {
 		backwardsBoardTest = backwardsBoardTest.doOneBackwardsMove("12-14");
 		backwardsBoardTest.draw();
 		//END TESTING CODE
+		
+		System.out.println("new test");
+		BackwardsTriangleBoard test2 = new BackwardsTriangleBoard(7);
+		test2.addPiece(0);
+		
+		//TODO: TEST FAILS! Does it also fail going forward?
+		//I think I'm taking incompatible shortcuts!
+		//OMG: doOneBackwardsMove might not make an actual move
+		test2 = test2.doOneBackwardsMove("14-0");
+		test2 = test2.doOneBackwardsMove("28-14");
+		test2 = test2.doOneBackwardsMove("23-7");
+		
+		test2.draw();
+		
+		
+		System.out.println("TEST 3");
+		//28-14 37-21-23-7 14-0
+		//vs
+		//37-21-23-7 28-14 14-0
+		
+		test2 = new BackwardsTriangleBoard(7);
+		test2.addPiece(0);
+		test2 = test2.doOneBackwardsMove("14-0");
+		test2 = test2.doOneBackwardsMove("37-21-23-7");
+		test2 = test2.doOneBackwardsMove("28-14");
+		test2.draw();
+
+		test2 = new BackwardsTriangleBoard(7);
+		test2.addPiece(0);
+		test2 = test2.doOneBackwardsMove("28-14-0");
+		test2 = test2.doOneBackwardsMove("37-21-23-7");
+		test2.draw();
+		
 	}
 	
 	private boolean triangle[][];
@@ -114,7 +148,78 @@ public class BackwardsTriangleBoard {
 		
 		this.numPiecesLeft++;
 	}
+
+	private BackwardsTriangleBoard prevLocation = null;
+	private HashSet<String> moveList = null;
 	
+	private static int TEST_DEBUG_PRINT = 0;
+	private static int TESTtotalFull = 0;
+	private static int TESTtotalNeeded = 0;
+	
+	
+	public ArrayList<String> getNecessaryFullBackwardsMovesToCheck() {
+		
+		
+		ArrayList<String> fullList = getFullBackwardsMoves();
+
+		ArrayList<String> neededList = new ArrayList<String>();
+		
+		
+		//Get previous 1st jump locations to give some idea of an order:
+		ArrayList<Integer> prevJumpLocations = new ArrayList<Integer>();
+		BackwardsTriangleBoard tmpBoard = this;
+		while(tmpBoard.prevLocation != null) {
+			tmpBoard = tmpBoard.prevLocation;
+			String moves[] = tmpBoard.historicMoveList.split(" ");
+			prevJumpLocations.add(Integer.parseInt(moves[0].split("-")[0]));
+
+		}
+		
+		//Filter out moves whose 1st jumps are "out of order"
+		//TODO: does this even work?
+		for(int i=0; i<fullList.size(); i++) {
+			
+			boolean dontNeedToCheck = false;
+			tmpBoard = this;
+			int j=0;
+			while(tmpBoard.prevLocation != null &&  tmpBoard.prevLocation.moveList.contains(fullList.get(i))) {
+				
+				if(Integer.parseInt(fullList.get(i).split("-")[0]) < prevJumpLocations.get(j)) {
+
+					//Should have done prev move(s) first because they are indep and prev move starts jump at a smaller numbered location
+					dontNeedToCheck = true;
+					
+					break;
+				}
+				tmpBoard = tmpBoard.prevLocation;
+				j++;
+				
+			}
+					
+				
+			if(dontNeedToCheck == false) {
+				neededList.add(fullList.get(i));
+			} else {
+				//System.out.println("TESTING!");
+				//System.out.println("Move that was cancelled: " + fullList.get(i));
+			}
+		}
+		
+		
+		TEST_DEBUG_PRINT++;
+		TESTtotalFull += fullList.size();
+		TESTtotalNeeded += neededList.size();
+		
+		if(TEST_DEBUG_PRINT % 10000000 == 0) {
+			System.out.println("Testing branching improvement: " + fullList.size() + " vs " + neededList.size());
+			System.out.println("Ratio: " + ((1.0*TESTtotalFull)/(1.0 * TESTtotalNeeded)));
+			System.out.println("Perc: " + ((1.0*TESTtotalNeeded)/(1.0 * TESTtotalFull)));
+		}
+		
+		return neededList;
+	}
+//TODO: END FIX ME
+
 	public ArrayList<String> getFullBackwardsMoves() {
 		
 		ArrayList<String> ret = new ArrayList<String>();
@@ -127,6 +232,8 @@ public class BackwardsTriangleBoard {
 			}
 		}
 		
+		moveList = new HashSet<String>();
+		moveList.addAll(ret);
 		return ret;
 		
 	}
@@ -205,7 +312,7 @@ public class BackwardsTriangleBoard {
 		return ret;
 	}
 
-
+	//WARNING: If you're moving the wrong peg, it won't count as an extra move
 	public BackwardsTriangleBoard doOneBackwardsMove(String backwardsMove) {
 		String seriesOfJumps[] = backwardsMove.split("-");
 		
@@ -219,7 +326,8 @@ public class BackwardsTriangleBoard {
 			newBoard = newBoard.moveBackwardsInternal(from + "-" + to);
 		}
 		
-		newBoard.numBackwardsMovesMade = this.numBackwardsMovesMade + 1;
+
+		newBoard.prevLocation = this;
 		
 		return newBoard;
 		
@@ -280,7 +388,7 @@ public class BackwardsTriangleBoard {
 			
 		} else {
 			newBoard.numBackwardsMovesMade = this.numBackwardsMovesMade + 1;
-			newBoard.historicMoveList =  backwardsMove + "  " + newBoard.historicMoveList;
+			newBoard.historicMoveList =  backwardsMove + " " + newBoard.historicMoveList;
 		}
 		newBoard.internalLastJumpCodeForMultiJumpMoves = from;
 		

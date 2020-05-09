@@ -35,10 +35,10 @@ public class triangleRecord {
 	}
 	
 	public void updateNumMovesToGetToPos(int numMovesToGetToPos, BackwardsTriangleBoard board, int curMaxDepth) {
-		/*if(numMovesToGetToPos >= this.numMovesToGetToPos && utilFunctions.getMaxDepthUsed(board, curMaxDepth) == depthUsedToFindRecord) {
+		if(numMovesToGetToPos >= this.numMovesToGetToPos && utilFunctions.getMaxDepthUsed(board, curMaxDepth) == depthUsedToFindRecord) {
 			System.err.println("ERROR: updating numMovesToGetThere when there wasn't an improvement");
 			System.exit(1);
-		}*/
+		}
 		
 		this.numMovesToGetToPos = numMovesToGetToPos;
 		this.depthUsedToFindRecord = utilFunctions.getMaxDepthUsed(board, curMaxDepth);
