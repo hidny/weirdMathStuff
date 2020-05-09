@@ -141,6 +141,7 @@ public class TriangleSolveLongBackSaveThenForward {
 			System.out.println("Debug: end of search with depth " + curMaxDepth + " and triangle length " + board.length());
 			System.out.println("Num records saved for prev depths: " + numPosSavedForPreviousDepths);
 			System.out.println("Num records saved total: " + numPosSaveTotal);
+			System.out.println("Num million times recursive function called: " + (numFunctionCallForDEBUG/1000000));
 			board.draw();
 		}
 		
@@ -175,6 +176,10 @@ public class TriangleSolveLongBackSaveThenForward {
 			numPosSaveTotal++;
 			savedPosForCurrentSearchDir[board.getNumPiecesLeft()].put(lookup, new triangleRecord(board.getNumMovesMade(), board, curMaxDepth));
 			
+			if(numPosSaveTotal > STANDARD_MEM_LIMIT) {
+				return true;
+			}
+			
 			//board.draw();
 			
 			if(curMaxDepth > 0) {
@@ -185,11 +190,8 @@ public class TriangleSolveLongBackSaveThenForward {
 		
 	
 		if(curMaxDepth == 0) {
-			if(numPosSaveTotal > STANDARD_MEM_LIMIT) {
-				return true;
-			} else {	
-				return false;
-			}
+			return false;
+			
 		} else if(board.getNumPiecesLeft() == utilFunctions.getTriangleNumber(board.length()) - 1) {
 			System.out.println("ERROR: tried to save depth " + utilFunctions.getMaxDepthUsed(board, curMaxDepth) + "and found a solution");
 			System.exit(1);
@@ -198,7 +200,7 @@ public class TriangleSolveLongBackSaveThenForward {
 		}
 
 		
-		//TODO: why aren't they the SAME???
+		//SOLVED: why aren't they the SAME???
 		ArrayList<String> moves = board.getFullBackwardsMoves();
 		//ArrayList<String> moves = board.getNecessaryFullBackwardsMovesToCheck();
 		

@@ -190,6 +190,10 @@ public class BackwardsTriangleBoard {
 					//TODO: don't do .getFullBackwardsMoves().contains(this.historicMoveList.split(" ")[0])... do something more efficient!!
 					&& tmpBoard.prevLocation.doOneBackwardsMove(fullList.get(i)).getFullBackwardsMoves().contains(this.historicMoveList.split(" ")[0])
 					) {
+				
+				//TODO: This will only work if you go back 1...
+
+				
 				//TODO: I bet the forward case also has the same error!
 				/*
 				System.out.println();
