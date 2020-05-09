@@ -169,9 +169,12 @@ public class BackwardsTriangleBoard {
 		ArrayList<Integer> prevJumpLocations = new ArrayList<Integer>();
 		BackwardsTriangleBoard tmpBoard = this;
 		while(tmpBoard.prevLocation != null) {
-			tmpBoard = tmpBoard.prevLocation;
 			String moves[] = tmpBoard.historicMoveList.split(" ");
-			prevJumpLocations.add(Integer.parseInt(moves[0].split("-")[0]));
+
+			//System.out.println("TEST: " + tmpBoard.historicMoveList);
+			prevJumpLocations.add(Integer.parseInt(moves[0].split("-")[0/*moves[0].split("-").length - 1*/]));
+			
+			tmpBoard = tmpBoard.prevLocation;
 
 		}
 		
@@ -182,9 +185,44 @@ public class BackwardsTriangleBoard {
 			boolean dontNeedToCheck = false;
 			tmpBoard = this;
 			int j=0;
-			while(tmpBoard.prevLocation != null &&  tmpBoard.prevLocation.moveList.contains(fullList.get(i))) {
+			while(tmpBoard.prevLocation != null 
+					&&  tmpBoard.prevLocation.moveList.contains(fullList.get(i))
+					//TODO: don't do .getFullBackwardsMoves().contains(this.historicMoveList.split(" ")[0])... do something more efficient!!
+					&& tmpBoard.prevLocation.doOneBackwardsMove(fullList.get(i)).getFullBackwardsMoves().contains(this.historicMoveList.split(" ")[0])
+					) {
+				//TODO: I bet the forward case also has the same error!
+				/*
+				System.out.println();
+				System.out.println();
+				System.out.println("j =" + j);
+				System.out.println(fullList.get(i));
+				System.out.println("vs");
+				this.draw();
 				
-				if(Integer.parseInt(fullList.get(i).split("-")[0]) < prevJumpLocations.get(j)) {
+				System.out.println("Move candidate start: " + fullList.get(i).split("-")[1]);
+				System.out.println("Prev Move candidate start: " + prevJumpLocations.get(j));
+				tmpBoard.prevLocation.draw();
+				System.out.println("Move: " + fullList.get(i));
+				
+				BackwardsTriangleBoard trial = tmpBoard.prevLocation.doOneBackwardsMove(fullList.get(i));
+				trial = trial.doOneBackwardsMove(this.historicMoveList.split(" ")[0]);
+				
+				BackwardsTriangleBoard trial2 = this.doOneBackwardsMove(fullList.get(i));
+				
+				for(int itrial=0; itrial<trial.length(); itrial++) {
+					for(int jtrial=0; jtrial<itrial; jtrial++) {
+						if(trial.triangle[itrial][jtrial] != trial2.triangle[itrial][jtrial]) {
+							System.out.println("????");
+							trial.draw();
+							trial2.draw();
+							System.exit(1);
+						}
+					}
+				}
+				*/
+				//TODO: compare string in alphabet order instead
+				
+				if(Integer.parseInt(fullList.get(i).split("-")[0/*fullList.get(i).split("-").length -1*/]) < prevJumpLocations.get(j)) {
 
 					//Should have done prev move(s) first because they are indep and prev move starts jump at a smaller numbered location
 					dontNeedToCheck = true;
@@ -357,9 +395,11 @@ public class BackwardsTriangleBoard {
 		if(newBoard.triangle[fromI][fromJ] == true) {
 			
 			System.out.println("ERROR backwards move 1");
-			//System.out.println(backwardsMove);
-			//System.out.println(fromI + " " + fromJ);
-			//this.draw();
+			
+			System.out.println(backwardsMove);
+			System.out.println("From: " + fromI + " " + fromJ);
+			System.out.println("To: " + toI + " " + toJ);
+			this.draw();
 			System.exit(1);
 		}
 		

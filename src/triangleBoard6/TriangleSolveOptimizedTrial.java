@@ -96,9 +96,9 @@ public class TriangleSolveOptimizedTrial {
 	public static void main(String args[]) {
 		
 		//int LENGTH = 4;
-		//int LENGTH = 5;
+		int LENGTH = 5;
 		//int LENGTH = 6;
-		int LENGTH = 8;
+		//int LENGTH = 8;
 		
 		boolean SET_SLOW = false;
 		if(SET_SLOW) {

@@ -193,6 +193,7 @@ public class TriangleBoard {
 		TriangleBoard tmpBoard = this;
 		while(tmpBoard.prevLocation != null) {
 			String moves[] = tmpBoard.historicMoveList.split(" ");
+//WRONG
 			prevJumpLocations.add(Integer.parseInt(moves[moves.length - 1].split("-")[1]));
 
 			tmpBoard = tmpBoard.prevLocation;
@@ -206,7 +207,7 @@ public class TriangleBoard {
 			tmpBoard = this;
 			int j=0;
 			while(tmpBoard.prevLocation != null &&  tmpBoard.prevLocation.moveList.contains(fullList.get(i))) {
-				
+				//WRONG
 				if(Integer.parseInt(fullList.get(i).split("-")[1]) < prevJumpLocations.get(j)) {
 
 					//Should have done prev move(s) first because they are indep and prev move starts jump at a smaller numbered location
@@ -235,7 +236,6 @@ public class TriangleBoard {
 	}
 	
 	
-	//TODO: change to HashSet ever though it's annoying...
 	public ArrayList<String> getFullMoves() {
 		
 		ArrayList<String> ret = new ArrayList<String>();
@@ -429,25 +429,3 @@ public class TriangleBoard {
 		return triangle.length;
 	}
 }
-
-/* From stackoverflow
-This is possible with the menu items Window>Editor>Toggle Split Editor.
-
-Current shortcut for splitting is:
-
-Azerty keyboard:
-
-Ctrl + _ for split horizontally, and
-Ctrl + { for split vertically.
-Qwerty US keyboard:
-
-Ctrl + Shift + - (accessing _) for split horizontally, and
-Ctrl + Shift + [ (accessing {) for split vertically.
-MacOS - Qwerty US keyboard:
-
-⌘ + Shift + - (accessing _) for split horizontally, and
-⌘ + Shift + [ (accessing {) for split vertically.
-On any other keyboard if a required key is unavailable (like { on a german Qwertz keyboard), the following generic approach may work:
-
-Alt + ASCII code + Ctrl then release Alt
-*/
