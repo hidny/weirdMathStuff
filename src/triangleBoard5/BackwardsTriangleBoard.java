@@ -528,7 +528,6 @@ public class BackwardsTriangleBoard {
 	}
 	
 	public long getLookupNumber() {
-		//return TriangleLookup.convertToNumberSimple(triangle);
 		return TriangleLookup.convertToNumberWithComboTricksAndSymmetry(triangle, numPiecesLeft);
 	}
 	

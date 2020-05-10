@@ -71,9 +71,15 @@ public class TriangleSolveGetPosDepthDAwayFromSolution {
 			}
 		}
 		
+		if(memLimitReached == false) {
+			System.out.println("Debug: end of search with depth " + saveDepth + " and triangle length " + triangleLength);
+			System.out.println("Num records saved for prev depths: " + numPosSavedForPreviousDepths);
+			System.out.println("Num records saved total: " + numPosSaveTotal);
+		}
+		
 		savedPosForCurrentSearchDir = null;
 		
-		System.out.println("Num copied: " + numCopied);
+		System.out.println("Num records at depth " + saveDepth + " copied: " + numCopied);
 		
 		return savedPosAtDepthD;
 		
@@ -109,18 +115,11 @@ public class TriangleSolveGetPosDepthDAwayFromSolution {
 
 		boolean memLimitReached = doBackwardSearchAndSaveDeepAtDepthD(board, saveDepth);
 
-		System.out.println("Debug: end of search with depth " + saveDepth + " and triangle length " + triangleLength);
-		System.out.println("Num records saved for prev depths: " + numPosSavedForPreviousDepths);
-		System.out.println("Num records saved total: " + numPosSaveTotal);
-		
 		if(memLimitReached) {
 			return true;
+		} else {
+			return false;
 		}
-		
-		System.out.println("DONE");
-	
-		
-		return false;
 	}
 	
 	private static boolean doBackwardSearchAndSaveDeepAtDepthD(BackwardsTriangleBoard board, int curMaxDepth) {
@@ -132,8 +131,6 @@ public class TriangleSolveGetPosDepthDAwayFromSolution {
 		
 		numFunctionCallForDEBUG++;
 		if(numFunctionCallForDEBUG % 10000000 == 0) {
-			//System.out.println("FAST");
-
 			System.out.println("Current depth: " + curMaxDepth + " out of " + utilFunctions.getMaxDepthUsed(board, curMaxDepth));
 
 			System.out.println("Debug: end of search with depth " + curMaxDepth + " and triangle length " + board.length());
@@ -145,12 +142,6 @@ public class TriangleSolveGetPosDepthDAwayFromSolution {
 		
 		
 		long lookup = board.getLookupNumber();
-
-		if(lookup == 45183 || lookup == 1428559 || lookup == 293276 || lookup == 591426) {
-			System.out.println("TEST orig lookup");
-			board.draw();
-			System.out.println(lookup);
-		}
 		
 		if( savedPosForCurrentSearchDir[board.getNumPiecesLeft()].containsKey(lookup)) {
 			
@@ -206,7 +197,7 @@ public class TriangleSolveGetPosDepthDAwayFromSolution {
 		}
 
 		
-		//SOLVED: why aren't they the SAME???
+		//SOLVED: why aren't they the SAME??? A: BUG!
 		ArrayList<String> moves = board.getFullBackwardsMoves();
 		//ArrayList<String> moves = board.getNecessaryFullBackwardsMovesToCheck();
 		

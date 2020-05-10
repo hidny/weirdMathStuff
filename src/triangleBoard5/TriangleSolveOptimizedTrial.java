@@ -94,10 +94,18 @@ public class TriangleSolveOptimizedTrial {
 
 	public static HashSet<Long> startingPositionSearched = new HashSet<Long>();
 
+
+	//This is looking for just 1 solution...
+	// TODO: try finding all optimal solutions later...
+
+	public static final int LENGTH = 7;
+
+	public static int MAX_DEPTH_TOTAL = 14;
+	public static int MEM_DEPTH_FORWARDS = 9;
+	public static int MEM_DEPTH_BACKWARDS = 4;
+
 	
 	public static void main(String args[]) {
-
-		int LENGTH = 7;
 		
 		boolean SET_SLOW = false;
 		if(SET_SLOW) {
@@ -105,7 +113,7 @@ public class TriangleSolveOptimizedTrial {
 		}
 		
 		System.out.println("Trying " + LENGTH + " in TriangleSolveOptimizedTrial5");
-		System.out.println("Giving up after reaching a max depth of " + MAX_DEPTH);
+		System.out.println("Giving up after reaching a max depth of " + MAX_DEPTH_TOTAL);
 
 		TriangleBoard boardStart;
 		
@@ -131,7 +139,6 @@ public class TriangleSolveOptimizedTrial {
 				if(SET_SLOW) {
 					boardSol = getBestMoveListSlow(boardStart);
 				} else {
-					//TODO: make boardEnd the outer loop!
 					boardSol = getBestMoveList(boardStart);
 				}
 				
@@ -235,14 +242,6 @@ public class TriangleSolveOptimizedTrial {
 	}
 	
 	
-	//This is looking for just 1 solution...
-	// TODO: try finding all optimal solutions later...
-	//Invent a number that seems high enough:
-	//public static int MAX_DEPTH = 11;
-	
-	public static int MAX_DEPTH = 14;
-	//4 leads to error in backwards search
-	public static int DEPTH_BACKWARDS = 4;
 	
 	public static HashSet<Long> backwardsSolutionsCache[];
 	
@@ -266,11 +265,10 @@ public class TriangleSolveOptimizedTrial {
 		for(int i=1; true; i++) {
 			
 			
-			if(i > DEPTH_BACKWARDS) {
+			if(i > MEM_DEPTH_BACKWARDS) {
 				break;
 			}
 			
-			//System.out.println("i: " + i);
 			
 			//Instead of doing an init after every iteration, just save it and reuse it.
 			// I don't know how much time it will save, but it's probably better than nothing.
@@ -308,17 +306,17 @@ public class TriangleSolveOptimizedTrial {
 				System.out.println("To end goal (with symmetries):");
 				backwardsBoardStart.draw();
 				//int triangleLength, int endi, int endj, int maxDepth
-				backwardsSolutionsCache = TriangleSolveGetPosDepthDAwayFromSolution.getPositionDepthNAwayFromGoal(board.length(), iend, jend, DEPTH_BACKWARDS);
+				backwardsSolutionsCache = TriangleSolveGetPosDepthDAwayFromSolution.getPositionDepthNAwayFromGoal(board.length(), iend, jend, MEM_DEPTH_BACKWARDS);
 
 				//Need to reinit recorded triangle because we're starting over from depth 1:
 				initRecordedTriangles(board.length());
 				
-				for(int depth=DEPTH_BACKWARDS + 1; depth<= MAX_DEPTH; depth++) {
+				for(int depth=MEM_DEPTH_BACKWARDS + 1; depth<= MAX_DEPTH_TOTAL; depth++) {
 					System.out.println("DEBUG: trying depth " + depth + " with backwards saved pos");
 					
 					//TODO: testing init
 					initRecordedTriangles(board.length());
-					answer = getBestMoveList(board, depth - DEPTH_BACKWARDS, false);
+					answer = getBestMoveList(board, depth - MEM_DEPTH_BACKWARDS, false);
 					
 					if(answer != null) {
 						break;
@@ -363,7 +361,7 @@ public class TriangleSolveOptimizedTrial {
 			System.out.println(board.getLookupNumber());
 			
 			System.out.println("Depth: " + curMaxDepth);
-			curMaxDepth += DEPTH_BACKWARDS;
+			curMaxDepth += MEM_DEPTH_BACKWARDS;
 			
 			System.out.println("Depth after: " + curMaxDepth);
 			
@@ -401,7 +399,7 @@ public class TriangleSolveOptimizedTrial {
 		//Record position if worthwhile:
 		//(Only record if it won't affect memory requirements too much)
 		if(board.length() <= 6
-				|| board.getNumMovesMade() < 9) {
+				|| board.getNumMovesMade() < MEM_DEPTH_FORWARDS) {
 		
 			if(recordedTriangles[board.getNumPiecesLeft()].containsKey(lookup) == false) {
 				recordedTriangles[board.getNumPiecesLeft()].put(lookup, new triangleRecord(board.getNumMovesMade(), board, curMaxDepth));
@@ -416,20 +414,12 @@ public class TriangleSolveOptimizedTrial {
 			
 		//END CHECKPOINT LOGIC
 		
-		
 		ArrayList<String> moves = board.getFullMoves();
 		
 		for(int i=0; i<moves.size(); i++) {
 
-			//if(currentlyFoundSolution) {
-			//	System.out.println("Going in " + curMaxDepth);
-			//}
 			TriangleBoard possibleBest = getBestMoveList(board.doOneMove(moves.get(i)), curMaxDepth - 1, currentlyFoundSolution);
 
-			//if(currentlyFoundSolution) {
-			//	System.out.println("Going out "  + curMaxDepth);
-			//}
-			
 			if(possibleBest != null) {
 				return possibleBest;
 			}

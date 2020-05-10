@@ -179,7 +179,8 @@ public class TriangleBoard {
 	private static int TESTtotalFull = 0;
 	private static int TESTtotalNeeded = 0;
 	
-	
+	//TODO: FIX
+	/*
 	public ArrayList<String> getNecessaryMovesToCheck() {
 		
 		
@@ -232,7 +233,7 @@ public class TriangleBoard {
 		//System.out.println("Ratio: " + ((1.0*TESTtotalFull)/(1.0 * TESTtotalNeeded)));
 		
 		return neededList;
-	}
+	}*/
 	
 	
 	public ArrayList<String> getFullMoves() {
@@ -418,8 +419,6 @@ public class TriangleBoard {
 	}
 	
 	public long getLookupNumber() {
-		//return TriangleLookup.convertToNumberSimple(triangle);
-
 		return TriangleLookup.convertToNumberWithComboTricksAndSymmetry(triangle, numPiecesLeft);
 	}
 	
