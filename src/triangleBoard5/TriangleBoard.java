@@ -343,8 +343,6 @@ public class TriangleBoard {
 			newBoard = newBoard.moveInternal(from + "-" + to);
 		}
 		
-		newBoard.numMovesMade = this.numMovesMade + 1;
-		
 		newBoard.prevLocation = this;
 		
 		return newBoard;
@@ -420,7 +418,8 @@ public class TriangleBoard {
 	}
 	
 	public long getLookupNumber() {
-		//return TriangleLookup.convertToNumberWithComboTricks(triangle);
+		//return TriangleLookup.convertToNumberSimple(triangle);
+
 		return TriangleLookup.convertToNumberWithComboTricksAndSymmetry(triangle, numPiecesLeft);
 	}
 	

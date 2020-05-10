@@ -289,9 +289,6 @@ Num records saved: 16675013
 				if(previouslyFoundNode.getDepthUsedToFindRecord() == getMaxDepthUsed(board, curMaxDepth)) {
 					return null;
 				} else {
-					//System.out.println("GOT TO MORE THAN 1 START DEPTH! (Good if not just testing 1 start depth)");
-					//System.exit(1);
-
 					previouslyFoundNode.updateNumMovesToGetToPos(board.getNumMovesMade(), board, curMaxDepth);
 				}
 				

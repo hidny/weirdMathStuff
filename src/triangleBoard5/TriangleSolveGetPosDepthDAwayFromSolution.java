@@ -15,32 +15,27 @@ import java.util.Iterator;
 //TODO: Look at paper to get even better filters
 //(See loose paper for more clarification)
 
-
-//TODO: DO A SIMPLE BFS!!!!
-public class TriangleSolveLongBackSaveThenForward {
+public class TriangleSolveGetPosDepthDAwayFromSolution {
 
 
 	public static int STANDARD_MEM_LIMIT = 19000000;
 	
 	public static void main(String args[]) {
-		getPositionDepthNAwayFromGoal(7, 0, 0);
+		getPositionDepthNAwayFromGoal(7, 0, 0, 4);
 	}
 	
 
+	//public static int MAX_DEPTH = 4;
 	
-
-	public static int MAX_DEPTH = 4;
-	
-	//TODO: try all start and end positions (filter out symmetric though)
-	public static void getPositionDepthNAwayFromGoal(int triangleLength, int endi, int endj) {
+	public static HashSet<Long>[] getPositionDepthNAwayFromGoal(int triangleLength, int endi, int endj, int maxDepth) {
 		
 		
 		initSavedPosForCurrentDir(triangleLength);
 		boolean memLimitReached = false;
 		int saveDepth;
-		for(saveDepth = 0; saveDepth<=MAX_DEPTH; saveDepth++) {
+		for(saveDepth = 0; saveDepth<=maxDepth; saveDepth++) {
 			
-			System.out.println("TRYING saveDepth of " + saveDepth);
+			System.out.println("getPositionDepthNAwayFromGoal TRYING saveDepth of " + saveDepth);
 
 			numPosSavedForPreviousDepths = numPosSaveTotal;
 			
@@ -48,17 +43,13 @@ public class TriangleSolveLongBackSaveThenForward {
 			
 			if(memLimitReached) {
 				break;
-			} else {
-				
-				//TODO: setup for opposite search
 			}
 			
 		}
-		if(memLimitReached || saveDepth > MAX_DEPTH) {
+		if(memLimitReached || saveDepth > maxDepth) {
 			saveDepth--;
 		}
 		
-		//TODO: List All records length saveDepth here
 		
 		HashSet<Long>[] savedPosAtDepthD = new HashSet[utilFunctions.getTriangleNumber(triangleLength)];
 		
@@ -75,13 +66,16 @@ public class TriangleSolveLongBackSaveThenForward {
 				if(savedPosForCurrentSearchDir[i].get(key).getNumMovesToGetToPos() == saveDepth) {
 					savedPosAtDepthD[i].add(key);
 					numCopied++;
+					
 				}
 			}
 		}
 		
+		savedPosForCurrentSearchDir = null;
+		
 		System.out.println("Num copied: " + numCopied);
 		
-		
+		return savedPosAtDepthD;
 		
 		
 	}
@@ -90,18 +84,22 @@ public class TriangleSolveLongBackSaveThenForward {
 	private static int numPosSavedForPreviousDepths = 0;
 	private static int numPosSaveTotal = 0;
 	
-	public static HashMap<Long, triangleRecord>[] savedPosForCurrentSearchDir;
+	private static HashMap<Long, triangleRecord>[] savedPosForCurrentSearchDir;
 	
-	public static void initSavedPosForCurrentDir(int boardLength) {
+	private static void initSavedPosForCurrentDir(int boardLength) {
 		savedPosForCurrentSearchDir = new HashMap[utilFunctions.getTriangleNumber(boardLength)];
 		for(int i=0; i<savedPosForCurrentSearchDir.length; i++) {
 			savedPosForCurrentSearchDir[i] = new HashMap<Long, triangleRecord>();
 		}
+		
+		numFunctionCallForDEBUG = 0;
+		numPosSavedForPreviousDepths = 0;
+		numPosSaveTotal = 0;
 	}
 	
 	
 	//Remove a peg and save all position depth D away for the answer:
-	public static boolean doBackwardSearchAndSaveDeepAtDepthD(int triangleLength, int saveDepth, int endi, int endj) {
+	private static boolean doBackwardSearchAndSaveDeepAtDepthD(int triangleLength, int saveDepth, int endi, int endj) {
 		
 		BackwardsTriangleBoard board;
 
@@ -125,7 +123,7 @@ public class TriangleSolveLongBackSaveThenForward {
 		return false;
 	}
 	
-	public static boolean doBackwardSearchAndSaveDeepAtDepthD(BackwardsTriangleBoard board, int curMaxDepth) {
+	private static boolean doBackwardSearchAndSaveDeepAtDepthD(BackwardsTriangleBoard board, int curMaxDepth) {
 	
 		if(board.getNumMovesMade() > utilFunctions.getMaxDepthUsed(board, curMaxDepth)) {
 			System.out.println("WHAT?");
@@ -147,6 +145,12 @@ public class TriangleSolveLongBackSaveThenForward {
 		
 		
 		long lookup = board.getLookupNumber();
+
+		if(lookup == 45183 || lookup == 1428559 || lookup == 293276 || lookup == 591426) {
+			System.out.println("TEST orig lookup");
+			board.draw();
+			System.out.println(lookup);
+		}
 		
 		if( savedPosForCurrentSearchDir[board.getNumPiecesLeft()].containsKey(lookup)) {
 			
@@ -167,20 +171,22 @@ public class TriangleSolveLongBackSaveThenForward {
 			} else {
 				
 				System.err.println("ERROR: this case should not happen");
+				System.out.println(board);
 				System.exit(1);
 			}
 				
 			
 		} else {
 
+			
 			numPosSaveTotal++;
 			savedPosForCurrentSearchDir[board.getNumPiecesLeft()].put(lookup, new triangleRecord(board.getNumMovesMade(), board, curMaxDepth));
+
 			
 			if(numPosSaveTotal > STANDARD_MEM_LIMIT) {
 				return true;
 			}
 			
-			//board.draw();
 			
 			if(curMaxDepth > 0) {
 				System.out.println("ERROR: backwardSavedTrianglesForOppositeDir should only add positions of the last possible depth!");

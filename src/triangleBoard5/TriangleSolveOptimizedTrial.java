@@ -2,6 +2,7 @@ package triangleBoard5;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 
 //Old ideas:
@@ -90,87 +91,64 @@ import java.util.HashMap;
 
 public class TriangleSolveOptimizedTrial {
 
-	
+
+	public static HashSet<Long> startingPositionSearched = new HashSet<Long>();
+
 	
 	public static void main(String args[]) {
-		
-		//int LENGTH = 4;
-		//int LENGTH = 5;
-		int LENGTH = 6;
-		//int LENGTH = 7;
+
+		int LENGTH = 7;
 		
 		boolean SET_SLOW = false;
-		boolean SET_BACKWARDS_TEST = true;
 		if(SET_SLOW) {
 			System.out.println("WARNING: is slow!");
-		}
-		
-		if(SET_BACKWARDS_TEST) {
-			System.out.println("WARNING: searching backwards");
 		}
 		
 		System.out.println("Trying " + LENGTH + " in TriangleSolveOptimizedTrial5");
 		System.out.println("Giving up after reaching a max depth of " + MAX_DEPTH);
 
-		if(SET_BACKWARDS_TEST == false) {
-			TriangleBoard board = new TriangleBoard(LENGTH);
-			
-			for(int i=0; i<LENGTH; i++) {
-				for(int j=0; j<=i; j++) {
-					board = new TriangleBoard(LENGTH);
-					board.removePiece(i * LENGTH + j);
-					initRecordedTriangles(LENGTH);
-					
-					TriangleBoard boardSol = null;
-					
-					if(SET_SLOW) {
-						boardSol = getBestMoveListSlow(board);
-					} else {
-						boardSol = getBestMoveList(board);
-					}
-					
-					if(boardSol != null) {
-						System.out.println("Solution when removing piece " + (i * LENGTH + j));
-						boardSol.draw();
-						System.out.println();
-					} else {
-						System.out.println("No solution when removing piece " + (i * LENGTH + j));
-						System.out.println();
-					}
+		TriangleBoard boardStart;
+		
+		for(int i=0; i<LENGTH; i++) {
+			for(int j=0; j<=i; j++) {
+				boardStart = new TriangleBoard(LENGTH);
+				boardStart.removePiece(i * LENGTH + j);
+				
+				long lookup = boardStart.getLookupNumber();
+				
+				if(LENGTH >=7 && startingPositionSearched.contains(lookup)) {
+					System.out.println("SKIPING (" + i + ", " + j + ")");
+					continue;
+				} else {
+					startingPositionSearched.add(lookup);
 				}
-			}
-		} else {
-			BackwardsTriangleBoard board = new BackwardsTriangleBoard(LENGTH);
-			
-			for(int i=0; i<LENGTH; i++) {
-				for(int j=0; j<=i; j++) {
-					board = new BackwardsTriangleBoard(LENGTH);
-					board.addPiece(i * LENGTH + j);
-					initRecordedTriangles(LENGTH);
-					
-					BackwardsTriangleBoard boardSol = null;
-					
-					/*if(SET_SLOW) {
-						boardSol = getBestMoveListSlow(board);
-					} else {
-						boardSol = getBestMoveList(board);
-					}
-					*/
-					boardSol = getBestMoveListBackwardsSlow(board);
-					
-					if(boardSol != null) {
-						System.out.println("Solution when adding piece " + (i * LENGTH + j));
-						boardSol.draw();
-						System.out.println();
-					} else {
-						System.out.println("No solution when adding piece " + (i * LENGTH + j));
-						System.out.println();
-					}
+				
+				initRecordedTriangles(LENGTH);
+
+				
+				TriangleBoard boardSol = null;
+				
+				if(SET_SLOW) {
+					boardSol = getBestMoveListSlow(boardStart);
+				} else {
+					//TODO: make boardEnd the outer loop!
+					boardSol = getBestMoveList(boardStart);
 				}
+				
+				if(boardSol != null) {
+					System.out.println("Solution when removing piece " + (i * LENGTH + j));
+					boardSol.draw();
+					System.out.println();
+				} else {
+					System.out.println("No solution when removing piece " + (i * LENGTH + j));
+					System.out.println();
+				}
+						
 			}
 		}
 		
 	}
+
 
 	public static int numFunctionCallForDEBUG = 0;
 	public static int numRecordsSavedForDEBUG = 0;
@@ -253,50 +231,108 @@ public class TriangleSolveOptimizedTrial {
 		for(int i=0; i<recordedTriangles.length; i++) {
 			recordedTriangles[i] = new HashMap<Long, triangleRecord>();
 		}
+		
 	}
-	
-	public static HashMap<Long, triangleRecord>[] recordedBackwardsTriangles;
-	
-	
-	public static void initRecordedBackwardsTriangles(int boardLength) {
-		numBackwardsRecordsSavedForDEBUG = 0;
-		recordedBackwardsTriangles = new HashMap[utilFunctions.getTriangleNumber(boardLength)];
-		for(int i=0; i<recordedBackwardsTriangles.length; i++) {
-			recordedBackwardsTriangles[i] = new HashMap<Long, triangleRecord>();
-		}
-	}
-	
 	
 	
 	//This is looking for just 1 solution...
 	// TODO: try finding all optimal solutions later...
 	//Invent a number that seems high enough:
-	//public static int MAX_DEPTH = 14;
-	public static int MAX_DEPTH = 11;
+	//public static int MAX_DEPTH = 11;
+	
+	public static int MAX_DEPTH = 14;
+	//4 leads to error in backwards search
+	public static int DEPTH_BACKWARDS = 4;
+	
+	public static HashSet<Long> backwardsSolutionsCache[];
+	
+	public static void initBackwardsSolutionCache(int boardLength) {
+		backwardsSolutionsCache= new HashSet[utilFunctions.getTriangleNumber(boardLength)];
+		
+		for(int i=0; i<backwardsSolutionsCache.length; i++) {
+			backwardsSolutionsCache[i] = new HashSet<Long>();
+		}
+	}
+	
 	
 	public static TriangleBoard getBestMoveList(TriangleBoard board) {
 
 		initRecordedTriangles(board.length());
+		initBackwardsSolutionCache(board.length());
+
+		HashSet<Long> endingPositionSearched = new HashSet<Long>();
 		
 		TriangleBoard answer = null;
-		for(int i=1; i<=MAX_DEPTH; i++) {
+		for(int i=1; true; i++) {
+			
+			
+			if(i > DEPTH_BACKWARDS) {
+				break;
+			}
+			
 			//System.out.println("i: " + i);
 			
 			//Instead of doing an init after every iteration, just save it and reuse it.
 			// I don't know how much time it will save, but it's probably better than nothing.
+			//TODO: testing
 			//initRecordedTriangles(board.length());
 			
-			answer = getBestMoveList(board, i);
+			answer = getBestMoveList(board, i, false);
 			if(answer != null) {
 				break;
 			}
 		}
+
+		
+		
+		BackwardsTriangleBoard backwardsBoardStart;
+		
+		for(int iend=0; iend<board.length(); iend++) {
+			for(int jend=0; jend<=iend; jend++) {
+				
+				backwardsBoardStart = new BackwardsTriangleBoard(board.length());
+				backwardsBoardStart.addPiece(iend * board.length() + jend);
+				
+				long lookupBackwards = backwardsBoardStart.getLookupNumber();
+				
+				if(endingPositionSearched.contains(lookupBackwards)) {
+					continue;
+				} else {
+					endingPositionSearched.add(lookupBackwards);
+				}
+				
+				System.out.println("***************************************");
+				System.out.println("***************************************");
+				System.out.println("Attempting to go from:");
+				board.draw();
+				System.out.println("To end goal (with symmetries):");
+				backwardsBoardStart.draw();
+				//int triangleLength, int endi, int endj, int maxDepth
+				backwardsSolutionsCache = TriangleSolveGetPosDepthDAwayFromSolution.getPositionDepthNAwayFromGoal(board.length(), iend, jend, DEPTH_BACKWARDS);
+
+				//Need to reinit recorded triangle because we're starting over from depth 1:
+				initRecordedTriangles(board.length());
+				
+				for(int depth=DEPTH_BACKWARDS + 1; depth<= MAX_DEPTH; depth++) {
+					System.out.println("DEBUG: trying depth " + depth + " with backwards saved pos");
+					
+					//TODO: testing init
+					initRecordedTriangles(board.length());
+					answer = getBestMoveList(board, depth - DEPTH_BACKWARDS, false);
+					
+					if(answer != null) {
+						break;
+					}
+				}
+			}
+		}
+		
 		
 		return answer;
 		
 	}
 	
-	public static TriangleBoard getBestMoveList(TriangleBoard board, int curMaxDepth) {
+	public static TriangleBoard getBestMoveList(TriangleBoard board, int curMaxDepth, boolean currentlyFoundSolution) {
 		numFunctionCallForDEBUG++;
 		if(numFunctionCallForDEBUG % 1000000 == 0) {
 			//System.out.println("FAST");
@@ -308,15 +344,34 @@ public class TriangleSolveOptimizedTrial {
 			//System.out.println("Num records saved: " + numRecordsSavedForDEBUG);
 			//board.draw();
 		}
+
 		
 		if(board.getNumPiecesLeft() == 1) {
+			System.out.println("FINAL SOLUTION");
+			board.draw();
+			//System.exit(1);
 			return board;
-		} else if(curMaxDepth == 0) {
+		}
+
+		long lookup = board.getLookupNumber();
+		
+		if(currentlyFoundSolution == false && backwardsSolutionsCache[board.getNumPiecesLeft()].contains(lookup)) {
+			//Victory road
+			currentlyFoundSolution = true;
+			System.out.println("DEBUG: FOUND BRIDGE!");
+			board.draw();
+			System.out.println(board.getLookupNumber());
+			
+			System.out.println("Depth: " + curMaxDepth);
+			curMaxDepth += DEPTH_BACKWARDS;
+			
+			System.out.println("Depth after: " + curMaxDepth);
+			
+			
+		} else if(curMaxDepth == 0){
 			return null;
 		}
 
-		//Check if position was already found:	
-		long lookup = board.getLookupNumber();
 		if(recordedTriangles[board.getNumPiecesLeft()].containsKey(lookup)) {
 			
 			triangleRecord previouslyFoundNode = recordedTriangles[board.getNumPiecesLeft()].get(lookup);
@@ -346,12 +401,15 @@ public class TriangleSolveOptimizedTrial {
 		//Record position if worthwhile:
 		//(Only record if it won't affect memory requirements too much)
 		if(board.length() <= 6
-				|| (utilFunctions.getTriangleNumber(board.length()) - board.getNumPiecesLeft() <= 6 || board.getNumMovesMade() < 10)
-			) {
+				|| board.getNumMovesMade() < 9) {
 		
 			if(recordedTriangles[board.getNumPiecesLeft()].containsKey(lookup) == false) {
 				recordedTriangles[board.getNumPiecesLeft()].put(lookup, new triangleRecord(board.getNumMovesMade(), board, curMaxDepth));
 				
+				if(lookup == 5853524) {
+					System.out.println("Debug AHHH");
+					board.draw();
+				}
 				numRecordsSavedForDEBUG++;
 			}
 		}
@@ -363,7 +421,14 @@ public class TriangleSolveOptimizedTrial {
 		
 		for(int i=0; i<moves.size(); i++) {
 
-			TriangleBoard possibleBest = getBestMoveList(board.doOneMove(moves.get(i)), curMaxDepth - 1);
+			//if(currentlyFoundSolution) {
+			//	System.out.println("Going in " + curMaxDepth);
+			//}
+			TriangleBoard possibleBest = getBestMoveList(board.doOneMove(moves.get(i)), curMaxDepth - 1, currentlyFoundSolution);
+
+			//if(currentlyFoundSolution) {
+			//	System.out.println("Going out "  + curMaxDepth);
+			//}
 			
 			if(possibleBest != null) {
 				return possibleBest;
@@ -374,35 +439,4 @@ public class TriangleSolveOptimizedTrial {
 		return null;
 	}
 	
-
-	
-	
-	
-	//********************************
-	//********************************
-	//********************************
-	
-	
-
-	
-
-	
-	
-	
-
-	//********************************
-	//********************************
-	//********************************
-	
-	
-	
-	//TODO: 
-	
-	public static HashMap<Long, triangleRecord>[] forwardSavedTriangles;
-	
-	public static void doOptimizedSearchForwardSaveBackwardSearch() {
-		//TODO MIRROR IMAGE LATER
-		
-		
-	}
 }

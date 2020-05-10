@@ -15,7 +15,7 @@ public class triangleRecord {
 		this.depthUsedToFindRecord = utilFunctions.getMaxDepthUsed(board, curMaxDepth);
 
 	}
-	
+
 	public triangleRecord(int numMovesToGetToPos, BackwardsTriangleBoard board, int curMaxDepth) {
 
 		this.numMovesToGetToPos = numMovesToGetToPos;

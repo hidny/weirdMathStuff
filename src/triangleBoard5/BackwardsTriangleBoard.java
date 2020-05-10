@@ -8,7 +8,7 @@ public class BackwardsTriangleBoard {
 	
 	public static void main(String args[]) {
 		//TESTING code:
-		BackwardsTriangleBoard backwardsBoard = new BackwardsTriangleBoard(4);
+		/*BackwardsTriangleBoard backwardsBoard = new BackwardsTriangleBoard(4);
 		
 		backwardsBoard.addPiece(backwardsBoard.getCode(1, 1));
 		backwardsBoard.draw();
@@ -57,6 +57,47 @@ public class BackwardsTriangleBoard {
 		test2 = test2.doOneBackwardsMove("28-14-0");
 		test2 = test2.doOneBackwardsMove("37-21-23-7");
 		test2.draw();
+		*/
+		
+		BackwardsTriangleBoard test1 = new BackwardsTriangleBoard(7);
+		test1.addPiece(0);
+		
+		System.out.println(test1);
+		if(test1.getFullBackwardsMoves().contains("46-44-30-14-28-30-16-14-0") == false) {
+			System.out.println("uh oh");
+		}
+		test1 = test1.doOneBackwardsMove("46-44-30-14-28-30-16-14-0");
+
+		System.out.println(test1);
+		if(test1.getFullBackwardsMoves().contains("31-45") == false) {
+			System.out.println("uh oh");
+		}
+		test1 = test1.doOneBackwardsMove("31-45");
+
+		System.out.println("HERE:");
+		test1.draw();
+		
+		
+		
+		BackwardsTriangleBoard test2 = new BackwardsTriangleBoard(7);
+		test2.addPiece(0);
+		
+		System.out.println(test2);
+		if(test2.getFullBackwardsMoves().contains("16-30-32-46-44-28-30-14-0") == false) {
+			System.out.println("uh oh");
+		}
+		test2 = test2.doOneBackwardsMove("16-30-32-46-44-28-30-14-0");
+
+		System.out.println(test2);
+		if(test2.getFullBackwardsMoves().contains("37-39") == false) {
+			System.out.println("uh oh");
+		}
+		test2 = test2.doOneBackwardsMove("37-39");
+
+		System.out.println("HERE:");
+		test2.draw();
+		
+		
 		
 	}
 	
@@ -110,8 +151,38 @@ public class BackwardsTriangleBoard {
 		System.out.println("Num pieces left: " + numPiecesLeft);
 		System.out.println("Num backwards moves Made: " + numBackwardsMovesMade);
 		System.out.println("Move list: " + historicMoveList);
+		System.out.println("Lookup number: " + this.getLookupNumber());
+		System.out.println();
 	}
 	
+	public String toString() {
+		String ret = "";
+		for(int i=0; i<triangle.length; i++) {
+			for(int k=i; k<triangle.length; k++) {
+				ret += " ";
+			}
+			for(int j=0; j<triangle[i].length; j++) {
+				if(triangle[i][j]) {
+					ret += "G ";
+				} else {
+					ret += "_ ";
+				}
+			}
+			ret += "\n";
+		}
+		
+		//private boolean triangle[][];
+		//private int lastJumpCode;
+		//private int numPiecesLeft;
+		//private int numMovesMade;
+
+		ret += "Num pieces left: " + numPiecesLeft + "\n";
+		ret += "Num backwards moves Made: " + numBackwardsMovesMade + "\n";
+		ret += "Move list: " + historicMoveList + "\n";
+		ret += "Lookup number: " + this.getLookupNumber() + "\n";
+		ret += "\n";
+		return ret;
+	}
 	
 	public void removePiece(int code) {
 		int i = code / triangle.length;
@@ -368,6 +439,10 @@ public class BackwardsTriangleBoard {
 			newBoard = newBoard.moveBackwardsInternal(from + "-" + to);
 		}
 		
+		if(newBoard == this) {
+			System.out.println("ERROR blank move!");
+			System.exit(1);
+		}
 
 		newBoard.prevLocation = this;
 		
@@ -453,7 +528,8 @@ public class BackwardsTriangleBoard {
 	}
 	
 	public long getLookupNumber() {
-		return TriangleLookup.convertToNumberWithComboTricks(triangle);
+		//return TriangleLookup.convertToNumberSimple(triangle);
+		return TriangleLookup.convertToNumberWithComboTricksAndSymmetry(triangle, numPiecesLeft);
 	}
 	
 	public int length() {
