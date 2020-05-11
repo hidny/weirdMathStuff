@@ -23,7 +23,9 @@ public class TriangleSolveGetPosDepthDAwayFromSolution {
 	public static void main(String args[]) {
 		getPositionDepthNAwayFromGoal(7, 0, 0, 4);
 	}
-	
+
+	//TODO: maybe make this a param
+	public static boolean ALLOW_SAME_POS_SAME_DEPTH_TO_ACTIVATE_GET_NECESSARY_MOVES = true;
 
 	//public static int MAX_DEPTH = 4;
 	
@@ -39,7 +41,13 @@ public class TriangleSolveGetPosDepthDAwayFromSolution {
 
 			numPosSavedForPreviousDepths = numPosSaveTotal;
 			
+			
 			memLimitReached = doBackwardSearchAndSaveDeepAtDepthD(triangleLength, saveDepth, endi, endj);
+			
+			
+			System.out.println("Debug: End of search with depth " + saveDepth + " and triangle length " + triangleLength);
+			System.out.println("Debug: Num records saved for prev depths: " + numPosSavedForPreviousDepths);
+			System.out.println("Debug: Num records saved total: " + numPosSaveTotal);
 			
 			if(memLimitReached) {
 				break;
@@ -64,11 +72,41 @@ public class TriangleSolveGetPosDepthDAwayFromSolution {
 			while(it.hasNext()) {
 				long key = it.next();
 				if(savedPosForCurrentSearchDir[i].get(key).getNumMovesToGetToPos() == saveDepth) {
+					if(savedPosAtDepthD[i].contains(key)) {
+						System.out.println("ERROR: not supposed to happen!");
+						System.exit(1);
+					}
 					savedPosAtDepthD[i].add(key);
 					numCopied++;
 					
 				}
+				
 			}
+			
+
+			//TODO: put in function
+			//DEBUG PRINT:
+			/*Object array[] = savedPosAtDepthD[i].toArray();
+			long arrayLong[] = new long[array.length];
+			for(int j=0; j<array.length; j++) {
+				arrayLong[j] = (Long)array[j];
+			}
+			
+			for(int j=0; j<arrayLong.length; j++) {
+				for(int k=j+1; k<arrayLong.length; k++) {
+					if((Long)(arrayLong[k]) < (Long)(arrayLong[j])) {
+						long tmp = arrayLong[j];
+						arrayLong[j] = arrayLong[k];
+						arrayLong[k] = tmp;
+					}
+				}
+			}
+			
+			for(int j=0; j<arrayLong.length; j++) {
+				System.out.println(i +": " + arrayLong[j]);
+			}*/
+			//END DEBUG PRINT:
+			
 		}
 		
 		if(memLimitReached == false) {
@@ -133,7 +171,7 @@ public class TriangleSolveGetPosDepthDAwayFromSolution {
 		if(numFunctionCallForDEBUG % 10000000 == 0) {
 			System.out.println("Current depth: " + curMaxDepth + " out of " + utilFunctions.getMaxDepthUsed(board, curMaxDepth));
 
-			System.out.println("Debug: end of search with depth " + curMaxDepth + " and triangle length " + board.length());
+			System.out.println("Debug: search with depth " + curMaxDepth + " and triangle length " + board.length());
 			System.out.println("Num records saved for prev depths: " + numPosSavedForPreviousDepths);
 			System.out.println("Num records saved total: " + numPosSaveTotal);
 			System.out.println("Num million times recursive function called: " + (numFunctionCallForDEBUG/1000000));
@@ -145,6 +183,15 @@ public class TriangleSolveGetPosDepthDAwayFromSolution {
 		
 		if( savedPosForCurrentSearchDir[board.getNumPiecesLeft()].containsKey(lookup)) {
 			
+			//TODO: DEBUG 2 exceptions:
+			if(board.getNumPiecesLeft() == 13 && lookup == 15649720) {
+				System.out.println("looking at exceptional position that was already found 1: ");
+				board.draw();
+			} else if(board.getNumPiecesLeft() == 12 && lookup == 435021) {
+				System.out.println("looking at exceptional position that was already found 2: ");
+				board.draw();
+			}
+			
 			triangleRecord previouslyFoundNode = savedPosForCurrentSearchDir[board.getNumPiecesLeft()].get(lookup);
 		
 			if(board.getNumMovesMade() > previouslyFoundNode.getNumMovesToGetToPos()) {
@@ -152,9 +199,13 @@ public class TriangleSolveGetPosDepthDAwayFromSolution {
 				//System.out.println("Cutting short 0");
 				return false;
 			} else if(board.getNumMovesMade() == previouslyFoundNode.getNumMovesToGetToPos()){
-				
+				//TODO: AHA! If you want to make getNecessaryFullBackwardsMovesToCheck,
+				//you will need to let thru every previously found depth...
+				//I advise only doing this for testing!
 				if(previouslyFoundNode.getDepthUsedToFindRecord() == utilFunctions.getMaxDepthUsed(board, curMaxDepth)) {
-					return false;
+					if(ALLOW_SAME_POS_SAME_DEPTH_TO_ACTIVATE_GET_NECESSARY_MOVES == false) {
+						return false;
+					}
 				} else {
 					previouslyFoundNode.updateNumMovesToGetToPos(board.getNumMovesMade(), board, curMaxDepth);
 				}
@@ -173,6 +224,18 @@ public class TriangleSolveGetPosDepthDAwayFromSolution {
 			numPosSaveTotal++;
 			savedPosForCurrentSearchDir[board.getNumPiecesLeft()].put(lookup, new triangleRecord(board.getNumMovesMade(), board, curMaxDepth));
 
+
+			//Two boards that aren't found with necessary moves
+			//12: 435021
+			//13: 15649720
+			if(board.getNumPiecesLeft() == 13 && lookup == 15649720) {
+				System.out.println("looking at exceptional position 1: ");
+				board.draw();
+			} else if(board.getNumPiecesLeft() == 12 && lookup == 435021) {
+				System.out.println("looking at exceptional position 2: ");
+				board.draw();
+			}
+			
 			
 			if(numPosSaveTotal > STANDARD_MEM_LIMIT) {
 				return true;
@@ -196,10 +259,15 @@ public class TriangleSolveGetPosDepthDAwayFromSolution {
 			return true;
 		}
 
-		
-		//SOLVED: why aren't they the SAME??? A: BUG!
-		ArrayList<String> moves = board.getFullBackwardsMoves();
-		//ArrayList<String> moves = board.getNecessaryFullBackwardsMovesToCheck();
+		//Two boards that aren't found with necessary moves
+		//12: 435021
+		//13: 15649720
+		ArrayList<String> moves;
+		if(ALLOW_SAME_POS_SAME_DEPTH_TO_ACTIVATE_GET_NECESSARY_MOVES == false) {
+			moves = board.getFullBackwardsMoves();
+		} else {
+			moves = board.getNecessaryFullBackwardsMovesToCheck();
+		}
 		
 		for(int i=0; i<moves.size(); i++) {
 

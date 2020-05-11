@@ -100,8 +100,8 @@ public class TriangleSolveOptimizedTrial {
 
 	public static final int LENGTH = 7;
 
-	public static int MAX_DEPTH_TOTAL = 14;
-	public static int MEM_DEPTH_FORWARDS = 9;
+	public static int MAX_DEPTH_TOTAL = 12;
+	public static int MEM_DEPTH_FORWARDS =7;
 	public static int MEM_DEPTH_BACKWARDS = 4;
 
 	

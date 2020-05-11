@@ -97,6 +97,52 @@ public class BackwardsTriangleBoard {
 		System.out.println("HERE:");
 		test2.draw();
 		
+		/*
+		 * 
+looking at exceptional position 2: 
+       G 
+      _ G 
+     _ G _ 
+    G G G G 
+   _ G G G _ 
+  _ _ G _ _ _ 
+ _ _ _ G _ _ _ 
+Num pieces left: 12
+Num backwards moves Made: 3
+Move list: 22-38 23-7 0-16-32-30-46-44-30-28-14-0 
+Lookup number: 435021
+
+looking at exceptional position 1: 
+       G 
+      _ G 
+     _ G _ 
+    G G G G 
+   _ _ G _ _ 
+  G _ G _ _ G 
+ _ G _ _ _ G _ 
+Num pieces left: 13
+Num backwards moves Made: 3
+Move list: 22-38 23-7 0-16-32-48-46-30-44-42-28-14-0 
+Lookup number: 15649720
+*/
+		
+		BackwardsTriangleBoard testMissing = new BackwardsTriangleBoard(7);
+		testMissing.addPiece(0);
+		testMissing = testMissing.doOneBackwardsMove("0-16-32-30-46-44-30-28-14-0");
+		
+		if(testMissing.getFullBackwardsMoves().contains("22-38") == false) {
+			System.out.println("ERROR 1!");
+			System.exit(1);
+		}
+		
+		testMissing = testMissing.doOneBackwardsMove("22-38");
+		
+		if(testMissing.getFullBackwardsMoves().contains("23-7") == false) {
+			System.out.println("ERROR 2!");
+			System.exit(1);
+		}
+		testMissing = testMissing.doOneBackwardsMove("23-7");
+		System.out.println(testMissing.getLookupNumber());
 		
 		
 	}
@@ -228,102 +274,60 @@ public class BackwardsTriangleBoard {
 	private static int TESTtotalNeeded = 0;
 	
 	
+	//TODO: This doesn't even work for backwards jumps...
 	public ArrayList<String> getNecessaryFullBackwardsMovesToCheck() {
 		
 		
 		ArrayList<String> fullList = getFullBackwardsMoves();
-
 		ArrayList<String> neededList = new ArrayList<String>();
 		
 		
-		//Get previous 1st jump locations to give some idea of an order:
-		ArrayList<Integer> prevJumpLocations = new ArrayList<Integer>();
-		BackwardsTriangleBoard tmpBoard = this;
-		while(tmpBoard.prevLocation != null) {
-			String moves[] = tmpBoard.historicMoveList.split(" ");
-
-			//System.out.println("TEST: " + tmpBoard.historicMoveList);
-			prevJumpLocations.add(Integer.parseInt(moves[0].split("-")[0/*moves[0].split("-").length - 1*/]));
+		if(this.prevLocation == null) {
+			neededList = fullList;
 			
-			tmpBoard = tmpBoard.prevLocation;
-
-		}
-		
-		//Filter out moves whose 1st jumps are "out of order"
-		//TODO: does this even work?
-		for(int i=0; i<fullList.size(); i++) {
+		} else {
 			
-			boolean dontNeedToCheck = false;
-			tmpBoard = this;
-			int j=0;
-			while(tmpBoard.prevLocation != null 
-					&&  tmpBoard.prevLocation.moveList.contains(fullList.get(i))
-					//TODO: don't do .getFullBackwardsMoves().contains(this.historicMoveList.split(" ")[0])... do something more efficient!!
-					&& tmpBoard.prevLocation.doOneBackwardsMove(fullList.get(i)).getFullBackwardsMoves().contains(this.historicMoveList.split(" ")[0])
-					) {
-				
-				//TODO: This will only work if you go back 1...
+			String moves[] = this.historicMoveList.split(" ");
 
+			String prevJump = moves[0];
+			int prevJumpLocation = Integer.parseInt(prevJump.split("-")[0]);
+
+			for(int i=0; i<fullList.size(); i++) {
 				
-				//TODO: I bet the forward case also has the same error!
-				/*
-				System.out.println();
-				System.out.println();
-				System.out.println("j =" + j);
-				System.out.println(fullList.get(i));
-				System.out.println("vs");
-				this.draw();
+				boolean dontNeedToCheck = false;
 				
-				System.out.println("Move candidate start: " + fullList.get(i).split("-")[1]);
-				System.out.println("Prev Move candidate start: " + prevJumpLocations.get(j));
-				tmpBoard.prevLocation.draw();
-				System.out.println("Move: " + fullList.get(i));
-				
-				BackwardsTriangleBoard trial = tmpBoard.prevLocation.doOneBackwardsMove(fullList.get(i));
-				trial = trial.doOneBackwardsMove(this.historicMoveList.split(" ")[0]);
-				
-				BackwardsTriangleBoard trial2 = this.doOneBackwardsMove(fullList.get(i));
-				
-				for(int itrial=0; itrial<trial.length(); itrial++) {
-					for(int jtrial=0; jtrial<itrial; jtrial++) {
-						if(trial.triangle[itrial][jtrial] != trial2.triangle[itrial][jtrial]) {
-							System.out.println("????");
-							trial.draw();
-							trial2.draw();
-							System.exit(1);
-						}
+				if(this.prevLocation.moveList.contains(fullList.get(i))
+					//&& this.prevLocation.doOneBackwardsMove(fullList.get(i)).getFullBackwardsMoves().contains(prevJump) ) {
+					&& this.prevLocation.doOneBackwardsMove(fullList.get(i)).couldMoveBackwards(prevJump) ) {
+
+					//Sanity check: Compares 2 triangles to make sure they're the same at this point (They should be the same!)
+					//TESTcompareBoardsForTesting(this.prevLocation.doOneBackwardsMove(fullList.get(i)).doOneBackwardsMove(prevJump), this.doOneBackwardsMove(fullList.get(i)));
+					
+					
+					int startCurrentMove = Integer.parseInt(fullList.get(i).split("-")[0]);
+					if(startCurrentMove < prevJumpLocation) {
+						//Explanation:
+						//Algo should have done current move first because
+						//they are indep and current move starts jump at a smaller numbered location
+						dontNeedToCheck = true;
 					}
 				}
-				*/
-				//TODO: compare string in alphabet order instead
-				
-				if(Integer.parseInt(fullList.get(i).split("-")[0/*fullList.get(i).split("-").length -1*/]) < prevJumpLocations.get(j)) {
 
-					//Should have done prev move(s) first because they are indep and prev move starts jump at a smaller numbered location
-					dontNeedToCheck = true;
-					
-					break;
+				if(dontNeedToCheck == false) {
+					neededList.add(fullList.get(i));
+				} else {
+					//System.out.println("TESTING!");
+					//System.out.println("Move that was cancelled: " + fullList.get(i));
 				}
-				tmpBoard = tmpBoard.prevLocation;
-				j++;
-				
-			}
 					
-				
-			if(dontNeedToCheck == false) {
-				neededList.add(fullList.get(i));
-			} else {
-				//System.out.println("TESTING!");
-				//System.out.println("Move that was cancelled: " + fullList.get(i));
 			}
 		}
-		
 		
 		TEST_DEBUG_PRINT++;
 		TESTtotalFull += fullList.size();
 		TESTtotalNeeded += neededList.size();
 		
-		if(TEST_DEBUG_PRINT % 10000000 == 0) {
+		if(TEST_DEBUG_PRINT % 100000 == 0) {
 			System.out.println("Testing branching improvement: " + fullList.size() + " vs " + neededList.size());
 			System.out.println("Ratio: " + ((1.0*TESTtotalFull)/(1.0 * TESTtotalNeeded)));
 			System.out.println("Perc: " + ((1.0*TESTtotalNeeded)/(1.0 * TESTtotalFull)));
@@ -331,8 +335,32 @@ public class BackwardsTriangleBoard {
 		
 		return neededList;
 	}
-//TODO: END FIX ME
-
+	
+	/*
+	private static void TESTcompareBoardsForTesting(BackwardsTriangleBoard a, BackwardsTriangleBoard b) {
+		if(a.length() != b.length()) {
+			System.out.println("ERROR: not even the same length");
+			System.exit(1);
+		}
+		if(a.getNumPiecesLeft() != b.getNumPiecesLeft()) {
+			System.out.println("ERROR: num pieces left is wrong once!");
+			System.exit(1);
+		}
+		
+		for(int i=0; i<a.length(); i++) {
+			for(int j=0; j<=i; j++) {
+				if(a.triangle[i][j] != b.triangle[i][j]) {
+					System.out.println("Huh. The triangles do not match...");
+					System.out.println(a);
+					System.out.println("vs");
+					System.out.println(b);
+					
+					System.exit(1);
+				}
+			}
+		}
+	}
+	*/
 	public ArrayList<String> getFullBackwardsMoves() {
 		
 		ArrayList<String> ret = new ArrayList<String>();
@@ -353,6 +381,67 @@ public class BackwardsTriangleBoard {
 	
 	public int getCode(int i, int j) {
 		return i*triangle.length + j;
+	}
+	
+	
+	//Check if pos could do the move in input
+	
+
+	//i.e. : Check if there's no pegs in the way of the backwards move:
+	//If there isn't, return true
+	private boolean couldMoveBackwards(String backwardsMove) {
+		
+		String seriesOfJumps[] = backwardsMove.split("-");
+		
+		BackwardsTriangleBoard newBoard = this;
+		
+		int finalLandingI = -1;
+		int finalLandingJ = -1;
+		
+		
+		for(int i=0; i<seriesOfJumps.length - 1; i++) {
+			
+			int from = Integer.parseInt(seriesOfJumps[seriesOfJumps.length - 2 - i]);
+			int to = Integer.parseInt(seriesOfJumps[seriesOfJumps.length - 1 - i]);
+			
+			int fromi = from / triangle.length;
+			int fromj = from % triangle.length;
+			
+			int toi = to / triangle.length;
+			int toj = to % triangle.length;
+			
+			int betweeni = (fromi + toi)/2;
+			int betweenj = (fromj + toj)/2;
+			
+			if(i == 0) {
+				//Handle the fact that the final landing should have a peg after the move
+				finalLandingI = toi;
+				finalLandingJ = toj;
+				
+				if(triangle[finalLandingI][finalLandingJ] == false) {
+					return false;
+				}
+			}
+			
+			if( triangle[betweeni][betweenj] == true 
+				|| triangle[fromi][fromj] == true) {
+				
+				if(triangle[fromi][fromj] == true && finalLandingI == fromi && finalLandingJ == fromj) {
+					//It's only ok for the from coord to have a peg if that is also the landing coord or the peg that doing the jumping
+				} else {
+					//else not ok because that peg is in the way
+					return false;
+				}
+			}
+			
+			
+			if(i + 1 < seriesOfJumps.length - 1) {
+				newBoard = newBoard.moveBackwardsInternal(from + "-" + to);
+			}
+			
+		}
+		
+		return true;
 	}
 	
 	private ArrayList<String> getPossibleBackwardsMovesFromPosition(int code) {
@@ -535,25 +624,3 @@ public class BackwardsTriangleBoard {
 		return triangle.length;
 	}
 }
-
-/* From stackoverflow
-This is possible with the menu items Window>Editor>Toggle Split Editor.
-
-Current shortcut for splitting is:
-
-Azerty keyboard:
-
-Ctrl + _ for split horizontally, and
-Ctrl + { for split vertically.
-Qwerty US keyboard:
-
-Ctrl + Shift + - (accessing _) for split horizontally, and
-Ctrl + Shift + [ (accessing {) for split vertically.
-MacOS - Qwerty US keyboard:
-
-⌘ + Shift + - (accessing _) for split horizontally, and
-⌘ + Shift + [ (accessing {) for split vertically.
-On any other keyboard if a required key is unavailable (like { on a german Qwertz keyboard), the following generic approach may work:
-
-Alt + ASCII code + Ctrl then release Alt
-*/
