@@ -192,6 +192,9 @@ public class TriangleSolveGetPosDepthDAwayFromSolution {
 					previouslyFoundNode.updateNumMovesToGetToPos(board.getNumMovesMade(), board, curMaxDepth);
 				}
 				
+
+				//TODO: at this point, if utilFunctions.getMaxDepthUsed(board, curMaxDepth) is DEPTH_NOT_APPLICABLE, return false!
+				
 			} else {
 				
 				if(previouslyFoundNode.getDepthUsedToFindRecord() != triangleRecord.DEPTH_NOT_APPLICABLE) {
@@ -268,6 +271,7 @@ public class TriangleSolveGetPosDepthDAwayFromSolution {
 			Iterator<Long> it = savedPosForCurrentSearchDir[i].keySet().iterator();
 			while(it.hasNext()) {
 				long key = it.next();
+				
 				if(savedPosForCurrentSearchDir[i].get(key).getNumMovesToGetToPos() == saveDepth) {
 					if(savedPosAtDepthD[i].contains(key)) {
 						System.out.println("ERROR: not supposed to happen!");

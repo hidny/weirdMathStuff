@@ -98,11 +98,12 @@ public class TriangleSolveOptimizedTrial {
 	//This is looking for just 1 solution...
 	// TODO: try finding all optimal solutions later...
 
-	public static final int LENGTH = 6;
+	//TODO: use pen & paper to figure out which layer actually needs getNecessaryFilter
+	public static final int LENGTH = 7;
 
-	public static int MAX_DEPTH_TOTAL = 13;
-	public static int MEM_DEPTH_FORWARDS =7;
+	public static int MAX_DEPTH_TOTAL = 12;
 	public static int MEM_DEPTH_BACKWARDS = 3;
+	public static int MEM_DEPTH_FORWARDS = Math.min(9, MAX_DEPTH_TOTAL - MEM_DEPTH_BACKWARDS);
 
 	
 	public static void main(String args[]) {
@@ -283,8 +284,14 @@ public class TriangleSolveOptimizedTrial {
 			}
 		}
 
+		System.out.println();
+		System.out.println("Start searching with the backwards positions Depth " + MEM_DEPTH_BACKWARDS + " away from the answer:");
+		System.out.println();
+		
+		//TODO: this only needs to be run once for the whole execution of the program
 		backwardsSolutionsCache = TriangleSolveGetPosDepthDAwayFromSolution.getPositionsDepthNAwayFromAnyGoal(board.length(), MEM_DEPTH_BACKWARDS);
-
+		//END TODO
+		
 		//Need to reinit recorded triangle because we're starting over from depth 1:
 		initRecordedTriangles(board.length());
 		
@@ -306,6 +313,11 @@ public class TriangleSolveOptimizedTrial {
 				break;
 			}
 		}
+		
+		System.out.println();
+		System.out.println("End searching with start pos: ");
+		board.draw();
+		System.out.println();
 
 		return answer;
 		
