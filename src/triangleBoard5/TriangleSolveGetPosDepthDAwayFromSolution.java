@@ -21,20 +21,81 @@ public class TriangleSolveGetPosDepthDAwayFromSolution {
 	public static int STANDARD_MEM_LIMIT = 19000000;
 	
 	public static void main(String args[]) {
-		int MAX_DEPTH = 4;
-		getPositionDepthNAwayFromGoal(7, 0, 0, MAX_DEPTH);
+		int MAX_DEPTH = 2;
+		getPositionsDepthNAwayFromAnyGoal(7, MAX_DEPTH);
 	}
 
-	public static HashSet<Long>[] getPositionDepthNAwayFromGoal(int triangleLength, int endi, int endj, int maxDepth) {
-		
+	
+	public static HashSet<Long>[] getPositionsDepthNAwayFromAnyGoal(int triangleLength, int maxDepth) {
+
 		initSavedPosForCurrentDir(triangleLength);
+
+		HashSet<Long> endingPositionSearched = new HashSet<Long>();
+		BackwardsTriangleBoard backwardsBoardStart;
+
+		for(int endi=0; endi<triangleLength; endi++) {
+			for(int endj=0; endj<=endi; endj++) {
+				
+				//SKIP SYMMETRIC ENDS
+				backwardsBoardStart = new BackwardsTriangleBoard(triangleLength);
+				backwardsBoardStart.addPiece(endi * triangleLength + endj);
+				
+				long lookupBackwards = backwardsBoardStart.getLookupNumber();
+				
+				if(endingPositionSearched.contains(lookupBackwards)) {
+					continue;
+				} else {
+					endingPositionSearched.add(lookupBackwards);
+				}
+				//END SKIP SYMMETRIC ENDS
+				
+				addPositionsDepthNAwayFromAGoal(triangleLength, endi, endj, maxDepth);
+				
+				//SCRATCH OUT ALL DEPTH USE INFO FOR NEXT ITERATION:
+				//TODO: put into function
+				for(int i=0; i<savedPosForCurrentSearchDir.length; i++) {
+					Iterator<Long> it = savedPosForCurrentSearchDir[i].keySet().iterator();
+					while(it.hasNext()) {
+						long key = it.next();
+						savedPosForCurrentSearchDir[i].get(key).scratchOutDepthUsedToFindRecord();
+					}
+				}
+				//END TODO
+				System.out.println();
+			}
+		}
+
+
+		HashSet<Long>[] savedPosAtDepthD = packageResultsDepthDaway(maxDepth, triangleLength);
+
+		
+		savedPosForCurrentSearchDir = null;
+		
+		return savedPosAtDepthD;
+	}
+	
+	public static HashSet<Long>[] getPositionsDepthNAwayFromAGoal(int triangleLength, int endi, int endj, int maxDepth) {
+
+		initSavedPosForCurrentDir(triangleLength);
+		
+		addPositionsDepthNAwayFromAGoal(triangleLength, endi, endj, maxDepth);
+
+		HashSet<Long>[] savedPosAtDepthD = packageResultsDepthDaway(maxDepth, triangleLength);
+		
+		savedPosForCurrentSearchDir = null;
+		
+		return savedPosAtDepthD;
+	}
+	
+	
+	private static void addPositionsDepthNAwayFromAGoal(int triangleLength, int endi, int endj, int maxDepth) {
+		
 		boolean memLimitReached = false;
 		int saveDepth;
 		
-		//TODO: put in function, so we could easily go backwards on all possible positions
 		for(saveDepth = 0; saveDepth<=maxDepth; saveDepth++) {
 			
-			System.out.println("getPositionDepthNAwayFromGoal TRYING saveDepth of " + saveDepth);
+			System.out.println("getPositionDepthNAwayFromGoal TRYING saveDepth of " + saveDepth + " (endi = " + endi + ", endj = " + endj + ")");
 
 			numPosSavedForPreviousDepths = numPosSaveTotal;
 			
@@ -51,26 +112,13 @@ public class TriangleSolveGetPosDepthDAwayFromSolution {
 			}
 			
 		}
-		//END TODO
 		
 		if(memLimitReached || saveDepth > maxDepth) {
 			saveDepth--;
 		}
 		
-		HashSet<Long>[] savedPosAtDepthD = packageResultsDepthDaway(maxDepth, triangleLength);
-		
-		if(memLimitReached == false) {
-			System.out.println("End of search with depth " + saveDepth + " and triangle length " + triangleLength);
-			System.out.println("Num records saved for prev depths: " + numPosSavedForPreviousDepths);
-			System.out.println("Num records saved total: " + numPosSaveTotal);
-		}
-		
-		savedPosForCurrentSearchDir = null;
-		
-		return savedPosAtDepthD;
-		
-		
 	}
+	
 	
 	private static int numFunctionCallForDEBUG = 0;
 	private static int numPosSavedForPreviousDepths = 0;
@@ -116,7 +164,7 @@ public class TriangleSolveGetPosDepthDAwayFromSolution {
 		
 		numFunctionCallForDEBUG++;
 		if(numFunctionCallForDEBUG % 10000000 == 0) {
-			System.out.println("Mid-way backwards Search: Current depth: " + curMaxDepth + " out of " + utilFunctions.getMaxDepthUsed(board, curMaxDepth));
+			System.out.println("Mid-way backwards Search: Current depth remaining: " + curMaxDepth + " out of " + utilFunctions.getMaxDepthUsed(board, curMaxDepth));
 
 			System.out.println("Mid-way backwards Search:  search with depth " + curMaxDepth + " and triangle length " + board.length());
 			System.out.println("Mid-way backwards Search: Num records saved for prev depths: " + numPosSavedForPreviousDepths);
@@ -125,7 +173,7 @@ public class TriangleSolveGetPosDepthDAwayFromSolution {
 			board.draw();
 		}
 		
-		
+
 		long lookup = board.getLookupNumber();
 		
 		if( savedPosForCurrentSearchDir[board.getNumPiecesLeft()].containsKey(lookup)) {
@@ -146,9 +194,13 @@ public class TriangleSolveGetPosDepthDAwayFromSolution {
 				
 			} else {
 				
-				System.err.println("ERROR: this case should not happen");
-				System.out.println(board);
-				System.exit(1);
+				if(previouslyFoundNode.getDepthUsedToFindRecord() != triangleRecord.DEPTH_NOT_APPLICABLE) {
+					System.err.println("ERROR: this case should not happen");
+					System.out.println(board);
+					System.exit(1);
+				} else {
+					previouslyFoundNode.updateNumMovesToGetToPos(board.getNumMovesMade(), board, curMaxDepth);
+				}
 			}
 				
 			
@@ -168,7 +220,7 @@ public class TriangleSolveGetPosDepthDAwayFromSolution {
 			}
 		}
 		
-	
+
 		if(curMaxDepth == 0) {
 			return false;
 			
@@ -179,7 +231,7 @@ public class TriangleSolveGetPosDepthDAwayFromSolution {
 			return true;
 		}
 
-		ArrayList<String> moves = board.getNecessaryFullBackwardsMovesToCheck();
+		ArrayList<String> moves = board.getFullBackwardsMoves();
 		
 		/*//TODO:
 		 * put getNecessaryFullBackwardsMovesToCheck is a slow filter, put it where the positions aren't being saved anymore
@@ -204,7 +256,7 @@ public class TriangleSolveGetPosDepthDAwayFromSolution {
 		return false;
 	}
 	
-	public static HashSet<Long>[] packageResultsDepthDaway(int saveDepth, int triangleLength) {
+	private static HashSet<Long>[] packageResultsDepthDaway(int saveDepth, int triangleLength) {
 		HashSet<Long>[] savedPosAtDepthD = new HashSet[utilFunctions.getTriangleNumber(triangleLength)];
 		
 		int numCopied = 0;

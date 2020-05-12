@@ -257,8 +257,6 @@ public class TriangleSolveOptimizedTrial {
 		initRecordedTriangles(board.length());
 		initBackwardsSolutionCache(board.length());
 
-		HashSet<Long> endingPositionSearched = new HashSet<Long>();
-		
 		int debugNumRecordSavedPrevDepth = 0;
 		
 		TriangleBoard answer = null;
@@ -285,59 +283,30 @@ public class TriangleSolveOptimizedTrial {
 			}
 		}
 
-		
-		
-		BackwardsTriangleBoard backwardsBoardStart;
-		
-		for(int iend=0; iend<board.length(); iend++) {
-			for(int jend=0; jend<=iend; jend++) {
-				
-				backwardsBoardStart = new BackwardsTriangleBoard(board.length());
-				backwardsBoardStart.addPiece(iend * board.length() + jend);
-				
-				long lookupBackwards = backwardsBoardStart.getLookupNumber();
-				
-				if(endingPositionSearched.contains(lookupBackwards)) {
-					continue;
-				} else {
-					endingPositionSearched.add(lookupBackwards);
-				}
-				
-				System.out.println("***************************************");
-				System.out.println("***************************************");
-				System.out.println("Attempting to go from:");
-				board.draw();
-				System.out.println("To end goal (with symmetries):");
-				backwardsBoardStart.draw();
-				//int triangleLength, int endi, int endj, int maxDepth
-				backwardsSolutionsCache = TriangleSolveGetPosDepthDAwayFromSolution.getPositionDepthNAwayFromGoal(board.length(), iend, jend, MEM_DEPTH_BACKWARDS);
+		backwardsSolutionsCache = TriangleSolveGetPosDepthDAwayFromSolution.getPositionsDepthNAwayFromAnyGoal(board.length(), MEM_DEPTH_BACKWARDS);
 
-				//Need to reinit recorded triangle because we're starting over from depth 1:
-				initRecordedTriangles(board.length());
-				
-				debugNumRecordSavedPrevDepth = 0;
-				
-				for(int depth=MEM_DEPTH_BACKWARDS + 1; depth<= MAX_DEPTH_TOTAL; depth++) {
-					System.out.println("DEBUG: trying depth " + depth + " with backwards saved pos");
-					
-					//TODO: testing init
-					initRecordedTriangles(board.length());
-					answer = getBestMoveList(board, depth - MEM_DEPTH_BACKWARDS, false);
-					
-					if(answer != null) {
-						break;
-					}
-					
+		//Need to reinit recorded triangle because we're starting over from depth 1:
+		initRecordedTriangles(board.length());
+		
+		debugNumRecordSavedPrevDepth = 0;
+		
+		for(int depth=MEM_DEPTH_BACKWARDS + 1; depth<= MAX_DEPTH_TOTAL; depth++) {
+			System.out.println("DEBUG: trying depth " + depth + " with backwards saved pos");
+			
+			answer = getBestMoveList(board, depth - MEM_DEPTH_BACKWARDS, false);
+			
+			
+			System.out.println("End of search with depth " + depth + " and triangle length " + board.length() + " and  backwards saved pos depth " + MEM_DEPTH_BACKWARDS);
+			System.out.println("Num records saved for prev depths: " + debugNumRecordSavedPrevDepth);
+			System.out.println("Num records saved total: " + numRecordsSavedForDEBUG);
+			debugNumRecordSavedPrevDepth = numRecordsSavedForDEBUG;
+			
 
-					System.out.println("End of search with depth " + depth + " and triangle length " + board.length() + " and  backwards saved pos depth " + MEM_DEPTH_BACKWARDS);
-					System.out.println("Num records saved for prev depths: " + debugNumRecordSavedPrevDepth);
-					System.out.println("Num records saved total: " + numRecordsSavedForDEBUG);
-					debugNumRecordSavedPrevDepth = numRecordsSavedForDEBUG;
-				}
+			if(answer != null) {
+				break;
 			}
 		}
-		
-		
+
 		return answer;
 		
 	}

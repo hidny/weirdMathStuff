@@ -2,6 +2,8 @@ package triangleBoard5;
 
 public class triangleRecord {
 
+
+	public static int DEPTH_NOT_APPLICABLE = -1;
 	
 	private int numMovesToGetToPos;
 	private int depthUsedToFindRecord;
@@ -44,6 +46,9 @@ public class triangleRecord {
 		this.depthUsedToFindRecord = utilFunctions.getMaxDepthUsed(board, curMaxDepth);
 	}
 	
+	public void scratchOutDepthUsedToFindRecord() {
+		this.depthUsedToFindRecord = DEPTH_NOT_APPLICABLE;
+	}
 	
 	public int getNumMovesToGetToPos() {
 		return numMovesToGetToPos;
