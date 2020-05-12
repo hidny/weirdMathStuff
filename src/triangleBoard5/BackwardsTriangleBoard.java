@@ -8,7 +8,7 @@ public class BackwardsTriangleBoard {
 	
 	public static void main(String args[]) {
 		//TESTING code:
-		/*BackwardsTriangleBoard backwardsBoard = new BackwardsTriangleBoard(4);
+		BackwardsTriangleBoard backwardsBoard = new BackwardsTriangleBoard(4);
 		
 		backwardsBoard.addPiece(backwardsBoard.getCode(1, 1));
 		backwardsBoard.draw();
@@ -57,93 +57,7 @@ public class BackwardsTriangleBoard {
 		test2 = test2.doOneBackwardsMove("28-14-0");
 		test2 = test2.doOneBackwardsMove("37-21-23-7");
 		test2.draw();
-		*/
-		
-		BackwardsTriangleBoard test1 = new BackwardsTriangleBoard(7);
-		test1.addPiece(0);
-		
-		System.out.println(test1);
-		if(test1.getFullBackwardsMoves().contains("46-44-30-14-28-30-16-14-0") == false) {
-			System.out.println("uh oh");
-		}
-		test1 = test1.doOneBackwardsMove("46-44-30-14-28-30-16-14-0");
 
-		System.out.println(test1);
-		if(test1.getFullBackwardsMoves().contains("31-45") == false) {
-			System.out.println("uh oh");
-		}
-		test1 = test1.doOneBackwardsMove("31-45");
-
-		System.out.println("HERE:");
-		test1.draw();
-		
-		
-		
-		BackwardsTriangleBoard test2 = new BackwardsTriangleBoard(7);
-		test2.addPiece(0);
-		
-		System.out.println(test2);
-		if(test2.getFullBackwardsMoves().contains("16-30-32-46-44-28-30-14-0") == false) {
-			System.out.println("uh oh");
-		}
-		test2 = test2.doOneBackwardsMove("16-30-32-46-44-28-30-14-0");
-
-		System.out.println(test2);
-		if(test2.getFullBackwardsMoves().contains("37-39") == false) {
-			System.out.println("uh oh");
-		}
-		test2 = test2.doOneBackwardsMove("37-39");
-
-		System.out.println("HERE:");
-		test2.draw();
-		
-		/*
-		 * 
-looking at exceptional position 2: 
-       G 
-      _ G 
-     _ G _ 
-    G G G G 
-   _ G G G _ 
-  _ _ G _ _ _ 
- _ _ _ G _ _ _ 
-Num pieces left: 12
-Num backwards moves Made: 3
-Move list: 22-38 23-7 0-16-32-30-46-44-30-28-14-0 
-Lookup number: 435021
-
-looking at exceptional position 1: 
-       G 
-      _ G 
-     _ G _ 
-    G G G G 
-   _ _ G _ _ 
-  G _ G _ _ G 
- _ G _ _ _ G _ 
-Num pieces left: 13
-Num backwards moves Made: 3
-Move list: 22-38 23-7 0-16-32-48-46-30-44-42-28-14-0 
-Lookup number: 15649720
-*/
-		
-		BackwardsTriangleBoard testMissing = new BackwardsTriangleBoard(7);
-		testMissing.addPiece(0);
-		testMissing = testMissing.doOneBackwardsMove("0-16-32-30-46-44-30-28-14-0");
-		
-		if(testMissing.getFullBackwardsMoves().contains("22-38") == false) {
-			System.out.println("ERROR 1!");
-			System.exit(1);
-		}
-		
-		testMissing = testMissing.doOneBackwardsMove("22-38");
-		
-		if(testMissing.getFullBackwardsMoves().contains("23-7") == false) {
-			System.out.println("ERROR 2!");
-			System.exit(1);
-		}
-		testMissing = testMissing.doOneBackwardsMove("23-7");
-		System.out.println(testMissing.getLookupNumber());
-		
 		
 	}
 	
@@ -188,11 +102,6 @@ Lookup number: 15649720
 			}
 			System.out.println();
 		}
-		
-		//private boolean triangle[][];
-		//private int lastJumpCode;
-		//private int numPiecesLeft;
-		//private int numMovesMade;
 
 		System.out.println("Num pieces left: " + numPiecesLeft);
 		System.out.println("Num backwards moves Made: " + numBackwardsMovesMade);
@@ -216,17 +125,13 @@ Lookup number: 15649720
 			}
 			ret += "\n";
 		}
-		
-		//private boolean triangle[][];
-		//private int lastJumpCode;
-		//private int numPiecesLeft;
-		//private int numMovesMade;
 
 		ret += "Num pieces left: " + numPiecesLeft + "\n";
 		ret += "Num backwards moves Made: " + numBackwardsMovesMade + "\n";
 		ret += "Move list: " + historicMoveList + "\n";
 		ret += "Lookup number: " + this.getLookupNumber() + "\n";
 		ret += "\n";
+
 		return ret;
 	}
 	
@@ -246,6 +151,7 @@ Lookup number: 15649720
 		}
 		
 		this.numPiecesLeft--;
+		this.lastLookupNumberResult = -1;
 	}
 	
 	public void addPiece(int code) {
@@ -264,23 +170,23 @@ Lookup number: 15649720
 		}
 		
 		this.numPiecesLeft++;
+		this.lastLookupNumberResult = -1;
 	}
 
 	private BackwardsTriangleBoard prevLocation = null;
 	private HashSet<String> moveList = null;
 	
 	private static int TEST_DEBUG_PRINT = 0;
-	private static int TESTtotalFull = 0;
-	private static int TESTtotalNeeded = 0;
+	private static int TEST_TOTAL_MOVES_FOUND = 0;
+	private static int TEST_TOTAL_MOVES_NEEDED = 0;
 	
 	
-	//TODO: This doesn't even work for backwards jumps...
+	//This works, but isn't going to be used,
+	//unless we do a forward save and backwards search:
 	public ArrayList<String> getNecessaryFullBackwardsMovesToCheck() {
-		
 		
 		ArrayList<String> fullList = getFullBackwardsMoves();
 		ArrayList<String> neededList = new ArrayList<String>();
-		
 		
 		if(this.prevLocation == null) {
 			neededList = fullList;
@@ -290,77 +196,46 @@ Lookup number: 15649720
 			String moves[] = this.historicMoveList.split(" ");
 
 			String prevJump = moves[0];
-			int prevJumpLocation = Integer.parseInt(prevJump.split("-")[0]);
 
 			for(int i=0; i<fullList.size(); i++) {
 				
 				boolean dontNeedToCheck = false;
 				
 				if(this.prevLocation.moveList.contains(fullList.get(i))
-					//&& this.prevLocation.doOneBackwardsMove(fullList.get(i)).getFullBackwardsMoves().contains(prevJump) ) {
 					&& this.prevLocation.doOneBackwardsMove(fullList.get(i)).couldMoveBackwards(prevJump) ) {
 
-					//Sanity check: Compares 2 triangles to make sure they're the same at this point (They should be the same!)
 					//TESTcompareBoardsForTesting(this.prevLocation.doOneBackwardsMove(fullList.get(i)).doOneBackwardsMove(prevJump), this.doOneBackwardsMove(fullList.get(i)));
 					
-					
-					int startCurrentMove = Integer.parseInt(fullList.get(i).split("-")[0]);
-					if(startCurrentMove < prevJumpLocation) {
+					if(this.getLookupNumber() > this.prevLocation.doOneBackwardsMove(fullList.get(i)).getLookupNumber()) {
+						
 						//Explanation:
-						//Algo should have done current move first because
-						//they are indep and current move starts jump at a smaller numbered location
+						//Algo should have done current move (fullList.get(i)) first because
+						//they are indep and current move would have gotten to a smaller lookup number had it gone first.
+						//Unfortunately, I have to use an expensive lookupNumber because that's the only thing that uniquely identifies a position :(
 						dontNeedToCheck = true;
 					}
 				}
 
 				if(dontNeedToCheck == false) {
 					neededList.add(fullList.get(i));
-				} else {
-					//System.out.println("TESTING!");
-					//System.out.println("Move that was cancelled: " + fullList.get(i));
 				}
-					
 			}
 		}
 		
 		TEST_DEBUG_PRINT++;
-		TESTtotalFull += fullList.size();
-		TESTtotalNeeded += neededList.size();
+		TEST_TOTAL_MOVES_FOUND += fullList.size();
+		TEST_TOTAL_MOVES_NEEDED += neededList.size();
 		
 		if(TEST_DEBUG_PRINT % 100000 == 0) {
 			System.out.println("Testing branching improvement: " + fullList.size() + " vs " + neededList.size());
-			System.out.println("Ratio: " + ((1.0*TESTtotalFull)/(1.0 * TESTtotalNeeded)));
-			System.out.println("Perc: " + ((1.0*TESTtotalNeeded)/(1.0 * TESTtotalFull)));
+			System.out.println("Ratio: " + ((1.0*TEST_TOTAL_MOVES_FOUND)/(1.0 * TEST_TOTAL_MOVES_NEEDED)));
+			System.out.println("Perc: " + ((1.0*TEST_TOTAL_MOVES_NEEDED)/(1.0 * TEST_TOTAL_MOVES_FOUND)));
 		}
 		
 		return neededList;
 	}
+
 	
-	/*
-	private static void TESTcompareBoardsForTesting(BackwardsTriangleBoard a, BackwardsTriangleBoard b) {
-		if(a.length() != b.length()) {
-			System.out.println("ERROR: not even the same length");
-			System.exit(1);
-		}
-		if(a.getNumPiecesLeft() != b.getNumPiecesLeft()) {
-			System.out.println("ERROR: num pieces left is wrong once!");
-			System.exit(1);
-		}
-		
-		for(int i=0; i<a.length(); i++) {
-			for(int j=0; j<=i; j++) {
-				if(a.triangle[i][j] != b.triangle[i][j]) {
-					System.out.println("Huh. The triangles do not match...");
-					System.out.println(a);
-					System.out.println("vs");
-					System.out.println(b);
-					
-					System.exit(1);
-				}
-			}
-		}
-	}
-	*/
 	public ArrayList<String> getFullBackwardsMoves() {
 		
 		ArrayList<String> ret = new ArrayList<String>();
@@ -384,16 +259,12 @@ Lookup number: 15649720
 	}
 	
 	
-	//Check if pos could do the move in input
-	
+	//Check if pos could do the move in input	
+	//i.e: return true if there's no pegs in the way of the backwards move
 
-	//i.e. : Check if there's no pegs in the way of the backwards move:
-	//If there isn't, return true
 	private boolean couldMoveBackwards(String backwardsMove) {
 		
 		String seriesOfJumps[] = backwardsMove.split("-");
-		
-		BackwardsTriangleBoard newBoard = this;
 		
 		int finalLandingI = -1;
 		int finalLandingJ = -1;
@@ -427,16 +298,11 @@ Lookup number: 15649720
 				|| triangle[fromi][fromj] == true) {
 				
 				if(triangle[fromi][fromj] == true && finalLandingI == fromi && finalLandingJ == fromj) {
-					//It's only ok for the from coord to have a peg if that is also the landing coord or the peg that doing the jumping
+					//It's only ok for the from coord to have a peg if that is also the landing coord (i.e: the peg that doing the jumping)
 				} else {
 					//else not ok because that peg is in the way
 					return false;
 				}
-			}
-			
-			
-			if(i + 1 < seriesOfJumps.length - 1) {
-				newBoard = newBoard.moveBackwardsInternal(from + "-" + to);
 			}
 			
 		}
@@ -616,11 +482,40 @@ Lookup number: 15649720
 		return historicMoveList;
 	}
 	
+	private long lastLookupNumberResult = -1;
 	public long getLookupNumber() {
-		return TriangleLookup.convertToNumberWithComboTricksAndSymmetry(triangle, numPiecesLeft);
+		if(lastLookupNumberResult == -1) {
+			lastLookupNumberResult = TriangleLookup.convertToNumberWithComboTricksAndSymmetry(triangle, numPiecesLeft);
+		}
+		return lastLookupNumberResult;
 	}
 	
 	public int length() {
 		return triangle.length;
+	}
+	
+	
+	private static void TESTcompareBoardsForTesting(BackwardsTriangleBoard a, BackwardsTriangleBoard b) {
+		if(a.length() != b.length()) {
+			System.out.println("ERROR: not even the same length");
+			System.exit(1);
+		}
+		if(a.getNumPiecesLeft() != b.getNumPiecesLeft()) {
+			System.out.println("ERROR: num pieces left is wrong once!");
+			System.exit(1);
+		}
+		
+		for(int i=0; i<a.length(); i++) {
+			for(int j=0; j<=i; j++) {
+				if(a.triangle[i][j] != b.triangle[i][j]) {
+					System.out.println("Huh. The triangles do not match...");
+					System.out.println(a);
+					System.out.println("vs");
+					System.out.println(b);
+					
+					System.exit(1);
+				}
+			}
+		}
 	}
 }
