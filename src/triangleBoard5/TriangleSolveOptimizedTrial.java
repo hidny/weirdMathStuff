@@ -99,18 +99,30 @@ public class TriangleSolveOptimizedTrial {
 	// TODO: try finding all optimal solutions later...
 
 	//TODO: use pen & paper to figure out which layer actually needs getNecessaryFilter
-	public static final int LENGTH = 7;
+	public static final int LENGTH = 8;
 
-	public static int MAX_DEPTH_TOTAL = 12;
+	public static int MAX_DEPTH_TOTAL = 14;
 	public static int MEM_DEPTH_BACKWARDS = 3;
-	public static int MEM_DEPTH_FORWARDS = Math.min(9, MAX_DEPTH_TOTAL - MEM_DEPTH_BACKWARDS);
+	public static int MEM_DEPTH_FORWARDS = Math.min(9, MAX_DEPTH_TOTAL - 1 - MEM_DEPTH_BACKWARDS);
 
 	
 	public static void main(String args[]) {
 		
+		
+		getForwardSolutions();
+	}
+	
+	public static void getForwardSolutions() {
 		boolean SET_SLOW = false;
 		if(SET_SLOW) {
 			System.out.println("WARNING: is slow!");
+		}
+		
+		if(SET_SLOW == false) {
+			System.out.println("Setting backwards cache");
+			initBackwardsSolutionCache(LENGTH);
+			backwardsSolutionsCache = TriangleSolveGetPosDepthDAwayFromSolution.getPositionsDepthNAwayFromAnyGoal(LENGTH, MEM_DEPTH_BACKWARDS);
+
 		}
 		
 		System.out.println("Trying " + LENGTH + " in TriangleSolveOptimizedTrial5");
@@ -154,7 +166,6 @@ public class TriangleSolveOptimizedTrial {
 						
 			}
 		}
-		
 	}
 
 
@@ -256,7 +267,6 @@ public class TriangleSolveOptimizedTrial {
 	public static TriangleBoard getBestMoveList(TriangleBoard board) {
 
 		initRecordedTriangles(board.length());
-		initBackwardsSolutionCache(board.length());
 
 		int debugNumRecordSavedPrevDepth = 0;
 		
@@ -288,9 +298,6 @@ public class TriangleSolveOptimizedTrial {
 		System.out.println("Start searching with the backwards positions Depth " + MEM_DEPTH_BACKWARDS + " away from the answer:");
 		System.out.println();
 		
-		//TODO: this only needs to be run once for the whole execution of the program
-		backwardsSolutionsCache = TriangleSolveGetPosDepthDAwayFromSolution.getPositionsDepthNAwayFromAnyGoal(board.length(), MEM_DEPTH_BACKWARDS);
-		//END TODO
 		
 		//Need to reinit recorded triangle because we're starting over from depth 1:
 		initRecordedTriangles(board.length());
@@ -385,7 +392,7 @@ public class TriangleSolveOptimizedTrial {
 		//Record position if worthwhile:
 		//(Only record if it won't affect memory requirements too much)
 		if(board.length() <= 6
-				|| board.getNumMovesMade() < MEM_DEPTH_FORWARDS) {
+				|| board.getNumMovesMade() <= MEM_DEPTH_FORWARDS) {
 		
 			if(recordedTriangles[board.getNumPiecesLeft()].containsKey(lookup) == false) {
 				recordedTriangles[board.getNumPiecesLeft()].put(lookup, new triangleRecord(board.getNumMovesMade(), board, curMaxDepth));

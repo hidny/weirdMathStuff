@@ -1,0 +1,1241 @@
+Setting backwards cache
+getPositionDepthNAwayFromGoal TRYING saveDepth of 0 (endi = 0, endj = 0)
+End of search with depth 0 and triangle length 7
+Num records saved for prev depths: 0
+Num records saved total: 1
+getPositionDepthNAwayFromGoal TRYING saveDepth of 1 (endi = 0, endj = 0)
+End of search with depth 1 and triangle length 7
+Num records saved for prev depths: 1
+Num records saved total: 2080
+getPositionDepthNAwayFromGoal TRYING saveDepth of 2 (endi = 0, endj = 0)
+End of search with depth 2 and triangle length 7
+Num records saved for prev depths: 2080
+Num records saved total: 40012
+getPositionDepthNAwayFromGoal TRYING saveDepth of 3 (endi = 0, endj = 0)
+End of search with depth 3 and triangle length 7
+Num records saved for prev depths: 40012
+Num records saved total: 411722
+getPositionDepthNAwayFromGoal TRYING saveDepth of 4 (endi = 0, endj = 0)
+Mid-way backwards Search: Current depth remaining: 0 out of 4
+Mid-way backwards Search:  search with depth 0 and triangle length 7
+Mid-way backwards Search: Num records saved for prev depths: 411722
+Mid-way backwards Search: Num records saved total: 569686
+Mid-way backwards Search: Num million times recursive function called: 10
+       G 
+      G G 
+     _ G G 
+    G G G G 
+   _ G _ G _ 
+  _ G G G _ _ 
+ _ _ G _ G G _ 
+Num pieces left: 17
+Num backwards moves Made: 4
+Move list: 47-45 16-30-28-14-16-32-30 45-29-43-45-31-29-15 0-16-14-0 
+Lookup number: 298830
+
+Mid-way backwards Search: Current depth remaining: 0 out of 3
+Mid-way backwards Search:  search with depth 0 and triangle length 7
+Mid-way backwards Search: Num records saved for prev depths: 411722
+Mid-way backwards Search: Num records saved total: 988327
+Mid-way backwards Search: Num million times recursive function called: 20
+       _ 
+      G G 
+     _ G _ 
+    G G _ G 
+   G G _ G _ 
+  G _ _ G G _ 
+ G _ _ _ _ _ _ 
+Num pieces left: 13
+Num backwards moves Made: 3
+Move list: 28-14-30-32-16 8-24 42-28-30-46-32-16-14-0 
+Lookup number: 1389429
+
+Mid-way backwards Search: Current depth remaining: 0 out of 4
+Mid-way backwards Search:  search with depth 0 and triangle length 7
+Mid-way backwards Search: Num records saved for prev depths: 411722
+Mid-way backwards Search: Num records saved total: 1266692
+Mid-way backwards Search: Num million times recursive function called: 30
+       _ 
+      G G 
+     _ G G 
+    G _ G _ 
+   _ G _ G _ 
+  _ _ G _ G _ 
+ _ _ _ G G _ _ 
+Num pieces left: 12
+Num backwards moves Made: 4
+Move list: 46-44-30-32-46 15-31 8-24-38 46-30-28-14-0 
+Lookup number: 605877
+
+Mid-way backwards Search: Current depth remaining: 0 out of 4
+Mid-way backwards Search:  search with depth 0 and triangle length 7
+Mid-way backwards Search: Num records saved for prev depths: 411722
+Mid-way backwards Search: Num records saved total: 1437906
+Mid-way backwards Search: Num million times recursive function called: 40
+       _ 
+      G _ 
+     _ G _ 
+    G _ G _ 
+   _ G _ _ G 
+  G G G G _ G 
+ _ G _ G G _ _ 
+Num pieces left: 14
+Num backwards moves Made: 4
+Move list: 46-30-28-42 15-31 40-24-38 42-44-30-46-44-28-14-0 
+Lookup number: 5781508
+
+Mid-way backwards Search: Current depth remaining: 0 out of 4
+Mid-way backwards Search:  search with depth 0 and triangle length 7
+Mid-way backwards Search: Num records saved for prev depths: 411722
+Mid-way backwards Search: Num records saved total: 1561474
+Mid-way backwards Search: Num million times recursive function called: 50
+       _ 
+      _ _ 
+     G _ G 
+    _ _ G _ 
+   G _ _ G _ 
+  G _ _ G _ G 
+ _ _ _ _ _ _ G 
+Num pieces left: 9
+Num backwards moves Made: 4
+Move list: 16-30 38-22 35-21-7 48-32-30-14-0 
+Lookup number: 1692640
+
+Mid-way backwards Search: Current depth remaining: 0 out of 3
+Mid-way backwards Search:  search with depth 0 and triangle length 7
+Mid-way backwards Search: Num records saved for prev depths: 411722
+Mid-way backwards Search: Num records saved total: 1692357
+Mid-way backwards Search: Num million times recursive function called: 60
+       _ 
+      _ _ 
+     G G G 
+    G _ _ _ 
+   _ _ _ _ G 
+  G G G _ _ G 
+ _ G _ G G _ _ 
+Num pieces left: 12
+Num backwards moves Made: 3
+Move list: 40-24-8-22 21-7 46-44-28-42-44-30-14-0 
+Lookup number: 4776785
+
+End of search with depth 4 and triangle length 7
+Num records saved for prev depths: 411722
+Num records saved total: 1727218
+
+getPositionDepthNAwayFromGoal TRYING saveDepth of 0 (endi = 1, endj = 0)
+End of search with depth 0 and triangle length 7
+Num records saved for prev depths: 1727218
+Num records saved total: 1727219
+getPositionDepthNAwayFromGoal TRYING saveDepth of 1 (endi = 1, endj = 0)
+End of search with depth 1 and triangle length 7
+Num records saved for prev depths: 1727219
+Num records saved total: 1727303
+getPositionDepthNAwayFromGoal TRYING saveDepth of 2 (endi = 1, endj = 0)
+End of search with depth 2 and triangle length 7
+Num records saved for prev depths: 1727303
+Num records saved total: 1745574
+getPositionDepthNAwayFromGoal TRYING saveDepth of 3 (endi = 1, endj = 0)
+End of search with depth 3 and triangle length 7
+Num records saved for prev depths: 1745574
+Num records saved total: 1994585
+getPositionDepthNAwayFromGoal TRYING saveDepth of 4 (endi = 1, endj = 0)
+Mid-way backwards Search: Current depth remaining: 0 out of 2
+Mid-way backwards Search:  search with depth 0 and triangle length 7
+Mid-way backwards Search: Num records saved for prev depths: 1994585
+Mid-way backwards Search: Num records saved total: 2057026
+Mid-way backwards Search: Num million times recursive function called: 70
+       _ 
+      G G 
+     _ G _ 
+    G G G G 
+   G G _ G _ 
+  G G G G G G 
+ _ G _ G _ G _ 
+Num pieces left: 19
+Num backwards moves Made: 2
+Move list: 28-44-42-28-30-44-46-48-32-30-14-16-30-46-32-16-0-14 21-7 
+Lookup number: 1297939
+
+Mid-way backwards Search: Current depth remaining: 0 out of 4
+Mid-way backwards Search:  search with depth 0 and triangle length 7
+Mid-way backwards Search: Num records saved for prev depths: 1994585
+Mid-way backwards Search: Num records saved total: 2602508
+Mid-way backwards Search: Num million times recursive function called: 80
+       _ 
+      G G 
+     _ G _ 
+    G G G G 
+   G G _ G _ 
+  _ G G G G _ 
+ _ G _ G G _ _ 
+Num pieces left: 17
+Num backwards moves Made: 4
+Move list: 28-14-16-32-30-44-28-30-16-0-14 46-44 43-45-31 39-23-21-7 
+Lookup number: 320344
+
+Mid-way backwards Search: Current depth remaining: 0 out of 3
+Mid-way backwards Search:  search with depth 0 and triangle length 7
+Mid-way backwards Search: Num records saved for prev depths: 1994585
+Mid-way backwards Search: Num records saved total: 3071075
+Mid-way backwards Search: Num million times recursive function called: 90
+       _ 
+      G G 
+     G G _ 
+    _ _ _ _ 
+   _ _ G G _ 
+  G G G G G G 
+ _ G _ G G G _ 
+Num pieces left: 16
+Num backwards moves Made: 3
+Move list: 14-16-0-14 46-48-32-46-44-42-28 37-23-39-37-35-21-7 
+Lookup number: 9463545
+
+Mid-way backwards Search: Current depth remaining: 0 out of 4
+Mid-way backwards Search:  search with depth 0 and triangle length 7
+Mid-way backwards Search: Num records saved for prev depths: 1994585
+Mid-way backwards Search: Num records saved total: 3246935
+Mid-way backwards Search: Num million times recursive function called: 100
+       _ 
+      G _ 
+     G G _ 
+    _ G _ G 
+   G _ G G _ 
+  G G G G _ _ 
+ _ _ G _ _ _ _ 
+Num pieces left: 13
+Num backwards moves Made: 4
+Move list: 31-45-43-29 7-21-23 24-22-38-36-22 35-21-23-7 
+Lookup number: 197536
+
+End of search with depth 4 and triangle length 7
+Num records saved for prev depths: 1994585
+Num records saved total: 3385184
+
+getPositionDepthNAwayFromGoal TRYING saveDepth of 0 (endi = 2, endj = 0)
+End of search with depth 0 and triangle length 7
+Num records saved for prev depths: 3385184
+Num records saved total: 3385185
+getPositionDepthNAwayFromGoal TRYING saveDepth of 1 (endi = 2, endj = 0)
+End of search with depth 1 and triangle length 7
+Num records saved for prev depths: 3385185
+Num records saved total: 3386162
+getPositionDepthNAwayFromGoal TRYING saveDepth of 2 (endi = 2, endj = 0)
+Mid-way backwards Search: Current depth remaining: 0 out of 1
+Mid-way backwards Search:  search with depth 0 and triangle length 7
+Mid-way backwards Search: Num records saved for prev depths: 3386162
+Mid-way backwards Search: Num records saved total: 3395020
+Mid-way backwards Search: Num million times recursive function called: 110
+       _ 
+      G G 
+     _ _ G 
+    G G G G 
+   _ G _ G _ 
+  G G G G G G 
+ _ G _ G _ G _ 
+Num pieces left: 18
+Num backwards moves Made: 1
+Move list: 16-32-30-16-0-14-30-46-32-48-46-44-28-42-44-30-28-14 
+Lookup number: 2863246
+
+End of search with depth 2 and triangle length 7
+Num records saved for prev depths: 3386162
+Num records saved total: 3396476
+getPositionDepthNAwayFromGoal TRYING saveDepth of 3 (endi = 2, endj = 0)
+Mid-way backwards Search: Current depth remaining: 0 out of 3
+Mid-way backwards Search:  search with depth 0 and triangle length 7
+Mid-way backwards Search: Num records saved for prev depths: 3396476
+Mid-way backwards Search: Num records saved total: 3489768
+Mid-way backwards Search: Num million times recursive function called: 120
+       _ 
+      G G 
+     _ _ _ 
+    G G G G 
+   _ G _ _ _ 
+  G G G G G _ 
+ _ G _ _ G G G 
+Num pieces left: 16
+Num backwards moves Made: 3
+Move list: 46-30-16-0-14-28-42-44 29-43-45-29-15 48-46-32-16-14 
+Lookup number: 8857725
+
+Mid-way backwards Search: Current depth remaining: 0 out of 2
+Mid-way backwards Search:  search with depth 0 and triangle length 7
+Mid-way backwards Search: Num records saved for prev depths: 3396476
+Mid-way backwards Search: Num records saved total: 3509687
+Mid-way backwards Search: Num million times recursive function called: 130
+       _ 
+      G G 
+     G G _ 
+    G G G G 
+   _ G _ G _ 
+  G _ G G G G 
+ _ G _ _ _ G _ 
+Num pieces left: 17
+Num backwards moves Made: 2
+Move list: 29-45 14-28-42-44-46-48-32-16-14-0-16-30-32-46-30-14 
+Lookup number: 5206389
+
+End of search with depth 3 and triangle length 7
+Num records saved for prev depths: 3396476
+Num records saved total: 3512478
+getPositionDepthNAwayFromGoal TRYING saveDepth of 4 (endi = 2, endj = 0)
+Mid-way backwards Search: Current depth remaining: 0 out of 4
+Mid-way backwards Search:  search with depth 0 and triangle length 7
+Mid-way backwards Search: Num records saved for prev depths: 3512478
+Mid-way backwards Search: Num records saved total: 3945716
+Mid-way backwards Search: Num million times recursive function called: 140
+       _ 
+      _ _ 
+     G G _ 
+    G G G G 
+   _ G _ _ G 
+  G _ _ G G _ 
+ _ G _ G _ G G 
+Num pieces left: 15
+Num backwards moves Made: 4
+Move list: 21-7 48-46-44-42-28-30-16 24-8 32-46-30-14-16-0-14 
+Lookup number: 1286787
+
+Mid-way backwards Search: Current depth remaining: 2 out of 4
+Mid-way backwards Search:  search with depth 2 and triangle length 7
+Mid-way backwards Search: Num records saved for prev depths: 3512478
+Mid-way backwards Search: Num records saved total: 4217766
+Mid-way backwards Search: Num million times recursive function called: 150
+       _ 
+      _ G 
+     _ G _ 
+    _ _ G G 
+   _ _ _ _ G 
+  _ _ _ _ _ _ 
+ _ _ _ _ _ _ _ 
+Num pieces left: 5
+Num backwards moves Made: 2
+Move list: 23-7 32-16-0-14 
+Lookup number: 204
+
+Mid-way backwards Search: Current depth remaining: 0 out of 3
+Mid-way backwards Search:  search with depth 0 and triangle length 7
+Mid-way backwards Search: Num records saved for prev depths: 3512478
+Mid-way backwards Search: Num records saved total: 4412627
+Mid-way backwards Search: Num million times recursive function called: 160
+       _ 
+      G G 
+     _ G _ 
+    G _ G G 
+   _ G G _ _ 
+  G G G G G _ 
+ _ G _ G _ G _ 
+Num pieces left: 16
+Num backwards moves Made: 3
+Move list: 30-44-28 47-31 28-30-16-32-30-46-44-42-28-14-0-16-14 
+Lookup number: 2705652
+
+Mid-way backwards Search: Current depth remaining: 2 out of 3
+Mid-way backwards Search:  search with depth 2 and triangle length 7
+Mid-way backwards Search: Num records saved for prev depths: 3512478
+Mid-way backwards Search: Num records saved total: 4476535
+Mid-way backwards Search: Num million times recursive function called: 170
+       _ 
+      G G 
+     _ G _ 
+    _ G G G 
+   _ G _ G _ 
+  _ G G G G G 
+ G G _ G _ G _ 
+Num pieces left: 17
+Num backwards moves Made: 1
+Move list: 42-44-28-30-46-44-30-32-48-46-32-16-0-14-30-16-14 
+Lookup number: 5747878
+
+Mid-way backwards Search: Current depth remaining: 0 out of 3
+Mid-way backwards Search:  search with depth 0 and triangle length 7
+Mid-way backwards Search: Num records saved for prev depths: 3512478
+Mid-way backwards Search: Num records saved total: 4615761
+Mid-way backwards Search: Num million times recursive function called: 180
+       _ 
+      G G 
+     G G _ 
+    _ G G G 
+   _ G _ G _ 
+  G G G G _ _ 
+ G G _ G _ _ _ 
+Num pieces left: 16
+Num backwards moves Made: 3
+Move list: 42-44-46-30-28 35-21 14-0-16-30-14-28-44-30-32-16-14 
+Lookup number: 58493
+
+Mid-way backwards Search: Current depth remaining: 0 out of 4
+Mid-way backwards Search:  search with depth 0 and triangle length 7
+Mid-way backwards Search: Num records saved for prev depths: 3512478
+Mid-way backwards Search: Num records saved total: 4727367
+Mid-way backwards Search: Num million times recursive function called: 190
+       _ 
+      G G 
+     G G _ 
+    _ G _ _ 
+   G G G _ _ 
+  G G G _ G _ 
+ _ _ _ _ _ G _ 
+Num pieces left: 13
+Num backwards moves Made: 4
+Move list: 35-21 30-44-28-30 47-31-29 14-0-16-14-30-28-14 
+Lookup number: 6555400
+
+Mid-way backwards Search: Current depth remaining: 0 out of 3
+Mid-way backwards Search:  search with depth 0 and triangle length 7
+Mid-way backwards Search: Num records saved for prev depths: 3512478
+Mid-way backwards Search: Num records saved total: 4838102
+Mid-way backwards Search: Num million times recursive function called: 200
+       _ 
+      G G 
+     _ _ _ 
+    G G _ G 
+   _ G _ G G 
+  G G _ G G G 
+ _ G _ _ _ G G 
+Num pieces left: 16
+Num backwards moves Made: 3
+Move list: 32-16-0-14-30-32-46 47-45-31 48-32-30-28-44-42-28-14 
+Lookup number: 8766014
+
+Mid-way backwards Search: Current depth remaining: 0 out of 4
+Mid-way backwards Search:  search with depth 0 and triangle length 7
+Mid-way backwards Search: Num records saved for prev depths: 3512478
+Mid-way backwards Search: Num records saved total: 4908104
+Mid-way backwards Search: Num million times recursive function called: 210
+       _ 
+      G G 
+     _ G G 
+    G _ G _ 
+   _ _ G _ _ 
+  G _ G G G _ 
+ _ G _ G _ G G 
+Num pieces left: 15
+Num backwards moves Made: 4
+Move list: 38-36 48-46 45-47-31-29 16-0-14-16-30-28-42-44-28-14 
+Lookup number: 12475409
+
+Mid-way backwards Search: Current depth remaining: 0 out of 4
+Mid-way backwards Search:  search with depth 0 and triangle length 7
+Mid-way backwards Search: Num records saved for prev depths: 3512478
+Mid-way backwards Search: Num records saved total: 4953557
+Mid-way backwards Search: Num million times recursive function called: 220
+       _ 
+      _ _ 
+     _ _ _ 
+    _ G G G 
+   _ G _ G _ 
+  G _ _ G G G 
+ G _ _ G _ _ G 
+Num pieces left: 12
+Num backwards moves Made: 4
+Move list: 42-28 48-32-30-46 45-47-31 28-30-16-32-30-14 
+Lookup number: 260743
+
+Mid-way backwards Search: Current depth remaining: 0 out of 3
+Mid-way backwards Search:  search with depth 0 and triangle length 7
+Mid-way backwards Search: Num records saved for prev depths: 3512478
+Mid-way backwards Search: Num records saved total: 5014045
+Mid-way backwards Search: Num million times recursive function called: 230
+       _ 
+      _ _ 
+     _ G _ 
+    G G G _ 
+   _ G _ _ _ 
+  G G G G G G 
+ _ G _ G _ G G 
+Num pieces left: 15
+Num backwards moves Made: 3
+Move list: 48-46-30-16-14 40-38 14-28-44-42-28-30-46-44-30-14 
+Lookup number: 575414
+
+Mid-way backwards Search: Current depth remaining: 0 out of 4
+Mid-way backwards Search:  search with depth 0 and triangle length 7
+Mid-way backwards Search: Num records saved for prev depths: 3512478
+Mid-way backwards Search: Num records saved total: 5064714
+Mid-way backwards Search: Num million times recursive function called: 240
+       G 
+      G _ 
+     G G _ 
+    G G _ G 
+   _ _ _ G _ 
+  _ G _ G G _ 
+ _ G G _ _ _ _ 
+Num pieces left: 13
+Num backwards moves Made: 4
+Move list: 14-16-32 43-45 38-24-40-38 0-14-28-44-46-30-14 
+Lookup number: 1414651
+
+End of search with depth 4 and triangle length 7
+Num records saved for prev depths: 3512478
+Num records saved total: 5071301
+
+getPositionDepthNAwayFromGoal TRYING saveDepth of 0 (endi = 2, endj = 1)
+End of search with depth 0 and triangle length 7
+Num records saved for prev depths: 5071301
+Num records saved total: 5071302
+getPositionDepthNAwayFromGoal TRYING saveDepth of 1 (endi = 2, endj = 1)
+End of search with depth 1 and triangle length 7
+Num records saved for prev depths: 5071302
+Num records saved total: 5071327
+getPositionDepthNAwayFromGoal TRYING saveDepth of 2 (endi = 2, endj = 1)
+End of search with depth 2 and triangle length 7
+Num records saved for prev depths: 5071327
+Num records saved total: 5072243
+getPositionDepthNAwayFromGoal TRYING saveDepth of 3 (endi = 2, endj = 1)
+End of search with depth 3 and triangle length 7
+Num records saved for prev depths: 5072243
+Num records saved total: 5078234
+getPositionDepthNAwayFromGoal TRYING saveDepth of 4 (endi = 2, endj = 1)
+End of search with depth 4 and triangle length 7
+Num records saved for prev depths: 5078234
+Num records saved total: 5142367
+
+getPositionDepthNAwayFromGoal TRYING saveDepth of 0 (endi = 3, endj = 0)
+End of search with depth 0 and triangle length 7
+Num records saved for prev depths: 5142367
+Num records saved total: 5142368
+getPositionDepthNAwayFromGoal TRYING saveDepth of 1 (endi = 3, endj = 0)
+End of search with depth 1 and triangle length 7
+Num records saved for prev depths: 5142368
+Num records saved total: 5142371
+getPositionDepthNAwayFromGoal TRYING saveDepth of 2 (endi = 3, endj = 0)
+End of search with depth 2 and triangle length 7
+Num records saved for prev depths: 5142371
+Num records saved total: 5142395
+getPositionDepthNAwayFromGoal TRYING saveDepth of 3 (endi = 3, endj = 0)
+End of search with depth 3 and triangle length 7
+Num records saved for prev depths: 5142395
+Num records saved total: 5142722
+getPositionDepthNAwayFromGoal TRYING saveDepth of 4 (endi = 3, endj = 0)
+Mid-way backwards Search: Current depth remaining: 0 out of 3
+Mid-way backwards Search:  search with depth 0 and triangle length 7
+Mid-way backwards Search: Num records saved for prev depths: 5142722
+Mid-way backwards Search: Num records saved total: 5184200
+Mid-way backwards Search: Num million times recursive function called: 250
+       _ 
+      G G 
+     _ G _ 
+    _ G G G 
+   G _ _ G _ 
+  _ G G G G G 
+ _ _ _ G G _ G 
+Num pieces left: 16
+Num backwards moves Made: 3
+Move list: 48-32-16-0-14 46-30-44-46-32-30 23-37-35-21-7-23-21 
+Lookup number: 621272
+
+End of search with depth 4 and triangle length 7
+Num records saved for prev depths: 5142722
+Num records saved total: 5189122
+
+getPositionDepthNAwayFromGoal TRYING saveDepth of 0 (endi = 3, endj = 1)
+End of search with depth 0 and triangle length 7
+Num records saved for prev depths: 5189122
+Num records saved total: 5189123
+getPositionDepthNAwayFromGoal TRYING saveDepth of 1 (endi = 3, endj = 1)
+End of search with depth 1 and triangle length 7
+Num records saved for prev depths: 5189123
+Num records saved total: 5189134
+getPositionDepthNAwayFromGoal TRYING saveDepth of 2 (endi = 3, endj = 1)
+End of search with depth 2 and triangle length 7
+Num records saved for prev depths: 5189134
+Num records saved total: 5190109
+getPositionDepthNAwayFromGoal TRYING saveDepth of 3 (endi = 3, endj = 1)
+End of search with depth 3 and triangle length 7
+Num records saved for prev depths: 5190109
+Num records saved total: 5200168
+getPositionDepthNAwayFromGoal TRYING saveDepth of 4 (endi = 3, endj = 1)
+Mid-way backwards Search: Current depth remaining: 1 out of 4
+Mid-way backwards Search:  search with depth 1 and triangle length 7
+Mid-way backwards Search: Num records saved for prev depths: 5200168
+Mid-way backwards Search: Num records saved total: 5344264
+Mid-way backwards Search: Num million times recursive function called: 260
+       _ 
+      _ G 
+     _ G _ 
+    _ G G _ 
+   G G G _ G 
+  _ G _ G G _ 
+ _ _ _ G _ _ _ 
+Num pieces left: 12
+Num backwards moves Made: 3
+Move list: 23-21-35-37 45-31 8-22-36-38-24-40-38-22 
+Lookup number: 2525563
+
+End of search with depth 4 and triangle length 7
+Num records saved for prev depths: 5200168
+Num records saved total: 5344264
+
+getPositionDepthNAwayFromGoal TRYING saveDepth of 0 (endi = 4, endj = 2)
+End of search with depth 0 and triangle length 7
+Num records saved for prev depths: 5344264
+Num records saved total: 5344265
+getPositionDepthNAwayFromGoal TRYING saveDepth of 1 (endi = 4, endj = 2)
+End of search with depth 1 and triangle length 7
+Num records saved for prev depths: 5344265
+Num records saved total: 5344370
+getPositionDepthNAwayFromGoal TRYING saveDepth of 2 (endi = 4, endj = 2)
+End of search with depth 2 and triangle length 7
+Num records saved for prev depths: 5344370
+Num records saved total: 5345444
+getPositionDepthNAwayFromGoal TRYING saveDepth of 3 (endi = 4, endj = 2)
+End of search with depth 3 and triangle length 7
+Num records saved for prev depths: 5345444
+Num records saved total: 5355570
+getPositionDepthNAwayFromGoal TRYING saveDepth of 4 (endi = 4, endj = 2)
+Mid-way backwards Search: Current depth remaining: 0 out of 3
+Mid-way backwards Search:  search with depth 0 and triangle length 7
+Mid-way backwards Search: Num records saved for prev depths: 5355570
+Mid-way backwards Search: Num records saved total: 5474065
+Mid-way backwards Search: Num million times recursive function called: 270
+       G 
+      G _ 
+     _ G G 
+    G G G G 
+   _ G _ G _ 
+  _ _ G G G _ 
+ _ G G _ _ _ _ 
+Num pieces left: 15
+Num backwards moves Made: 3
+Move list: 0-14-28-30-46-32-30 43-45-29-31 16-14-30-32-16-30 
+Lookup number: 599642
+
+End of search with depth 4 and triangle length 7
+Num records saved for prev depths: 5355570
+Num records saved total: 5502540
+
+Num records at depth 4 copied: 4153028
+Trying 7 in TriangleSolveOptimizedTrial5
+Giving up after reaching a max depth of 15
+End of search with depth 1 and triangle length 7
+Num records saved for prev depths: 0
+Num records saved total: 1
+End of search with depth 2 and triangle length 7
+Num records saved for prev depths: 1
+Num records saved total: 2
+End of search with depth 3 and triangle length 7
+Num records saved for prev depths: 2
+Num records saved total: 6
+End of search with depth 4 and triangle length 7
+Num records saved for prev depths: 6
+Num records saved total: 36
+
+Start searching with the backwards positions Depth 4 away from the answer:
+
+DEBUG: trying depth 5 with backwards saved pos
+End of search with depth 5 and triangle length 7 and  backwards saved pos depth 4
+Num records saved for prev depths: 0
+Num records saved total: 1
+DEBUG: trying depth 6 with backwards saved pos
+End of search with depth 6 and triangle length 7 and  backwards saved pos depth 4
+Num records saved for prev depths: 1
+Num records saved total: 2
+DEBUG: trying depth 7 with backwards saved pos
+End of search with depth 7 and triangle length 7 and  backwards saved pos depth 4
+Num records saved for prev depths: 2
+Num records saved total: 6
+DEBUG: trying depth 8 with backwards saved pos
+End of search with depth 8 and triangle length 7 and  backwards saved pos depth 4
+Num records saved for prev depths: 6
+Num records saved total: 36
+DEBUG: trying depth 9 with backwards saved pos
+End of search with depth 9 and triangle length 7 and  backwards saved pos depth 4
+Num records saved for prev depths: 36
+Num records saved total: 280
+DEBUG: trying depth 10 with backwards saved pos
+End of search with depth 10 and triangle length 7 and  backwards saved pos depth 4
+Num records saved for prev depths: 280
+Num records saved total: 2390
+DEBUG: trying depth 11 with backwards saved pos
+End of search with depth 11 and triangle length 7 and  backwards saved pos depth 4
+Num records saved for prev depths: 2390
+Num records saved total: 19255
+DEBUG: trying depth 12 with backwards saved pos
+End of search with depth 12 and triangle length 7 and  backwards saved pos depth 4
+Num records saved for prev depths: 19255
+Num records saved total: 126888
+DEBUG: trying depth 13 with backwards saved pos
+End of search with depth 13 and triangle length 7 and  backwards saved pos depth 4
+Num records saved for prev depths: 126888
+Num records saved total: 605835
+DEBUG: trying depth 14 with backwards saved pos
+End of search with depth 14 and triangle length 7 and  backwards saved pos depth 4
+Num records saved for prev depths: 605835
+Num records saved total: 1950249
+DEBUG: trying depth 15 with backwards saved pos
+End of search with depth 15 and triangle length 7 and  backwards saved pos depth 4
+Num records saved for prev depths: 1950249
+Num records saved total: 4161227
+
+End searching with start pos: 
+       _ 
+      G G 
+     G G G 
+    G G G G 
+   G G G G G 
+  G G G G G G 
+ G G G G G G G 
+Num pieces left: 27
+Num moves Made: 0
+Move list: 
+Lookup number: 0
+
+
+No solution when removing piece 0
+
+End of search with depth 1 and triangle length 7
+Num records saved for prev depths: 0
+Num records saved total: 1
+End of search with depth 2 and triangle length 7
+Num records saved for prev depths: 1
+Num records saved total: 3
+End of search with depth 3 and triangle length 7
+Num records saved for prev depths: 3
+Num records saved total: 13
+End of search with depth 4 and triangle length 7
+Num records saved for prev depths: 13
+Num records saved total: 93
+
+Start searching with the backwards positions Depth 4 away from the answer:
+
+DEBUG: trying depth 5 with backwards saved pos
+End of search with depth 5 and triangle length 7 and  backwards saved pos depth 4
+Num records saved for prev depths: 0
+Num records saved total: 1
+DEBUG: trying depth 6 with backwards saved pos
+End of search with depth 6 and triangle length 7 and  backwards saved pos depth 4
+Num records saved for prev depths: 1
+Num records saved total: 3
+DEBUG: trying depth 7 with backwards saved pos
+End of search with depth 7 and triangle length 7 and  backwards saved pos depth 4
+Num records saved for prev depths: 3
+Num records saved total: 13
+DEBUG: trying depth 8 with backwards saved pos
+End of search with depth 8 and triangle length 7 and  backwards saved pos depth 4
+Num records saved for prev depths: 13
+Num records saved total: 93
+DEBUG: trying depth 9 with backwards saved pos
+End of search with depth 9 and triangle length 7 and  backwards saved pos depth 4
+Num records saved for prev depths: 93
+Num records saved total: 732
+DEBUG: trying depth 10 with backwards saved pos
+End of search with depth 10 and triangle length 7 and  backwards saved pos depth 4
+Num records saved for prev depths: 732
+Num records saved total: 5916
+DEBUG: trying depth 11 with backwards saved pos
+End of search with depth 11 and triangle length 7 and  backwards saved pos depth 4
+Num records saved for prev depths: 5916
+Num records saved total: 44409
+DEBUG: trying depth 12 with backwards saved pos
+DEBUG: FOUND BRIDGE!
+       _ 
+      _ G 
+     _ _ G 
+    _ _ _ _ 
+   _ G G G G 
+  _ _ G _ G G 
+ G G _ G _ G G 
+Num pieces left: 14
+Num moves Made: 8
+Move list:   21-7  0-14  23-7-21-23  35-21  38-22  44-28-14-30  24-22-38  46-30
+Lookup number: 4959793
+
+FINAL SOLUTION
+       _ 
+      _ _ 
+     _ _ _ 
+    _ _ _ _ 
+   _ _ _ _ G 
+  _ _ _ _ _ _ 
+ _ _ _ _ _ _ _ 
+Num pieces left: 1
+Num moves Made: 12
+Move list:   21-7  0-14  23-7-21-23  35-21  38-22  44-28-14-30  24-22-38  46-30  40-24-38-22-36-38-40  48-32  8-24-40  42-44-46-48-32
+Lookup number: 2
+
+End of search with depth 12 and triangle length 7 and  backwards saved pos depth 4
+Num records saved for prev depths: 44409
+Num records saved total: 68046
+
+End searching with start pos: 
+       G 
+      _ G 
+     G G G 
+    G G G G 
+   G G G G G 
+  G G G G G G 
+ G G G G G G G 
+Num pieces left: 27
+Num moves Made: 0
+Move list: 
+Lookup number: 1
+
+
+Solution when removing piece 7
+       _ 
+      _ _ 
+     _ _ _ 
+    _ _ _ _ 
+   _ _ _ _ G 
+  _ _ _ _ _ _ 
+ _ _ _ _ _ _ _ 
+Num pieces left: 1
+Num moves Made: 12
+Move list:   21-7  0-14  23-7-21-23  35-21  38-22  44-28-14-30  24-22-38  46-30  40-24-38-22-36-38-40  48-32  8-24-40  42-44-46-48-32
+Lookup number: 2
+
+
+SKIPING (1, 1)
+End of search with depth 1 and triangle length 7
+Num records saved for prev depths: 0
+Num records saved total: 1
+End of search with depth 2 and triangle length 7
+Num records saved for prev depths: 1
+Num records saved total: 5
+End of search with depth 3 and triangle length 7
+Num records saved for prev depths: 5
+Num records saved total: 23
+End of search with depth 4 and triangle length 7
+Num records saved for prev depths: 23
+Num records saved total: 152
+
+Start searching with the backwards positions Depth 4 away from the answer:
+
+DEBUG: trying depth 5 with backwards saved pos
+End of search with depth 5 and triangle length 7 and  backwards saved pos depth 4
+Num records saved for prev depths: 0
+Num records saved total: 1
+DEBUG: trying depth 6 with backwards saved pos
+End of search with depth 6 and triangle length 7 and  backwards saved pos depth 4
+Num records saved for prev depths: 1
+Num records saved total: 5
+DEBUG: trying depth 7 with backwards saved pos
+End of search with depth 7 and triangle length 7 and  backwards saved pos depth 4
+Num records saved for prev depths: 5
+Num records saved total: 23
+DEBUG: trying depth 8 with backwards saved pos
+End of search with depth 8 and triangle length 7 and  backwards saved pos depth 4
+Num records saved for prev depths: 23
+Num records saved total: 152
+DEBUG: trying depth 9 with backwards saved pos
+End of search with depth 9 and triangle length 7 and  backwards saved pos depth 4
+Num records saved for prev depths: 152
+Num records saved total: 1182
+DEBUG: trying depth 10 with backwards saved pos
+End of search with depth 10 and triangle length 7 and  backwards saved pos depth 4
+Num records saved for prev depths: 1182
+Num records saved total: 9482
+DEBUG: trying depth 11 with backwards saved pos
+End of search with depth 11 and triangle length 7 and  backwards saved pos depth 4
+Num records saved for prev depths: 9482
+Num records saved total: 69739
+DEBUG: trying depth 12 with backwards saved pos
+DEBUG: FOUND BRIDGE!
+       _ 
+      G G 
+     _ G _ 
+    _ G _ _ 
+   _ G _ _ G 
+  _ G G G _ G 
+ G G _ G G G G 
+Num pieces left: 16
+Num moves Made: 8
+Move list:   0-14  21-7  16-0-14  30-16  24-8  35-21-7  44-30  39-23-37
+Lookup number: 9431466
+
+FINAL SOLUTION
+       _ 
+      _ _ 
+     _ _ _ 
+    _ _ _ _ 
+   _ _ _ _ _ 
+  _ _ _ _ _ _ 
+ _ _ _ _ G _ _ 
+Num pieces left: 1
+Num moves Made: 12
+Move list:   0-14  21-7  16-0-14  30-16  24-8  35-21-7  44-30  39-23-37  42-44-30-14-0-16  46-30  40-24-8-22-38  48-46-30-28-44-46
+Lookup number: 2
+
+End of search with depth 12 and triangle length 7 and  backwards saved pos depth 4
+Num records saved for prev depths: 69739
+Num records saved total: 106995
+
+End searching with start pos: 
+       G 
+      G G 
+     _ G G 
+    G G G G 
+   G G G G G 
+  G G G G G G 
+ G G G G G G G 
+Num pieces left: 27
+Num moves Made: 0
+Move list: 
+Lookup number: 3
+
+
+Solution when removing piece 14
+       _ 
+      _ _ 
+     _ _ _ 
+    _ _ _ _ 
+   _ _ _ _ _ 
+  _ _ _ _ _ _ 
+ _ _ _ _ G _ _ 
+Num pieces left: 1
+Num moves Made: 12
+Move list:   0-14  21-7  16-0-14  30-16  24-8  35-21-7  44-30  39-23-37  42-44-30-14-0-16  46-30  40-24-8-22-38  48-46-30-28-44-46
+Lookup number: 2
+
+
+End of search with depth 1 and triangle length 7
+Num records saved for prev depths: 0
+Num records saved total: 1
+End of search with depth 2 and triangle length 7
+Num records saved for prev depths: 1
+Num records saved total: 2
+End of search with depth 3 and triangle length 7
+Num records saved for prev depths: 2
+Num records saved total: 5
+End of search with depth 4 and triangle length 7
+Num records saved for prev depths: 5
+Num records saved total: 33
+
+Start searching with the backwards positions Depth 4 away from the answer:
+
+DEBUG: trying depth 5 with backwards saved pos
+End of search with depth 5 and triangle length 7 and  backwards saved pos depth 4
+Num records saved for prev depths: 0
+Num records saved total: 1
+DEBUG: trying depth 6 with backwards saved pos
+End of search with depth 6 and triangle length 7 and  backwards saved pos depth 4
+Num records saved for prev depths: 1
+Num records saved total: 2
+DEBUG: trying depth 7 with backwards saved pos
+End of search with depth 7 and triangle length 7 and  backwards saved pos depth 4
+Num records saved for prev depths: 2
+Num records saved total: 5
+DEBUG: trying depth 8 with backwards saved pos
+End of search with depth 8 and triangle length 7 and  backwards saved pos depth 4
+Num records saved for prev depths: 5
+Num records saved total: 33
+DEBUG: trying depth 9 with backwards saved pos
+End of search with depth 9 and triangle length 7 and  backwards saved pos depth 4
+Num records saved for prev depths: 33
+Num records saved total: 244
+DEBUG: trying depth 10 with backwards saved pos
+End of search with depth 10 and triangle length 7 and  backwards saved pos depth 4
+Num records saved for prev depths: 244
+Num records saved total: 1916
+DEBUG: trying depth 11 with backwards saved pos
+End of search with depth 11 and triangle length 7 and  backwards saved pos depth 4
+Num records saved for prev depths: 1916
+Num records saved total: 13633
+DEBUG: trying depth 12 with backwards saved pos
+End of search with depth 12 and triangle length 7 and  backwards saved pos depth 4
+Num records saved for prev depths: 13633
+Num records saved total: 78417
+DEBUG: trying depth 13 with backwards saved pos
+End of search with depth 13 and triangle length 7 and  backwards saved pos depth 4
+Num records saved for prev depths: 78417
+Num records saved total: 335529
+DEBUG: trying depth 14 with backwards saved pos
+End of search with depth 14 and triangle length 7 and  backwards saved pos depth 4
+Num records saved for prev depths: 335529
+Num records saved total: 1025029
+DEBUG: trying depth 15 with backwards saved pos
+End of search with depth 15 and triangle length 7 and  backwards saved pos depth 4
+Num records saved for prev depths: 1025029
+Num records saved total: 2245500
+
+End searching with start pos: 
+       G 
+      G G 
+     G _ G 
+    G G G G 
+   G G G G G 
+  G G G G G G 
+ G G G G G G G 
+Num pieces left: 27
+Num moves Made: 0
+Move list: 
+Lookup number: 4
+
+
+No solution when removing piece 15
+
+SKIPING (2, 2)
+End of search with depth 1 and triangle length 7
+Num records saved for prev depths: 0
+Num records saved total: 1
+End of search with depth 2 and triangle length 7
+Num records saved for prev depths: 1
+Num records saved total: 3
+End of search with depth 3 and triangle length 7
+Num records saved for prev depths: 3
+Num records saved total: 10
+End of search with depth 4 and triangle length 7
+Num records saved for prev depths: 10
+Num records saved total: 57
+
+Start searching with the backwards positions Depth 4 away from the answer:
+
+DEBUG: trying depth 5 with backwards saved pos
+End of search with depth 5 and triangle length 7 and  backwards saved pos depth 4
+Num records saved for prev depths: 0
+Num records saved total: 1
+DEBUG: trying depth 6 with backwards saved pos
+End of search with depth 6 and triangle length 7 and  backwards saved pos depth 4
+Num records saved for prev depths: 1
+Num records saved total: 3
+DEBUG: trying depth 7 with backwards saved pos
+End of search with depth 7 and triangle length 7 and  backwards saved pos depth 4
+Num records saved for prev depths: 3
+Num records saved total: 10
+DEBUG: trying depth 8 with backwards saved pos
+End of search with depth 8 and triangle length 7 and  backwards saved pos depth 4
+Num records saved for prev depths: 10
+Num records saved total: 57
+DEBUG: trying depth 9 with backwards saved pos
+End of search with depth 9 and triangle length 7 and  backwards saved pos depth 4
+Num records saved for prev depths: 57
+Num records saved total: 414
+DEBUG: trying depth 10 with backwards saved pos
+End of search with depth 10 and triangle length 7 and  backwards saved pos depth 4
+Num records saved for prev depths: 414
+Num records saved total: 3199
+DEBUG: trying depth 11 with backwards saved pos
+End of search with depth 11 and triangle length 7 and  backwards saved pos depth 4
+Num records saved for prev depths: 3199
+Num records saved total: 23414
+DEBUG: trying depth 12 with backwards saved pos
+End of search with depth 12 and triangle length 7 and  backwards saved pos depth 4
+Num records saved for prev depths: 23414
+Num records saved total: 141768
+DEBUG: trying depth 13 with backwards saved pos
+End of search with depth 13 and triangle length 7 and  backwards saved pos depth 4
+Num records saved for prev depths: 141768
+Num records saved total: 637920
+DEBUG: trying depth 14 with backwards saved pos
+End of search with depth 14 and triangle length 7 and  backwards saved pos depth 4
+Num records saved for prev depths: 637920
+Num records saved total: 1986047
+DEBUG: trying depth 15 with backwards saved pos
+End of search with depth 15 and triangle length 7 and  backwards saved pos depth 4
+Num records saved for prev depths: 1986047
+Num records saved total: 4186214
+
+End searching with start pos: 
+       G 
+      G G 
+     G G G 
+    _ G G G 
+   G G G G G 
+  G G G G G G 
+ G G G G G G G 
+Num pieces left: 27
+Num moves Made: 0
+Move list: 
+Lookup number: 6
+
+
+No solution when removing piece 21
+
+End of search with depth 1 and triangle length 7
+Num records saved for prev depths: 0
+Num records saved total: 1
+End of search with depth 2 and triangle length 7
+Num records saved for prev depths: 1
+Num records saved total: 5
+End of search with depth 3 and triangle length 7
+Num records saved for prev depths: 5
+Num records saved total: 25
+End of search with depth 4 and triangle length 7
+Num records saved for prev depths: 25
+Num records saved total: 174
+
+Start searching with the backwards positions Depth 4 away from the answer:
+
+DEBUG: trying depth 5 with backwards saved pos
+End of search with depth 5 and triangle length 7 and  backwards saved pos depth 4
+Num records saved for prev depths: 0
+Num records saved total: 1
+DEBUG: trying depth 6 with backwards saved pos
+End of search with depth 6 and triangle length 7 and  backwards saved pos depth 4
+Num records saved for prev depths: 1
+Num records saved total: 5
+DEBUG: trying depth 7 with backwards saved pos
+End of search with depth 7 and triangle length 7 and  backwards saved pos depth 4
+Num records saved for prev depths: 5
+Num records saved total: 25
+DEBUG: trying depth 8 with backwards saved pos
+End of search with depth 8 and triangle length 7 and  backwards saved pos depth 4
+Num records saved for prev depths: 25
+Num records saved total: 174
+DEBUG: trying depth 9 with backwards saved pos
+End of search with depth 9 and triangle length 7 and  backwards saved pos depth 4
+Num records saved for prev depths: 174
+Num records saved total: 1340
+DEBUG: trying depth 10 with backwards saved pos
+End of search with depth 10 and triangle length 7 and  backwards saved pos depth 4
+Num records saved for prev depths: 1340
+Num records saved total: 10226
+DEBUG: trying depth 11 with backwards saved pos
+End of search with depth 11 and triangle length 7 and  backwards saved pos depth 4
+Num records saved for prev depths: 10226
+Num records saved total: 69504
+DEBUG: trying depth 12 with backwards saved pos
+DEBUG: FOUND BRIDGE!
+       _ 
+      _ G 
+     _ _ G 
+    _ _ _ _ 
+   _ G _ G _ 
+  _ G G G G _ 
+ G G _ G G G G 
+Num pieces left: 14
+Num moves Made: 8
+Move list:   24-22  21-23  38-22  14-30  0-14  40-24-22-38  44-30  35-21-7-23-37
+Lookup number: 4957044
+
+FINAL SOLUTION
+       _ 
+      _ _ 
+     G _ _ 
+    _ _ _ _ 
+   _ _ _ _ _ 
+  _ _ _ _ _ _ 
+ _ _ _ _ _ _ _ 
+Num pieces left: 1
+Num moves Made: 12
+Move list:   24-22  21-23  38-22  14-30  0-14  40-24-22-38  44-30  35-21-7-23-37  42-44-30-32  46-30  8-24-40-38-22  48-46-44-28-30-14
+Lookup number: 2
+
+End of search with depth 12 and triangle length 7 and  backwards saved pos depth 4
+Num records saved for prev depths: 69504
+Num records saved total: 228489
+
+End searching with start pos: 
+       G 
+      G G 
+     G G G 
+    G _ G G 
+   G G G G G 
+  G G G G G G 
+ G G G G G G G 
+Num pieces left: 27
+Num moves Made: 0
+Move list: 
+Lookup number: 7
+
+
+Solution when removing piece 22
+       _ 
+      _ _ 
+     G _ _ 
+    _ _ _ _ 
+   _ _ _ _ _ 
+  _ _ _ _ _ _ 
+ _ _ _ _ _ _ _ 
+Num pieces left: 1
+Num moves Made: 12
+Move list:   24-22  21-23  38-22  14-30  0-14  40-24-22-38  44-30  35-21-7-23-37  42-44-30-32  46-30  8-24-40-38-22  48-46-44-28-30-14
+Lookup number: 2
+
+
+SKIPING (3, 2)
+SKIPING (3, 3)
+SKIPING (4, 0)
+SKIPING (4, 1)
+End of search with depth 1 and triangle length 7
+Num records saved for prev depths: 0
+Num records saved total: 1
+End of search with depth 2 and triangle length 7
+Num records saved for prev depths: 1
+Num records saved total: 2
+End of search with depth 3 and triangle length 7
+Num records saved for prev depths: 2
+Num records saved total: 9
+End of search with depth 4 and triangle length 7
+Num records saved for prev depths: 9
+Num records saved total: 61
+
+Start searching with the backwards positions Depth 4 away from the answer:
+
+DEBUG: trying depth 5 with backwards saved pos
+End of search with depth 5 and triangle length 7 and  backwards saved pos depth 4
+Num records saved for prev depths: 0
+Num records saved total: 1
+DEBUG: trying depth 6 with backwards saved pos
+End of search with depth 6 and triangle length 7 and  backwards saved pos depth 4
+Num records saved for prev depths: 1
+Num records saved total: 2
+DEBUG: trying depth 7 with backwards saved pos
+End of search with depth 7 and triangle length 7 and  backwards saved pos depth 4
+Num records saved for prev depths: 2
+Num records saved total: 9
+DEBUG: trying depth 8 with backwards saved pos
+End of search with depth 8 and triangle length 7 and  backwards saved pos depth 4
+Num records saved for prev depths: 9
+Num records saved total: 61
+DEBUG: trying depth 9 with backwards saved pos
+End of search with depth 9 and triangle length 7 and  backwards saved pos depth 4
+Num records saved for prev depths: 61
+Num records saved total: 496
+DEBUG: trying depth 10 with backwards saved pos
+End of search with depth 10 and triangle length 7 and  backwards saved pos depth 4
+Num records saved for prev depths: 496
+Num records saved total: 4067
+DEBUG: trying depth 11 with backwards saved pos
+End of search with depth 11 and triangle length 7 and  backwards saved pos depth 4
+Num records saved for prev depths: 4067
+Num records saved total: 30069
+DEBUG: trying depth 12 with backwards saved pos
+End of search with depth 12 and triangle length 7 and  backwards saved pos depth 4
+Num records saved for prev depths: 30069
+Num records saved total: 180121
+DEBUG: trying depth 13 with backwards saved pos
+End of search with depth 13 and triangle length 7 and  backwards saved pos depth 4
+Num records saved for prev depths: 180121
+Num records saved total: 792466
+DEBUG: trying depth 14 with backwards saved pos
+End of search with depth 14 and triangle length 7 and  backwards saved pos depth 4
+Num records saved for prev depths: 792466
+Num records saved total: 2386333
+DEBUG: trying depth 15 with backwards saved pos
+End of search with depth 15 and triangle length 7 and  backwards saved pos depth 4
+Num records saved for prev depths: 2386333
+Num records saved total: 4839463
+
+End searching with start pos: 
+       G 
+      G G 
+     G G G 
+    G G G G 
+   G G _ G G 
+  G G G G G G 
+ G G G G G G G 
+Num pieces left: 27
+Num moves Made: 0
+Move list: 
+Lookup number: 12
+
+
+No solution when removing piece 30
+
+SKIPING (4, 3)
+SKIPING (4, 4)
+SKIPING (5, 0)
+SKIPING (5, 1)
+SKIPING (5, 2)
+SKIPING (5, 3)
+SKIPING (5, 4)
+SKIPING (5, 5)
+SKIPING (6, 0)
+SKIPING (6, 1)
+SKIPING (6, 2)
+SKIPING (6, 3)
+SKIPING (6, 4)
+SKIPING (6, 5)
+SKIPING (6, 6)
