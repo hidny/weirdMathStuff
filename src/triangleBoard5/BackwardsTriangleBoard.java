@@ -494,7 +494,6 @@ public class BackwardsTriangleBoard {
 		return triangle.length;
 	}
 	
-	
 	private static void TESTcompareBoardsForTesting(BackwardsTriangleBoard a, BackwardsTriangleBoard b) {
 		if(a.length() != b.length()) {
 			System.out.println("ERROR: not even the same length");

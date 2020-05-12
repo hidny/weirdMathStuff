@@ -179,9 +179,7 @@ public class TriangleSolveGetPosDepthDAwayFromSolution {
 			return true;
 		}
 
-		ArrayList<String> moves;
-
-		moves = board.getFullBackwardsMoves();
+		ArrayList<String> moves = board.getNecessaryFullBackwardsMovesToCheck();
 		
 		/*//TODO:
 		 * put getNecessaryFullBackwardsMovesToCheck is a slow filter, put it where the positions aren't being saved anymore
