@@ -98,11 +98,11 @@ public class TriangleSolveOptimizedTrial {
 	//This is looking for just 1 solution...
 	// TODO: try finding all optimal solutions later...
 
-	public static final int LENGTH = 7;
+	public static final int LENGTH = 6;
 
-	public static int MAX_DEPTH_TOTAL = 12;
+	public static int MAX_DEPTH_TOTAL = 13;
 	public static int MEM_DEPTH_FORWARDS =7;
-	public static int MEM_DEPTH_BACKWARDS = 4;
+	public static int MEM_DEPTH_BACKWARDS = 3;
 
 	
 	public static void main(String args[]) {
@@ -124,7 +124,7 @@ public class TriangleSolveOptimizedTrial {
 				
 				long lookup = boardStart.getLookupNumber();
 				
-				if(LENGTH >=7 && startingPositionSearched.contains(lookup)) {
+				if(startingPositionSearched.contains(lookup)) {
 					System.out.println("SKIPING (" + i + ", " + j + ")");
 					continue;
 				} else {
@@ -241,8 +241,6 @@ public class TriangleSolveOptimizedTrial {
 		
 	}
 	
-	
-	
 	public static HashSet<Long> backwardsSolutionsCache[];
 	
 	public static void initBackwardsSolutionCache(int boardLength) {
@@ -261,14 +259,14 @@ public class TriangleSolveOptimizedTrial {
 
 		HashSet<Long> endingPositionSearched = new HashSet<Long>();
 		
+		int debugNumRecordSavedPrevDepth = 0;
+		
 		TriangleBoard answer = null;
 		for(int i=1; true; i++) {
-			
 			
 			if(i > MEM_DEPTH_BACKWARDS) {
 				break;
 			}
-			
 			
 			//Instead of doing an init after every iteration, just save it and reuse it.
 			// I don't know how much time it will save, but it's probably better than nothing.
@@ -276,6 +274,12 @@ public class TriangleSolveOptimizedTrial {
 			//initRecordedTriangles(board.length());
 			
 			answer = getBestMoveList(board, i, false);
+			
+			System.out.println("End of search with depth " + i + " and triangle length " + board.length());
+			System.out.println("Num records saved for prev depths: " + debugNumRecordSavedPrevDepth);
+			System.out.println("Num records saved total: " + numRecordsSavedForDEBUG);
+			
+			debugNumRecordSavedPrevDepth = numRecordsSavedForDEBUG;
 			if(answer != null) {
 				break;
 			}
@@ -311,6 +315,8 @@ public class TriangleSolveOptimizedTrial {
 				//Need to reinit recorded triangle because we're starting over from depth 1:
 				initRecordedTriangles(board.length());
 				
+				debugNumRecordSavedPrevDepth = 0;
+				
 				for(int depth=MEM_DEPTH_BACKWARDS + 1; depth<= MAX_DEPTH_TOTAL; depth++) {
 					System.out.println("DEBUG: trying depth " + depth + " with backwards saved pos");
 					
@@ -321,6 +327,12 @@ public class TriangleSolveOptimizedTrial {
 					if(answer != null) {
 						break;
 					}
+					
+
+					System.out.println("End of search with depth " + depth + " and triangle length " + board.length() + " and  backwards saved pos depth " + MEM_DEPTH_BACKWARDS);
+					System.out.println("Num records saved for prev depths: " + debugNumRecordSavedPrevDepth);
+					System.out.println("Num records saved total: " + numRecordsSavedForDEBUG);
+					debugNumRecordSavedPrevDepth = numRecordsSavedForDEBUG;
 				}
 			}
 		}
@@ -337,7 +349,6 @@ public class TriangleSolveOptimizedTrial {
 
 			//System.out.println("Current depth: " + getMaxDepthUsed(board, curMaxDepth) + " out of " + MAX_DEPTH);
 
-			//For now, it's stuck at 6680931 and still running fast, so this is good
 			//TODO: see what happens after implementing conway math...
 			//System.out.println("Num records saved: " + numRecordsSavedForDEBUG);
 			//board.draw();
@@ -358,14 +369,8 @@ public class TriangleSolveOptimizedTrial {
 			currentlyFoundSolution = true;
 			System.out.println("DEBUG: FOUND BRIDGE!");
 			board.draw();
-			System.out.println(board.getLookupNumber());
 			
-			System.out.println("Depth: " + curMaxDepth);
 			curMaxDepth += MEM_DEPTH_BACKWARDS;
-			
-			System.out.println("Depth after: " + curMaxDepth);
-			
-			
 		} else if(curMaxDepth == 0){
 			return null;
 		}
@@ -404,10 +409,6 @@ public class TriangleSolveOptimizedTrial {
 			if(recordedTriangles[board.getNumPiecesLeft()].containsKey(lookup) == false) {
 				recordedTriangles[board.getNumPiecesLeft()].put(lookup, new triangleRecord(board.getNumMovesMade(), board, curMaxDepth));
 				
-				if(lookup == 5853524) {
-					System.out.println("Debug AHHH");
-					board.draw();
-				}
 				numRecordsSavedForDEBUG++;
 			}
 		}
