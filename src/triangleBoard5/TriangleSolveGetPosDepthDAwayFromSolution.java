@@ -43,7 +43,6 @@ public class TriangleSolveGetPosDepthDAwayFromSolution {
 				long lookupBackwards = backwardsBoardStart.getLookupNumber();
 				
 				if(endingPositionSearched.contains(lookupBackwards)) {
-					//TODO: is this even needed? ... TSET and check
 					continue;
 				} else {
 					endingPositionSearched.add(lookupBackwards);
@@ -193,6 +192,7 @@ public class TriangleSolveGetPosDepthDAwayFromSolution {
 					
 				//System.out.println("Cutting short 0");
 				return false;
+
 			} else if(board.getNumMovesMade() == previouslyFoundNode.getNumMovesToGetToPos()){
 				
 				if(previouslyFoundNode.getDepthUsedToFindRecord() == DEPTH_USED_IN_SEARCH) {
@@ -219,9 +219,9 @@ public class TriangleSolveGetPosDepthDAwayFromSolution {
 		} else {
 
 			
-			numPosSaveTotal++;
 			savedPosForCurrentSearchDir[board.getNumPiecesLeft()].put(lookup, new triangleRecord(board.getNumMovesMade(), board, DEPTH_USED_IN_SEARCH));
-
+			numPosSaveTotal++;
+			
 			if(numPosSaveTotal > STANDARD_MEM_LIMIT) {
 				return true;
 			}
@@ -241,8 +241,9 @@ public class TriangleSolveGetPosDepthDAwayFromSolution {
 			return false;
 		}
 
-		//ArrayList<String> moves = board.getFullBackwardsMovesExcludingRepeatMoves();
-		ArrayList<String> moves = board.getNecessaryFullBackwardsMovesToCheck();
+		ArrayList<String> moves = board.getFullBackwardsMovesExcludingRepeatMoves();
+		//ArrayList<String> moves = board.getNecessaryFullBackwardsMovesToCheck();
+
 		/*//TODO:
 		 * put getNecessaryFullBackwardsMovesToCheck is a slow filter, put it where the positions aren't being saved anymore
 		 * This isn't the right place!
