@@ -241,12 +241,12 @@ public class TriangleSolveGetPosDepthDAwayFromSolution {
 			return false;
 		}
 
-		ArrayList<String> moves = board.getFullBackwardsMovesExcludingRepeatMoves();
-		
+		//ArrayList<String> moves = board.getFullBackwardsMovesExcludingRepeatMoves();
+		ArrayList<String> moves = board.getNecessaryFullBackwardsMovesToCheck();
 		/*//TODO:
 		 * put getNecessaryFullBackwardsMovesToCheck is a slow filter, put it where the positions aren't being saved anymore
 		 * This isn't the right place!
-		 * 
+		 *
 		if(DO_GET_NECESSARY_MOVES && not_recording_positions_next_move) {
 			moves = board.getNecessaryFullBackwardsMovesToCheck();
 		} else {

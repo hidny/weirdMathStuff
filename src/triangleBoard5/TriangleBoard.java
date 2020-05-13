@@ -223,6 +223,18 @@ public class TriangleBoard {
 				
 				boolean dontNeedToCheck = false;
 				
+				/*//TODO: put into TEST function
+				//SANITY TEST
+				if(this.prevLocation.moveList.contains(fullList.get(i))) {
+					if(this.prevLocation.doOneMove(fullList.get(i)).couldMoveForwards(prevJump)
+						!= this.prevLocation.doOneMove(fullList.get(i)).getFullMovesIncludingRepeatMoves().contains(prevJump)) {
+						System.out.println("ERROR: couldMove didn't work!");
+						System.exit(1);
+					}
+				}
+				//END SANITY TEST
+				*/
+
 				if(this.prevLocation.moveList.contains(fullList.get(i))
 					&& this.prevLocation.doOneMove(fullList.get(i)).couldMoveForwards(prevJump) ) {
 
@@ -257,7 +269,7 @@ public class TriangleBoard {
 		return neededList;
 	}
 
-	//TODO: maybe use this internally?
+	//WARNING: only use this internally for testing
 	private ArrayList<String> getFullMovesIncludingRepeatMoves() {
 		
 		ArrayList<String> ret = new ArrayList<String>();

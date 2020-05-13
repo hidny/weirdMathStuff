@@ -102,8 +102,8 @@ public class TriangleSolveOptimizedTrial {
 	public static final int LENGTH = 7;
 
 	public static int MAX_DEPTH_TOTAL = 12;
-	public static int MEM_DEPTH_BACKWARDS = 3;
-	public static int MEM_DEPTH_FORWARDS = Math.min(5, MAX_DEPTH_TOTAL - 1 - MEM_DEPTH_BACKWARDS);
+	public static int MEM_DEPTH_BACKWARDS = 5;
+	public static int MEM_DEPTH_FORWARDS = Math.min(9, MAX_DEPTH_TOTAL - 1 - MEM_DEPTH_BACKWARDS);
 
 	
 	public static void main(String args[]) {
@@ -281,7 +281,8 @@ public class TriangleSolveOptimizedTrial {
 			// I don't know how much time it will save, but it's probably better than nothing.
 			//TODO: testing
 			//initRecordedTriangles(board.length());
-			
+
+			DEPTH_USED_IN_SEARCH = i;
 			answer = getBestMoveList(board, i, false);
 			
 			System.out.println("End of search with depth " + i + " and triangle length " + board.length());
@@ -311,7 +312,7 @@ public class TriangleSolveOptimizedTrial {
 			answer = getBestMoveList(board, depth - MEM_DEPTH_BACKWARDS, false);
 			
 			
-			System.out.println("End of search with depth " + depth + " and triangle length " + board.length() + " and  backwards saved pos depth " + MEM_DEPTH_BACKWARDS);
+			System.out.println("End of search with depth " + depth + " and triangle length " + board.length() + " and backwards saved pos depth " + MEM_DEPTH_BACKWARDS);
 			System.out.println("Num records saved for prev depths: " + debugNumRecordSavedPrevDepth);
 			System.out.println("Num records saved total: " + numRecordsSavedForDEBUG);
 			debugNumRecordSavedPrevDepth = numRecordsSavedForDEBUG;
@@ -349,6 +350,7 @@ public class TriangleSolveOptimizedTrial {
 		if(currentlyFoundSolution == false &&
 				DEPTH_USED_IN_SEARCH != curMaxDepth + board.getNumMovesMade()) {
 			System.out.println("ERROR: incorrect number of moves made in TriangleSolveOptimizedTrial");
+			System.exit(1);
 		}
 		//END SANITY CHECK
 		
@@ -411,6 +413,9 @@ public class TriangleSolveOptimizedTrial {
 		}
 			
 		//END CHECKPOINT LOGIC
+		
+		//TODO: use when no longer saving board pos:
+		//ArrayList<String> moves = board.getNecessaryFullBackwardsMovesToCheck();
 		
 		ArrayList<String> moves = board.getFullMovesExcludingRepeatMoves();
 		

@@ -203,6 +203,18 @@ public class BackwardsTriangleBoard {
 				
 				boolean dontNeedToCheck = false;
 				
+				/*//TODO: put into TEST function
+				//SANITY TEST
+				if(this.prevLocation.moveList.contains(fullList.get(i))) {
+					if(this.prevLocation.doOneBackwardsMove(fullList.get(i)).couldMoveBackwards(prevJump)
+						!= this.prevLocation.doOneBackwardsMove(fullList.get(i)).getFullBackwardsMovesIncludingRepeatMoves().contains(prevJump)) {
+						System.out.println("ERROR: couldMoveBackwards didn't work!");
+						System.exit(1);
+					}
+				}
+				//END SANITY TEST
+				*/
+				
 				if(this.prevLocation.moveList.contains(fullList.get(i))
 					&& this.prevLocation.doOneBackwardsMove(fullList.get(i)).couldMoveBackwards(prevJump) ) {
 
@@ -237,7 +249,8 @@ public class BackwardsTriangleBoard {
 		return neededList;
 	}
 
-	public ArrayList<String> getFullBackwardsMovesIncludingRepeatMoves() {
+	//WARNING: ONLY USE INTERNALLY
+	private ArrayList<String> getFullBackwardsMovesIncludingRepeatMoves() {
 		
 		ArrayList<String> ret = new ArrayList<String>();
 		
@@ -327,6 +340,8 @@ public class BackwardsTriangleBoard {
 				finalLandingJ = toj;
 				
 				if(triangle[finalLandingI][finalLandingJ] == false) {
+					System.exit(1);
+					//For some reason, this return statement never gets used, but I think it makes sense, so I'm keeping it:
 					return false;
 				}
 			}
