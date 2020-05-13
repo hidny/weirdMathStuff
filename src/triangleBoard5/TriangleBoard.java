@@ -147,7 +147,6 @@ public class TriangleBoard {
 		System.out.println("Num moves Made: " + numMovesMade);
 		System.out.println("Move list: " + historicMoveList);
 		System.out.println("Lookup number: " + this.getLookupNumber());
-		System.out.println();
 	}
 	
 

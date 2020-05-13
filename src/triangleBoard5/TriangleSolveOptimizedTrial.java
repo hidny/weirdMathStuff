@@ -99,10 +99,10 @@ public class TriangleSolveOptimizedTrial {
 	// TODO: try finding all optimal solutions later...
 
 	//TODO: use pen & paper to figure out which layer actually needs getNecessaryFilter
-	public static final int LENGTH = 7;
+	public static final int LENGTH = 6;
 
 	public static int MAX_DEPTH_TOTAL = 12;
-	public static int MEM_DEPTH_BACKWARDS = 5;
+	public static int MEM_DEPTH_BACKWARDS = 3;
 	public static int MEM_DEPTH_FORWARDS = Math.min(9, MAX_DEPTH_TOTAL - 1 - MEM_DEPTH_BACKWARDS);
 
 	
@@ -127,6 +127,7 @@ public class TriangleSolveOptimizedTrial {
 		
 		System.out.println("Trying " + LENGTH + " in TriangleSolveOptimizedTrial5");
 		System.out.println("Giving up after reaching a max depth of " + MAX_DEPTH_TOTAL);
+		System.out.println();
 
 		TriangleBoard boardStart;
 		
@@ -139,6 +140,8 @@ public class TriangleSolveOptimizedTrial {
 				
 				if(startingPositionSearched.contains(lookup)) {
 					System.out.println("SKIPING (" + i + ", " + j + ")");
+					System.out.println();
+					System.out.println();
 					continue;
 				} else {
 					startingPositionSearched.add(lookup);
@@ -155,15 +158,18 @@ public class TriangleSolveOptimizedTrial {
 					boardSol = getBestMoveList(boardStart);
 				}
 				
+
+				
 				if(boardSol != null) {
 					System.out.println("Solution when removing piece " + (i * LENGTH + j));
 					boardSol.draw();
 					System.out.println();
+					System.out.println();
 				} else {
 					System.out.println("No solution when removing piece " + (i * LENGTH + j));
 					System.out.println();
+					System.out.println();
 				}
-						
 			}
 		}
 	}
@@ -270,6 +276,8 @@ public class TriangleSolveOptimizedTrial {
 
 		int debugNumRecordSavedPrevDepth = 0;
 		
+		System.out.println("Start search for solution starting with:\n"  + board);
+		
 		TriangleBoard answer = null;
 		for(int i=1; true; i++) {
 			
@@ -323,10 +331,6 @@ public class TriangleSolveOptimizedTrial {
 			}
 		}
 		
-		System.out.println();
-		System.out.println("End searching with start pos: ");
-		board.draw();
-		System.out.println();
 
 		return answer;
 		

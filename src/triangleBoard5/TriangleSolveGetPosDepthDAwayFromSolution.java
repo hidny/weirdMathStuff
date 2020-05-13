@@ -98,7 +98,7 @@ public class TriangleSolveGetPosDepthDAwayFromSolution {
 		
 		for(saveDepth = 0; saveDepth<=maxDepth; saveDepth++) {
 			
-			System.out.println("getPositionDepthNAwayFromGoal TRYING saveDepth of " + saveDepth + " (endi = " + endi + ", endj = " + endj + ")");
+			System.out.println("getPositionDepthNAwayFromGoal saveDepth of " + saveDepth + " (endi = " + endi + ", endj = " + endj + ")");
 
 			numPosSavedForPreviousDepths = numPosSaveTotal;
 			
