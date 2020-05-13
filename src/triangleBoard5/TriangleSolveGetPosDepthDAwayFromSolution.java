@@ -149,6 +149,7 @@ public class TriangleSolveGetPosDepthDAwayFromSolution {
 		board = new BackwardsTriangleBoard(triangleLength);
 		board.addPiece(board.getCode(endi, endj));
 
+		DEPTH_USED_IN_SEARCH = saveDepth;
 		boolean memLimitReached = doBackwardSearchAndSaveDeepAtDepthD(board, saveDepth);
 
 		if(memLimitReached) {
@@ -157,18 +158,22 @@ public class TriangleSolveGetPosDepthDAwayFromSolution {
 			return false;
 		}
 	}
+
+	private static int DEPTH_USED_IN_SEARCH = -1;
 	
 	private static boolean doBackwardSearchAndSaveDeepAtDepthD(BackwardsTriangleBoard board, int curMaxDepth) {
 	
-		if(board.getNumMovesMade() > utilFunctions.getMaxDepthUsed(board, curMaxDepth)) {
-			System.out.println("WHAT?");
+		//SANITY CHECK
+		if(DEPTH_USED_IN_SEARCH != curMaxDepth + board.getNumMovesMade()) {
+			System.out.println("ERROR: incorrect number of moves made in TriangleSolveOptimizedTrial");
 			System.exit(1);
 		}
+		//END SANITY CHECK
 		
 		numFunctionCallForDEBUG++;
 		if(numFunctionCallForDEBUG % 10000000 == 0) {
 			//
-			System.out.println("Mid-way backwards Search: Current depth remaining: " + curMaxDepth + " out of " + utilFunctions.getMaxDepthUsed(board, curMaxDepth));
+			System.out.println("Mid-way backwards Search: Current depth remaining: " + curMaxDepth + " out of " + DEPTH_USED_IN_SEARCH);
 
 			System.out.println("Mid-way backwards Search:  search with depth " + curMaxDepth + " and triangle length " + board.length());
 			System.out.println("Mid-way backwards Search: Num records saved for prev depths: " + numPosSavedForPreviousDepths);
@@ -190,13 +195,12 @@ public class TriangleSolveGetPosDepthDAwayFromSolution {
 				return false;
 			} else if(board.getNumMovesMade() == previouslyFoundNode.getNumMovesToGetToPos()){
 				
-				//TODO: getMaxDepthUsed doesn't always work and might be cause for concern/confusion
-				if(previouslyFoundNode.getDepthUsedToFindRecord() == utilFunctions.getMaxDepthUsed(board, curMaxDepth)) {
+				if(previouslyFoundNode.getDepthUsedToFindRecord() == DEPTH_USED_IN_SEARCH) {
 					return false;
 				} else if(previouslyFoundNode.getDepthUsedToFindRecord() == triangleRecord.FOUND_IN_PREV_SEARCH_SAME_DEPTH) {
 					return false;
 				} else {
-					previouslyFoundNode.updateNumMovesToGetToPos(board.getNumMovesMade(), board, curMaxDepth);
+					previouslyFoundNode.updateNumMovesToGetToPos(board.getNumMovesMade(), board, DEPTH_USED_IN_SEARCH);
 				}
 				
 				
@@ -207,7 +211,7 @@ public class TriangleSolveGetPosDepthDAwayFromSolution {
 					System.out.println(board);
 					System.exit(1);
 				} else {
-					previouslyFoundNode.updateNumMovesToGetToPos(board.getNumMovesMade(), board, curMaxDepth);
+					previouslyFoundNode.updateNumMovesToGetToPos(board.getNumMovesMade(), board, DEPTH_USED_IN_SEARCH);
 				}
 			}
 				
@@ -216,7 +220,7 @@ public class TriangleSolveGetPosDepthDAwayFromSolution {
 
 			
 			numPosSaveTotal++;
-			savedPosForCurrentSearchDir[board.getNumPiecesLeft()].put(lookup, new triangleRecord(board.getNumMovesMade(), board, curMaxDepth));
+			savedPosForCurrentSearchDir[board.getNumPiecesLeft()].put(lookup, new triangleRecord(board.getNumMovesMade(), board, DEPTH_USED_IN_SEARCH));
 
 			if(numPosSaveTotal > STANDARD_MEM_LIMIT) {
 				return true;
@@ -233,13 +237,11 @@ public class TriangleSolveGetPosDepthDAwayFromSolution {
 			return false;
 			
 		} else if(board.getNumPiecesLeft() == utilFunctions.getTriangleNumber(board.length()) - 1) {
-			//System.out.println("WARNING: tried to save depth " + utilFunctions.getMaxDepthUsed(board, curMaxDepth) + "and found a solution");
-			//System.exit(1);
 			//If found solution, let the forward search find it.
 			return false;
 		}
 
-		ArrayList<String> moves = board.getFullBackwardsMoves();
+		ArrayList<String> moves = board.getFullBackwardsMovesExcludingRepeatMoves();
 		
 		/*//TODO:
 		 * put getNecessaryFullBackwardsMovesToCheck is a slow filter, put it where the positions aren't being saved anymore

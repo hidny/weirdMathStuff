@@ -7,6 +7,8 @@ public class BackwardsTriangleBoard {
 	//Only hard-copies allow
 	
 	public static void main(String args[]) {
+		
+		
 		//TESTING code:
 		BackwardsTriangleBoard backwardsBoard = new BackwardsTriangleBoard(4);
 		
@@ -185,7 +187,7 @@ public class BackwardsTriangleBoard {
 	//unless we do a forward save and backwards search:
 	public ArrayList<String> getNecessaryFullBackwardsMovesToCheck() {
 		
-		ArrayList<String> fullList = getFullBackwardsMoves();
+		ArrayList<String> fullList = getFullBackwardsMovesExcludingRepeatMoves();
 		ArrayList<String> neededList = new ArrayList<String>();
 		
 		if(this.prevLocation == null) {
@@ -235,8 +237,7 @@ public class BackwardsTriangleBoard {
 		return neededList;
 	}
 
-	
-	public ArrayList<String> getFullBackwardsMoves() {
+	public ArrayList<String> getFullBackwardsMovesIncludingRepeatMoves() {
 		
 		ArrayList<String> ret = new ArrayList<String>();
 		
@@ -244,6 +245,42 @@ public class BackwardsTriangleBoard {
 			for(int j=0; j<triangle[i].length; j++) {
 				if(triangle[i][j]) {
 					ret.addAll(getPossibleBackwardsMovesFromPosition(i * triangle.length + j));
+				}
+			}
+		}
+		
+		moveList = new HashSet<String>();
+		moveList.addAll(ret);
+		return ret;
+		
+	}
+
+	public ArrayList<String> getFullBackwardsMovesExcludingRepeatMoves() {
+		
+		ArrayList<String> ret = new ArrayList<String>();
+		
+		
+		int lastPegLocation;
+		
+		int lastPegLocationi;
+		int lastPegLocationj;
+		try {
+			lastPegLocation = Integer.parseInt(this.historicMoveList.split("-")[0]);
+			lastPegLocationi = lastPegLocation / triangle.length;
+			lastPegLocationj = lastPegLocation % triangle.length;
+
+		} catch(Exception e) {
+			lastPegLocationi = -1;
+			lastPegLocationj = -1;
+		}
+		
+		
+		for(int i=0; i<triangle.length; i++) {
+			for(int j=0; j<triangle[i].length; j++) {
+				if(triangle[i][j]) {
+					if(i != lastPegLocationi || j != lastPegLocationj ) {
+						ret.addAll(getPossibleBackwardsMovesFromPosition(i * triangle.length + j));
+					}
 				}
 			}
 		}

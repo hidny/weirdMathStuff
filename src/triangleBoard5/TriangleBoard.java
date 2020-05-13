@@ -19,7 +19,7 @@ public class TriangleBoard {
 		board.draw();
 		
 		
-		ArrayList<String> moves = board.getFullMoves();
+		ArrayList<String> moves = board.getFullMovesExcludingRepeatMoves();
 		for(int i=0; i<moves.size(); i++) {
 			System.out.println(moves.get(i));
 		}
@@ -30,7 +30,7 @@ public class TriangleBoard {
 		board.removePiece(15);
 		board.draw();
 		
-		moves = board.getFullMoves();
+		moves = board.getFullMovesExcludingRepeatMoves();
 		for(int i=0; i<moves.size(); i++) {
 			System.out.println(moves.get(i));
 		}
@@ -45,7 +45,7 @@ public class TriangleBoard {
 		System.out.println("***");
 		System.out.println("***");
 		System.out.println("TESTING AFTER 1 move:");
-		moves = board.getFullMoves();
+		moves = board.getFullMovesExcludingRepeatMoves();
 		for(int i=0; i<moves.size(); i++) {
 			System.out.println(moves.get(i));
 		}
@@ -62,7 +62,7 @@ public class TriangleBoard {
 			TriangleBoard tmp = board.doOneMove(moves.get(i));
 			tmp.draw();
 			
-			ArrayList <String> moves2 = tmp.getFullMoves();
+			ArrayList <String> moves2 = tmp.getFullMovesExcludingRepeatMoves();
 
 			for(int j=0; j<moves2.size(); j++) {
 				TriangleBoard tmp2 = tmp.doOneMove(moves2.get(j));
@@ -81,7 +81,7 @@ public class TriangleBoard {
 		board.removePiece(8);
 		board.removePiece(15);
 		
-		moves = board.getFullMoves();
+		moves = board.getFullMovesExcludingRepeatMoves();
 
 		System.out.println("***");
 		System.out.println("***");
@@ -90,7 +90,7 @@ public class TriangleBoard {
 			TriangleBoard tmp = board.doOneMove(moves.get(i));
 			tmp.draw();
 			
-			ArrayList <String> moves2 = tmp.getFullMoves();
+			ArrayList <String> moves2 = tmp.getFullMovesExcludingRepeatMoves();
 
 			for(int j=0; j<moves2.size(); j++) {
 				TriangleBoard tmp2 = tmp.doOneMove(moves2.get(j));
@@ -207,7 +207,7 @@ public class TriangleBoard {
 	//unless we do a forward save and backwards search:
 	public ArrayList<String> getNecessaryFullBackwardsMovesToCheck() {
 		
-		ArrayList<String> fullList = getFullMoves();
+		ArrayList<String> fullList = getFullMovesExcludingRepeatMoves();
 		ArrayList<String> neededList = new ArrayList<String>();
 		
 		if(this.prevLocation == null) {
@@ -257,9 +257,8 @@ public class TriangleBoard {
 		return neededList;
 	}
 
-	
-	
-	public ArrayList<String> getFullMoves() {
+	//TODO: maybe use this internally?
+	private ArrayList<String> getFullMovesIncludingRepeatMoves() {
 		
 		ArrayList<String> ret = new ArrayList<String>();
 		
@@ -267,6 +266,42 @@ public class TriangleBoard {
 			for(int j=0; j<triangle[i].length; j++) {
 				if(triangle[i][j]) {
 					ret.addAll(getPossibleMovesFromPosition(i * triangle.length + j));
+				}
+			}
+		}
+		
+		moveList = new HashSet<String>();
+		moveList.addAll(ret);
+		return ret;
+		
+	}
+	
+	
+	public ArrayList<String> getFullMovesExcludingRepeatMoves() {
+		
+		String moves[] = this.historicMoveList.split(" ");
+		
+		int lastPegLocation;
+		int lastPegLocationi;
+		int lastPegLocationj;
+		try {
+			lastPegLocation = Integer.parseInt(this.historicMoveList.substring(this.historicMoveList.lastIndexOf("-") + 1));
+			lastPegLocationi = lastPegLocation / triangle.length;
+			lastPegLocationj = lastPegLocation % triangle.length;
+
+		} catch(Exception e) {
+			lastPegLocationi = -1;
+			lastPegLocationj = -1;
+		}
+		
+		ArrayList<String> ret = new ArrayList<String>();
+		
+		for(int i=0; i<triangle.length; i++) {
+			for(int j=0; j<triangle[i].length; j++) {
+				if(triangle[i][j]) {
+					if(i != lastPegLocationi || j != lastPegLocationj ) {
+						ret.addAll(getPossibleMovesFromPosition(i * triangle.length + j));
+					}
 				}
 			}
 		}

@@ -99,11 +99,11 @@ public class TriangleSolveOptimizedTrial {
 	// TODO: try finding all optimal solutions later...
 
 	//TODO: use pen & paper to figure out which layer actually needs getNecessaryFilter
-	public static final int LENGTH = 8;
+	public static final int LENGTH = 7;
 
-	public static int MAX_DEPTH_TOTAL = 14;
+	public static int MAX_DEPTH_TOTAL = 12;
 	public static int MEM_DEPTH_BACKWARDS = 3;
-	public static int MEM_DEPTH_FORWARDS = Math.min(9, MAX_DEPTH_TOTAL - 1 - MEM_DEPTH_BACKWARDS);
+	public static int MEM_DEPTH_FORWARDS = Math.min(5, MAX_DEPTH_TOTAL - 1 - MEM_DEPTH_BACKWARDS);
 
 	
 	public static void main(String args[]) {
@@ -186,7 +186,7 @@ public class TriangleSolveOptimizedTrial {
 		
 		TriangleBoard currentBestSol = null;
 		
-		ArrayList<String> moves = board.getFullMoves();
+		ArrayList<String> moves = board.getFullMovesExcludingRepeatMoves();
 		
 		for(int i=0; i<moves.size(); i++) {
 			TriangleBoard possibleBest = getBestMoveListSlow(board.doOneMove(moves.get(i)));
@@ -219,7 +219,7 @@ public class TriangleSolveOptimizedTrial {
 		
 		BackwardsTriangleBoard currentBestSol = null;
 		
-		ArrayList<String> backwardsMoves = board.getFullBackwardsMoves();
+		ArrayList<String> backwardsMoves = board.getFullBackwardsMovesExcludingRepeatMoves();
 		
 		for(int i=0; i<backwardsMoves.size(); i++) {
 			BackwardsTriangleBoard possibleBest = getBestMoveListBackwardsSlow(board.doOneBackwardsMove(backwardsMoves.get(i)));
@@ -307,6 +307,7 @@ public class TriangleSolveOptimizedTrial {
 		for(int depth=MEM_DEPTH_BACKWARDS + 1; depth<= MAX_DEPTH_TOTAL; depth++) {
 			System.out.println("DEBUG: trying depth " + depth + " with backwards saved pos");
 			
+			DEPTH_USED_IN_SEARCH = depth - MEM_DEPTH_BACKWARDS;
 			answer = getBestMoveList(board, depth - MEM_DEPTH_BACKWARDS, false);
 			
 			
@@ -330,18 +331,26 @@ public class TriangleSolveOptimizedTrial {
 		
 	}
 	
+	private static int DEPTH_USED_IN_SEARCH = -1;
+	
 	public static TriangleBoard getBestMoveList(TriangleBoard board, int curMaxDepth, boolean currentlyFoundSolution) {
 		numFunctionCallForDEBUG++;
 		if(numFunctionCallForDEBUG % 1000000 == 0) {
 			//System.out.println("FAST");
 
-			//System.out.println("Current depth: " + getMaxDepthUsed(board, curMaxDepth) + " out of " + MAX_DEPTH);
+			//System.out.println("Current depth: " + DEPTH_USED_IN_SEARCH + " out of " + MAX_DEPTH);
 
 			//TODO: see what happens after implementing conway math...
 			//System.out.println("Num records saved: " + numRecordsSavedForDEBUG);
 			//board.draw();
 		}
 
+		//SANITY CHECK
+		if(currentlyFoundSolution == false &&
+				DEPTH_USED_IN_SEARCH != curMaxDepth + board.getNumMovesMade()) {
+			System.out.println("ERROR: incorrect number of moves made in TriangleSolveOptimizedTrial");
+		}
+		//END SANITY CHECK
 		
 		if(board.getNumPiecesLeft() == 1) {
 			System.out.println("FINAL SOLUTION");
@@ -373,15 +382,15 @@ public class TriangleSolveOptimizedTrial {
 				return null;
 			} else if(board.getNumMovesMade() == previouslyFoundNode.getNumMovesToGetToPos()){
 				
-				if(previouslyFoundNode.getDepthUsedToFindRecord() == utilFunctions.getMaxDepthUsed(board, curMaxDepth)) {
+				if(previouslyFoundNode.getDepthUsedToFindRecord() == DEPTH_USED_IN_SEARCH) {
 					return null;
 				} else {
-					previouslyFoundNode.updateNumMovesToGetToPos(board.getNumMovesMade(), board, curMaxDepth);
+					previouslyFoundNode.updateNumMovesToGetToPos(board.getNumMovesMade(), board, DEPTH_USED_IN_SEARCH);
 				}
 				
 			} else {
 				
-				previouslyFoundNode.updateNumMovesToGetToPos(board.getNumMovesMade(), board, curMaxDepth);
+				previouslyFoundNode.updateNumMovesToGetToPos(board.getNumMovesMade(), board, DEPTH_USED_IN_SEARCH);
 			}
 		}
 		
@@ -395,7 +404,7 @@ public class TriangleSolveOptimizedTrial {
 				|| board.getNumMovesMade() <= MEM_DEPTH_FORWARDS) {
 		
 			if(recordedTriangles[board.getNumPiecesLeft()].containsKey(lookup) == false) {
-				recordedTriangles[board.getNumPiecesLeft()].put(lookup, new triangleRecord(board.getNumMovesMade(), board, curMaxDepth));
+				recordedTriangles[board.getNumPiecesLeft()].put(lookup, new triangleRecord(board.getNumMovesMade(), board, DEPTH_USED_IN_SEARCH));
 				
 				numRecordsSavedForDEBUG++;
 			}
@@ -403,7 +412,7 @@ public class TriangleSolveOptimizedTrial {
 			
 		//END CHECKPOINT LOGIC
 		
-		ArrayList<String> moves = board.getFullMoves();
+		ArrayList<String> moves = board.getFullMovesExcludingRepeatMoves();
 		
 		for(int i=0; i<moves.size(); i++) {
 

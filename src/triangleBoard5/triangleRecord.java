@@ -10,40 +10,40 @@ public class triangleRecord {
 	
 
 
-	public triangleRecord(int numMovesToGetToPos, TriangleBoard board, int curMaxDepth) {
+	public triangleRecord(int numMovesToGetToPos, TriangleBoard board, int depthUsedInSearch) {
 
 		this.numMovesToGetToPos = numMovesToGetToPos;
 		
-		this.depthUsedToFindRecord = utilFunctions.getMaxDepthUsed(board, curMaxDepth);
+		this.depthUsedToFindRecord = depthUsedInSearch;
 
 	}
 
-	public triangleRecord(int numMovesToGetToPos, BackwardsTriangleBoard board, int curMaxDepth) {
+	public triangleRecord(int numMovesToGetToPos, BackwardsTriangleBoard board, int depthUsedInSearch) {
 
 		this.numMovesToGetToPos = numMovesToGetToPos;
 		
-		this.depthUsedToFindRecord = utilFunctions.getMaxDepthUsed(board, curMaxDepth);
+		this.depthUsedToFindRecord = depthUsedInSearch;
 
 	}
 	
-	public void updateNumMovesToGetToPos(int numMovesToGetToPos, TriangleBoard board, int curMaxDepth) {
-		if(numMovesToGetToPos >= this.numMovesToGetToPos && utilFunctions.getMaxDepthUsed(board, curMaxDepth) == depthUsedToFindRecord) {
+	public void updateNumMovesToGetToPos(int numMovesToGetToPos, TriangleBoard board, int depthUsedInSearch) {
+		if(numMovesToGetToPos >= this.numMovesToGetToPos && depthUsedInSearch == depthUsedToFindRecord) {
 			System.err.println("ERROR: updating numMovesToGetThere when there wasn't an improvement");
 			System.exit(1);
 		}
 		
 		this.numMovesToGetToPos = numMovesToGetToPos;
-		this.depthUsedToFindRecord = utilFunctions.getMaxDepthUsed(board, curMaxDepth);
+		this.depthUsedToFindRecord = depthUsedInSearch;
 	}
 	
-	public void updateNumMovesToGetToPos(int numMovesToGetToPos, BackwardsTriangleBoard board, int curMaxDepth) {
-		if(numMovesToGetToPos >= this.numMovesToGetToPos && utilFunctions.getMaxDepthUsed(board, curMaxDepth) == depthUsedToFindRecord) {
+	public void updateNumMovesToGetToPos(int numMovesToGetToPos, BackwardsTriangleBoard board, int depthUsedInSearch) {
+		if(numMovesToGetToPos >= this.numMovesToGetToPos && depthUsedInSearch == depthUsedToFindRecord) {
 			System.err.println("ERROR: updating numMovesToGetThere when there wasn't an improvement");
 			System.exit(1);
 		}
 		
 		this.numMovesToGetToPos = numMovesToGetToPos;
-		this.depthUsedToFindRecord = utilFunctions.getMaxDepthUsed(board, curMaxDepth);
+		this.depthUsedToFindRecord = depthUsedInSearch;
 	}
 	
 	public void scratchOutDepthUsedToFindRecord() {
