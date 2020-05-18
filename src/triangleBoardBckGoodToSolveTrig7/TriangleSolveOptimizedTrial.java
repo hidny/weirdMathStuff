@@ -1,7 +1,4 @@
-package triangleBoard5;
-
-
-//So cool: https://pepkin88.me/triangle-peg-solitaire/
+package triangleBoardBckGoodToSolveTrig7;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,7 +41,7 @@ import java.util.HashSet;
 //DONE: keep a record how many moves left from the position and stop searching if it's move than current best solution (FROM BEFORE)
 //			(No longer applies: This could get complicated because the position could be in the middle of a move)
 
-//DONE: AHA MOMENT for idea 2 and 3: It would be easier if I disallowed in-between moves
+//AHA MOMENT for idea 2 and 3: It would be easier if I disallowed in-between moves
 //I'm going to rewrite logic without worrying too much about position in the middle of a series of jumps.
 //It's going to keep life simple.
 
@@ -67,7 +64,7 @@ import java.util.HashSet;
 //Won't be as complicated to implement
 // might make it up to x6 times less memory intensive, but might also slow it down.
 
-//BAD IDEA 4: make board moves reversable and save space
+//MEH IDEA 4: make board moves reversable and save space
 //MEH IDEA 5: make board moves/processing more efficient
 
 //STILL IN THE RUNNING: order move list from longest to shortest (longest are probably better)
@@ -102,11 +99,11 @@ public class TriangleSolveOptimizedTrial {
 	// TODO: try finding all optimal solutions later...
 
 	//TODO: use pen & paper to figure out which layer actually needs getNecessaryFilter
-	public static final int LENGTH = 8;
+	public static final int LENGTH = 7;
 
-	public static int MAX_DEPTH_TOTAL = 13;
+	public static int MAX_DEPTH_TOTAL = 12;
 	public static int MEM_DEPTH_BACKWARDS = 2;
-	public static int MEM_DEPTH_FORWARDS = Math.min(10, MAX_DEPTH_TOTAL - 1 - MEM_DEPTH_BACKWARDS);
+	public static int MEM_DEPTH_FORWARDS = Math.min(9, MAX_DEPTH_TOTAL - 1 - MEM_DEPTH_BACKWARDS);
 
 	
 	public static void main(String args[]) {
@@ -336,9 +333,6 @@ public class TriangleSolveOptimizedTrial {
 		
 	}
 	
-	
-	public static int debugNumFiltered = 0;
-	
 	private static int DEPTH_USED_IN_SEARCH = -1;
 	
 	public static TriangleBoard getBestMoveList(TriangleBoard board, int curMaxDepth, boolean currentlyFoundSolution) {
@@ -379,6 +373,10 @@ public class TriangleSolveOptimizedTrial {
 			curMaxDepth += MEM_DEPTH_BACKWARDS;
 		} else if(curMaxDepth == 0){
 			
+			if(DEPTH_USED_IN_SEARCH == 9) {
+				System.out.println("DEBUG LOOKING AT POSITIONS");
+				System.out.println(board);
+			}
 			return null;
 		}
 
@@ -410,7 +408,8 @@ public class TriangleSolveOptimizedTrial {
 		
 		//Record position if worthwhile:
 		//(Only record if it won't affect memory requirements too much)
-		if(board.getNumMovesMade() <= MEM_DEPTH_FORWARDS) {
+		if(board.length() <= 6
+				|| board.getNumMovesMade() <= MEM_DEPTH_FORWARDS) {
 		
 			if(recordedTriangles[board.getNumPiecesLeft()].containsKey(lookup) == false) {
 				recordedTriangles[board.getNumPiecesLeft()].put(lookup, new triangleRecord(board.getNumMovesMade(), board, DEPTH_USED_IN_SEARCH));
@@ -421,34 +420,10 @@ public class TriangleSolveOptimizedTrial {
 			
 		//END CHECKPOINT LOGIC
 		
+		//TODO: use when no longer saving board pos:
+		//ArrayList<String> moves = board.getNecessaryFullBackwardsMovesToCheck();
 		
-		//Basic filtering... TODO test
-		if(PositonFilterTests.isAnyPegUnCapturableOrUnmoveable(board.getTriangle())) {
-			System.out.println("Filtered:");
-			board.draw();
-			System.out.println();
-			PositonFilterTests.printDistFromEverySpace(PositonFilterTests.getDistFromEverySpace(board.getTriangle()));
-			debugNumFiltered++;
-			System.out.println("Num filtered so far: "  + debugNumFiltered);
-			//System.exit(1);
-			return null;
-		}
-		
-		ArrayList<String> moves;
-		if(board.getNumMovesMade() + 1 <= MEM_DEPTH_FORWARDS
-				|| board.getNumMovesMade() + 1 >= MAX_DEPTH_TOTAL - MEM_DEPTH_BACKWARDS) {
-			moves = board.getFullMovesExcludingRepeatMoves();
-		} else {
-
-			//Getting only the necessary moves
-			//TODO: This trick doesn't mix well with prioritizing moves, so BE CAREFUL
-			
-			//Only use getNecessaryFullBackwardsMovesToCheck when
-			// 1) position isn't saved
-			// 2) next move isn't going to be checked against the backwards saved positions
-			moves = board.getNecessaryFullBackwardsMovesToCheck();
-		}
-		
+		ArrayList<String> moves = board.getFullMovesExcludingRepeatMoves();
 		
 		for(int i=0; i<moves.size(); i++) {
 

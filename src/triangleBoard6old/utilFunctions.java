@@ -1,4 +1,4 @@
-package triangleBoard6;
+package triangleBoard6old;
 
 public class utilFunctions {
 	public static int getTriangleNumber(int n) {

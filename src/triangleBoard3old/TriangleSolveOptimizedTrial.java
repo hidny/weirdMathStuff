@@ -1,4 +1,4 @@
-package triangleBoard4;
+package triangleBoard3old;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -61,32 +61,23 @@ import java.util.HashMap;
 //Bad old ideas:
 //STILL IN THE RUNNING: take advantage of symmetries for the lookup table... (this could make it find more connections...)
 //Won't be as complicated to implement
-// might make it up to x6 times less memory intensive, but might also slow it down.
+// might make it up to x6 times faster
 
 //MEH IDEA 4: make board moves reversable and save space
 //MEH IDEA 5: make board moves/processing more efficient
 
 //STILL IN THE RUNNING: order move list from longest to shortest (longest are probably better)
-				//Maybe only activate it for the final depth?
-
 //STILL IN THE RUNNING: use conway math to a) figure out min num moves left
 											//b) figure out if position is impossible to complete
 
-//DONE: don't waste precious recordings... might save lots of time by not tossing them out...
-
-//*********************
-//DONE BETTER IDEA: Iterative deepening depth-first search
-//Answer for length 6 takes less than 3 minutes vs 1 hour and 5 minutes from before
-//************************
+//FUNDAMENTAL IDEA: use breadth-first search... :(
+//It might take too much memory though...
+//Current solution takes about 1hr and 5 minutes...
 
 
-//DONE: Improve how much gets recorded in the lookup table to not go over nay space limits
-// Then make recording only based on how many moves were done (Don't record complicated middle part if space is an issue)
+//BETTER IDEA: Do Iterative deepening depth-first search
 
-//TODO: great idea:
-// Do a backwards search that goes back 2-3 moves and save the results.
-//That way, if the forwards search ever gets with 2-3 moves from goal, it will end.
-// This could potentially make it 100x faster
+//IDEA: Improve how much gets recorded in the lookup table to not go over nay space limits
 
 public class TriangleSolveOptimizedTrial {
 
@@ -95,17 +86,16 @@ public class TriangleSolveOptimizedTrial {
 	public static void main(String args[]) {
 		
 		//int LENGTH = 4;
-		//int LENGTH = 5;
-		int LENGTH = 6;
+		int LENGTH = 5;
+		//int LENGTH = 6;
 		//int LENGTH = 7;
 		
-		boolean SET_SLOW = false;
+		boolean SET_SLOW = true;
 		if(SET_SLOW) {
 			System.out.println("WARNING: is slow!");
 		}
 		
-		System.out.println("Trying " + LENGTH + " in TriangleSolveOptimizedTrial4");
-		System.out.println("Giving up after reaching a max depth of " + MAX_DEPTH);
+		System.out.println("Trying " + LENGTH + " in TriangleSolveOptimizedTrial3");
 
 		TriangleBoard board = new TriangleBoard(LENGTH);
 		
@@ -120,8 +110,11 @@ public class TriangleSolveOptimizedTrial {
 				if(SET_SLOW) {
 					boardSol = getBestMoveListSlow(board);
 				} else {
+					bestGlobalSolution = Integer.MAX_VALUE;
 					boardSol = getBestMoveList(board);
 				}
+				
+				//TriangleBoard boardSol = getBestMoveList(board).getBestSolution();
 				
 				if(boardSol != null) {
 					System.out.println("Solution when removing piece " + (i * LENGTH + j));
@@ -131,14 +124,13 @@ public class TriangleSolveOptimizedTrial {
 					System.out.println("No solution when removing piece " + (i * LENGTH + j));
 					System.out.println();
 				}
+				//to do: depth first search
 			}
 		}
 		
 	}
 
 	public static int numFunctionCallForDEBUG = 0;
-	public static int numRecordsSavedForDEBUG = 0;
-	
 	public static TriangleBoard getBestMoveListSlow(TriangleBoard board) {
 		numFunctionCallForDEBUG++;
 		if(numFunctionCallForDEBUG % 10000 == 0) {
@@ -171,130 +163,102 @@ public class TriangleSolveOptimizedTrial {
 		
 	}
 	
+	
+
 	//Optimized:
 	
 	public static HashMap<Long, triangleRecord>[] recordedTriangles;
 	
+	public static int bestGlobalSolution = Integer.MAX_VALUE;
+	
+	
 	
 	public static void initRecordedTriangles(int length) {
-		numRecordsSavedForDEBUG = 0;
 		recordedTriangles = new HashMap[getTriangleNumber(length)];
 		for(int i=0; i<recordedTriangles.length; i++) {
 			recordedTriangles[i] = new HashMap<Long, triangleRecord>();
 		}
 	}
 	
-	//This is looking for just 1 solution...
-	// TODO: try finding all optimal solutions later...
-	//Invent a number that seems high enough:
-	//public static int MAX_DEPTH = 14;
-	public static int MAX_DEPTH = 11;
-	
+	//TODO: this is looking for just 1 solution...
+	// try finding more all optimal solutions later...
+	//TODO:
 	public static TriangleBoard getBestMoveList(TriangleBoard board) {
-
-		initRecordedTriangles(board.length());
-		
-		TriangleBoard answer = null;
-		for(int i=1; i<=MAX_DEPTH; i++) {
-			//System.out.println("i: " + i);
-			
-			//Instead of doing an init after every iteration, just save it and reuse it.
-			// I don't know how much time it will save, but it's probably better than nothing.
-			//initRecordedTriangles(board.length());
-			
-			answer = getBestMoveList(board, i);
-			if(answer != null) {
-				break;
-			}
-		}
-		
-		return answer;
-		
-	}
-	
-	public static TriangleBoard getBestMoveList(TriangleBoard board, int curMaxDepth) {
 		numFunctionCallForDEBUG++;
 		if(numFunctionCallForDEBUG % 1000000 == 0) {
 			//System.out.println("FAST");
-
-			//System.out.println("Current depth: " + getMaxDepthUsed(board, curMaxDepth) + " out of " + MAX_DEPTH);
-
-			//For now, it's stuck at 6680931 and still running fast, so this is good
-			//TODO: see what happens after implementing conway math...
-			//System.out.println("Num records saved: " + numRecordsSavedForDEBUG);
-			//board.draw();
+			board.draw();
+			System.out.println("Best path so far: " + bestGlobalSolution);
 		}
 		
 		if(board.getNumPiecesLeft() == 1) {
 			return board;
-		} else if(curMaxDepth == 0) {
+		} else if(board.getNumMovesMade() >= bestGlobalSolution) {
 			return null;
 		}
 
-		//Check if position was already found:	
-		long lookup = board.getLookupNumber();
-		if(recordedTriangles[board.getNumPiecesLeft()].containsKey(lookup)) {
+		//Save progress:
+		//TODO: use
+		if(board.length() <= 6 || Math.min(getTriangleNumber(board.length()) - board.getNumPiecesLeft(), board.getNumPiecesLeft()) <= 8) {
+			//System.out.println("Reached checkpoint");
+			//board.draw();
 			
-			triangleRecord previouslyFoundNode = recordedTriangles[board.getNumPiecesLeft()].get(lookup);
+			long lookup = board.getLookupNumber();
 			
-			if(board.getNumMovesMade() > previouslyFoundNode.getNumMovesToGetToPos()) {
-					
-				//System.out.println("Cutting short 0");
-				return null;
-			} else if(board.getNumMovesMade() == previouslyFoundNode.getNumMovesToGetToPos()){
+			triangleRecord checkpoint = null;
+			
+			if(recordedTriangles[board.getNumPiecesLeft()].containsKey(lookup)) {
+				checkpoint = recordedTriangles[board.getNumPiecesLeft()].get(lookup);
 				
-				if(previouslyFoundNode.getDepthUsedToFindRecord() == getMaxDepthUsed(board, curMaxDepth)) {
+				
+				if(board.getNumMovesMade() >= checkpoint.getNumMovesToGetToPos()) {
+						
+					//System.out.println("Cutting short 0");
 					return null;
 				} else {
-					previouslyFoundNode.updateNumMovesToGetToPos(board.getNumMovesMade(), board, curMaxDepth);
+					
+					checkpoint.updateNumMovesToGetToPos(board.getNumMovesMade());
 				}
 				
+				//TODO: if conway math says impossible: dont try.
+				
+				
 			} else {
-				
-				previouslyFoundNode.updateNumMovesToGetToPos(board.getNumMovesMade(), board, curMaxDepth);
+				recordedTriangles[board.getNumPiecesLeft()].put(lookup, new triangleRecord(board.getNumMovesMade()));
 			}
-		}
-		
-
-		//TODO: if conway math says impossible: dont try.
-		//And record impossible if recording is applicable...
-		
-		//Record position if worthwhile:
-		//(Only record if it won't affect memory requirements too much)
-		if(board.length() <= 6
-				|| (getTriangleNumber(board.length()) - board.getNumPiecesLeft() <= 6 || board.getNumMovesMade() < 10)
-			) {
-		
-			if(recordedTriangles[board.getNumPiecesLeft()].containsKey(lookup) == false) {
-				recordedTriangles[board.getNumPiecesLeft()].put(lookup, new triangleRecord(board.getNumMovesMade(), board, curMaxDepth));
-				
-				numRecordsSavedForDEBUG++;
-			}
-		}
 			
+		}
 		//END CHECKPOINT LOGIC
 		
+		TriangleBoard currentBestSol = null;
 		
 		ArrayList<String> moves = board.getFullMoves();
 		
+		
 		for(int i=0; i<moves.size(); i++) {
 
-			TriangleBoard possibleBest = getBestMoveList(board.doOneMove(moves.get(i)), curMaxDepth - 1);
+			TriangleBoard possibleBest = null;
+			
+			possibleBest = getBestMoveList(board.doOneMove(moves.get(i)));
 			
 			if(possibleBest != null) {
-				return possibleBest;
+				if(currentBestSol == null 
+				|| possibleBest.getNumMovesMade() < currentBestSol.getNumMovesMade()) {
+					currentBestSol = possibleBest;
+					
+					if(currentBestSol.getNumMovesMade() < bestGlobalSolution) {
+						bestGlobalSolution = currentBestSol.getNumMovesMade();
+					}
+					
+				}
 			}
 			
 		}
 		
-		return null;
+		return currentBestSol;
 	}
 	
 	public static int getTriangleNumber(int n) {
 		return n * (n+1) / 2;
-	}
-	
-	public static int getMaxDepthUsed(TriangleBoard board, int curMaxDepth) {
-		return board.getNumMovesMade() + curMaxDepth;
 	}
 }

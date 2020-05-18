@@ -1,114 +1,76 @@
-package triangleBoard5;
+package triangleBoardBckGoodToSolveTrig7;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Set;
 
-//Hard limit on number of records:
-//20344823
-public class TriangleBoard {
+public class BackwardsTriangleBoard {
 	//Only hard-copies allow
 	
 	public static void main(String args[]) {
+		
+		
 		//TESTING code:
-		TriangleBoard board = new TriangleBoard(4);
-
-		board.removePiece(0);
-		board.removePiece(13);
-		board.removePiece(15);
-		board.draw();
+		BackwardsTriangleBoard backwardsBoard = new BackwardsTriangleBoard(4);
+		
+		backwardsBoard.addPiece(backwardsBoard.getCode(1, 1));
+		backwardsBoard.draw();
+		
+		BackwardsTriangleBoard backwardsBoardTest = backwardsBoard.doOneBackwardsMove("15-5");
+		
+		backwardsBoardTest.draw();
+		
+		backwardsBoardTest = backwardsBoard.doOneBackwardsMove("5-13-15-5");
+		
+		backwardsBoardTest.draw();
 		
 		
-		ArrayList<String> moves = board.getFullMovesExcludingRepeatMoves();
-		for(int i=0; i<moves.size(); i++) {
-			System.out.println(moves.get(i));
-		}
-		
-		board = new TriangleBoard(4);
-		board.removePiece(0);
-		board.removePiece(14);
-		board.removePiece(15);
-		board.draw();
-		
-		moves = board.getFullMovesExcludingRepeatMoves();
-		for(int i=0; i<moves.size(); i++) {
-			System.out.println(moves.get(i));
-		}
-		
-		board = new TriangleBoard(4);
-		board.removePiece(0);
-		board.removePiece(12);
-		board.removePiece(15);
-		board.draw();
-		
-
-		System.out.println("***");
-		System.out.println("***");
-		System.out.println("TESTING AFTER 1 move:");
-		moves = board.getFullMovesExcludingRepeatMoves();
-		for(int i=0; i<moves.size(); i++) {
-			System.out.println(moves.get(i));
-		}
-		
-		for(int i=0; i<moves.size(); i++) {
-			TriangleBoard tmp = board.doOneMove(moves.get(i));
-			tmp.draw();
-		}
-
-		System.out.println("***");
-		System.out.println("***");
-		System.out.println("Try a double loop:");
-		for(int i=0; i<moves.size(); i++) {
-			TriangleBoard tmp = board.doOneMove(moves.get(i));
-			tmp.draw();
-			
-			ArrayList <String> moves2 = tmp.getFullMovesExcludingRepeatMoves();
-
-			for(int j=0; j<moves2.size(); j++) {
-				TriangleBoard tmp2 = tmp.doOneMove(moves2.get(j));
-				tmp2.draw();
-				
-				System.out.println("Lookup number:");
-				System.out.println(tmp2.getLookupNumber());
-			}
-			
-			
-		}
-		
-		
-		board = new TriangleBoard(4);
-		board.removePiece(0);
-		board.removePiece(8);
-		board.removePiece(15);
-		
-		moves = board.getFullMovesExcludingRepeatMoves();
-
-		System.out.println("***");
-		System.out.println("***");
-		System.out.println("Try a double loop again:");
-		for(int i=0; i<moves.size(); i++) {
-			TriangleBoard tmp = board.doOneMove(moves.get(i));
-			tmp.draw();
-			
-			ArrayList <String> moves2 = tmp.getFullMovesExcludingRepeatMoves();
-
-			for(int j=0; j<moves2.size(); j++) {
-				TriangleBoard tmp2 = tmp.doOneMove(moves2.get(j));
-				tmp2.draw();
-			}
-			
-		}
+		backwardsBoardTest = backwardsBoardTest.doOneBackwardsMove("12-14");
+		backwardsBoardTest.draw();
 		//END TESTING CODE
+		
+		System.out.println("new test");
+		BackwardsTriangleBoard test2 = new BackwardsTriangleBoard(7);
+		test2.addPiece(0);
+		
+		//TODO: TEST FAILS! Does it also fail going forward?
+		//I think I'm taking incompatible shortcuts!
+		//OMG: doOneBackwardsMove might not make an actual move
+		test2 = test2.doOneBackwardsMove("14-0");
+		test2 = test2.doOneBackwardsMove("28-14");
+		test2 = test2.doOneBackwardsMove("23-7");
+		
+		test2.draw();
+		
+		
+		System.out.println("TEST 3");
+		//28-14 37-21-23-7 14-0
+		//vs
+		//37-21-23-7 28-14 14-0
+		
+		test2 = new BackwardsTriangleBoard(7);
+		test2.addPiece(0);
+		test2 = test2.doOneBackwardsMove("14-0");
+		test2 = test2.doOneBackwardsMove("37-21-23-7");
+		test2 = test2.doOneBackwardsMove("28-14");
+		test2.draw();
+
+		test2 = new BackwardsTriangleBoard(7);
+		test2.addPiece(0);
+		test2 = test2.doOneBackwardsMove("28-14-0");
+		test2 = test2.doOneBackwardsMove("37-21-23-7");
+		test2.draw();
+
+		
 	}
 	
 	private boolean triangle[][];
 	private int numPiecesLeft;
-	private int numMovesMade;
+	private int numBackwardsMovesMade;
 
 	private String historicMoveList;
 	private int internalLastJumpCodeForMultiJumpMoves = -1;
 	
-	public TriangleBoard(int length) {
+	public BackwardsTriangleBoard(int length) {
 		triangle = new boolean[length][];
 		for(int i=0; i<length; i++) {
 			triangle[i] = new boolean[i+1];
@@ -116,24 +78,18 @@ public class TriangleBoard {
 
 		for(int i=0; i<triangle.length; i++) {
 			for(int j=0; j<triangle[i].length; j++) {
-				triangle[i][j] = true;
+				triangle[i][j] = false;
 			}
 		}
 		
-		numMovesMade = 0;
+		numBackwardsMovesMade = 0;
 		
-		numPiecesLeft = ((triangle.length + 1) * (triangle.length))/2;
+		numPiecesLeft = 0;
 		
 		historicMoveList ="";
 		
 	}
 	
-	//TODO: only for testing
-	public boolean[][] getTriangle() {
-		return triangle;
-	}
-	//END TODO
-
 	public void draw() {
 		for(int i=0; i<triangle.length; i++) {
 			for(int k=i; k<triangle.length; k++) {
@@ -150,12 +106,12 @@ public class TriangleBoard {
 		}
 
 		System.out.println("Num pieces left: " + numPiecesLeft);
-		System.out.println("Num moves Made: " + numMovesMade);
+		System.out.println("Num backwards moves Made: " + numBackwardsMovesMade);
 		System.out.println("Move list: " + historicMoveList);
 		System.out.println("Lookup number: " + this.getLookupNumber());
+		System.out.println();
 	}
 	
-
 	public String toString() {
 		String ret = "";
 		for(int i=0; i<triangle.length; i++) {
@@ -173,7 +129,7 @@ public class TriangleBoard {
 		}
 
 		ret += "Num pieces left: " + numPiecesLeft + "\n";
-		ret += "Num moves Made: " + this.numMovesMade + "\n";
+		ret += "Num backwards moves Made: " + numBackwardsMovesMade + "\n";
 		ret += "Move list: " + historicMoveList + "\n";
 		ret += "Lookup number: " + this.getLookupNumber() + "\n";
 		ret += "\n";
@@ -218,19 +174,20 @@ public class TriangleBoard {
 		this.numPiecesLeft++;
 		this.lastLookupNumberResult = -1;
 	}
-	
-	private TriangleBoard prevLocation = null;
+
+	private BackwardsTriangleBoard prevLocation = null;
 	private HashSet<String> moveList = null;
 	
 	private static int TEST_DEBUG_PRINT = 0;
 	private static int TEST_TOTAL_MOVES_FOUND = 0;
 	private static int TEST_TOTAL_MOVES_NEEDED = 0;
 	
-//This works, but isn't going to be used,
+	
+	//This works, but isn't going to be used,
 	//unless we do a forward save and backwards search:
 	public ArrayList<String> getNecessaryFullBackwardsMovesToCheck() {
 		
-		ArrayList<String> fullList = getFullMovesExcludingRepeatMoves();
+		ArrayList<String> fullList = getFullBackwardsMovesExcludingRepeatMoves();
 		ArrayList<String> neededList = new ArrayList<String>();
 		
 		if(this.prevLocation == null) {
@@ -240,7 +197,7 @@ public class TriangleBoard {
 			
 			String moves[] = this.historicMoveList.split(" ");
 
-			String prevJump = moves[moves.length - 1];
+			String prevJump = moves[0];
 
 			for(int i=0; i<fullList.size(); i++) {
 				
@@ -249,21 +206,21 @@ public class TriangleBoard {
 				/*//TODO: put into TEST function
 				//SANITY TEST
 				if(this.prevLocation.moveList.contains(fullList.get(i))) {
-					if(this.prevLocation.doOneMove(fullList.get(i)).couldMoveForwards(prevJump)
-						!= this.prevLocation.doOneMove(fullList.get(i)).getFullMovesIncludingRepeatMoves().contains(prevJump)) {
-						System.out.println("ERROR: couldMove didn't work!");
+					if(this.prevLocation.doOneBackwardsMove(fullList.get(i)).couldMoveBackwards(prevJump)
+						!= this.prevLocation.doOneBackwardsMove(fullList.get(i)).getFullBackwardsMovesIncludingRepeatMoves().contains(prevJump)) {
+						System.out.println("ERROR: couldMoveBackwards didn't work!");
 						System.exit(1);
 					}
 				}
 				//END SANITY TEST
 				*/
-
+				
 				if(this.prevLocation.moveList.contains(fullList.get(i))
-					&& this.prevLocation.doOneMove(fullList.get(i)).couldMoveForwards(prevJump) ) {
+					&& this.prevLocation.doOneBackwardsMove(fullList.get(i)).couldMoveBackwards(prevJump) ) {
 
-					TESTcompareBoardsForTesting(this.prevLocation.doOneMove(fullList.get(i)).doOneMove(prevJump), this.doOneMove(fullList.get(i)));
+					//TESTcompareBoardsForTesting(this.prevLocation.doOneBackwardsMove(fullList.get(i)).doOneBackwardsMove(prevJump), this.doOneBackwardsMove(fullList.get(i)));
 					
-					if(this.getLookupNumber() > this.prevLocation.doOneMove(fullList.get(i)).getLookupNumber()) {
+					if(this.getLookupNumber() > this.prevLocation.doOneBackwardsMove(fullList.get(i)).getLookupNumber()) {
 						
 						//Explanation:
 						//Algo should have done current move (fullList.get(i)) first because
@@ -284,7 +241,7 @@ public class TriangleBoard {
 		TEST_TOTAL_MOVES_NEEDED += neededList.size();
 		
 		if(TEST_DEBUG_PRINT % 100000 == 0) {
-			System.out.println("Testing branching improvement for forwards jumps: " + fullList.size() + " vs " + neededList.size());
+			System.out.println("Testing branching improvement: " + fullList.size() + " vs " + neededList.size());
 			System.out.println("Ratio: " + ((1.0*TEST_TOTAL_MOVES_FOUND)/(1.0 * TEST_TOTAL_MOVES_NEEDED)));
 			System.out.println("Perc: " + ((1.0*TEST_TOTAL_MOVES_NEEDED)/(1.0 * TEST_TOTAL_MOVES_FOUND)));
 		}
@@ -292,15 +249,15 @@ public class TriangleBoard {
 		return neededList;
 	}
 
-	//WARNING: only use this internally for testing
-	private ArrayList<String> getFullMovesIncludingRepeatMoves() {
+	//WARNING: ONLY USE INTERNALLY
+	private ArrayList<String> getFullBackwardsMovesIncludingRepeatMoves() {
 		
 		ArrayList<String> ret = new ArrayList<String>();
 		
 		for(int i=0; i<triangle.length; i++) {
 			for(int j=0; j<triangle[i].length; j++) {
 				if(triangle[i][j]) {
-					ret.addAll(getPossibleMovesFromPosition(i * triangle.length + j));
+					ret.addAll(getPossibleBackwardsMovesFromPosition(i * triangle.length + j));
 				}
 			}
 		}
@@ -310,17 +267,18 @@ public class TriangleBoard {
 		return ret;
 		
 	}
-	
-	
-	public ArrayList<String> getFullMovesExcludingRepeatMoves() {
+
+	public ArrayList<String> getFullBackwardsMovesExcludingRepeatMoves() {
 		
-		String moves[] = this.historicMoveList.split(" ");
+		ArrayList<String> ret = new ArrayList<String>();
+		
 		
 		int lastPegLocation;
+		
 		int lastPegLocationi;
 		int lastPegLocationj;
 		try {
-			lastPegLocation = Integer.parseInt(this.historicMoveList.substring(this.historicMoveList.lastIndexOf("-") + 1));
+			lastPegLocation = Integer.parseInt(this.historicMoveList.split("-")[0]);
 			lastPegLocationi = lastPegLocation / triangle.length;
 			lastPegLocationj = lastPegLocation % triangle.length;
 
@@ -329,13 +287,12 @@ public class TriangleBoard {
 			lastPegLocationj = -1;
 		}
 		
-		ArrayList<String> ret = new ArrayList<String>();
 		
 		for(int i=0; i<triangle.length; i++) {
 			for(int j=0; j<triangle[i].length; j++) {
 				if(triangle[i][j]) {
 					if(i != lastPegLocationi || j != lastPegLocationj ) {
-						ret.addAll(getPossibleMovesFromPosition(i * triangle.length + j));
+						ret.addAll(getPossibleBackwardsMovesFromPosition(i * triangle.length + j));
 					}
 				}
 			}
@@ -355,19 +312,19 @@ public class TriangleBoard {
 	//Check if pos could do the move in input	
 	//i.e: return true if there's no pegs in the way of the backwards move
 
-	private boolean couldMoveForwards(String forwardsMove) {
+	private boolean couldMoveBackwards(String backwardsMove) {
 		
-		String seriesOfJumps[] = forwardsMove.split("-");
+		String seriesOfJumps[] = backwardsMove.split("-");
 		
-		int startingI = -1;
-		int startingJ = -1;
+		int finalLandingI = -1;
+		int finalLandingJ = -1;
 		
 		
 		for(int i=0; i<seriesOfJumps.length - 1; i++) {
 			
-			int from = Integer.parseInt(seriesOfJumps[i]);
-			int to = Integer.parseInt(seriesOfJumps[i+1]);
-
+			int from = Integer.parseInt(seriesOfJumps[seriesOfJumps.length - 2 - i]);
+			int to = Integer.parseInt(seriesOfJumps[seriesOfJumps.length - 1 - i]);
+			
 			int fromi = from / triangle.length;
 			int fromj = from % triangle.length;
 			
@@ -378,20 +335,22 @@ public class TriangleBoard {
 			int betweenj = (fromj + toj)/2;
 			
 			if(i == 0) {
-				//Handle the fact that the peg should at the original position:
-				startingI = fromi;
-				startingJ = fromj;
+				//Handle the fact that the final landing should have a peg after the move
+				finalLandingI = toi;
+				finalLandingJ = toj;
 				
-				if(triangle[startingI][startingJ] == false) {
+				if(triangle[finalLandingI][finalLandingJ] == false) {
+					System.exit(1);
+					//For some reason, this return statement never gets used, but I think it makes sense, so I'm keeping it:
 					return false;
 				}
 			}
 			
-			if( triangle[betweeni][betweenj] == false 
-				|| triangle[toi][toj] == true) {
+			if( triangle[betweeni][betweenj] == true 
+				|| triangle[fromi][fromj] == true) {
 				
-				if(triangle[toi][toj] == true && startingI == toi && startingJ == toj) {
-					//It's only ok for the "to" coord to have a peg if that is also the starting coord (i.e: the peg that's doing the jumping)
+				if(triangle[fromi][fromj] == true && finalLandingI == fromi && finalLandingJ == fromj) {
+					//It's only ok for the from coord to have a peg if that is also the landing coord (i.e: the peg that doing the jumping)
 				} else {
 					//else not ok because that peg is in the way
 					return false;
@@ -402,90 +361,89 @@ public class TriangleBoard {
 		
 		return true;
 	}
-
-	private ArrayList<String> getPossibleMovesFromPosition(int code) {
-		int istart = code / triangle.length;
-		int jstart = code % triangle.length;
+	
+	private ArrayList<String> getPossibleBackwardsMovesFromPosition(int code) {
+		int iend = code / triangle.length;
+		int jend = code % triangle.length;
 		
 		ArrayList<String> ret = new ArrayList<String>();
 		
 		//There's 6 directions to check...
 		//UP:
-		if(istart >= 2 && jstart <= istart-2) {
-			if(triangle[istart-1][jstart] && triangle[istart-2][jstart] == false) {
+		if(iend >= 2 && jend <= iend-2) {
+			if(triangle[iend-1][jend] == false && triangle[iend-2][jend] == false) {
 				
-				ret.addAll( getPossibleMovesAfterJump(getCode(istart, jstart) +"-" + getCode(istart-2, jstart)) );
+				ret.addAll( getPossibleBackwardsMovesAfterBackJump(getCode(iend-2, jend) + "-" + getCode(iend, jend)) );
 			}
 		}
 		
 		//UP LEFT
-		if(istart >=2 && jstart >= 2) {
-			if(triangle[istart-1][jstart-1] && triangle[istart-2][jstart-2] == false) {
-				ret.addAll( getPossibleMovesAfterJump(getCode(istart, jstart) +"-" + getCode(istart-2, jstart-2)) );
+		if(iend >=2 && jend >= 2) {
+			if(triangle[iend-1][jend-1] == false && triangle[iend-2][jend-2] == false) {
+				ret.addAll( getPossibleBackwardsMovesAfterBackJump(getCode(iend-2, jend-2) + "-" +  getCode(iend, jend)) );
 			}
 		}
 		
 		//RIGHT:
-		if(jstart + 2 < triangle[istart].length) {
-			if(triangle[istart][jstart+1] && triangle[istart][jstart+2] == false) {
-				ret.addAll( getPossibleMovesAfterJump(getCode(istart, jstart) +"-" + getCode(istart, jstart+2)) );
+		if(jend + 2 < triangle[iend].length) {
+			if(triangle[iend][jend+1] == false && triangle[iend][jend+2] == false) {
+				ret.addAll( getPossibleBackwardsMovesAfterBackJump(getCode(iend, jend+2) + "-" + getCode(iend, jend)) );
 			}
 		}
 		
 		//LEFT:
-		if(jstart >=2) {
-			if(triangle[istart][jstart-1] && triangle[istart][jstart-2] == false) {
-				ret.addAll( getPossibleMovesAfterJump(getCode(istart, jstart) +"-" + getCode(istart, jstart-2)) );
+		if(jend >=2) {
+			if(triangle[iend][jend-1] == false && triangle[iend][jend-2] == false) {
+				ret.addAll( getPossibleBackwardsMovesAfterBackJump(getCode(iend, jend-2) + "-" + getCode(iend, jend)) );
 			}
 		}
 		
 		//DOWN:
-		if(istart + 2 < triangle.length) {
-			if(triangle[istart+1][jstart] && triangle[istart+2][jstart] == false) {
-				ret.addAll( getPossibleMovesAfterJump(getCode(istart, jstart) +"-" + getCode(istart+2, jstart)) );
+		if(iend + 2 < triangle.length) {
+			if(triangle[iend+1][jend] == false && triangle[iend+2][jend] == false) {
+				ret.addAll( getPossibleBackwardsMovesAfterBackJump(getCode(iend+2, jend) + "-" + getCode(iend, jend)) );
 			}
 		}
 		
 		//DOWN RIGHT
-		if(istart + 2 < triangle.length) {
-			if(triangle[istart+1][jstart+1] && triangle[istart+2][jstart+2] == false) {
-				ret.addAll( getPossibleMovesAfterJump(getCode(istart, jstart) +"-" + getCode(istart+2, jstart+2)) );
+		if(iend + 2 < triangle.length) {
+			if(triangle[iend+1][jend+1] == false && triangle[iend+2][jend+2] == false) {
+				ret.addAll( getPossibleBackwardsMovesAfterBackJump(getCode(iend+2, jend+2) + "-" + getCode(iend, jend)) );
 			}
 		}
 		
 		return ret;
 	}
 	
-	private ArrayList<String> getPossibleMovesAfterJump(String jump) {
+	private ArrayList<String> getPossibleBackwardsMovesAfterBackJump(String jump) {
 		ArrayList<String> ret = new ArrayList<String>();
 		
 		ret.add(jump);
 		
-
-		TriangleBoard tmp = this.moveInternal(jump);
 		
-		int landing = Integer.parseInt(jump.split("-")[1]);
-		ArrayList<String> newSeriesOfMoves = tmp.getPossibleMovesFromPosition(landing);
+		BackwardsTriangleBoard tmp = this.moveBackwardsInternal(jump);
+		
+		int jumpingPoint = Integer.parseInt(jump.split("-")[0]);
+		ArrayList<String> newSeriesOfMoves = tmp.getPossibleBackwardsMovesFromPosition(jumpingPoint);
 		for(int i=0; i<newSeriesOfMoves.size(); i++) {
-			ret.add(jump.split("-")[0] + "-" + newSeriesOfMoves.get(i));
+			ret.add(newSeriesOfMoves.get(i) + "-" + jump.split("-")[1]);
 		}
 		
 		return ret;
 	}
 
-
 	//WARNING: If you're moving the wrong peg, it won't count as an extra move
-	public TriangleBoard doOneMove(String move) {
-		String seriesOfJumps[] = move.split("-");
+	public BackwardsTriangleBoard doOneBackwardsMove(String backwardsMove) {
+		String seriesOfJumps[] = backwardsMove.split("-");
 		
-		TriangleBoard newBoard = this;
+		BackwardsTriangleBoard newBoard = this;
 		
 		for(int i=0; i<seriesOfJumps.length - 1; i++) {
 			
-			int from = Integer.parseInt(seriesOfJumps[i]);
-			int to = Integer.parseInt(seriesOfJumps[i+1]);
+			int from = Integer.parseInt(seriesOfJumps[seriesOfJumps.length - 2 - i]);
+			int to = Integer.parseInt(seriesOfJumps[seriesOfJumps.length - 1 - i]);
 			
-			newBoard = newBoard.moveInternal(from + "-" + to);
+			newBoard = newBoard.moveBackwardsInternal(from + "-" + to);
 		}
 		
 		if(newBoard == this) {
@@ -500,8 +458,8 @@ public class TriangleBoard {
 	}
 	
 	//pre: valid move
-	private TriangleBoard moveInternal(String move) {
-		String fromTo[] = move.split("-");
+	private BackwardsTriangleBoard moveBackwardsInternal(String backwardsMove) {
+		String fromTo[] = backwardsMove.split("-");
 		
 		int from = Integer.parseInt(fromTo[0]);
 		int to = Integer.parseInt(fromTo[1]);
@@ -512,7 +470,7 @@ public class TriangleBoard {
 		int toI = to / triangle.length;
 		int toJ = to % triangle.length;
 		
-		TriangleBoard newBoard = new TriangleBoard(triangle.length);
+		BackwardsTriangleBoard newBoard = new BackwardsTriangleBoard(triangle.length);
 		
 		for(int i=0; i<triangle.length; i++) {
 			for(int j=0; j<triangle[i].length; j++) {
@@ -520,36 +478,45 @@ public class TriangleBoard {
 			}
 		}
 		
-		if(newBoard.triangle[fromI][fromJ] == false) {
-			System.out.println("ERROR move 1");
+		if(newBoard.triangle[fromI][fromJ] == true) {
+			
+			System.out.println("ERROR backwards move 1");
+			
+			System.out.println(backwardsMove);
+			System.out.println("From: " + fromI + " " + fromJ);
+			System.out.println("To: " + toI + " " + toJ);
+			this.draw();
+			System.exit(1);
 		}
 		
-		if(newBoard.triangle[(fromI+toI)/2][(fromJ+toJ)/2] == false) {
-			System.out.println("ERROR move 2");
+		if(newBoard.triangle[(fromI+toI)/2][(fromJ+toJ)/2] == true) {
+			System.out.println("ERROR backwards move 2");
+			System.exit(1);
 		}
 		
-		if(newBoard.triangle[toI][toJ] == true) {
-			System.out.println("ERROR move 3");
+		if(newBoard.triangle[toI][toJ] == false) {
+			System.out.println("ERROR backwards move 3");
+			System.exit(1);
 		}
 		
-		newBoard.triangle[fromI][fromJ] = false;
-		newBoard.triangle[(fromI+toI)/2][(fromJ+toJ)/2] = false;
-		newBoard.triangle[toI][toJ] = true;
+		newBoard.triangle[fromI][fromJ] = true;
+		newBoard.triangle[(fromI+toI)/2][(fromJ+toJ)/2] = true;
+		newBoard.triangle[toI][toJ] = false;
 		
-		newBoard.numPiecesLeft = this.numPiecesLeft - 1;
+		newBoard.numPiecesLeft = this.numPiecesLeft + 1;
 		
 		newBoard.historicMoveList = this.historicMoveList;
 		
-		if(internalLastJumpCodeForMultiJumpMoves == from) {
+		if(internalLastJumpCodeForMultiJumpMoves == to) {
 			//not a new move
-			newBoard.numMovesMade = this.numMovesMade;
-			newBoard.historicMoveList += "-" + to;
+			newBoard.numBackwardsMovesMade = this.numBackwardsMovesMade;
+			newBoard.historicMoveList  = from + "-" + newBoard.historicMoveList;
 			
 		} else {
-			newBoard.numMovesMade = this.numMovesMade + 1;
-			newBoard.historicMoveList += "  " + move;
+			newBoard.numBackwardsMovesMade = this.numBackwardsMovesMade + 1;
+			newBoard.historicMoveList =  backwardsMove + " " + newBoard.historicMoveList;
 		}
-		newBoard.internalLastJumpCodeForMultiJumpMoves = to;
+		newBoard.internalLastJumpCodeForMultiJumpMoves = from;
 		
 		return newBoard;
 	}
@@ -560,27 +527,26 @@ public class TriangleBoard {
 	}
 
 	public int getNumMovesMade() {
-		return numMovesMade;
+		return numBackwardsMovesMade;
 	}
 
 	public String getHistoricMoveList() {
 		return historicMoveList;
 	}
 	
-
 	private long lastLookupNumberResult = -1;
 	public long getLookupNumber() {
 		if(lastLookupNumberResult == -1) {
 			lastLookupNumberResult = TriangleLookup.convertToNumberWithComboTricksAndSymmetry(triangle, numPiecesLeft);
 		}
-		return TriangleLookup.convertToNumberWithComboTricksAndSymmetry(triangle, numPiecesLeft);
+		return lastLookupNumberResult;
 	}
 	
 	public int length() {
 		return triangle.length;
 	}
 	
-	private static void TESTcompareBoardsForTesting(TriangleBoard a, TriangleBoard b) {
+	private static void TESTcompareBoardsForTesting(BackwardsTriangleBoard a, BackwardsTriangleBoard b) {
 		if(a.length() != b.length()) {
 			System.out.println("ERROR: not even the same length");
 			System.exit(1);

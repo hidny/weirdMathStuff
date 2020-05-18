@@ -1,11 +1,16 @@
-package triangleBoard3;
+package triangleBoardBckGoodToSolveTrig7;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
+//Hard limit on number of records:
+//20344823
 public class TriangleBoard {
 	//Only hard-copies allow
 	
 	public static void main(String args[]) {
+		//TESTING code:
 		TriangleBoard board = new TriangleBoard(4);
 
 		board.removePiece(0);
@@ -14,7 +19,7 @@ public class TriangleBoard {
 		board.draw();
 		
 		
-		ArrayList<String> moves = board.getFullMoves();
+		ArrayList<String> moves = board.getFullMovesExcludingRepeatMoves();
 		for(int i=0; i<moves.size(); i++) {
 			System.out.println(moves.get(i));
 		}
@@ -25,7 +30,7 @@ public class TriangleBoard {
 		board.removePiece(15);
 		board.draw();
 		
-		moves = board.getFullMoves();
+		moves = board.getFullMovesExcludingRepeatMoves();
 		for(int i=0; i<moves.size(); i++) {
 			System.out.println(moves.get(i));
 		}
@@ -40,7 +45,7 @@ public class TriangleBoard {
 		System.out.println("***");
 		System.out.println("***");
 		System.out.println("TESTING AFTER 1 move:");
-		moves = board.getFullMoves();
+		moves = board.getFullMovesExcludingRepeatMoves();
 		for(int i=0; i<moves.size(); i++) {
 			System.out.println(moves.get(i));
 		}
@@ -57,7 +62,7 @@ public class TriangleBoard {
 			TriangleBoard tmp = board.doOneMove(moves.get(i));
 			tmp.draw();
 			
-			ArrayList <String> moves2 = tmp.getFullMoves();
+			ArrayList <String> moves2 = tmp.getFullMovesExcludingRepeatMoves();
 
 			for(int j=0; j<moves2.size(); j++) {
 				TriangleBoard tmp2 = tmp.doOneMove(moves2.get(j));
@@ -76,7 +81,7 @@ public class TriangleBoard {
 		board.removePiece(8);
 		board.removePiece(15);
 		
-		moves = board.getFullMoves();
+		moves = board.getFullMovesExcludingRepeatMoves();
 
 		System.out.println("***");
 		System.out.println("***");
@@ -85,7 +90,7 @@ public class TriangleBoard {
 			TriangleBoard tmp = board.doOneMove(moves.get(i));
 			tmp.draw();
 			
-			ArrayList <String> moves2 = tmp.getFullMoves();
+			ArrayList <String> moves2 = tmp.getFullMovesExcludingRepeatMoves();
 
 			for(int j=0; j<moves2.size(); j++) {
 				TriangleBoard tmp2 = tmp.doOneMove(moves2.get(j));
@@ -93,6 +98,7 @@ public class TriangleBoard {
 			}
 			
 		}
+		//END TESTING CODE
 	}
 	
 	private boolean triangle[][];
@@ -136,17 +142,38 @@ public class TriangleBoard {
 			}
 			System.out.println();
 		}
-		
-		//private boolean triangle[][];
-		//private int lastJumpCode;
-		//private int numPiecesLeft;
-		//private int numMovesMade;
 
 		System.out.println("Num pieces left: " + numPiecesLeft);
 		System.out.println("Num moves Made: " + numMovesMade);
 		System.out.println("Move list: " + historicMoveList);
+		System.out.println("Lookup number: " + this.getLookupNumber());
 	}
 	
+
+	public String toString() {
+		String ret = "";
+		for(int i=0; i<triangle.length; i++) {
+			for(int k=i; k<triangle.length; k++) {
+				ret += " ";
+			}
+			for(int j=0; j<triangle[i].length; j++) {
+				if(triangle[i][j]) {
+					ret += "G ";
+				} else {
+					ret += "_ ";
+				}
+			}
+			ret += "\n";
+		}
+
+		ret += "Num pieces left: " + numPiecesLeft + "\n";
+		ret += "Num moves Made: " + this.numMovesMade + "\n";
+		ret += "Move list: " + historicMoveList + "\n";
+		ret += "Lookup number: " + this.getLookupNumber() + "\n";
+		ret += "\n";
+
+		return ret;
+	}
 	
 	public void removePiece(int code) {
 		int i = code / triangle.length;
@@ -164,9 +191,85 @@ public class TriangleBoard {
 		}
 		
 		this.numPiecesLeft--;
+		this.lastLookupNumberResult = -1;
 	}
 	
-	public ArrayList<String> getFullMoves() {
+
+	private TriangleBoard prevLocation = null;
+	private HashSet<String> moveList = null;
+	
+	private static int TEST_DEBUG_PRINT = 0;
+	private static int TEST_TOTAL_MOVES_FOUND = 0;
+	private static int TEST_TOTAL_MOVES_NEEDED = 0;
+	
+//This works, but isn't going to be used,
+	//unless we do a forward save and backwards search:
+	public ArrayList<String> getNecessaryFullBackwardsMovesToCheck() {
+		
+		ArrayList<String> fullList = getFullMovesExcludingRepeatMoves();
+		ArrayList<String> neededList = new ArrayList<String>();
+		
+		if(this.prevLocation == null) {
+			neededList = fullList;
+			
+		} else {
+			
+			String moves[] = this.historicMoveList.split(" ");
+
+			String prevJump = moves[moves.length - 1];
+
+			for(int i=0; i<fullList.size(); i++) {
+				
+				boolean dontNeedToCheck = false;
+				
+				/*//TODO: put into TEST function
+				//SANITY TEST
+				if(this.prevLocation.moveList.contains(fullList.get(i))) {
+					if(this.prevLocation.doOneMove(fullList.get(i)).couldMoveForwards(prevJump)
+						!= this.prevLocation.doOneMove(fullList.get(i)).getFullMovesIncludingRepeatMoves().contains(prevJump)) {
+						System.out.println("ERROR: couldMove didn't work!");
+						System.exit(1);
+					}
+				}
+				//END SANITY TEST
+				*/
+
+				if(this.prevLocation.moveList.contains(fullList.get(i))
+					&& this.prevLocation.doOneMove(fullList.get(i)).couldMoveForwards(prevJump) ) {
+
+					TESTcompareBoardsForTesting(this.prevLocation.doOneMove(fullList.get(i)).doOneMove(prevJump), this.doOneMove(fullList.get(i)));
+					
+					if(this.getLookupNumber() > this.prevLocation.doOneMove(fullList.get(i)).getLookupNumber()) {
+						
+						//Explanation:
+						//Algo should have done current move (fullList.get(i)) first because
+						//they are indep and current move would have gotten to a smaller lookup number had it gone first.
+						//Unfortunately, I have to use an expensive lookupNumber because that's the only thing that uniquely identifies a position :(
+						dontNeedToCheck = true;
+					}
+				}
+
+				if(dontNeedToCheck == false) {
+					neededList.add(fullList.get(i));
+				}
+			}
+		}
+		
+		TEST_DEBUG_PRINT++;
+		TEST_TOTAL_MOVES_FOUND += fullList.size();
+		TEST_TOTAL_MOVES_NEEDED += neededList.size();
+		
+		if(TEST_DEBUG_PRINT % 100000 == 0) {
+			System.out.println("Testing branching improvement for forwards jumps: " + fullList.size() + " vs " + neededList.size());
+			System.out.println("Ratio: " + ((1.0*TEST_TOTAL_MOVES_FOUND)/(1.0 * TEST_TOTAL_MOVES_NEEDED)));
+			System.out.println("Perc: " + ((1.0*TEST_TOTAL_MOVES_NEEDED)/(1.0 * TEST_TOTAL_MOVES_FOUND)));
+		}
+		
+		return neededList;
+	}
+
+	//WARNING: only use this internally for testing
+	private ArrayList<String> getFullMovesIncludingRepeatMoves() {
 		
 		ArrayList<String> ret = new ArrayList<String>();
 		
@@ -178,6 +281,44 @@ public class TriangleBoard {
 			}
 		}
 		
+		moveList = new HashSet<String>();
+		moveList.addAll(ret);
+		return ret;
+		
+	}
+	
+	
+	public ArrayList<String> getFullMovesExcludingRepeatMoves() {
+		
+		String moves[] = this.historicMoveList.split(" ");
+		
+		int lastPegLocation;
+		int lastPegLocationi;
+		int lastPegLocationj;
+		try {
+			lastPegLocation = Integer.parseInt(this.historicMoveList.substring(this.historicMoveList.lastIndexOf("-") + 1));
+			lastPegLocationi = lastPegLocation / triangle.length;
+			lastPegLocationj = lastPegLocation % triangle.length;
+
+		} catch(Exception e) {
+			lastPegLocationi = -1;
+			lastPegLocationj = -1;
+		}
+		
+		ArrayList<String> ret = new ArrayList<String>();
+		
+		for(int i=0; i<triangle.length; i++) {
+			for(int j=0; j<triangle[i].length; j++) {
+				if(triangle[i][j]) {
+					if(i != lastPegLocationi || j != lastPegLocationj ) {
+						ret.addAll(getPossibleMovesFromPosition(i * triangle.length + j));
+					}
+				}
+			}
+		}
+		
+		moveList = new HashSet<String>();
+		moveList.addAll(ret);
 		return ret;
 		
 	}
@@ -186,6 +327,58 @@ public class TriangleBoard {
 		return i*triangle.length + j;
 	}
 	
+	
+	//Check if pos could do the move in input	
+	//i.e: return true if there's no pegs in the way of the backwards move
+
+	private boolean couldMoveForwards(String forwardsMove) {
+		
+		String seriesOfJumps[] = forwardsMove.split("-");
+		
+		int startingI = -1;
+		int startingJ = -1;
+		
+		
+		for(int i=0; i<seriesOfJumps.length - 1; i++) {
+			
+			int from = Integer.parseInt(seriesOfJumps[i]);
+			int to = Integer.parseInt(seriesOfJumps[i+1]);
+
+			int fromi = from / triangle.length;
+			int fromj = from % triangle.length;
+			
+			int toi = to / triangle.length;
+			int toj = to % triangle.length;
+			
+			int betweeni = (fromi + toi)/2;
+			int betweenj = (fromj + toj)/2;
+			
+			if(i == 0) {
+				//Handle the fact that the peg should at the original position:
+				startingI = fromi;
+				startingJ = fromj;
+				
+				if(triangle[startingI][startingJ] == false) {
+					return false;
+				}
+			}
+			
+			if( triangle[betweeni][betweenj] == false 
+				|| triangle[toi][toj] == true) {
+				
+				if(triangle[toi][toj] == true && startingI == toi && startingJ == toj) {
+					//It's only ok for the "to" coord to have a peg if that is also the starting coord (i.e: the peg that's doing the jumping)
+				} else {
+					//else not ok because that peg is in the way
+					return false;
+				}
+			}
+			
+		}
+		
+		return true;
+	}
+
 	private ArrayList<String> getPossibleMovesFromPosition(int code) {
 		int istart = code / triangle.length;
 		int jstart = code % triangle.length;
@@ -257,8 +450,8 @@ public class TriangleBoard {
 	}
 
 
+	//WARNING: If you're moving the wrong peg, it won't count as an extra move
 	public TriangleBoard doOneMove(String move) {
-		
 		String seriesOfJumps[] = move.split("-");
 		
 		TriangleBoard newBoard = this;
@@ -271,7 +464,12 @@ public class TriangleBoard {
 			newBoard = newBoard.moveInternal(from + "-" + to);
 		}
 		
-		newBoard.numMovesMade = this.numMovesMade + 1;
+		if(newBoard == this) {
+			System.out.println("ERROR blank move!");
+			System.exit(1);
+		}
+
+		newBoard.prevLocation = this;
 		
 		return newBoard;
 		
@@ -345,33 +543,40 @@ public class TriangleBoard {
 		return historicMoveList;
 	}
 	
+
+	private long lastLookupNumberResult = -1;
 	public long getLookupNumber() {
-		return TriangleLookup.convertToNumber(triangle, numPiecesLeft);
+		if(lastLookupNumberResult == -1) {
+			lastLookupNumberResult = TriangleLookup.convertToNumberWithComboTricksAndSymmetry(triangle, numPiecesLeft);
+		}
+		return TriangleLookup.convertToNumberWithComboTricksAndSymmetry(triangle, numPiecesLeft);
 	}
 	
 	public int length() {
 		return triangle.length;
 	}
+	
+	private static void TESTcompareBoardsForTesting(TriangleBoard a, TriangleBoard b) {
+		if(a.length() != b.length()) {
+			System.out.println("ERROR: not even the same length");
+			System.exit(1);
+		}
+		if(a.getNumPiecesLeft() != b.getNumPiecesLeft()) {
+			System.out.println("ERROR: num pieces left is wrong once!");
+			System.exit(1);
+		}
+		
+		for(int i=0; i<a.length(); i++) {
+			for(int j=0; j<=i; j++) {
+				if(a.triangle[i][j] != b.triangle[i][j]) {
+					System.out.println("Huh. The triangles do not match...");
+					System.out.println(a);
+					System.out.println("vs");
+					System.out.println(b);
+					
+					System.exit(1);
+				}
+			}
+		}
+	}
 }
-
-/* From stackoverflow
-This is possible with the menu items Window>Editor>Toggle Split Editor.
-
-Current shortcut for splitting is:
-
-Azerty keyboard:
-
-Ctrl + _ for split horizontally, and
-Ctrl + { for split vertically.
-Qwerty US keyboard:
-
-Ctrl + Shift + - (accessing _) for split horizontally, and
-Ctrl + Shift + [ (accessing {) for split vertically.
-MacOS - Qwerty US keyboard:
-
-⌘ + Shift + - (accessing _) for split horizontally, and
-⌘ + Shift + [ (accessing {) for split vertically.
-On any other keyboard if a required key is unavailable (like { on a german Qwertz keyboard), the following generic approach may work:
-
-Alt + ASCII code + Ctrl then release Alt
-*/

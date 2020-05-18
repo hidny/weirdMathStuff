@@ -1,4 +1,4 @@
-package triangleBoard6;
+package triangleBoard6old;
 
 import java.util.ArrayList;
 import java.util.HashMap;

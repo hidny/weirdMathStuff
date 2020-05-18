@@ -1,16 +1,11 @@
-package triangleBoard6;
+package triangleBoard3old;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
 
-//Hard limit on number of records:
-//20344823
 public class TriangleBoard {
 	//Only hard-copies allow
 	
 	public static void main(String args[]) {
-		//TESTING code:
 		TriangleBoard board = new TriangleBoard(4);
 
 		board.removePiece(0);
@@ -98,7 +93,6 @@ public class TriangleBoard {
 			}
 			
 		}
-		//END TESTING CODE
 	}
 	
 	private boolean triangle[][];
@@ -172,70 +166,6 @@ public class TriangleBoard {
 		this.numPiecesLeft--;
 	}
 	
-
-	private TriangleBoard prevLocation = null;
-	private HashSet<String> moveList = null;
-	
-	private static int TESTtotalFull = 0;
-	private static int TESTtotalNeeded = 0;
-	
-	
-	public ArrayList<String> getNecessaryMovesToCheck() {
-		
-		
-		ArrayList<String> fullList = getFullMoves();
-
-		ArrayList<String> neededList = new ArrayList<String>();
-		
-		
-		//Get previous 1st jump locations to give some idea of an order:
-		ArrayList<Integer> prevJumpLocations = new ArrayList<Integer>();
-		TriangleBoard tmpBoard = this;
-		while(tmpBoard.prevLocation != null) {
-			String moves[] = tmpBoard.historicMoveList.split(" ");
-//WRONG
-			prevJumpLocations.add(Integer.parseInt(moves[moves.length - 1].split("-")[1]));
-
-			tmpBoard = tmpBoard.prevLocation;
-		}
-		
-		//Filter out moves whose 1st jumps are "out of order"
-		//TODO: does this even work?
-		for(int i=0; i<fullList.size(); i++) {
-			
-			boolean dontNeedToCheck = false;
-			tmpBoard = this;
-			int j=0;
-			while(tmpBoard.prevLocation != null &&  tmpBoard.prevLocation.moveList.contains(fullList.get(i))) {
-				//WRONG
-				if(Integer.parseInt(fullList.get(i).split("-")[1]) < prevJumpLocations.get(j)) {
-
-					//Should have done prev move(s) first because they are indep and prev move starts jump at a smaller numbered location
-					dontNeedToCheck = true;
-					
-					break;
-				}
-				tmpBoard = tmpBoard.prevLocation;
-				j++;
-				
-			}
-					
-				
-			if(dontNeedToCheck == false) {
-				neededList.add(fullList.get(i));
-			}
-		}
-		
-		//System.out.println("Testing branching improvement: " + fullList.size() + " vs " + neededList.size());
-		//TESTtotalFull += fullList.size();
-		//TESTtotalNeeded += neededList.size();
-		
-		//System.out.println("Ratio: " + ((1.0*TESTtotalFull)/(1.0 * TESTtotalNeeded)));
-		
-		return neededList;
-	}
-	
-	
 	public ArrayList<String> getFullMoves() {
 		
 		ArrayList<String> ret = new ArrayList<String>();
@@ -247,9 +177,6 @@ public class TriangleBoard {
 				}
 			}
 		}
-		
-		moveList = new HashSet<String>();
-		moveList.addAll(ret);
 		
 		return ret;
 		
@@ -346,8 +273,6 @@ public class TriangleBoard {
 		
 		newBoard.numMovesMade = this.numMovesMade + 1;
 		
-		newBoard.prevLocation = this;
-		
 		return newBoard;
 		
 	}
@@ -421,11 +346,32 @@ public class TriangleBoard {
 	}
 	
 	public long getLookupNumber() {
-		//return TriangleLookup.convertToNumberWithComboTricks(triangle);
-		return TriangleLookup.convertToNumberWithComboTricksAndSymmetry(triangle, numPiecesLeft);
+		return TriangleLookup.convertToNumber(triangle, numPiecesLeft);
 	}
 	
 	public int length() {
 		return triangle.length;
 	}
 }
+
+/* From stackoverflow
+This is possible with the menu items Window>Editor>Toggle Split Editor.
+
+Current shortcut for splitting is:
+
+Azerty keyboard:
+
+Ctrl + _ for split horizontally, and
+Ctrl + { for split vertically.
+Qwerty US keyboard:
+
+Ctrl + Shift + - (accessing _) for split horizontally, and
+Ctrl + Shift + [ (accessing {) for split vertically.
+MacOS - Qwerty US keyboard:
+
+⌘ + Shift + - (accessing _) for split horizontally, and
+⌘ + Shift + [ (accessing {) for split vertically.
+On any other keyboard if a required key is unavailable (like { on a german Qwertz keyboard), the following generic approach may work:
+
+Alt + ASCII code + Ctrl then release Alt
+*/

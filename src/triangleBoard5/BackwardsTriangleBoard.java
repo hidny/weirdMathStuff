@@ -111,6 +111,13 @@ public class BackwardsTriangleBoard {
 		System.out.println("Lookup number: " + this.getLookupNumber());
 		System.out.println();
 	}
+
+	//TODO: only for testing
+	public boolean[][] getTriangle() {
+		return triangle;
+	}
+	//END TODO
+
 	
 	public String toString() {
 		String ret = "";

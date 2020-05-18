@@ -1,4 +1,4 @@
-package triangleBoard3;
+package triangleBoard3old;
 
 public class triangleRecord {
 
