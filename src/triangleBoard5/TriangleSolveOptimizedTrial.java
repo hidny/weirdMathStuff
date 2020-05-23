@@ -102,15 +102,20 @@ public class TriangleSolveOptimizedTrial {
 	// TODO: try finding all optimal solutions later...
 
 	//TODO: use pen & paper to figure out which layer actually needs getNecessaryFilter
-	public static final int LENGTH = 8;
+	public static final int LENGTH = 9;
 
-	public static int MAX_DEPTH_TOTAL = 13;
-	public static int MEM_DEPTH_BACKWARDS = 2;
-	public static int MEM_DEPTH_FORWARDS = Math.min(10, MAX_DEPTH_TOTAL - 1 - MEM_DEPTH_BACKWARDS);
+	public static int MAX_DEPTH_TOTAL = 15;
+
+	public static int MEM_DEPTH_BACKWARDS = 1;
+	public static boolean SEARCH_SINGLE_GOAL = false;
+	public static int GOAL_I = 0;
+	public static int GOAL_J = 0;
+	
+	
+	public static int MEM_DEPTH_FORWARDS = Math.min(13, MAX_DEPTH_TOTAL - 1 - MEM_DEPTH_BACKWARDS);
 
 	
 	public static void main(String args[]) {
-		
 		
 		getForwardSolutions();
 	}
@@ -124,7 +129,12 @@ public class TriangleSolveOptimizedTrial {
 		if(SET_SLOW == false) {
 			System.out.println("Setting backwards cache");
 			initBackwardsSolutionCache(LENGTH);
-			backwardsSolutionsCache = TriangleSolveGetPosDepthDAwayFromSolution.getPositionsDepthNAwayFromAnyGoal(LENGTH, MEM_DEPTH_BACKWARDS);
+			
+			if(SEARCH_SINGLE_GOAL == false) {
+				backwardsSolutionsCache = TriangleSolveGetPosDepthDAwayFromSolution.getPositionsDepthNAwayFromAnyGoal(LENGTH, MEM_DEPTH_BACKWARDS);
+			} else {
+				backwardsSolutionsCache = TriangleSolveGetPosDepthDAwayFromSolution.getPositionsDepthNAwayFromAGoal(LENGTH, GOAL_I, GOAL_J, MEM_DEPTH_BACKWARDS);
+			}
 
 		}
 		
@@ -337,20 +347,21 @@ public class TriangleSolveOptimizedTrial {
 	}
 	
 	
+	public static int debugNumFilteredOut = 0;
 	public static int debugNumFiltered = 0;
 	
 	private static int DEPTH_USED_IN_SEARCH = -1;
 	
 	public static TriangleBoard getBestMoveList(TriangleBoard board, int curMaxDepth, boolean currentlyFoundSolution) {
 		numFunctionCallForDEBUG++;
-		if(numFunctionCallForDEBUG % 1000000 == 0) {
-			//System.out.println("FAST");
-
-			//System.out.println("Current depth: " + DEPTH_USED_IN_SEARCH + " out of " + MAX_DEPTH);
+		if(numFunctionCallForDEBUG % 5000000 == 0) {
+			
+			System.out.println("Current depth: " + DEPTH_USED_IN_SEARCH + " out of " + MAX_DEPTH_TOTAL);
 
 			//TODO: see what happens after implementing conway math...
-			//System.out.println("Num records saved: " + numRecordsSavedForDEBUG);
-			//board.draw();
+			System.out.println("Num records saved: " + numRecordsSavedForDEBUG);
+			board.draw();
+			System.out.println("Min num moves: " +( board.getNumMovesMade() + PositonFilterTests.getNumMesonRegionsSimple(board.getTriangle())));
 		}
 
 		//SANITY CHECK
@@ -366,6 +377,12 @@ public class TriangleSolveOptimizedTrial {
 			board.draw();
 			//System.exit(1);
 			return board;
+		}
+
+		//Implemented A* filter
+		//Found heuristic function with merson regions:
+		if(board.getNumMovesMade() + PositonFilterTests.getNumMesonRegionsSimple(board.getTriangle()) > DEPTH_USED_IN_SEARCH + MEM_DEPTH_BACKWARDS) {
+			return null;
 		}
 
 		long lookup = board.getLookupNumber();
@@ -422,24 +439,40 @@ public class TriangleSolveOptimizedTrial {
 		//END CHECKPOINT LOGIC
 		
 		
-		//Basic filtering... TODO test
-		if(PositonFilterTests.isAnyPegUnCapturableOrUnmoveable(board.getTriangle())) {
-			System.out.println("Filtered:");
-			board.draw();
-			System.out.println();
-			PositonFilterTests.printDistFromEverySpace(PositonFilterTests.getDistFromEverySpace(board.getTriangle()));
-			debugNumFiltered++;
-			System.out.println("Num filtered so far: "  + debugNumFiltered);
-			//System.exit(1);
+		//Basic filtering... TODO test if it makes it go faster
+		/*
+		if(board.getNumMovesMade() > 9 && LENGTH <= 8 && PositonFilterTests.isAnyPegUnCapturableOrUnmoveable(board.getTriangle())) {
+			if(debugNumFilteredOut % 10 == 0) {
+				System.out.println("Filtered:");
+				board.draw();
+				System.out.println();
+				PositonFilterTests.printDistFromEverySpace(PositonFilterTests.getDistFromEverySpace(board.getTriangle()));
+				debugNumFilteredOut++;
+				System.out.println("Num filtered out so far: "  + debugNumFilteredOut);
+				System.out.println("Num filtered so far: "  + debugNumFiltered);
+			}
+
 			return null;
-		}
+		} else if(board.getNumMovesMade() > 9) {
+			
+			if(debugNumFiltered % 1000000 == 0) {
+				System.out.println("Sample filter check has to work with:");
+				board.draw();
+			}
+			debugNumFiltered++;
+		}*/
 		
+		
+		//TODO: does getFullMovesExcludingRepeatMoves make it faster?
 		ArrayList<String> moves;
 		if(board.getNumMovesMade() + 1 <= MEM_DEPTH_FORWARDS
 				|| board.getNumMovesMade() + 1 >= MAX_DEPTH_TOTAL - MEM_DEPTH_BACKWARDS) {
 			moves = board.getFullMovesExcludingRepeatMoves();
 		} else {
 
+			//TODO: Maybe this trick is only worth-while if there's 3 moves that aren't being recorded...
+			//1 only gets reduces by around 30%, which is prob more trouble than it's worth.
+			
 			//Getting only the necessary moves
 			//TODO: This trick doesn't mix well with prioritizing moves, so BE CAREFUL
 			

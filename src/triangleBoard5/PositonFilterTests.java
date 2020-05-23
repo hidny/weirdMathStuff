@@ -211,4 +211,76 @@ Num filtered so far: 39564
 
 		return ret;
 	}
+	
+	public static int getNumMesonRegionsSimple(boolean triangle[][]) {
+		int ret = 0;
+		
+		//Handle corners
+		//top:
+		if(triangle[0][0]) {
+			ret++;
+		}
+		//bottom left:
+		if(triangle[triangle.length - 1][0]) {
+			ret++;
+		}
+		//bottom right:
+		if(triangle[triangle.length - 1][triangle.length - 1]) {
+			ret++;
+		}
+		
+		//Handle sides:
+		//left side
+		for(int i=2; i<triangle.length - 1; i++) {
+			if(triangle[i][0] && triangle[i-1][0]) {
+				ret++;
+				i++;
+			}
+		}
+		
+		//right side
+		for(int i=2; i<triangle.length - 1; i++) {
+			if(triangle[i][i] && triangle[i-1][i-1]) {
+				ret++;
+				i++;
+			}
+		}
+		
+		//bottom side
+		for(int j=2; j<triangle.length - 1; j++) {
+			if(triangle[triangle.length - 1][j] && triangle[triangle.length - 1][j-1]) {
+				ret++;
+				j++;
+			}
+		}
+		
+		//Handle hexagones in a very naive way:
+		//It optimal for triangles length 8...
+		for(int i=4; i<triangle.length-2; i++) {
+			boolean rowFoundHex = false;
+			
+			for(int j=2; j<triangle[i].length - 2; j++) {
+				
+				if(          triangle[i-1][j-1]   &&    triangle[i-1][j]
+					   && triangle[i][j-1] && triangle[i][j] && triangle[i][j+1]
+							&& triangle[i+1][j]    &&   triangle[i+1][j+1]) {
+					ret++;
+					j += 3;
+					rowFoundHex = true;
+				}
+			}
+			
+			if(rowFoundHex) {
+				i+= 3;
+			}
+		}
+		
+		return ret;
+		
+	}
+	
+	
+	//TODO: also count jumbo regions and play around with the hexagons to get max number
+	
+	//TODO: make algo that returns productive starts? (There's some starting locations that won't help)
 }

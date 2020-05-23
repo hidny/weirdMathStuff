@@ -21,8 +21,9 @@ public class TriangleSolveGetPosDepthDAwayFromSolution {
 	public static int STANDARD_MEM_LIMIT = 19000000;
 	
 	public static void main(String args[]) {
-		int MAX_DEPTH = 2;
-		getPositionsDepthNAwayFromAnyGoal(7, MAX_DEPTH);
+		int MAX_DEPTH = 4;
+		getPositionsDepthNAwayFromAGoal(8, 0, 0, MAX_DEPTH);
+		//getPositionsDepthNAwayFromAGoal(8, 0, 0, 3); -> 13559160
 	}
 
 	
@@ -218,7 +219,12 @@ public class TriangleSolveGetPosDepthDAwayFromSolution {
 			
 		} else {
 
-			
+			//TODO debug to get ideas about how to be more efficient
+			/*if(board.getNumMovesMade() >= 4 && numPosSaveTotal % 10000 == 2) {
+				System.out.println("DEBUG: sample backwards 4 board");
+				board.draw();
+			}*/
+			//END TODO debug
 			savedPosForCurrentSearchDir[board.getNumPiecesLeft()].put(lookup, new triangleRecord(board.getNumMovesMade(), board, DEPTH_USED_IN_SEARCH));
 			numPosSaveTotal++;
 			
