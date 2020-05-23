@@ -1,0 +1,2262 @@
+Setting backwards cache
+getPositionDepthNAwayFromGoal saveDepth of 0 (endi = 0, endj = 0)
+End of search with depth 0 and triangle length 8
+Num records saved for prev depths: 0
+Num records saved total: 1
+getPositionDepthNAwayFromGoal saveDepth of 1 (endi = 0, endj = 0)
+End of search with depth 1 and triangle length 8
+Num records saved for prev depths: 1
+Num records saved total: 2080
+getPositionDepthNAwayFromGoal saveDepth of 2 (endi = 0, endj = 0)
+End of search with depth 2 and triangle length 8
+Num records saved for prev depths: 2080
+Num records saved total: 392457
+
+getPositionDepthNAwayFromGoal saveDepth of 0 (endi = 1, endj = 0)
+End of search with depth 0 and triangle length 8
+Num records saved for prev depths: 392457
+Num records saved total: 392458
+getPositionDepthNAwayFromGoal saveDepth of 1 (endi = 1, endj = 0)
+End of search with depth 1 and triangle length 8
+Num records saved for prev depths: 392458
+Num records saved total: 396592
+getPositionDepthNAwayFromGoal saveDepth of 2 (endi = 1, endj = 0)
+End of search with depth 2 and triangle length 8
+Num records saved for prev depths: 396592
+Num records saved total: 1098091
+
+getPositionDepthNAwayFromGoal saveDepth of 0 (endi = 2, endj = 0)
+End of search with depth 0 and triangle length 8
+Num records saved for prev depths: 1098091
+Num records saved total: 1098092
+getPositionDepthNAwayFromGoal saveDepth of 1 (endi = 2, endj = 0)
+End of search with depth 1 and triangle length 8
+Num records saved for prev depths: 1098092
+Num records saved total: 1100881
+getPositionDepthNAwayFromGoal saveDepth of 2 (endi = 2, endj = 0)
+End of search with depth 2 and triangle length 8
+Num records saved for prev depths: 1100881
+Num records saved total: 1856388
+
+getPositionDepthNAwayFromGoal saveDepth of 0 (endi = 2, endj = 1)
+End of search with depth 0 and triangle length 8
+Num records saved for prev depths: 1856388
+Num records saved total: 1856389
+getPositionDepthNAwayFromGoal saveDepth of 1 (endi = 2, endj = 1)
+End of search with depth 1 and triangle length 8
+Num records saved for prev depths: 1856389
+Num records saved total: 1856420
+getPositionDepthNAwayFromGoal saveDepth of 2 (endi = 2, endj = 1)
+End of search with depth 2 and triangle length 8
+Num records saved for prev depths: 1856420
+Num records saved total: 1872161
+
+getPositionDepthNAwayFromGoal saveDepth of 0 (endi = 3, endj = 0)
+End of search with depth 0 and triangle length 8
+Num records saved for prev depths: 1872161
+Num records saved total: 1872162
+getPositionDepthNAwayFromGoal saveDepth of 1 (endi = 3, endj = 0)
+End of search with depth 1 and triangle length 8
+Num records saved for prev depths: 1872162
+Num records saved total: 1872531
+getPositionDepthNAwayFromGoal saveDepth of 2 (endi = 3, endj = 0)
+Mid-way backwards Search: Current depth remaining: 0 out of 2
+Mid-way backwards Search:  search with depth 0 and triangle length 8
+Mid-way backwards Search: Num records saved for prev depths: 1872531
+Mid-way backwards Search: Num records saved total: 2265855
+Mid-way backwards Search: Num million times recursive function called: 10
+        _ 
+       _ _ 
+      _ G G 
+     G _ G G 
+    _ _ _ G _ 
+   G G _ G _ _ 
+  G _ _ _ G _ _ 
+ _ G _ G _ _ _ _ 
+Num pieces left: 13
+Num backwards moves Made: 2
+Move list: 18-36-34-18-16-32 40-56-58-60-44-42-40-24 
+Lookup number: 29371142
+
+End of search with depth 2 and triangle length 8
+Num records saved for prev depths: 1872531
+Num records saved total: 2492682
+
+getPositionDepthNAwayFromGoal saveDepth of 0 (endi = 3, endj = 1)
+End of search with depth 0 and triangle length 8
+Num records saved for prev depths: 2492682
+Num records saved total: 2492683
+getPositionDepthNAwayFromGoal saveDepth of 1 (endi = 3, endj = 1)
+End of search with depth 1 and triangle length 8
+Num records saved for prev depths: 2492683
+Num records saved total: 2493216
+getPositionDepthNAwayFromGoal saveDepth of 2 (endi = 3, endj = 1)
+End of search with depth 2 and triangle length 8
+Num records saved for prev depths: 2493216
+Num records saved total: 3000393
+
+getPositionDepthNAwayFromGoal saveDepth of 0 (endi = 4, endj = 1)
+End of search with depth 0 and triangle length 8
+Num records saved for prev depths: 3000393
+Num records saved total: 3000394
+getPositionDepthNAwayFromGoal saveDepth of 1 (endi = 4, endj = 1)
+End of search with depth 1 and triangle length 8
+Num records saved for prev depths: 3000394
+Num records saved total: 3000394
+getPositionDepthNAwayFromGoal saveDepth of 2 (endi = 4, endj = 1)
+End of search with depth 2 and triangle length 8
+Num records saved for prev depths: 3000394
+Num records saved total: 3007500
+
+getPositionDepthNAwayFromGoal saveDepth of 0 (endi = 4, endj = 2)
+End of search with depth 0 and triangle length 8
+Num records saved for prev depths: 3007500
+Num records saved total: 3007501
+getPositionDepthNAwayFromGoal saveDepth of 1 (endi = 4, endj = 2)
+End of search with depth 1 and triangle length 8
+Num records saved for prev depths: 3007501
+Num records saved total: 3007634
+getPositionDepthNAwayFromGoal saveDepth of 2 (endi = 4, endj = 2)
+End of search with depth 2 and triangle length 8
+Num records saved for prev depths: 3007634
+Num records saved total: 3245379
+
+Num records at depth 2 copied: 3223725
+Trying 8 in TriangleSolveOptimizedTrial5
+Giving up after reaching a max depth of 15
+
+Start search for solution starting with:
+        _ 
+       G G 
+      G G G 
+     G G G G 
+    G G G G G 
+   G G G G G G 
+  G G G G G G G 
+ G G G G G G G G 
+Num pieces left: 35
+Num moves Made: 0
+Move list: 
+Lookup number: 0
+
+
+End of search with depth 1 and triangle length 8
+Num records saved for prev depths: 0
+Num records saved total: 0
+End of search with depth 2 and triangle length 8
+Num records saved for prev depths: 0
+Num records saved total: 0
+
+Start searching with the backwards positions Depth 2 away from the answer:
+
+DEBUG: trying depth 3 with backwards saved pos
+End of search with depth 3 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 4 with backwards saved pos
+End of search with depth 4 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 5 with backwards saved pos
+End of search with depth 5 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 6 with backwards saved pos
+End of search with depth 6 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 7 with backwards saved pos
+End of search with depth 7 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 8 with backwards saved pos
+End of search with depth 8 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 9 with backwards saved pos
+End of search with depth 9 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 10 with backwards saved pos
+End of search with depth 10 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 11 with backwards saved pos
+End of search with depth 11 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 12 with backwards saved pos
+End of search with depth 12 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 1
+DEBUG: trying depth 13 with backwards saved pos
+End of search with depth 13 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 1
+Num records saved total: 5640
+DEBUG: trying depth 14 with backwards saved pos
+Current depth: 12 out of 15
+Num records saved: 106119
+        _ 
+       _ _ 
+      _ _ _ 
+     _ _ _ _ 
+    G _ _ _ G 
+   _ G _ _ _ _ 
+  G G _ G _ _ G 
+ G G _ _ G G G G 
+Num pieces left: 13
+Num moves Made: 12
+Move list:   16-0  18-16  24-8  0-16  40-24-8  34-32  36-18-34-36  45-27  53-35  60-44  58-60  50-34-36-18-0-16-34-52-36
+Lookup number: 5499693
+Min num moves: 15
+DEBUG: FOUND BRIDGE!
+        _ 
+       _ _ 
+      _ _ _ 
+     _ _ _ _ 
+    _ _ _ _ _ 
+   _ G _ _ _ _ 
+  G _ _ _ G _ _ 
+ _ G _ G G _ G G 
+Num pieces left: 8
+Num moves Made: 12
+Move list:   16-0  18-16  24-8  0-16  40-24-8  34-32  36-34  56-40-24  58-40  51-35-17-33-49-51-33  54-36-18-0-16-32-48  61-45-43-25-41
+Lookup number: 13734
+FINAL SOLUTION
+        _ 
+       _ _ 
+      _ _ _ 
+     _ _ _ _ 
+    _ _ _ _ _ 
+   _ G _ _ _ _ 
+  _ _ _ _ _ _ _ 
+ _ _ _ _ _ _ _ _ 
+Num pieces left: 1
+Num moves Made: 14
+Move list:   16-0  18-16  24-8  0-16  40-24-8  34-32  36-34  56-40-24  58-40  51-35-17-33-49-51-33  54-36-18-0-16-32-48  61-45-43-25-41  60-58-56-40-42  63-61-43-41
+Lookup number: 10
+End of search with depth 14 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 5640
+Num records saved total: 113030
+Solution when removing piece 0
+        _ 
+       _ _ 
+      _ _ _ 
+     _ _ _ _ 
+    _ _ _ _ _ 
+   _ G _ _ _ _ 
+  _ _ _ _ _ _ _ 
+ _ _ _ _ _ _ _ _ 
+Num pieces left: 1
+Num moves Made: 14
+Move list:   16-0  18-16  24-8  0-16  40-24-8  34-32  36-34  56-40-24  58-40  51-35-17-33-49-51-33  54-36-18-0-16-32-48  61-45-43-25-41  60-58-56-40-42  63-61-43-41
+Lookup number: 10
+
+
+Start search for solution starting with:
+        G 
+       _ G 
+      G G G 
+     G G G G 
+    G G G G G 
+   G G G G G G 
+  G G G G G G G 
+ G G G G G G G G 
+Num pieces left: 35
+Num moves Made: 0
+Move list: 
+Lookup number: 1
+
+
+End of search with depth 1 and triangle length 8
+Num records saved for prev depths: 0
+Num records saved total: 0
+End of search with depth 2 and triangle length 8
+Num records saved for prev depths: 0
+Num records saved total: 0
+
+Start searching with the backwards positions Depth 2 away from the answer:
+
+DEBUG: trying depth 3 with backwards saved pos
+End of search with depth 3 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 4 with backwards saved pos
+End of search with depth 4 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 5 with backwards saved pos
+End of search with depth 5 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 6 with backwards saved pos
+End of search with depth 6 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 7 with backwards saved pos
+End of search with depth 7 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 8 with backwards saved pos
+End of search with depth 8 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 9 with backwards saved pos
+End of search with depth 9 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 10 with backwards saved pos
+End of search with depth 10 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 11 with backwards saved pos
+End of search with depth 11 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 12 with backwards saved pos
+End of search with depth 12 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 5554
+DEBUG: trying depth 13 with backwards saved pos
+Current depth: 11 out of 15
+Num records saved: 88683
+        _ 
+       _ _ 
+      _ _ _ 
+     _ G _ _ 
+    _ G G _ _ 
+   _ _ _ _ _ _ 
+  G _ _ _ _ G G 
+ G G _ _ _ G G G 
+Num pieces left: 11
+Num moves Made: 11
+Move list:   24-8  0-16  26-24-8  42-26  18-0-16-18-34  40-42-26  27-25  58-42  60-58-40-24-26  45-27-25  52-34-36-52-50-34
+Lookup number: 14684174
+Min num moves: 14
+Current depth: 11 out of 15
+Num records saved: 186899
+        _ 
+       G _ 
+      _ _ G 
+     _ _ _ _ 
+    _ G G _ G 
+   G G G _ G G 
+  _ G _ _ _ G G 
+ _ G G G _ G G G 
+Num pieces left: 19
+Num moves Made: 10
+Move list:   24-8  0-16  40-24-8  18-0-16-18  34-16  27-25  44-26-24-8  56-40  60-44  50-52-34
+Lookup number: 1291824873
+Min num moves: 14
+DEBUG: FOUND BRIDGE!
+        _ 
+       _ _ 
+      _ _ _ 
+     _ _ _ _ 
+    _ _ _ _ _ 
+   _ G _ G _ _ 
+  G _ _ _ G _ _ 
+ G G _ _ G _ G G 
+Num pieces left: 9
+Num moves Made: 11
+Move list:   24-8  0-16  40-24-8  34-32  36-34  51-35-33-51  18-0-16-18-34  58-42-26  54-36-18-34  60-42-26-24-40-58-60  61-45-43
+Lookup number: 62350
+FINAL SOLUTION
+        _ 
+       _ _ 
+      _ _ _ 
+     _ _ _ _ 
+    _ _ _ _ _ 
+   _ _ _ _ _ _ 
+  _ _ _ _ _ _ _ 
+ G _ _ _ _ _ _ _ 
+Num pieces left: 1
+Num moves Made: 13
+Move list:   24-8  0-16  40-24-8  34-32  36-34  51-35-33-51  18-0-16-18-34  58-42-26  54-36-18-34  60-42-26-24-40-58-60  61-45-43  63-61-59  56-40-42-44-60-58-56
+Lookup number: 0
+End of search with depth 13 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 5554
+Num records saved total: 242964
+Solution when removing piece 8
+        _ 
+       _ _ 
+      _ _ _ 
+     _ _ _ _ 
+    _ _ _ _ _ 
+   _ _ _ _ _ _ 
+  _ _ _ _ _ _ _ 
+ G _ _ _ _ _ _ _ 
+Num pieces left: 1
+Num moves Made: 13
+Move list:   24-8  0-16  40-24-8  34-32  36-34  51-35-33-51  18-0-16-18-34  58-42-26  54-36-18-34  60-42-26-24-40-58-60  61-45-43  63-61-59  56-40-42-44-60-58-56
+Lookup number: 0
+
+
+SKIPING (1, 1)
+
+
+Start search for solution starting with:
+        G 
+       G G 
+      _ G G 
+     G G G G 
+    G G G G G 
+   G G G G G G 
+  G G G G G G G 
+ G G G G G G G G 
+Num pieces left: 35
+Num moves Made: 0
+Move list: 
+Lookup number: 3
+
+
+End of search with depth 1 and triangle length 8
+Num records saved for prev depths: 0
+Num records saved total: 0
+End of search with depth 2 and triangle length 8
+Num records saved for prev depths: 0
+Num records saved total: 0
+
+Start searching with the backwards positions Depth 2 away from the answer:
+
+DEBUG: trying depth 3 with backwards saved pos
+End of search with depth 3 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 4 with backwards saved pos
+End of search with depth 4 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 5 with backwards saved pos
+End of search with depth 5 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 6 with backwards saved pos
+End of search with depth 6 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 7 with backwards saved pos
+End of search with depth 7 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 8 with backwards saved pos
+End of search with depth 8 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 9 with backwards saved pos
+End of search with depth 9 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 10 with backwards saved pos
+End of search with depth 10 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 11 with backwards saved pos
+End of search with depth 11 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 12 with backwards saved pos
+End of search with depth 12 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 3389
+DEBUG: trying depth 13 with backwards saved pos
+Current depth: 11 out of 15
+Num records saved: 40942
+        _ 
+       _ G 
+      _ _ _ 
+     G G G G 
+    _ _ _ G _ 
+   _ G G G G _ 
+  _ _ G _ G G G 
+ G _ _ _ G G G G 
+Num pieces left: 19
+Num moves Made: 11
+Move list:   0-16  24-8  18-0-16  34-18  27-9  40-24-8-26  42-24  45-27  60-42  58-60  56-40-58-56
+Lookup number: 896030925
+Min num moves: 14
+Current depth: 11 out of 15
+Num records saved: 134180
+        _ 
+       G _ 
+      _ _ _ 
+     G _ G G 
+    _ G _ _ _ 
+   _ _ _ G G G 
+  G G _ _ G G _ 
+ G G G _ _ G G _ 
+Num pieces left: 17
+Num moves Made: 11
+Move list:   0-16  24-8  18-0-16  40-24-8  50-32  34-50  36-18-16-34-36  45-27  59-41  63-45  60-42-40-24
+Lookup number: 1282510900
+Min num moves: 14
+Current depth: 11 out of 15
+Num records saved: 235540
+        _ 
+       _ _ 
+      _ _ _ 
+     G G _ _ 
+    G G G G _ 
+   _ _ G _ G G 
+  _ G _ G G _ _ 
+ _ G G G G _ G G 
+Num pieces left: 18
+Num moves Made: 11
+Move list:   0-16  24-8  40-24  18-0-16-32  36-18  25-9-27  43-25  54-36-18-34  56-40-24  61-45  50-32
+Lookup number: 9781858
+Min num moves: 15
+DEBUG: FOUND BRIDGE!
+        _ 
+       _ _ 
+      _ _ _ 
+     _ _ G G 
+    _ _ _ G _ 
+   _ _ _ G G G 
+  _ _ _ _ _ G G 
+ _ _ _ _ _ _ G G 
+Num pieces left: 10
+Num moves Made: 11
+Move list:   0-16  24-8  40-24  18-0-16-32  56-40-24  58-40  34-18-16-32-48  36-34-32  51-33-49-51-35  60-58-56-40-24-26  61-43
+Lookup number: 20094
+FINAL SOLUTION
+        _ 
+       _ _ 
+      _ _ _ 
+     _ _ _ _ 
+    _ _ _ _ _ 
+   _ _ _ G _ _ 
+  _ _ _ _ _ _ _ 
+ _ _ _ _ _ _ _ _ 
+Num pieces left: 1
+Num moves Made: 13
+Move list:   0-16  24-8  40-24  18-0-16-32  56-40-24  58-40  34-18-16-32-48  36-34-32  51-33-49-51-35  60-58-56-40-24-26  61-43  54-36-18-34-52-36  63-61-45-27-43
+Lookup number: 17
+End of search with depth 13 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 3389
+Num records saved total: 320453
+Solution when removing piece 16
+        _ 
+       _ _ 
+      _ _ _ 
+     _ _ _ _ 
+    _ _ _ _ _ 
+   _ _ _ G _ _ 
+  _ _ _ _ _ _ _ 
+ _ _ _ _ _ _ _ _ 
+Num pieces left: 1
+Num moves Made: 13
+Move list:   0-16  24-8  40-24  18-0-16-32  56-40-24  58-40  34-18-16-32-48  36-34-32  51-33-49-51-35  60-58-56-40-24-26  61-43  54-36-18-34-52-36  63-61-45-27-43
+Lookup number: 17
+
+
+Start search for solution starting with:
+        G 
+       G G 
+      G _ G 
+     G G G G 
+    G G G G G 
+   G G G G G G 
+  G G G G G G G 
+ G G G G G G G G 
+Num pieces left: 35
+Num moves Made: 0
+Move list: 
+Lookup number: 4
+
+
+End of search with depth 1 and triangle length 8
+Num records saved for prev depths: 0
+Num records saved total: 0
+End of search with depth 2 and triangle length 8
+Num records saved for prev depths: 0
+Num records saved total: 0
+
+Start searching with the backwards positions Depth 2 away from the answer:
+
+DEBUG: trying depth 3 with backwards saved pos
+End of search with depth 3 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 4 with backwards saved pos
+End of search with depth 4 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 5 with backwards saved pos
+End of search with depth 5 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 6 with backwards saved pos
+End of search with depth 6 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 7 with backwards saved pos
+End of search with depth 7 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 8 with backwards saved pos
+End of search with depth 8 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 9 with backwards saved pos
+End of search with depth 9 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 10 with backwards saved pos
+End of search with depth 10 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 11 with backwards saved pos
+End of search with depth 11 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 12 with backwards saved pos
+End of search with depth 12 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 13 with backwards saved pos
+End of search with depth 13 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 1
+DEBUG: trying depth 14 with backwards saved pos
+Current depth: 12 out of 15
+Num records saved: 12155
+        G 
+       G G 
+      _ _ G 
+     G _ G G 
+    _ _ G G _ 
+   _ _ G G G _ 
+  G _ _ _ G G G 
+ _ G _ _ _ _ G G 
+Num pieces left: 19
+Num moves Made: 12
+Move list:   33-17  9-25  27-9  45-27  51-33-17  40-42  59-41  32-50  57-41-59-57  56-58  61-59-57  16-18
+Lookup number: 2893256808
+Min num moves: 15
+Current depth: 12 out of 15
+Num records saved: 124362
+        _ 
+       G _ 
+      _ _ _ 
+     G _ _ _ 
+    _ _ _ _ G 
+   _ G G _ _ _ 
+  G G G G _ _ _ 
+ G G G G G _ G _ 
+Num pieces left: 15
+Num moves Made: 12
+Move list:   33-17  27-25  24-26  9-27-25  16-18  40-24-26  43-27-9  45-27  61-43-25  63-45  0-18-36-52-54-36  26-24
+Lookup number: 1052026915
+Min num moves: 15
+Current depth: 12 out of 15
+Num records saved: 224644
+        G 
+       G G 
+      _ G G 
+     _ G _ _ 
+    _ _ G G _ 
+   _ _ G G _ _ 
+  G _ _ G _ G _ 
+ _ G _ G G G G _ 
+Num pieces left: 18
+Num moves Made: 11
+Move list:   33-17  27-25  24-26  40-24  16-32  45-27-25  52-36  56-40-24-26  58-40  63-45-27-25  50-32-48
+Lookup number: 1459858111
+Min num moves: 15
+Current depth: 12 out of 15
+Num records saved: 325335
+        _ 
+       G _ 
+      _ _ _ 
+     _ G _ _ 
+    G _ G _ _ 
+   G _ G G _ G 
+  G G _ _ _ _ G 
+ G G G _ _ _ _ _ 
+Num pieces left: 14
+Num moves Made: 12
+Move list:   33-17  27-25  24-26  43-25  16-34  45-27  61-43-25  18-16-34  0-18-36-52  59-43-27-25  63-61-43  41-59-61-45
+Lookup number: 840839614
+Min num moves: 16
+Current depth: 12 out of 15
+Num records saved: 432994
+        _ 
+       G G 
+      _ _ G 
+     _ _ _ _ 
+    G _ _ _ _ 
+   _ G _ G _ _ 
+  G G _ G _ G _ 
+ G G G G G _ G _ 
+Num pieces left: 16
+Num moves Made: 12
+Move list:   33-17  27-25  24-26  45-27-25  42-26  16-34-36  63-45-27-25  0-16-34  40-42-26-8  59-41  61-59  44-60
+Lookup number: 1479337473
+Min num moves: 16
+Current depth: 12 out of 15
+Num records saved: 531610
+        G 
+       G G 
+      _ _ _ 
+     _ _ _ G 
+    G _ _ G _ 
+   _ _ G _ _ _ 
+  _ _ _ G G G G 
+ _ _ _ _ G G G G 
+Num pieces left: 15
+Num moves Made: 12
+Move list:   33-17  27-25  42-26  18-34  40-42-26  45-27  56-40  32-48  58-56-40  59-41  16-18-34-16-32-48-50-32  44-42
+Lookup number: 16295804
+Min num moves: 15
+Current depth: 12 out of 15
+Num records saved: 616867
+        G 
+       G G 
+      G G _ 
+     G G G _ 
+    G _ _ G _ 
+   G _ G G G _ 
+  _ _ _ G G G G 
+ _ _ G _ G G G _ 
+Num pieces left: 22
+Num moves Made: 11
+Move list:   33-17  27-25  42-26  45-27  58-42  32-50  56-58  59-41  63-45  18-36-54  48-50-32
+Lookup number: 79524464
+Min num moves: 15
+Current depth: 12 out of 15
+Num records saved: 712989
+        _ 
+       _ G 
+      _ G _ 
+     _ _ _ _ 
+    _ _ _ _ G 
+   _ G _ G G _ 
+  G G G _ _ _ G 
+ G G G G G G G _ 
+Num pieces left: 17
+Num moves Made: 11
+Move list:   33-17  27-25  45-27  51-33  8-26-42  24-8  40-24  63-45  0-16-32-34-36-54  18-36  53-51-33-17
+Lookup number: 1467414275
+Min num moves: 15
+Current depth: 12 out of 15
+Num records saved: 812681
+        _ 
+       _ G 
+      G _ _ 
+     _ _ _ _ 
+    _ G _ _ G 
+   _ _ _ _ G G 
+  G _ _ G G G G 
+ G G _ G _ _ G G 
+Num pieces left: 16
+Num moves Made: 12
+Move list:   33-17  27-25  51-33  40-42-26  18-34  8-26-42  24-8  58-40-24  59-41  0-16-32-50-34-16  61-59  35-51
+Lookup number: 1734694966
+Min num moves: 15
+Current depth: 12 out of 15
+Num records saved: 918218
+        _ 
+       _ G 
+      G G _ 
+     _ _ _ _ 
+    G _ G G _ 
+   G G G _ G _ 
+  G G G G _ _ G 
+ _ _ G _ _ _ G G 
+Num pieces left: 18
+Num moves Made: 12
+Move list:   33-17  43-25  16-34  0-16  45-43-25  60-44  61-45-43  18-34-52  24-26  58-60-44  56-58  36-18-34
+Lookup number: 1908267540
+Min num moves: 14
+Current depth: 12 out of 15
+Num records saved: 1028397
+        G 
+       G G 
+      _ G _ 
+     _ _ _ G 
+    _ _ G _ G 
+   _ _ _ _ G _ 
+  _ _ _ G _ _ G 
+ G G _ _ G G G G 
+Num pieces left: 16
+Num moves Made: 10
+Move list:   33-17  43-25  16-34  45-43-25  32-16-34  48-32  59-43-25  18-34  58-40-24-26-44  53-51-33-49-51
+Lookup number: 5097632243
+Min num moves: 15
+Current depth: 12 out of 15
+Num records saved: 1131684
+        _ 
+       G _ 
+      _ G G 
+     _ G _ _ 
+    G _ _ _ _ 
+   G _ _ _ _ G 
+  G G G _ G _ _ 
+ G G G G _ G _ _ 
+Num pieces left: 16
+Num moves Made: 12
+Move list:   33-17  43-25  16-34  61-43-25  18-34  24-26  36-52  59-61-43-25  0-18-34-36-18  54-52  63-61  41-43-59
+Lookup number: 776594321
+Min num moves: 15
+Current depth: 12 out of 15
+Num records saved: 1229175
+        _ 
+       G G 
+      _ _ _ 
+     _ G _ G 
+    _ _ G G G 
+   _ _ G G G G 
+  _ _ _ _ G _ _ 
+ _ G G G G _ _ _ 
+Num pieces left: 16
+Num moves Made: 12
+Move list:   33-17  43-25  18-34  24-26  61-43-25  16-18-34  0-16  40-24-8  54-52  56-40  63-61-43  50-32-48-50-52
+Lookup number: 299219833
+Min num moves: 15
+Current depth: 12 out of 15
+Num records saved: 1329525
+        _ 
+       _ _ 
+      _ G _ 
+     G _ _ _ 
+    G _ G _ _ 
+   _ G G G _ _ 
+  G _ G G G _ G 
+ G G _ G _ G _ _ 
+Num pieces left: 16
+Num moves Made: 12
+Move list:   33-17  43-25  45-43  60-44  58-60  61-59  40-58-60  27-45-61-59  16-34-36-52  9-27-25  63-61  0-16-34
+Lookup number: 309329082
+Min num moves: 14
+Current depth: 12 out of 15
+Num records saved: 1433644
+        G 
+       G G 
+      G G _ 
+     _ G _ _ 
+    G _ _ _ _ 
+   G G _ _ _ G 
+  G G G _ _ G G 
+ G _ _ G _ _ G G 
+Num pieces left: 19
+Num moves Made: 9
+Move list:   33-17  43-25  61-43  18-34-52  24-26  36-34  59-61-43-25  57-59  50-52-36-18-34-50
+Lookup number: 5655094600
+Min num moves: 15
+End of search with depth 14 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 1
+Num records saved total: 1494377
+DEBUG: trying depth 15 with backwards saved pos
+Current depth: 13 out of 15
+Num records saved: 1543662
+        _ 
+       G _ 
+      _ _ _ 
+     _ _ _ _ 
+    _ G _ _ _ 
+   G G G _ G _ 
+  _ _ _ _ G G G 
+ _ G G _ G G G G 
+Num pieces left: 15
+Num moves Made: 13
+Move list:   33-17  9-25  27-9  0-18  35-17  24-26  40-24  45-27-9-25  49-33-17-35-33  56-40  59-41  16-32-50  43-59-41
+Lookup number: 1037522886
+Min num moves: 16
+DEBUG: FOUND BRIDGE!
+        _ 
+       _ _ 
+      _ _ _ 
+     G G _ _ 
+    G _ _ _ _ 
+   G G G _ G G 
+  _ G _ G _ G _ 
+ _ G G _ G _ G _ 
+Num pieces left: 15
+Num moves Made: 13
+Move list:   33-17  9-25  27-9  0-18  35-17  45-27-9  51-35-33-51  16-0-18-16-34  40-42  56-40  59-41  61-43-25  63-45
+Lookup number: 27486250
+FINAL SOLUTION
+        _ 
+       _ _ 
+      _ _ _ 
+     _ _ _ _ 
+    _ _ _ _ _ 
+   _ _ _ _ _ _ 
+  _ _ _ _ _ _ _ 
+ _ _ _ _ _ G _ _ 
+Num pieces left: 1
+Num moves Made: 15
+Move list:   33-17  9-25  27-9  0-18  35-17  45-27-9  51-35-33-51  16-0-18-16-34  40-42  56-40  59-41  61-43-25  63-45  32-16-34-50-32-48-50-52-36-54  57-59-61-45-63-61
+Lookup number: 2
+End of search with depth 15 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 1494377
+Num records saved total: 1591547
+Solution when removing piece 17
+        _ 
+       _ _ 
+      _ _ _ 
+     _ _ _ _ 
+    _ _ _ _ _ 
+   _ _ _ _ _ _ 
+  _ _ _ _ _ _ _ 
+ _ _ _ _ _ G _ _ 
+Num pieces left: 1
+Num moves Made: 15
+Move list:   33-17  9-25  27-9  0-18  35-17  45-27-9  51-35-33-51  16-0-18-16-34  40-42  56-40  59-41  61-43-25  63-45  32-16-34-50-32-48-50-52-36-54  57-59-61-45-63-61
+Lookup number: 2
+
+
+SKIPING (2, 2)
+
+
+Start search for solution starting with:
+        G 
+       G G 
+      G G G 
+     _ G G G 
+    G G G G G 
+   G G G G G G 
+  G G G G G G G 
+ G G G G G G G G 
+Num pieces left: 35
+Num moves Made: 0
+Move list: 
+Lookup number: 6
+
+
+End of search with depth 1 and triangle length 8
+Num records saved for prev depths: 0
+Num records saved total: 0
+End of search with depth 2 and triangle length 8
+Num records saved for prev depths: 0
+Num records saved total: 0
+
+Start searching with the backwards positions Depth 2 away from the answer:
+
+DEBUG: trying depth 3 with backwards saved pos
+End of search with depth 3 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 4 with backwards saved pos
+End of search with depth 4 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 5 with backwards saved pos
+End of search with depth 5 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 6 with backwards saved pos
+End of search with depth 6 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 7 with backwards saved pos
+End of search with depth 7 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 8 with backwards saved pos
+End of search with depth 8 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 9 with backwards saved pos
+End of search with depth 9 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 10 with backwards saved pos
+End of search with depth 10 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 11 with backwards saved pos
+End of search with depth 11 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 12 with backwards saved pos
+End of search with depth 12 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 5554
+DEBUG: trying depth 13 with backwards saved pos
+Current depth: 11 out of 15
+Num records saved: 64503
+        _ 
+       G _ 
+      _ _ _ 
+     _ _ _ G 
+    _ _ _ _ _ 
+   _ G G _ G G 
+  G _ G G _ G G 
+ _ G _ G G _ G G 
+Num pieces left: 16
+Num moves Made: 11
+Move list:   40-24  16-32  0-16  26-24-8  43-25  18-0-16-34  56-40-24  58-40  61-43-25  36-34-32-48  24-26-8
+Lookup number: 1244440391
+Min num moves: 14
+DEBUG: FOUND BRIDGE!
+        _ 
+       _ _ 
+      _ _ _ 
+     _ _ _ _ 
+    _ _ _ _ _ 
+   _ G _ _ _ _ 
+  G _ _ _ G G G 
+ _ G _ G _ G G G 
+Num pieces left: 10
+Num moves Made: 11
+Move list:   40-24  16-32  0-16  42-24-8  56-40-24  18-16-32  58-40-24  60-42  35-17-33-35-51-49  36-18-0-16-32-50-48  45-43-41
+Lookup number: 12167
+FINAL SOLUTION
+        _ 
+       _ _ 
+      _ _ _ 
+     _ _ _ _ 
+    _ _ _ _ _ 
+   _ G _ _ _ _ 
+  _ _ _ _ _ _ _ 
+ _ _ _ _ _ _ _ _ 
+Num pieces left: 1
+Num moves Made: 13
+Move list:   40-24  16-32  0-16  42-24-8  56-40-24  18-16-32  58-40-24  60-42  35-17-33-35-51-49  36-18-0-16-32-50-48  45-43-41  62-60-58-56-40-42  63-45-61-43-41
+Lookup number: 10
+End of search with depth 13 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 5554
+Num records saved total: 166782
+Solution when removing piece 24
+        _ 
+       _ _ 
+      _ _ _ 
+     _ _ _ _ 
+    _ _ _ _ _ 
+   _ G _ _ _ _ 
+  _ _ _ _ _ _ _ 
+ _ _ _ _ _ _ _ _ 
+Num pieces left: 1
+Num moves Made: 13
+Move list:   40-24  16-32  0-16  42-24-8  56-40-24  18-16-32  58-40-24  60-42  35-17-33-35-51-49  36-18-0-16-32-50-48  45-43-41  62-60-58-56-40-42  63-45-61-43-41
+Lookup number: 10
+
+
+Start search for solution starting with:
+        G 
+       G G 
+      G G G 
+     G _ G G 
+    G G G G G 
+   G G G G G G 
+  G G G G G G G 
+ G G G G G G G G 
+Num pieces left: 35
+Num moves Made: 0
+Move list: 
+Lookup number: 7
+
+
+End of search with depth 1 and triangle length 8
+Num records saved for prev depths: 0
+Num records saved total: 0
+End of search with depth 2 and triangle length 8
+Num records saved for prev depths: 0
+Num records saved total: 0
+
+Start searching with the backwards positions Depth 2 away from the answer:
+
+DEBUG: trying depth 3 with backwards saved pos
+End of search with depth 3 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 4 with backwards saved pos
+End of search with depth 4 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 5 with backwards saved pos
+End of search with depth 5 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 6 with backwards saved pos
+End of search with depth 6 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 7 with backwards saved pos
+End of search with depth 7 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 8 with backwards saved pos
+End of search with depth 8 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 9 with backwards saved pos
+End of search with depth 9 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 10 with backwards saved pos
+End of search with depth 10 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 11 with backwards saved pos
+End of search with depth 11 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 12 with backwards saved pos
+End of search with depth 12 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 13 with backwards saved pos
+Current depth: 11 out of 15
+Num records saved: 662
+        _ 
+       _ _ 
+      _ _ G 
+     _ _ _ _ 
+    _ _ G _ G 
+   G _ G G G _ 
+  G G _ G G G _ 
+ G G G G G G G _ 
+Num pieces left: 19
+Num moves Made: 9
+Move list:   9-25  27-9  0-18  45-27-9  34-36  63-45-27  16-34-18-36  32-34  50-32-16-0-18
+Lookup number: 54674041
+Min num moves: 14
+Current depth: 11 out of 15
+Num records saved: 86471
+        _ 
+       _ _ 
+      _ _ _ 
+     G _ _ G 
+    _ G _ G _ 
+   _ G G _ _ _ 
+  G G G G G G _ 
+ _ G G G G G G _ 
+Num pieces left: 18
+Num moves Made: 11
+Move list:   27-25  24-26  9-27-25  40-24  45-27  16-18-36  56-40  0-16-32-48  42-26-24  63-45-27  44-42
+Lookup number: 38629164
+Min num moves: 14
+Current depth: 11 out of 15
+Num records saved: 171370
+        _ 
+       G _ 
+      G G _ 
+     G _ _ _ 
+    _ G G _ _ 
+   _ G _ G G _ 
+  G G _ G G _ G 
+ G G G G G _ G _ 
+Num pieces left: 20
+Num moves Made: 10
+Move list:   27-25  24-26  40-24  43-27-25-43  45-27  18-36  61-45-27  63-45  0-18-36-54  50-34
+Lookup number: 804342960
+Min num moves: 14
+Current depth: 11 out of 15
+Num records saved: 247353
+        G 
+       G G 
+      _ _ _ 
+     _ _ G _ 
+    G _ G G G 
+   _ G _ G G G 
+  _ _ _ _ G G G 
+ _ _ _ _ G _ G G 
+Num pieces left: 18
+Num moves Made: 11
+Move list:   27-25  24-26  40-24  56-40  16-32-48  42-24  18-16-32  60-42  58-40-56-58-60  61-59  42-58-60
+Lookup number: 9864031
+Min num moves: 14
+Current depth: 11 out of 15
+Num records saved: 338856
+        G 
+       G G 
+      G G _ 
+     _ _ G G 
+    G G _ _ _ 
+   _ _ _ G _ _ 
+  _ _ _ _ _ G G 
+ _ _ _ _ G _ G G 
+Num pieces left: 15
+Num moves Made: 11
+Move list:   27-25  24-26  43-25  45-27  61-43  18-34-52  40-24-26  59-61-43  57-59  56-40-58-60  50-52-36-34-50-32
+Lookup number: 12702771
+Min num moves: 14
+Current depth: 11 out of 15
+Num records saved: 427152
+        G 
+       G G 
+      _ _ _ 
+     _ G G _ 
+    G _ _ G _ 
+   _ _ _ G G _ 
+  G G _ _ G G G 
+ _ _ G _ G G G G 
+Num pieces left: 19
+Num moves Made: 10
+Move list:   27-25  24-26  45-27-25  42-26  58-42  18-34-50  8-26  60-42-58-60  56-58  40-42-24-8
+Lookup number: 1564099506
+Min num moves: 13
+Current depth: 11 out of 15
+Num records saved: 514330
+        G 
+       _ _ 
+      _ _ _ 
+     _ _ _ _ 
+    _ _ _ _ _ 
+   _ G _ G G _ 
+  _ _ _ G G G G 
+ _ G _ G G G G _ 
+Num pieces left: 13
+Num moves Made: 11
+Move list:   27-25  42-26  16-34  45-27-25  24-42-26  40-24  56-40  58-42  63-45  18-34-36-54  0-18-16-34-50-48-32-16-0
+Lookup number: 612296142
+Min num moves: 14
+Current depth: 11 out of 15
+Num records saved: 600637
+        G 
+       _ G 
+      _ _ _ 
+     G _ G _ 
+    G G _ _ _ 
+   _ _ _ _ _ _ 
+  G _ _ _ _ G _ 
+ G G _ _ G G G _ 
+Num pieces left: 13
+Num moves Made: 11
+Move list:   27-25  42-26  18-34  40-42-26  45-27  0-18-36  16-18  59-41  58-40-42  63-45-27-9  52-34-36-52-50-34-16-0
+Lookup number: 774321762
+Min num moves: 15
+Current depth: 11 out of 15
+Num records saved: 677524
+        _ 
+       G _ 
+      _ _ G 
+     _ G _ _ 
+    G _ _ G G 
+   G G G G G _ 
+  _ G G G G G G 
+ _ G G _ G G G G 
+Num pieces left: 23
+Num moves Made: 10
+Move list:   27-25  42-26  40-42  45-27  18-36  59-41  0-18-34-50  16-18  24-42  56-40
+Lookup number: 157467334
+Min num moves: 14
+Current depth: 11 out of 15
+Num records saved: 751750
+        _ 
+       G _ 
+      G G _ 
+     G G G _ 
+    _ _ G _ _ 
+   _ _ G G G _ 
+  _ G G G G G _ 
+ _ _ _ G G G G _ 
+Num pieces left: 19
+Num moves Made: 10
+Move list:   27-25  42-26  45-27  18-36  58-42  32-34-50  56-58-42  63-45-27  0-18-36-34  48-32-50
+Lookup number: 152282323
+Min num moves: 13
+Current depth: 11 out of 15
+Num records saved: 831950
+        G 
+       G _ 
+      _ G _ 
+     _ _ _ G 
+    _ _ _ G _ 
+   _ _ _ _ _ G 
+  _ G _ _ G G G 
+ _ _ _ _ G G G G 
+Num pieces left: 14
+Num moves Made: 11
+Move list:   27-25  42-26  58-42  16-34-50  9-27-25  45-27  56-58-42  32-16-34-50  48-32  60-42-24-40-42-58-60  43-45
+Lookup number: 265391167
+Min num moves: 15
+Current depth: 11 out of 15
+Num records saved: 919620
+        _ 
+       G G 
+      _ _ _ 
+     _ G _ _ 
+    G G _ _ _ 
+   _ G G _ G _ 
+  G G G G G _ _ 
+ G G _ _ G G G _ 
+Num pieces left: 18
+Num moves Made: 11
+Move list:   43-25  16-34  0-16  24-8  40-24  45-43-25  60-44  58-60  63-45  36-54-52  18-34-36-18-16-32
+Lookup number: 1214891123
+Min num moves: 13
+Current depth: 11 out of 15
+Num records saved: 1012431
+        _ 
+       G _ 
+      _ _ G 
+     _ G G _ 
+    _ _ _ _ G 
+   _ _ _ _ G G 
+  _ _ G G G G G 
+ G G _ G G _ G G 
+Num pieces left: 18
+Num moves Made: 10
+Move list:   43-25  16-34  27-43-25  61-43  0-16-34-52  9-25  32-16  48-32  58-40-24-8  50-32-34-50
+Lookup number: 1655273133
+Min num moves: 14
+Current depth: 11 out of 15
+Num records saved: 1107305
+        _ 
+       _ _ 
+      _ G G 
+     G _ _ _ 
+    G G _ _ _ 
+   G G _ _ G _ 
+  G G _ _ G _ G 
+ G G _ G _ _ G G 
+Num pieces left: 17
+Num moves Made: 10
+Move list:   43-25  16-34  45-43-25  60-44  27-45-43  0-16-34-52  62-44  58-60-62  9-27-43-59  50-34-18
+Lookup number: 495330541
+Min num moves: 14
+Current depth: 11 out of 15
+Num records saved: 1196131
+        _ 
+       G _ 
+      _ _ _ 
+     G G _ _ 
+    G G G G _ 
+   G G G G _ _ 
+  G G G _ _ _ G 
+ G _ _ _ _ _ G G 
+Num pieces left: 18
+Num moves Made: 9
+Move list:   43-25  16-34  61-43-25  18-16-34  54-52  36-54  0-18-36  59-61-43-45-27-25  57-59-43
+Lookup number: 1053895419
+Min num moves: 13
+Current depth: 11 out of 15
+Num records saved: 1276939
+        G 
+       _ G 
+      _ G _ 
+     G _ G G 
+    _ G G _ _ 
+   G _ _ _ _ _ 
+  G G G _ _ _ G 
+ G G G G _ _ _ _ 
+Num pieces left: 17
+Num moves Made: 11
+Move list:   43-25  18-34  24-26  59-43-25  36-18-34  8-24-26  40-24  61-43-27  54-36-52-54  63-61-59  42-40
+Lookup number: 1168978791
+Min num moves: 15
+End of search with depth 13 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 1292139
+DEBUG: trying depth 14 with backwards saved pos
+Current depth: 12 out of 15
+Num records saved: 1384291
+        _ 
+       G _ 
+      _ _ _ 
+     G _ G G 
+    _ _ _ _ _ 
+   _ _ _ G G _ 
+  _ _ G G G G G 
+ G _ _ G G G G G 
+Num pieces left: 17
+Num moves Made: 11
+Move list:   9-25  27-9  0-18  35-17  42-26  16-34  45-27-9-25-27  40-42-26  58-42  32-34-50  56-40-58-56
+Lookup number: 1281813761
+Min num moves: 15
+DEBUG: FOUND BRIDGE!
+        _ 
+       _ _ 
+      _ _ _ 
+     _ _ _ _ 
+    _ G G _ _ 
+   _ _ G _ G _ 
+  G G G _ _ G G 
+ G G G _ G _ G _ 
+Num pieces left: 14
+Num moves Made: 12
+Move list:   9-25  27-9  0-18  43-27-9  45-27  59-43  33-17-35-51-33  40-42  61-43-25  16-34  63-45  32-16-0-18-36-54
+Lookup number: 1379206
+FINAL SOLUTION
+        _ 
+       _ _ 
+      _ _ _ 
+     _ _ _ _ 
+    _ _ _ _ _ 
+   _ _ _ _ _ _ 
+  _ _ _ _ _ _ _ 
+ _ _ _ _ _ _ G _ 
+Num pieces left: 1
+Num moves Made: 14
+Move list:   9-25  27-9  0-18  43-27-9  45-27  59-43  33-17-35-51-33  40-42  61-43-25  16-34  63-45  32-16-0-18-36-54  57-59-61-63-45-43-25-41-43  56-40-58-42-44-62
+Lookup number: 1
+End of search with depth 14 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 1292139
+Num records saved total: 1484249
+Solution when removing piece 25
+        _ 
+       _ _ 
+      _ _ _ 
+     _ _ _ _ 
+    _ _ _ _ _ 
+   _ _ _ _ _ _ 
+  _ _ _ _ _ _ _ 
+ _ _ _ _ _ _ G _ 
+Num pieces left: 1
+Num moves Made: 14
+Move list:   9-25  27-9  0-18  43-27-9  45-27  59-43  33-17-35-51-33  40-42  61-43-25  16-34  63-45  32-16-0-18-36-54  57-59-61-63-45-43-25-41-43  56-40-58-42-44-62
+Lookup number: 1
+
+
+SKIPING (3, 2)
+
+
+SKIPING (3, 3)
+
+
+SKIPING (4, 0)
+
+
+Start search for solution starting with:
+        G 
+       G G 
+      G G G 
+     G G G G 
+    G _ G G G 
+   G G G G G G 
+  G G G G G G G 
+ G G G G G G G G 
+Num pieces left: 35
+Num moves Made: 0
+Move list: 
+Lookup number: 11
+
+
+End of search with depth 1 and triangle length 8
+Num records saved for prev depths: 0
+Num records saved total: 0
+End of search with depth 2 and triangle length 8
+Num records saved for prev depths: 0
+Num records saved total: 0
+
+Start searching with the backwards positions Depth 2 away from the answer:
+
+DEBUG: trying depth 3 with backwards saved pos
+End of search with depth 3 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 4 with backwards saved pos
+End of search with depth 4 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 5 with backwards saved pos
+End of search with depth 5 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 6 with backwards saved pos
+End of search with depth 6 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 7 with backwards saved pos
+End of search with depth 7 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 8 with backwards saved pos
+End of search with depth 8 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 9 with backwards saved pos
+End of search with depth 9 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 10 with backwards saved pos
+End of search with depth 10 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 11 with backwards saved pos
+End of search with depth 11 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 12 with backwards saved pos
+End of search with depth 12 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 13 with backwards saved pos
+End of search with depth 13 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 131
+DEBUG: trying depth 14 with backwards saved pos
+Current depth: 12 out of 15
+Num records saved: 9927
+        _ 
+       _ _ 
+      G _ _ 
+     _ G G G 
+    _ G _ G _ 
+   _ _ _ _ G _ 
+  _ _ G G G G G 
+ _ G _ G G G G G 
+Num pieces left: 18
+Num moves Made: 12
+Move list:   17-33  27-25  24-26  9-27-25  40-24  42-26  45-27  56-40  16-32-48  0-16  58-56-40-42  43-41-57
+Lookup number: 188705020
+Min num moves: 15
+Current depth: 12 out of 15
+Num records saved: 98978
+        G 
+       G G 
+      _ _ _ 
+     _ _ _ _ 
+    _ G _ _ _ 
+   _ _ _ G G G 
+  G G _ _ G G G 
+ _ _ _ _ G G G G 
+Num pieces left: 16
+Num moves Made: 12
+Move list:   17-33  27-25  24-26  40-24  45-27-25  42-26  18-34  58-42-26  60-42  16-32-50-34-36  56-58-60  25-27-45
+Lookup number: 1472547590
+Min num moves: 16
+Current depth: 12 out of 15
+Num records saved: 198338
+        _ 
+       G _ 
+      _ _ _ 
+     _ _ _ _ 
+    _ _ G _ _ 
+   _ G G G G _ 
+  G G _ G G G G 
+ _ _ G G G G G _ 
+Num pieces left: 17
+Num moves Made: 12
+Move list:   17-33  27-25  24-26  45-27-25  42-26  18-34  40-24-42-26  58-42  56-58  63-45  0-18-34-36-54  16-34
+Lookup number: 1167060522
+Min num moves: 14
+Current depth: 12 out of 15
+Num records saved: 293456
+        G 
+       G G 
+      G _ _ 
+     G G G G 
+    _ _ _ _ _ 
+   G _ _ G G G 
+  G _ _ G G G _ 
+ _ G G _ _ G _ _ 
+Num pieces left: 19
+Num moves Made: 12
+Move list:   17-33  27-25  42-26  18-34  40-42-26  45-27  56-40  63-45  32-34-36-54  61-63-45  59-61  50-48
+Lookup number: 724769417
+Min num moves: 16
+Current depth: 12 out of 15
+Num records saved: 375861
+        _ 
+       G _ 
+      G _ _ 
+     G G _ G 
+    G G _ G _ 
+   _ G _ G G G 
+  G _ _ G G _ _ 
+ _ _ G _ G _ G _ 
+Num pieces left: 18
+Num moves Made: 12
+Move list:   17-33  27-25  42-26  45-27  18-36  58-42  56-58  59-57  40-56-58  0-18-34-50-48  61-45-27  63-45
+Lookup number: 1255652967
+Min num moves: 14
+Current depth: 12 out of 15
+Num records saved: 469540
+        _ 
+       G G 
+      _ _ G 
+     _ _ G G 
+    _ G _ _ _ 
+   _ G G _ _ _ 
+  _ _ _ _ G _ G 
+ _ G G G _ _ G G 
+Num pieces left: 15
+Num moves Made: 12
+Move list:   17-33  43-25  16-34  0-16  24-8  40-24  56-40  61-43-25  36-52  59-43-61-59  54-52  50-48-32-16-34-36-54
+Lookup number: 1233336343
+Min num moves: 15
+Current depth: 12 out of 15
+Num records saved: 573979
+        _ 
+       G G 
+      _ _ _ 
+     _ _ _ _ 
+    G _ G _ _ 
+   G _ _ G _ _ 
+  G G G G _ G G 
+ G G _ _ G G G G 
+Num pieces left: 18
+Num moves Made: 11
+Move list:   17-33  43-25  16-34  45-43-25  32-16-34-32  18-34  0-18  27-9  60-44  58-60  41-43-27-45-43
+Lookup number: 3371067355
+Min num moves: 15
+Current depth: 12 out of 15
+Num records saved: 673470
+        _ 
+       G G 
+      _ _ _ 
+     _ _ _ _ 
+    _ _ G G G 
+   G _ G G _ G 
+  _ _ _ _ _ G G 
+ G G _ _ _ _ G G 
+Num pieces left: 15
+Num moves Made: 12
+Move list:   17-33  43-25  16-34  61-43-25  32-16-34  36-52  18-36  0-18  59-43-25-27-9  48-32-34  58-40  41-59-61-43
+Lookup number: 2677184464
+Min num moves: 15
+Current depth: 12 out of 15
+Num records saved: 765186
+        G 
+       G _ 
+      _ _ _ 
+     G G _ G 
+    _ _ _ G _ 
+   G G _ _ _ G 
+  G G G _ _ _ _ 
+ G G _ _ G _ G _ 
+Num pieces left: 16
+Num moves Made: 12
+Move list:   17-33  43-25  45-43  60-44  16-34-52  27-25  9-27-43  32-34  58-60  61-45-27  63-45  51-33-35-51-53-35
+Lookup number: 1750092461
+Min num moves: 15
+Current depth: 12 out of 15
+Num records saved: 859640
+        _ 
+       _ G 
+      _ _ G 
+     G _ _ G 
+    _ _ _ _ _ 
+   G G _ G _ _ 
+  G G G G _ _ _ 
+ G G G _ _ _ G _ 
+Num pieces left: 15
+Num moves Made: 11
+Move list:   17-33  43-25  61-43  16-34-52  27-25  0-16-34  45-27  59-61-43-25  32-16-34-36-52  63-45-61-43  42-24
+Lookup number: 1043590669
+Min num moves: 15
+Current depth: 12 out of 15
+Num records saved: 959563
+        _ 
+       G G 
+      G _ _ 
+     G _ _ G 
+    _ _ _ _ _ 
+   _ G _ _ _ _ 
+  G G _ _ G _ G 
+ G _ _ _ G _ G G 
+Num pieces left: 14
+Num moves Made: 12
+Move list:   17-33  43-25  61-43  36-52  18-36  0-18  45-27-9  32-34-36  59-61-45-27  57-59  40-58-60  51-35-17-33-51-49
+Lookup number: 2091559766
+Min num moves: 15
+Current depth: 12 out of 15
+Num records saved: 1050175
+        _ 
+       G G 
+      G G _ 
+     G _ G _ 
+    _ G _ _ _ 
+   _ G G G _ _ 
+  G G G _ _ G _ 
+ G G G G _ _ _ _ 
+Num pieces left: 18
+Num moves Made: 12
+Move list:   35-33  16-34  0-16  24-8  40-24  51-35  45-43-25  60-44  36-52  62-60-44  63-45-43  18-36-34-16
+Lookup number: 206380771
+Min num moves: 15
+Current depth: 12 out of 15
+Num records saved: 1147536
+        _ 
+       _ _ 
+      _ _ _ 
+     _ _ _ _ 
+    _ _ _ _ _ 
+   _ _ _ _ G _ 
+  _ _ _ _ G G G 
+ _ G G G G _ G G 
+Num pieces left: 10
+Num moves Made: 12
+Move list:   35-33  16-34  27-25  24-26  40-24  51-35  9-25-43-27-9  0-18  45-27-9  56-40  61-43  50-34-32-50-48-32-16-0-18-34-52
+Lookup number: 8039
+Min num moves: 15
+Current depth: 12 out of 15
+Num records saved: 1251211
+        _ 
+       G G 
+      _ _ _ 
+     _ G _ _ 
+    _ _ G _ G 
+   _ _ _ G G G 
+  _ G G _ _ G G 
+ G G _ _ G _ _ G 
+Num pieces left: 16
+Num moves Made: 12
+Move list:   35-33  16-34  27-25  42-26  18-34  58-42-26  0-16-18-34  32-16  48-32-50  60-58-42-24-8  62-60  52-50
+Lookup number: 3268044480
+Min num moves: 15
+Current depth: 12 out of 15
+Num records saved: 1350647
+        _ 
+       G _ 
+      _ _ _ 
+     _ _ _ _ 
+    _ _ _ _ _ 
+   _ _ _ G G _ 
+  G G _ G G G G 
+ _ _ _ G G G G G 
+Num pieces left: 14
+Num moves Made: 11
+Move list:   35-33  16-34  27-25  42-26  58-42  0-16-34-50  32-16  45-27-25  56-58-42-24-8  18-0-16-34  40-42-26-8
+Lookup number: 818856050
+Min num moves: 14
+Current depth: 12 out of 15
+Num records saved: 1455959
+        _ 
+       _ _ 
+      _ G _ 
+     _ G _ _ 
+    G _ _ _ G 
+   G _ G _ G G 
+  _ G _ G _ G G 
+ _ G G G G _ G G 
+Num pieces left: 18
+Num moves Made: 11
+Move list:   35-33  16-34  43-25  18-34  0-18  24-26  27-9  40-24  56-40  61-43-25  50-32-34-18-0-16-32
+Lookup number: 216861978
+Min num moves: 16
+Current depth: 12 out of 15
+Num records saved: 1544806
+        _ 
+       _ G 
+      G G _ 
+     _ _ _ G 
+    _ G G _ G 
+   G G G G G G 
+  G G G G G _ _ 
+ G G G _ _ _ G G 
+Num pieces left: 23
+Num moves Made: 9
+Move list:   35-33  16-34  43-25  61-43  0-16-34-52  32-16  59-61-43  54-52  18-34
+Lookup number: 201757956
+Min num moves: 15
+Current depth: 12 out of 15
+Num records saved: 1649777
+        _ 
+       _ _ 
+      G G _ 
+     _ G _ G 
+    _ _ _ _ _ 
+   _ _ G _ _ _ 
+  _ _ G G G _ _ 
+ G G G G G G _ _ 
+Num pieces left: 14
+Num moves Made: 12
+Move list:   35-33  16-34  51-35  45-43-25  0-16-34  27-25-43  32-16  48-32-34  62-44-26  9-27-25  63-45-27  49-33-35-51
+Lookup number: 180579254
+Min num moves: 15
+Current depth: 12 out of 15
+Num records saved: 1761889
+        _ 
+       _ G 
+      _ G G 
+     _ _ G _ 
+    _ _ _ _ _ 
+   _ G G G _ _ 
+  _ _ G _ _ _ G 
+ G G _ G G _ G _ 
+Num pieces left: 14
+Num moves Made: 12
+Move list:   35-33  16-34  51-35  45-43-25  61-43  32-16-34-52  27-45-61-43  48-32  58-40-24  0-16-32-34  63-45  34-36-54
+Lookup number: 1124759567
+Min num moves: 15
+Current depth: 12 out of 15
+Num records saved: 1862026
+        _ 
+       G G 
+      _ _ _ 
+     _ _ G G 
+    _ _ _ _ _ 
+   _ _ G G G _ 
+  G G _ G G _ G 
+ G G _ G G _ G G 
+Num pieces left: 18
+Num moves Made: 12
+Move list:   35-33  18-34  0-18  27-9  42-26  45-27  16-0-18-36  32-16  40-42-24-8  58-42  61-45-27  25-9
+Lookup number: 3391536628
+Min num moves: 15
+Current depth: 12 out of 15
+Num records saved: 1954505
+        G 
+       _ _ 
+      _ _ _ 
+     _ _ _ _ 
+    _ _ _ _ _ 
+   _ G G _ _ G 
+  _ G G G _ G G 
+ _ G _ _ G _ G G 
+Num pieces left: 13
+Num moves Made: 12
+Move list:   35-33  18-34  24-26  40-24  16-32  43-25  56-40-24  61-43  36-52  60-44  58-60  0-18-36-52-34-18-16-32-34-16-0
+Lookup number: 745450845
+Min num moves: 15
+Current depth: 12 out of 15
+Num records saved: 2045603
+        _ 
+       G _ 
+      G G _ 
+     _ _ G _ 
+    _ G _ _ G 
+   _ _ _ _ G _ 
+  G _ _ _ _ _ G 
+ G _ _ G _ _ G G 
+Num pieces left: 13
+Num moves Made: 12
+Move list:   35-33  18-34  24-26  51-35  45-43-25  36-18-34-36  40-24-26  61-45-27  0-18-36  59-61-43  57-59  42-40-58-42-44
+Lookup number: 784453625
+Min num moves: 15
+Current depth: 12 out of 15
+Num records saved: 2158292
+        _ 
+       _ G 
+      _ _ _ 
+     _ _ _ _ 
+    G G _ _ _ 
+   _ _ G G _ G 
+  G G G _ _ G G 
+ G G G _ _ G G G 
+Num pieces left: 17
+Num moves Made: 11
+Move list:   35-33  18-34  42-26  16-18-34  58-42-26  32-50  0-16-32  40-24  36-18-34-16-32  60-42  44-60-58
+Lookup number: 1170160389
+Min num moves: 16
+Current depth: 12 out of 15
+Num records saved: 2253196
+        _ 
+       G _ 
+      _ G _ 
+     _ _ _ G 
+    _ _ _ _ G 
+   _ _ _ _ _ G 
+  _ G _ G G G G 
+ G G _ _ G _ G G 
+Num pieces left: 15
+Num moves Made: 12
+Move list:   35-33  18-34  42-26  58-42  0-18-34-50  32-34  16-32  56-58  59-57  61-59  40-24-26-42-58-60  44-42-40-56
+Lookup number: 1375575685
+Min num moves: 16
+DEBUG: FOUND BRIDGE!
+        _ 
+       _ _ 
+      _ _ _ 
+     _ _ _ _ 
+    _ _ _ _ _ 
+   _ _ _ _ G _ 
+  G G _ G _ G _ 
+ _ G _ G G _ G G 
+Num pieces left: 10
+Num moves Made: 12
+Move list:   35-33  32-34  16-32  0-16  40-24-8  51-35-33-51  18-0-16-34  36-18  56-40  58-42  61-43-25-9-27  54-36-18-34-50-32-48
+Lookup number: 11719
+FINAL SOLUTION
+        _ 
+       _ _ 
+      _ _ _ 
+     _ _ _ _ 
+    _ _ _ _ _ 
+   _ _ _ _ _ _ 
+  _ _ _ _ _ _ _ 
+ _ G _ _ _ _ _ _ 
+Num pieces left: 1
+Num moves Made: 14
+Move list:   35-33  32-34  16-32  0-16  40-24-8  51-35-33-51  18-0-16-34  36-18  56-40  58-42  61-43-25-9-27  54-36-18-34-50-32-48  60-58-40-56-58  63-61-45-43-59-57
+Lookup number: 1
+End of search with depth 14 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 131
+Num records saved total: 2341378
+Solution when removing piece 33
+        _ 
+       _ _ 
+      _ _ _ 
+     _ _ _ _ 
+    _ _ _ _ _ 
+   _ _ _ _ _ _ 
+  _ _ _ _ _ _ _ 
+ _ G _ _ _ _ _ _ 
+Num pieces left: 1
+Num moves Made: 14
+Move list:   35-33  32-34  16-32  0-16  40-24-8  51-35-33-51  18-0-16-34  36-18  56-40  58-42  61-43-25-9-27  54-36-18-34-50-32-48  60-58-40-56-58  63-61-45-43-59-57
+Lookup number: 1
+
+
+Start search for solution starting with:
+        G 
+       G G 
+      G G G 
+     G G G G 
+    G G _ G G 
+   G G G G G G 
+  G G G G G G G 
+ G G G G G G G G 
+Num pieces left: 35
+Num moves Made: 0
+Move list: 
+Lookup number: 12
+
+
+End of search with depth 1 and triangle length 8
+Num records saved for prev depths: 0
+Num records saved total: 0
+End of search with depth 2 and triangle length 8
+Num records saved for prev depths: 0
+Num records saved total: 0
+
+Start searching with the backwards positions Depth 2 away from the answer:
+
+DEBUG: trying depth 3 with backwards saved pos
+End of search with depth 3 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 4 with backwards saved pos
+End of search with depth 4 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 5 with backwards saved pos
+End of search with depth 5 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 6 with backwards saved pos
+End of search with depth 6 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 7 with backwards saved pos
+End of search with depth 7 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 8 with backwards saved pos
+End of search with depth 8 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 9 with backwards saved pos
+End of search with depth 9 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 10 with backwards saved pos
+End of search with depth 10 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 11 with backwards saved pos
+End of search with depth 11 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 0
+DEBUG: trying depth 12 with backwards saved pos
+End of search with depth 12 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 0
+Num records saved total: 1
+DEBUG: trying depth 13 with backwards saved pos
+Current depth: 11 out of 15
+Num records saved: 17369
+        _ 
+       _ G 
+      G _ _ 
+     _ _ _ _ 
+    G G _ _ _ 
+   G G G G G _ 
+  G G G _ G G _ 
+ G _ _ _ _ _ G G 
+Num pieces left: 17
+Num moves Made: 11
+Move list:   16-34  0-16  24-8  18-0-16  43-25  61-43  36-18-34-52  59-61-43  54-36-34-52  57-59-43  25-9
+Lookup number: 1773310192
+Min num moves: 14
+Current depth: 11 out of 15
+Num records saved: 91844
+        _ 
+       G G 
+      _ G _ 
+     G G _ _ 
+    _ _ _ _ _ 
+   _ _ _ _ _ G 
+  G _ _ _ _ G G 
+ G G _ _ G _ G G 
+Num pieces left: 14
+Num moves Made: 11
+Move list:   16-34  0-16  24-8  43-25  18-34  40-24-26  61-43-25  36-18-34-36-52  59-43-61-59  58-60  42-40-58-42-24
+Lookup number: 2124784982
+Min num moves: 14
+Current depth: 11 out of 15
+Num records saved: 166696
+        _ 
+       _ G 
+      G _ _ 
+     _ _ _ _ 
+    G G _ G _ 
+   G G G G G _ 
+  G G G _ _ _ _ 
+ G G G G _ G _ G 
+Num pieces left: 19
+Num moves Made: 11
+Move list:   16-34  27-25  24-26  43-25  0-16-34  18-16  59-43-25  61-43  45-61-59  63-61  25-27-45-63
+Lookup number: 1292341334
+Min num moves: 15
+Current depth: 11 out of 15
+Num records saved: 250161
+        G 
+       G G 
+      _ G _ 
+     _ _ _ _ 
+    _ _ _ _ _ 
+   _ G _ _ _ _ 
+  G _ _ _ _ G G 
+ _ _ _ G G G G _ 
+Num pieces left: 12
+Num moves Made: 11
+Move list:   16-34  27-25  42-26  18-34  45-27  58-42-26  48-50  56-58-42  63-45  32-34-18-36-54  52-34-36-52-50-34-16-32-48
+Lookup number: 400025204
+Min num moves: 14
+Current depth: 11 out of 15
+Num records saved: 332029
+        _ 
+       _ _ 
+      _ _ _ 
+     _ _ G _ 
+    _ _ _ _ G 
+   G _ _ G G G 
+  G G _ G G _ _ 
+ G G _ G G _ G _ 
+Num pieces left: 15
+Num moves Made: 11
+Move list:   16-34  27-25  42-26  45-27  18-36  0-18  58-42  61-45-27-9  32-50-34-16-0-18  63-45  18-16-32-34-36
+Lookup number: 17595092
+Min num moves: 15
+Current depth: 11 out of 15
+Num records saved: 414927
+        _ 
+       G _ 
+      _ _ G 
+     G _ G _ 
+    _ _ G G G 
+   G _ _ G G G 
+  G G _ G G G G 
+ _ _ G _ G G G G 
+Num pieces left: 22
+Num moves Made: 9
+Move list:   16-34  27-25  42-26  58-42  32-50  56-58  59-41  18-16-34-32-50-34  0-18
+Lookup number: 327436374
+Min num moves: 13
+Current depth: 11 out of 15
+Num records saved: 512636
+        _ 
+       _ G 
+      _ G G 
+     _ G G G 
+    _ G _ G _ 
+   G G G _ _ _ 
+  G G G G _ G _ 
+ G G _ _ G _ _ _ 
+Num pieces left: 19
+Num moves Made: 10
+Move list:   16-34  43-25  0-16-34  61-43-25  32-16-34  36-52  63-61  60-62  58-60  45-63-61-43-25
+Lookup number: 144749785
+Min num moves: 13
+Current depth: 11 out of 15
+Num records saved: 610192
+        _ 
+       G _ 
+      _ _ _ 
+     _ _ G G 
+    G _ _ _ _ 
+   G G G G _ _ 
+  G G G _ _ _ G 
+ G _ _ _ _ _ _ G 
+Num pieces left: 14
+Num moves Made: 11
+Move list:   16-34  43-25  32-16-34  45-43-25  36-34-32  18-36  61-43  63-45-27  0-18-16-34-52-54  59-43  57-59-61-63
+Lookup number: 917538417
+Min num moves: 14
+Current depth: 11 out of 15
+Num records saved: 697185
+        _ 
+       _ _ 
+      _ _ _ 
+     _ _ _ G 
+    _ _ _ _ _ 
+   G _ _ _ _ _ 
+  G G _ _ G _ G 
+ G G _ _ G _ G G 
+Num pieces left: 11
+Num moves Made: 11
+Move list:   16-34  43-25  45-43  60-44  0-16-34-52  58-60  61-43  32-34-52  27-45-61-43  9-27  50-32-16-18-34-50-52-34-36-52
+Lookup number: 7914390
+Min num moves: 14
+Current depth: 11 out of 15
+Num records saved: 781034
+        _ 
+       G G 
+      _ _ _ 
+     _ _ _ _ 
+    _ G _ _ G 
+   G _ _ _ G G 
+  G G G G G G G 
+ G G G _ _ G _ _ 
+Num pieces left: 18
+Num moves Made: 10
+Move list:   16-34  43-25  61-43  18-16-34-52  0-18  27-25  59-61-43  32-16-34-52  63-61  41-43-27-9
+Lookup number: 2131149936
+Min num moves: 14
+Current depth: 11 out of 15
+Num records saved: 865702
+        G 
+       G G 
+      _ _ _ 
+     G _ G G 
+    G G _ G _ 
+   G G G _ _ _ 
+  G G G G _ G _ 
+ _ _ _ _ G _ _ _ 
+Num pieces left: 18
+Num moves Made: 11
+Move list:   16-34  43-25  61-43  36-52  60-44  54-36-52  58-60  63-61-59  56-58-60-44  18-16-34-52  44-60
+Lookup number: 213086716
+Min num moves: 14
+End of search with depth 13 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 1
+Num records saved total: 888308
+DEBUG: trying depth 14 with backwards saved pos
+Current depth: 12 out of 15
+Num records saved: 949834
+        G 
+       G _ 
+      _ G _ 
+     _ _ _ G 
+    _ G _ _ G 
+   _ G _ G _ _ 
+  G G _ G _ G G 
+ G G G G G G _ _ 
+Num pieces left: 19
+Num moves Made: 11
+Move list:   16-34  0-16  18-0  24-8  43-25  36-18-34  40-24-26  45-43-25-27  61-43  63-61  50-34-36
+Lookup number: 1639865218
+Min num moves: 16
+Current depth: 12 out of 15
+Num records saved: 1049619
+        _ 
+       _ _ 
+      G _ _ 
+     _ _ _ _ 
+    _ _ _ G G 
+   _ _ _ _ _ _ 
+  _ _ _ G G G G 
+ _ G _ G G G G G 
+Num pieces left: 13
+Num moves Made: 12
+Move list:   16-34  0-16  24-8  18-0-16  27-25  40-24-8  42-24-26  43-25-9  56-40-42  45-43-41  58-40-42  50-34-18-0-16
+Lookup number: 127458861
+Min num moves: 15
+DEBUG: FOUND BRIDGE!
+        _ 
+       _ _ 
+      _ _ _ 
+     _ _ G _ 
+    _ G _ _ G 
+   _ _ _ _ G _ 
+  _ G _ G _ G G 
+ _ _ _ G _ G G G 
+Num pieces left: 12
+Num moves Made: 12
+Move list:   16-34  0-16  24-8  18-0-16  27-25  40-24-8-26-24  43-25  45-43  56-40  50-34-16-32-48  58-56-40-42-44-26  60-44
+Lookup number: 20245918
+FINAL SOLUTION
+        _ 
+       _ _ 
+      _ _ _ 
+     _ _ _ _ 
+    _ _ _ _ _ 
+   _ _ _ _ _ _ 
+  _ _ _ _ _ _ _ 
+ _ _ _ _ _ G _ _ 
+Num pieces left: 1
+Num moves Made: 14
+Move list:   16-34  0-16  24-8  18-0-16  27-25  40-24-8-26-24  43-25  45-43  56-40  50-34-16-32-48  58-56-40-42-44-26  60-44  62-60-58  63-45-27-25-41-57-59-43-45-61
+Lookup number: 2
+End of search with depth 14 and triangle length 8 and backwards saved pos depth 2
+Num records saved for prev depths: 888308
+Num records saved total: 1085338
+Solution when removing piece 34
+        _ 
+       _ _ 
+      _ _ _ 
+     _ _ _ _ 
+    _ _ _ _ _ 
+   _ _ _ _ _ _ 
+  _ _ _ _ _ _ _ 
+ _ _ _ _ _ G _ _ 
+Num pieces left: 1
+Num moves Made: 14
+Move list:   16-34  0-16  24-8  18-0-16  27-25  40-24-8-26-24  43-25  45-43  56-40  50-34-16-32-48  58-56-40-42-44-26  60-44  62-60-58  63-45-27-25-41-57-59-43-45-61
+Lookup number: 2
+
+
+SKIPING (4, 3)
+
+
+SKIPING (4, 4)
+
+
+SKIPING (5, 0)
+
+
+SKIPING (5, 1)
+
+
+SKIPING (5, 2)
+
+
+SKIPING (5, 3)
+
+
+SKIPING (5, 4)
+
+
+SKIPING (5, 5)
+
+
+SKIPING (6, 0)
+
+
+SKIPING (6, 1)
+
+
+SKIPING (6, 2)
+
+
+SKIPING (6, 3)
+
+
+SKIPING (6, 4)
+
+
+SKIPING (6, 5)
+
+
+SKIPING (6, 6)
+
+
+SKIPING (7, 0)
+
+
+SKIPING (7, 1)
+
+
+SKIPING (7, 2)
+
+
+SKIPING (7, 3)
+
+
+SKIPING (7, 4)
+
+
+SKIPING (7, 5)
+
+
+SKIPING (7, 6)
+
+
+SKIPING (7, 7)
+
+
