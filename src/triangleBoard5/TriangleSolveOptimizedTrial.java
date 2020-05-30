@@ -87,10 +87,13 @@ import java.util.HashSet;
 //DONE: Improve how much gets recorded in the lookup table to not go over nay space limits
 // Then make recording only based on how many moves were done (Don't record complicated middle part if space is an issue)
 
-//TODO: great idea:
+//DONE: great idea:
 // Do a backwards search that goes back 2-3 moves and save the results.
 //That way, if the forwards search ever gets with 2-3 moves from goal, it will end.
 // This could potentially make it 100x faster
+
+//TODO: IMPORTANT: make get forward moves filter out bad start locations according to meson region if the position is
+// right on the edge of being discarded
 
 public class TriangleSolveOptimizedTrial {
 
@@ -102,17 +105,19 @@ public class TriangleSolveOptimizedTrial {
 	// TODO: try finding all optimal solutions later...
 
 	//TODO: use pen & paper to figure out which layer actually needs getNecessaryFilter
-	public static final int LENGTH = 9;
+	public static final int LENGTH = 7;
 
-	public static int MAX_DEPTH_TOTAL = 15;
+	public static int MAX_DEPTH_TOTAL = 14;
 
-	public static int MEM_DEPTH_BACKWARDS = 1;
+	//TODO: for triangle 9, I should filter out board positions with few pieces left
+	public static int MEM_DEPTH_BACKWARDS = 2;
+
 	public static boolean SEARCH_SINGLE_GOAL = false;
 	public static int GOAL_I = 0;
 	public static int GOAL_J = 0;
 	
 	
-	public static int MEM_DEPTH_FORWARDS = Math.min(13, MAX_DEPTH_TOTAL - 1 - MEM_DEPTH_BACKWARDS);
+	public static int MEM_DEPTH_FORWARDS = Math.min(14, MAX_DEPTH_TOTAL - 1 - MEM_DEPTH_BACKWARDS);
 
 	
 	public static void main(String args[]) {
@@ -356,7 +361,7 @@ public class TriangleSolveOptimizedTrial {
 		numFunctionCallForDEBUG++;
 		if(numFunctionCallForDEBUG % 5000000 == 0) {
 			
-			System.out.println("Current depth: " + DEPTH_USED_IN_SEARCH + " out of " + MAX_DEPTH_TOTAL);
+			System.out.println("Current depth: " + DEPTH_USED_IN_SEARCH + " out of " + MAX_DEPTH_TOTAL + " minus a memorized backwards depth of " + MEM_DEPTH_BACKWARDS);
 
 			//TODO: see what happens after implementing conway math...
 			System.out.println("Num records saved: " + numRecordsSavedForDEBUG);
@@ -379,10 +384,15 @@ public class TriangleSolveOptimizedTrial {
 			return board;
 		}
 
+		int numMesonRegions = PositonFilterTests.getNumMesonRegionsSimple(board.getTriangle());
+		boolean mustBe100percentMesonEfficient = false;
 		//Implemented A* filter
 		//Found heuristic function with merson regions:
-		if(board.getNumMovesMade() + PositonFilterTests.getNumMesonRegionsSimple(board.getTriangle()) > DEPTH_USED_IN_SEARCH + MEM_DEPTH_BACKWARDS) {
+		if(board.getNumMovesMade() + numMesonRegions > DEPTH_USED_IN_SEARCH + MEM_DEPTH_BACKWARDS) {
 			return null;
+			
+		} else if(board.getNumMovesMade() + numMesonRegions == DEPTH_USED_IN_SEARCH + MEM_DEPTH_BACKWARDS) {
+			mustBe100percentMesonEfficient = true;
 		}
 
 		long lookup = board.getLookupNumber();
@@ -467,7 +477,7 @@ public class TriangleSolveOptimizedTrial {
 		ArrayList<String> moves;
 		if(board.getNumMovesMade() + 1 <= MEM_DEPTH_FORWARDS
 				|| board.getNumMovesMade() + 1 >= MAX_DEPTH_TOTAL - MEM_DEPTH_BACKWARDS) {
-			moves = board.getFullMovesExcludingRepeatMoves();
+			moves = board.getFullMovesExcludingRepeatMoves(mustBe100percentMesonEfficient);
 		} else {
 
 			//TODO: Maybe this trick is only worth-while if there's 3 moves that aren't being recorded...
@@ -479,7 +489,7 @@ public class TriangleSolveOptimizedTrial {
 			//Only use getNecessaryFullBackwardsMovesToCheck when
 			// 1) position isn't saved
 			// 2) next move isn't going to be checked against the backwards saved positions
-			moves = board.getNecessaryFullBackwardsMovesToCheck();
+			moves = board.getNecessaryFullBackwardsMovesToCheck(mustBe100percentMesonEfficient);
 		}
 		
 		

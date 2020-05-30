@@ -228,9 +228,9 @@ public class TriangleBoard {
 	
 //This works, but isn't going to be used,
 	//unless we do a forward save and backwards search:
-	public ArrayList<String> getNecessaryFullBackwardsMovesToCheck() {
+	public ArrayList<String> getNecessaryFullBackwardsMovesToCheck(boolean mustBe100percentMesonEfficient) {
 		
-		ArrayList<String> fullList = getFullMovesExcludingRepeatMoves();
+		ArrayList<String> fullList = getFullMovesExcludingRepeatMoves(mustBe100percentMesonEfficient);
 		ArrayList<String> neededList = new ArrayList<String>();
 		
 		if(this.prevLocation == null) {
@@ -293,7 +293,7 @@ public class TriangleBoard {
 	}
 
 	//WARNING: only use this internally for testing
-	private ArrayList<String> getFullMovesIncludingRepeatMoves() {
+	private ArrayList<String> getFullMovesIncludingRepeatMoves(boolean mustBe100percentMesonEfficient) {
 		
 		ArrayList<String> ret = new ArrayList<String>();
 		
@@ -310,11 +310,20 @@ public class TriangleBoard {
 		return ret;
 		
 	}
-	
-	
+
+	//TODO: change code to remove need for below line:
 	public ArrayList<String> getFullMovesExcludingRepeatMoves() {
+		return getFullMovesExcludingRepeatMoves(false);
+	}
+	
+	public ArrayList<String> getFullMovesExcludingRepeatMoves(boolean mustBe100percentMesonEfficient) {
 		
 		String moves[] = this.historicMoveList.split(" ");
+		
+		boolean goodStarts[][] = this.triangle;
+		if(mustBe100percentMesonEfficient) {
+			goodStarts = PositonFilterTests.getStartsThatReduceNumMesonRegions(this.triangle);
+		}
 		
 		int lastPegLocation;
 		int lastPegLocationi;
@@ -333,10 +342,8 @@ public class TriangleBoard {
 		
 		for(int i=0; i<triangle.length; i++) {
 			for(int j=0; j<triangle[i].length; j++) {
-				if(triangle[i][j]) {
-					if(i != lastPegLocationi || j != lastPegLocationj ) {
-						ret.addAll(getPossibleMovesFromPosition(i * triangle.length + j));
-					}
+				if(goodStarts[i][j] && (i != lastPegLocationi || j != lastPegLocationj) ) {
+					ret.addAll(getPossibleMovesFromPosition(i * triangle.length + j));
 				}
 			}
 		}

@@ -283,4 +283,132 @@ Num filtered so far: 39564
 	//TODO: also count jumbo regions and play around with the hexagons to get max number
 	
 	//TODO: make algo that returns productive starts? (There's some starting locations that won't help)
+	
+	public static boolean[][] getStartsThatReduceNumMesonRegions(boolean triangle[][]) {
+		
+		boolean goodStarts[][] = new boolean[triangle.length][];
+		
+		//initialize: (optionalish)
+		for(int i=0; i<goodStarts.length; i++) {
+			goodStarts[i] = new boolean[triangle[i].length];
+			for(int j=0; j<triangle[i].length; j++) {
+				goodStarts[i][j] = false;
+			}
+		}
+		
+		
+		int curNumMesonRegions = 0;
+		
+		//Handle corners
+		//top:
+		if(triangle[0][0]) {
+			curNumMesonRegions++;
+			goodStarts[0][0] = true;
+		}
+		//bottom left:
+		if(triangle[triangle.length - 1][0]) {
+			curNumMesonRegions++;
+			goodStarts[triangle.length - 1][0] = true;
+		}
+		//bottom right:
+		if(triangle[triangle.length - 1][triangle.length - 1]) {
+			curNumMesonRegions++;
+			goodStarts[triangle.length - 1][triangle.length - 1] = true;
+		}
+		
+		//Handle sides:
+		//left side
+		for(int i=2; i<triangle.length - 1; i++) {
+			if(triangle[i][0] && triangle[i-1][0]) {
+				goodStarts[i][0] = true;
+				goodStarts[i-1][0] = true;
+				
+				curNumMesonRegions++;
+				i++;
+			}
+		}
+		
+		//right side
+		for(int i=2; i<triangle.length - 1; i++) {
+			if(triangle[i][i] && triangle[i-1][i-1]) {
+				goodStarts[i][i] = true;
+				goodStarts[i-1][i-1] = true;
+				
+				curNumMesonRegions++;
+				i++;
+			}
+		}
+		
+		//bottom side
+		for(int j=2; j<triangle.length - 1; j++) {
+			if(triangle[triangle.length - 1][j] && triangle[triangle.length - 1][j-1]) {
+				goodStarts[triangle.length - 1][j] = true;
+				goodStarts[triangle.length - 1][j-1] = true;
+
+				curNumMesonRegions++;
+				j++;
+			}
+		}
+		
+		//Handle hexagones in a very naive way:
+		//It optimal for triangles length 8...
+		for(int i=4; i<triangle.length-2; i++) {
+			boolean rowFoundHex = false;
+			
+			for(int j=2; j<triangle[i].length - 2; j++) {
+				
+				if(          triangle[i-1][j-1]   &&    triangle[i-1][j]
+					   && triangle[i][j-1] && triangle[i][j] && triangle[i][j+1]
+							&& triangle[i+1][j]    &&   triangle[i+1][j+1]) {
+					
+					goodStarts[i-1][j-1]  = true;
+					goodStarts[i-1][j] = true;
+					goodStarts[i][j-1] = true;
+					goodStarts[i][j] = true;
+					goodStarts[i][j+1] = true;
+					goodStarts[i+1][j] = true;
+					goodStarts[i+1][j+1] = true;
+					
+
+					curNumMesonRegions++;
+					j += 3;
+					rowFoundHex = true;
+				}
+			}
+			
+			if(rowFoundHex) {
+				i+= 3;
+			}
+		}
+		
+		
+		for(int i=1; i<goodStarts.length; i++) {
+			for(int j=0; j<goodStarts[i].length; j++) {
+				
+				if(goodStarts[i][j]) {
+					//SANITY TEST
+					if(triangle[i][j] == false) {
+						System.out.println("ERROR: empty space is part of meson region");
+						System.exit(1);
+					}
+					//END SANITY TEST
+					
+					//WARNING: I don't like changing objects at some random spot: (oh well)
+					triangle[i][j] = false;
+					
+					//If removing peg doesn't change # of meson regions,
+					// don't start with that peg:
+					if(getNumMesonRegionsSimple(triangle) == curNumMesonRegions) {
+						goodStarts[i][j] = false;
+					}
+
+					//At least I change it back...
+					triangle[i][j] = true;
+				}
+			}
+		}
+		
+		return goodStarts;
+		
+	}
 }

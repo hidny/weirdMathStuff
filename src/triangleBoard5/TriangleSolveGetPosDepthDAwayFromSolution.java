@@ -15,6 +15,17 @@ import java.util.Iterator;
 //TODO: Look at paper to get even better filters
 //(See loose paper for more clarification)
 
+
+//TODO: make it possible for triangle 9 to record backwards moves...
+	// I think it involves making get back wards moves more efficient
+//IDEAS to make it happen:
+// 1) Remove counter-clockwise capture cycles from get backwards moves
+// 2) Disallow boards with too few pieces left
+// 3) Output straight to triangle records to save space on the last depth
+// 4) Use get NecessaryMoveList logic to reduce the number of positions output (Won't really help until depth 3 or 4 if idea 3 is implemented...)
+// NOTE: By now, I'm hoping there's significant progress!
+// 5) Identify and elim repeat moves in getBackwardsMoves???
+
 public class TriangleSolveGetPosDepthDAwayFromSolution {
 
 
