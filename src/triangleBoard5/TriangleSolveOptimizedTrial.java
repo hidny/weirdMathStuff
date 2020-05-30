@@ -105,19 +105,20 @@ public class TriangleSolveOptimizedTrial {
 	// TODO: try finding all optimal solutions later...
 
 	//TODO: use pen & paper to figure out which layer actually needs getNecessaryFilter
-	public static final int LENGTH = 7;
+	public static final int LENGTH = 9;
 
-	public static int MAX_DEPTH_TOTAL = 14;
+	public static int MAX_DEPTH_TOTAL = 16;
 
 	//TODO: for triangle 9, I should filter out board positions with few pieces left
-	public static int MEM_DEPTH_BACKWARDS = 2;
+	public static int MEM_DEPTH_BACKWARDS = 0;
 
 	public static boolean SEARCH_SINGLE_GOAL = false;
 	public static int GOAL_I = 0;
 	public static int GOAL_J = 0;
 	
 	
-	public static int MEM_DEPTH_FORWARDS = Math.min(14, MAX_DEPTH_TOTAL - 1 - MEM_DEPTH_BACKWARDS);
+	//public static int MEM_DEPTH_FORWARDS = Math.min(14, MAX_DEPTH_TOTAL - 1 - MEM_DEPTH_BACKWARDS);
+	public static int MEM_DEPTH_FORWARDS = Math.min(12, MAX_DEPTH_TOTAL - 1 - MEM_DEPTH_BACKWARDS);
 
 	
 	public static void main(String args[]) {
@@ -361,7 +362,7 @@ public class TriangleSolveOptimizedTrial {
 		numFunctionCallForDEBUG++;
 		if(numFunctionCallForDEBUG % 5000000 == 0) {
 			
-			System.out.println("Current depth: " + DEPTH_USED_IN_SEARCH + " out of " + MAX_DEPTH_TOTAL + " minus a memorized backwards depth of " + MEM_DEPTH_BACKWARDS);
+			System.out.println("Current depth: " + DEPTH_USED_IN_SEARCH + " out of (" + MAX_DEPTH_TOTAL + " minus a memorized backwards depth of " + MEM_DEPTH_BACKWARDS +")");
 
 			//TODO: see what happens after implementing conway math...
 			System.out.println("Num records saved: " + numRecordsSavedForDEBUG);
@@ -388,13 +389,45 @@ public class TriangleSolveOptimizedTrial {
 		boolean mustBe100percentMesonEfficient = false;
 		//Implemented A* filter
 		//Found heuristic function with merson regions:
-		if(board.getNumMovesMade() + numMesonRegions > DEPTH_USED_IN_SEARCH + MEM_DEPTH_BACKWARDS) {
+		if(board.getNumMovesMade() + Math.max(numMesonRegions, 1) > DEPTH_USED_IN_SEARCH + MEM_DEPTH_BACKWARDS) {
 			return null;
 			
 		} else if(board.getNumMovesMade() + numMesonRegions == DEPTH_USED_IN_SEARCH + MEM_DEPTH_BACKWARDS) {
 			mustBe100percentMesonEfficient = true;
 		}
+		
+		int numMovesLeftBasedOnPegIsolationSpanningTree = 0;
+		
+		//Only bother doing this calc when there's not many pegs left:
+		if(board.getNumPiecesLeft() < board.getTriangle().length * board.getTriangle().length / 5) {
+			numMovesLeftBasedOnPegIsolationSpanningTree = PositonFilterTests.getMinMovesBasedOnIsolationSpanningTree(board.getTriangle(), board.getNumPiecesLeft());
+		}
+		
+		//TODO: put into function
+		//SANITY:
+		/*int numMovesLeftBasedOnPegIsolation = PositonFilterTests.GetMinMovesBasedOnIsolationSimple(board.getTriangle(), board.getNumPiecesLeft());
+		if(numMovesLeftBasedOnPegIsolation > numMovesLeftBasedOnPegIsolationSpanningTree) {
+			System.out.println("ERROR: spanning Tree algo slower than isolation algo");
+			System.out.println("span: " + numMovesLeftBasedOnPegIsolationSpanningTree);
+			System.out.println("isolation: " + numMovesLeftBasedOnPegIsolation);
+			
+			board.draw();
+			int numMovesLeftBasedOnPegIsolationSpanningTree2 = PositonFilterTests.getMinMovesBasedOnIsolationSpanningTree(board.getTriangle(), board.getNumPiecesLeft());
+			int numMovesLeftBasedOnPegIsolationSpanningTree3 = PositonFilterTests.getMinMovesBasedOnIsolationSpanningTree(board.getTriangle(), board.getNumPiecesLeft());
+			
+			System.out.println("First calc: " + numMovesLeftBasedOnPegIsolationSpanningTree);
+			System.out.println("Second calc: " + numMovesLeftBasedOnPegIsolationSpanningTree2);
+			System.out.println("Third calc: " + numMovesLeftBasedOnPegIsolationSpanningTree3);
+			System.exit(1);
+		}*/
+		//END TODO
+		
 
+		if(board.getNumMovesMade() + numMovesLeftBasedOnPegIsolationSpanningTree > DEPTH_USED_IN_SEARCH + MEM_DEPTH_BACKWARDS) {
+			
+			return null;
+		}
+		
 		long lookup = board.getLookupNumber();
 		
 		if(currentlyFoundSolution == false && backwardsSolutionsCache[board.getNumPiecesLeft()].contains(lookup)) {
