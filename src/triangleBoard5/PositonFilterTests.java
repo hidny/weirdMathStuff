@@ -1,6 +1,7 @@
 package triangleBoard5;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import utils.graph.GraphEdge;
 
@@ -456,16 +457,16 @@ Num filtered so far: 39564
 			}
 		}
 		
-		int retNumEdgesGreaterThan2 = 0;
-		int retWeightEdgesOver2 = 0;
+		int retNumEdgesGreaterThan1 = 0;
+		int retWeightEdgesOver1 = 0;
 		
 		for(int i=0; numEdgesUsed < numEdgesNeeded; i++) {
 			GraphEdge tmp = (GraphEdge)sortedEdges[i];
 			if(connections[tmp.getI()][tmp.getJ()] == false) {
 
-				if(tmp.getWeigth() > 2) {
-					retNumEdgesGreaterThan2++;
-					retWeightEdgesOver2 += (tmp.getWeigth() - 2);
+				if(tmp.getWeigth() >= 2) {
+					retNumEdgesGreaterThan1++;
+					retWeightEdgesOver1 += (tmp.getWeigth() - 1);
 					//System.out.println("TEST found " + tmp.getWeigth());
 					//System.out.println("From " + tmp.getI() + " to " + tmp.getJ());
 				}
@@ -536,8 +537,8 @@ Num filtered so far: 39564
 			}
 		}
 		
-		if(retWeightEdgesOver2 > 0) {
-			return retWeightEdgesOver2 - retNumEdgesGreaterThan2 + 2;
+		if(retWeightEdgesOver1 > 0) {
+			return retWeightEdgesOver1 - retNumEdgesGreaterThan1 + 1;
 		} else {
 			return 1;
 		}
@@ -629,5 +630,27 @@ Num filtered so far: 39564
 		//Distance = manhantan distance - #diag moves
 		//(1 diag move is like 2 manhattan distance moves)
 		return Math.abs(deltaX) + Math.abs(deltaY) - diagMoves;
+	}
+	
+	
+	//Pre: each move in ArrayList<String> moves is valid on the TriangleBoard in input
+	public static ArrayList<String> excludeMovesThatLeadToSameOutcome(TriangleBoard triangle, ArrayList<String> moves) {
+		
+		//Initialize to avoid resize:
+		HashSet<Long> setOfPos = new HashSet<Long>(moves.size() * 2);
+		ArrayList<String> ret = new ArrayList<String>();
+		
+		for(int i=0; i<moves.size(); i++) {
+			
+			TriangleBoard tmpMovedPos = triangle.doOneMove(moves.get(i));
+			long lookup = TriangleLookup.convertToNumberWithComboTricksAndSymmetry(tmpMovedPos.getTriangle(), tmpMovedPos.getNumPiecesLeft());
+			
+			if(setOfPos.contains(lookup) == false) {
+				ret.add(moves.get(i));
+				setOfPos.add(lookup);
+			}
+		}
+		
+		return ret;
 	}
 }

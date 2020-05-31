@@ -32,7 +32,7 @@ public class TriangleSolveGetPosDepthDAwayFromSolution {
 	public static int STANDARD_MEM_LIMIT = 19000000;
 	
 	public static void main(String args[]) {
-		int MAX_DEPTH = 4;
+		int MAX_DEPTH = 2;
 		getPositionsDepthNAwayFromAGoal(8, 0, 0, MAX_DEPTH);
 		//getPositionsDepthNAwayFromAGoal(8, 0, 0, 3); -> 13559160
 	}
@@ -182,7 +182,7 @@ public class TriangleSolveGetPosDepthDAwayFromSolution {
 		//END SANITY CHECK
 		
 		numFunctionCallForDEBUG++;
-		if(numFunctionCallForDEBUG % 10000000 == 0) {
+		if(numFunctionCallForDEBUG % 1000 == 0) {
 			//
 			System.out.println("Mid-way backwards Search: Current depth remaining: " + curMaxDepth + " out of " + DEPTH_USED_IN_SEARCH);
 
