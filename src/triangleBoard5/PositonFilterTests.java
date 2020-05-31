@@ -642,12 +642,19 @@ Num filtered so far: 39564
 		
 		for(int i=0; i<moves.size(); i++) {
 			
-			TriangleBoard tmpMovedPos = triangle.doOneMove(moves.get(i));
-			long lookup = TriangleLookup.convertToNumberWithComboTricksAndSymmetry(tmpMovedPos.getTriangle(), tmpMovedPos.getNumPiecesLeft());
 			
-			if(setOfPos.contains(lookup) == false) {
+			if(moves.get(i).indexOf("-") == moves.get(i).lastIndexOf("-")) {
+				//If there's only 1 internal move, it has to be unique
 				ret.add(moves.get(i));
-				setOfPos.add(lookup);
+
+			} else {
+				TriangleBoard tmpMovedPos = triangle.doOneMove(moves.get(i));
+				long lookup = TriangleLookup.convertToNumberWithComboTricksAndSymmetry(tmpMovedPos.getTriangle(), tmpMovedPos.getNumPiecesLeft());
+				
+				if(setOfPos.contains(lookup) == false) {
+					ret.add(moves.get(i));
+					setOfPos.add(lookup);
+				}
 			}
 		}
 		
