@@ -1,5 +1,7 @@
 package gridWithNonMatchingDistProb;
 
+import java.util.ArrayList;
+
 public class GridWithNonMatchOptimized {
 
 	//DONE: use burnside lemma to get unique without reflection or symmetry
@@ -24,10 +26,16 @@ Board config:
 	//4
 
 	public static void main(String[] args) {
-		for(int N=13; N<=13; N++) {
+		for(int N=5; N<=5; N++) {
 			getSolutionForLengthN(N);
 		}
+		
+		
+		for(int i=0; i<labels.size(); i++) {
+			System.out.println(labels.get(i));
+		}
 	}
+	
 	public static void getSolutionForLengthN(int N) { 
 		//TODO: make this 10^6 X faster
 
@@ -237,6 +245,10 @@ Board config:
 	}
 	
 	public static void print(boolean array[]) {
+
+		int label = 0;
+		int MULT = 2;
+		int CURRENT_MULT = 1;
 		
 		int N = (int)Math.round(Math.sqrt(array.length));
 		System.out.println("Board config:");
@@ -244,34 +256,49 @@ Board config:
 		System.out.print("|");
 		for(int i=0; i<array.length; i++) {
 			if(array[i]) {
+				label += CURRENT_MULT;
 				System.out.print("O");
 			} else {
 				System.out.print("_");
 			}
+			CURRENT_MULT *= 2;
 			if((i+1) % N == 0) {
 				System.out.println("|");
 				System.out.print("|");
 			}
 		}
 		System.out.println("---------------");
+		System.out.println("N" + label);
+		labels.add("" + label);
 	}
-
 	
+	public static ArrayList<String>labels = new ArrayList<String>();
+
+	//TODO: this is copy/paste code:
 	public static void print(boolean array[][]) {
+		
+		int label = 0;
+		int MULT = 2;
+		int CURRENT_MULT = 1;
+		
 		System.out.println("Board config:");
 		System.out.println("---------------");
 		for(int i=0; i<array.length; i++) {
+			System.out.print("|");
 			for(int j=0; j<array.length; j++) {
 				if(array[i][j]) {
+					label += CURRENT_MULT;
 					System.out.print("O");
 				} else {
 					System.out.print(" ");
 				}
+				CURRENT_MULT *= 2;
 			}
 			System.out.println("|");
-			System.out.print("|");
 		}
 		System.out.println("---------------");
+		System.out.println("N" + label);
+		labels.add("" + label);
 	}
 
 	public static boolean[][] convertComboToTable(boolean combo[]) {

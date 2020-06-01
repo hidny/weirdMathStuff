@@ -99,6 +99,18 @@ public class TriangleBoard {
 			
 		}
 		//END TESTING CODE
+		
+		TriangleBoard board9 = new TriangleBoard(9);
+		board9.removePiece(9);
+		String moves2[] = "27-9 0-18 29-9-27-29 45-27".split(" ");
+		
+		for(int i=0; i<moves2.length; i++) {
+			if(moves2[i].trim().equals("") == false) {
+				board9 = board9.doOneMove(moves2[i]);
+			}
+		}
+		board9.draw();
+		
 	}
 	
 	private boolean triangle[][];
