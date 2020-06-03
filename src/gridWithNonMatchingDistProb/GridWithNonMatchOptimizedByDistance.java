@@ -114,10 +114,10 @@ Board config:
 			
 			System.out.println("Current number of unique solutions " + numSolutionDiscountRotAndReflection);
 			
-			if(curBoard.length > 6) {
-				System.out.println("Continue?");
-				in.next();
-			}
+			//if(curBoard.length > 6) {
+			//	System.out.println("Continue?");
+			//	in.next();
+			//}
 			System.out.println();
 			
 			return;

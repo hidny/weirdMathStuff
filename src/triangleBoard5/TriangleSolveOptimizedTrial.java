@@ -105,9 +105,9 @@ public class TriangleSolveOptimizedTrial {
 	// TODO: try finding all optimal solutions later...
 
 	//TODO: use pen & paper to figure out which layer actually needs getNecessaryFilter
-	public static final int LENGTH = 9;
+	public static final int LENGTH = 7;
 
-	public static int MAX_DEPTH_TOTAL = 16;
+	public static int MAX_DEPTH_TOTAL = 14;
 
 	//TODO: for triangle 9, I should filter out board positions with few pieces left
 	public static int MEM_DEPTH_BACKWARDS = 0;
@@ -573,7 +573,12 @@ public class TriangleSolveOptimizedTrial {
 		
 		//TODO: does getFullMovesExcludingRepeatMoves make it faster?
 		ArrayList<String> moves;
-		if(board.getNumMovesMade() + 1 <= MEM_DEPTH_FORWARDS
+		if(curMaxDepth == 2) {
+			//moves = board.getNecessaryFullBackwardsMovesToCheck(mustBe100percentMesonEfficient);
+			//TODO: also only get Necessary moves here...
+			moves = board.getFullMovesWith2MovesAwayFilters(mustBe100percentMesonEfficient);
+			
+		} else if(board.getNumMovesMade() + 1 <= MEM_DEPTH_FORWARDS
 				|| board.getNumMovesMade() + 1 >= MAX_DEPTH_TOTAL - MEM_DEPTH_BACKWARDS) {
 			moves = board.getFullMovesExcludingRepeatMoves(mustBe100percentMesonEfficient);
 		} else {

@@ -323,7 +323,229 @@ public class TriangleBoard {
 		
 	}
 
-	//TODO: change code to remove need for below line:
+	//WARN: lots of copy/paste from getFullMovesExcludingRepeatMoves
+	public ArrayList<String> getFullMovesWith2MovesAwayFilters(boolean mustBe100percentMesonEfficient) {
+
+		String moves[] = this.historicMoveList.split(" ");
+		
+		boolean goodStarts[][] = this.triangle;
+		if(mustBe100percentMesonEfficient) {
+			goodStarts = PositonFilterTests.getStartsThatReduceNumMesonRegions(this.triangle);
+		}
+		
+		int lastPegLocation;
+		int lastPegLocationi;
+		int lastPegLocationj;
+		try {
+			lastPegLocation = Integer.parseInt(this.historicMoveList.substring(this.historicMoveList.lastIndexOf("-") + 1));
+			lastPegLocationi = lastPegLocation / triangle.length;
+			lastPegLocationj = lastPegLocation % triangle.length;
+
+		} catch(Exception e) {
+			lastPegLocationi = -1;
+			lastPegLocationj = -1;
+		}
+		
+		ArrayList<String> ret = new ArrayList<String>();
+		
+		
+		int sumPegsInPosClass[] = getSumPegsInPosClass(triangle);
+		int sumPegsOnEdge[] = getSumPegsInEdgeClass(triangle);
+		
+		for(int i=0; i<triangle.length; i++) {
+			for(int j=0; j<triangle[i].length; j++) {
+				if(goodStarts[i][j] && (i != lastPegLocationi || j != lastPegLocationj) ) {
+					int movingPegPosClass = getPositionClass(i, j);
+					ret.addAll(getPromisingMovesToPositions1MoveAwayFromGoal(i * triangle.length + j, sumPegsInPosClass, sumPegsOnEdge, movingPegPosClass));
+				}
+			}
+		}
+		
+		moveList = new HashSet<String>();
+		moveList.addAll(ret);
+		return ret;
+	}
+	
+	public static final int NUM_POSITION_CLASSES = 4;
+	
+	public static int[] getSumPegsInPosClass(boolean triangle[][]) {
+		
+		int sumPegsInPosClass[] = new int[NUM_POSITION_CLASSES];
+		for(int i=0; i<sumPegsInPosClass.length; i++) {
+			sumPegsInPosClass[i] = 0;
+		}
+		
+		for(int i=0; i<triangle.length; i++) {
+			for(int j=0; j<=i; j++) {
+				if(triangle[i][j]) {
+					sumPegsInPosClass[getPositionClass(i, j)]++;
+				}
+			}
+		}
+		return sumPegsInPosClass;
+	}
+	
+	public static int getPositionClass(int i, int j) {
+		return 2*(i%2) + j%2;
+	}
+
+	public static int NUM_EDGES = 3;
+	public static int[] getSumPegsInEdgeClass(boolean triangle[][]) {
+		int sumPegsOnEdge[] = new int[NUM_EDGES];
+		for(int i=0; i<sumPegsOnEdge.length; i++) {
+			sumPegsOnEdge[i] = 0;
+		}
+
+		//Corner pieces are considered on both edges
+		for(int i=0; i<triangle.length; i++) {
+			if(triangle[i][0]) {
+				sumPegsOnEdge[0]++;
+			}
+			if(triangle[i][i]) {
+				sumPegsOnEdge[1]++;
+			}
+			if(triangle[triangle.length - 1][i]) {
+				sumPegsOnEdge[2]++;
+			}
+		}
+		return sumPegsOnEdge;
+	}
+
+	private void updateSumOfEdges(int i, int j, int sumPegsOnEdge[], int diff) {
+		if(i==0) {
+			sumPegsOnEdge[0] += diff;
+		}
+		if(i==j) {
+			sumPegsOnEdge[1] += diff;
+		}
+		if(i==triangle.length - 1) {
+			sumPegsOnEdge[2] += diff;
+		}
+	}
+	
+	public void updateTmpBoardProperties(int i, int j, int sumPegsInPosClass[], int sumPegsOnEdge[], int diff) {
+		updateSumOfEdges(i, j, sumPegsInPosClass, diff);
+		sumPegsInPosClass[getPositionClass(i, j)] += diff;
+	}
+
+	private ArrayList<String> getPromisingMovesToPositions1MoveAwayFromGoal(int code, int sumPegsInPosClass[], int sumPegsOnEdge[], int movingPegPosClass) {
+		int istart = code / triangle.length;
+		int jstart = code % triangle.length;
+		
+		ArrayList<String> ret = new ArrayList<String>();
+		
+		//There's 6 directions to check...
+		//UP:
+		if(istart >= 2 && jstart <= istart-2) {
+			if(triangle[istart-1][jstart] && triangle[istart-2][jstart] == false) {
+				
+				updateTmpBoardProperties(istart-1, jstart, sumPegsInPosClass, sumPegsOnEdge, -1);
+				ret.addAll( getPromissingMovesAfterJump1MoveAwayFromGoal(getCode(istart, jstart) +"-" + getCode(istart-2, jstart), sumPegsInPosClass, sumPegsOnEdge, movingPegPosClass) );
+				updateTmpBoardProperties(istart-1, jstart, sumPegsInPosClass, sumPegsOnEdge, +1);
+			}
+		}
+		
+		//UP LEFT
+		if(istart >=2 && jstart >= 2) {
+			if(triangle[istart-1][jstart-1] && triangle[istart-2][jstart-2] == false) {
+				
+				updateTmpBoardProperties(istart-1, jstart-1, sumPegsInPosClass, sumPegsOnEdge, -1);
+				ret.addAll( getPromissingMovesAfterJump1MoveAwayFromGoal(getCode(istart, jstart) +"-" + getCode(istart-2, jstart-2), sumPegsInPosClass, sumPegsOnEdge, movingPegPosClass) );
+				updateTmpBoardProperties(istart-1, jstart-1, sumPegsInPosClass, sumPegsOnEdge, +1);
+			}
+		}
+		
+		//RIGHT:
+		if(jstart + 2 < triangle[istart].length) {
+			if(triangle[istart][jstart+1] && triangle[istart][jstart+2] == false) {
+				
+				updateTmpBoardProperties(istart, jstart+1, sumPegsInPosClass, sumPegsOnEdge, -1);
+				ret.addAll( getPromissingMovesAfterJump1MoveAwayFromGoal(getCode(istart, jstart) +"-" + getCode(istart, jstart+2), sumPegsInPosClass, sumPegsOnEdge, movingPegPosClass) );
+				updateTmpBoardProperties(istart, jstart+1, sumPegsInPosClass, sumPegsOnEdge, +1);
+			}
+		}
+		
+		//LEFT:
+		if(jstart >=2) {
+			if(triangle[istart][jstart-1] && triangle[istart][jstart-2] == false) {
+				
+				updateTmpBoardProperties(istart, jstart-1, sumPegsInPosClass, sumPegsOnEdge, -1);
+				ret.addAll( getPromissingMovesAfterJump1MoveAwayFromGoal(getCode(istart, jstart) +"-" + getCode(istart, jstart-2), sumPegsInPosClass, sumPegsOnEdge, movingPegPosClass) );
+				updateTmpBoardProperties(istart, jstart-1, sumPegsInPosClass, sumPegsOnEdge, +1);
+			}
+		}
+		
+		//DOWN:
+		if(istart + 2 < triangle.length) {
+			if(triangle[istart+1][jstart] && triangle[istart+2][jstart] == false) {
+				
+				updateTmpBoardProperties(istart+1, jstart, sumPegsInPosClass, sumPegsOnEdge, -1);
+				ret.addAll( getPromissingMovesAfterJump1MoveAwayFromGoal(getCode(istart, jstart) +"-" + getCode(istart+2, jstart), sumPegsInPosClass, sumPegsOnEdge, movingPegPosClass) );
+				updateTmpBoardProperties(istart+1, jstart, sumPegsInPosClass, sumPegsOnEdge, +1);
+			}
+		}
+		
+		//DOWN RIGHT
+		if(istart + 2 < triangle.length) {
+			if(triangle[istart+1][jstart+1] && triangle[istart+2][jstart+2] == false) {
+				
+				updateTmpBoardProperties(istart+1, jstart+1, sumPegsInPosClass, sumPegsOnEdge, -1);
+				ret.addAll( getPromissingMovesAfterJump1MoveAwayFromGoal(getCode(istart, jstart) +"-" + getCode(istart+2, jstart+2), sumPegsInPosClass, sumPegsOnEdge, movingPegPosClass) );
+				updateTmpBoardProperties(istart+1, jstart+1, sumPegsInPosClass, sumPegsOnEdge, +1);
+			}
+		}
+		
+		return ret;
+	}
+	
+
+	private ArrayList<String> getPromissingMovesAfterJump1MoveAwayFromGoal(String jump, int sumPegsInPosClass[], int sumPegsOnEdge[], int movingPegPosClass) {
+		ArrayList<String> ret = new ArrayList<String>();
+		
+		//Only use move if there's a single peg of a different position class that could clear the board
+		//(i.e. there's a single peg of a different position class of the currently jumping peg
+		//  AND that single peg doesn't have to go to an impossible to reach edge)
+
+		for(int i=0; i<NUM_POSITION_CLASSES; i++) {
+			if(i != movingPegPosClass && sumPegsInPosClass[i] == 1) {
+				//TODO: implement edge filters!
+				if(triangle.length % 2 == 0) {
+					//TODO: test! n=6
+					if( (i==0 && sumPegsOnEdge[2] == 0)
+							|| (i==1 && sumPegsOnEdge[0] == 0 && sumPegsOnEdge[1] == 0 && sumPegsOnEdge[2] == 0)
+							|| (i==2 && sumPegsOnEdge[1] == 0)
+							|| (i==3 && sumPegsOnEdge[0] == 0) ){
+						ret.add(jump);
+						break;
+					}
+					
+				} else {
+					//TODO: test! n=7 
+					if(i==0
+							|| (i==1 && sumPegsOnEdge[0] == 0 && sumPegsOnEdge[1] == 0)
+							|| (i==2 && sumPegsOnEdge[1] == 0 && sumPegsOnEdge[2] == 0)
+							|| (i==3 && sumPegsOnEdge[0] == 0 && sumPegsOnEdge[2] == 0)) {
+						ret.add(jump);
+						break;
+					}
+					
+				}
+			}
+		}
+		
+
+		TriangleBoard tmp = this.moveInternal(jump);
+		
+		int landing = Integer.parseInt(jump.split("-")[1]);
+		ArrayList<String> newSeriesOfMoves = tmp.getPromisingMovesToPositions1MoveAwayFromGoal(landing, sumPegsInPosClass, sumPegsOnEdge, movingPegPosClass);
+		for(int i=0; i<newSeriesOfMoves.size(); i++) {
+			ret.add(jump.split("-")[0] + "-" + newSeriesOfMoves.get(i));
+		}
+		
+		return ret;
+	}
+	
+
 	public ArrayList<String> getFullMovesExcludingRepeatMoves() {
 		return getFullMovesExcludingRepeatMoves(false);
 	}
