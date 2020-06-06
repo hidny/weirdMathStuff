@@ -234,9 +234,9 @@ public class TriangleBoard {
 	private TriangleBoard prevLocation = null;
 	private HashSet<String> moveList = null;
 	
-	private static int TEST_DEBUG_PRINT = 0;
-	private static int TEST_TOTAL_MOVES_FOUND = 0;
-	private static int TEST_TOTAL_MOVES_NEEDED = 0;
+	private static long TEST_DEBUG_PRINT[] = new long[100];
+	private static long TEST_TOTAL_MOVES_FOUND[] = new long[100];
+	private static long TEST_TOTAL_MOVES_NEEDED[] = new long[100];
 	
 //This works, but isn't going to be used,
 	//unless we do a forward save and backwards search:
@@ -273,7 +273,7 @@ public class TriangleBoard {
 				if(this.prevLocation.moveList.contains(fullList.get(i))
 					&& this.prevLocation.doOneMove(fullList.get(i)).couldMoveForwards(prevJump) ) {
 
-					TESTcompareBoardsForTesting(this.prevLocation.doOneMove(fullList.get(i)).doOneMove(prevJump), this.doOneMove(fullList.get(i)));
+					//SANITYTESTcompareBoardsForTesting(this.prevLocation.doOneMove(fullList.get(i)).doOneMove(prevJump), this.doOneMove(fullList.get(i)));
 					
 					if(this.getLookupNumber() > this.prevLocation.doOneMove(fullList.get(i)).getLookupNumber()) {
 						
@@ -291,14 +291,21 @@ public class TriangleBoard {
 			}
 		}
 		
-		TEST_DEBUG_PRINT++;
-		TEST_TOTAL_MOVES_FOUND += fullList.size();
-		TEST_TOTAL_MOVES_NEEDED += neededList.size();
+		TEST_DEBUG_PRINT[this.numMovesMade]++;
+		TEST_TOTAL_MOVES_FOUND[this.numMovesMade] += fullList.size();
+		TEST_TOTAL_MOVES_NEEDED[this.numMovesMade] += neededList.size();
 		
-		if(TEST_DEBUG_PRINT % 100000 == 0) {
-			System.out.println("Testing branching improvement for forwards jumps: " + fullList.size() + " vs " + neededList.size());
-			System.out.println("Ratio: " + ((1.0*TEST_TOTAL_MOVES_FOUND)/(1.0 * TEST_TOTAL_MOVES_NEEDED)));
-			System.out.println("Perc: " + ((1.0*TEST_TOTAL_MOVES_NEEDED)/(1.0 * TEST_TOTAL_MOVES_FOUND)));
+		if(TEST_DEBUG_PRINT[this.numMovesMade] % 200000 == 0) {
+			System.out.println("Testing branching improvement for forwards jumps: (current sample: " + fullList.size() + " vs " + neededList.size() +")");
+			
+			for(int i=0; i<TEST_TOTAL_MOVES_FOUND.length; i++) {
+				if(TEST_TOTAL_MOVES_NEEDED[i] == 0) {
+					break;
+				}
+				System.out.println("num moves made before getNecessary: " + i);
+				System.out.println("Ratio: " + ((1.0*TEST_TOTAL_MOVES_FOUND[i])/(1.0 * TEST_TOTAL_MOVES_NEEDED[i])));
+				System.out.println("Perc: " + ((1.0*TEST_TOTAL_MOVES_NEEDED[i])/(1.0 * TEST_TOTAL_MOVES_FOUND[i])));
+			}
 		}
 		
 		return neededList;
@@ -821,7 +828,7 @@ public class TriangleBoard {
 		return triangle.length;
 	}
 	
-	private static void TESTcompareBoardsForTesting(TriangleBoard a, TriangleBoard b) {
+	private static void SANITYTESTcompareBoardsForTesting(TriangleBoard a, TriangleBoard b) {
 		if(a.length() != b.length()) {
 			System.out.println("ERROR: not even the same length");
 			System.exit(1);

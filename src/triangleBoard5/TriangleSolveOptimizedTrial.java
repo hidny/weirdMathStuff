@@ -107,10 +107,10 @@ public class TriangleSolveOptimizedTrial {
 	//TODO: use pen & paper to figure out which layer actually needs getNecessaryFilter
 	public static final int LENGTH = 7;
 
-	public static int MAX_DEPTH_TOTAL = 14;
+	public static int MAX_DEPTH_TOTAL = 13;
 
 	//TODO: for triangle 9, I should filter out board positions with few pieces left
-	public static int MEM_DEPTH_BACKWARDS = 0;
+	public static int MEM_DEPTH_BACKWARDS = 3;
 
 	public static boolean SEARCH_SINGLE_GOAL = false;
 	public static int GOAL_I = 0;
@@ -118,7 +118,7 @@ public class TriangleSolveOptimizedTrial {
 	
 	
 	//public static int MEM_DEPTH_FORWARDS = Math.min(14, MAX_DEPTH_TOTAL - 1 - MEM_DEPTH_BACKWARDS);
-	public static int MEM_DEPTH_FORWARDS = Math.min(13, MAX_DEPTH_TOTAL - 1 - MEM_DEPTH_BACKWARDS);
+	public static int MEM_DEPTH_FORWARDS = Math.min(12, MAX_DEPTH_TOTAL - 1 - MEM_DEPTH_BACKWARDS);
 
 	
 	public static void main(String args[]) {
@@ -578,8 +578,8 @@ public class TriangleSolveOptimizedTrial {
 			//TODO: also only get Necessary moves here...
 			moves = board.getFullMovesWith2MovesAwayFilters(mustBe100percentMesonEfficient);
 			
-		} else if(board.getNumMovesMade() + 1 <= MEM_DEPTH_FORWARDS
-				|| board.getNumMovesMade() + 1 >= MAX_DEPTH_TOTAL - MEM_DEPTH_BACKWARDS) {
+		} else if(//board.getNumMovesMade() + 1  <= MEM_DEPTH_FORWARDS
+				/*|| */board.getNumMovesMade() + 1 >= MAX_DEPTH_TOTAL - MEM_DEPTH_BACKWARDS) {
 			moves = board.getFullMovesExcludingRepeatMoves(mustBe100percentMesonEfficient);
 		} else {
 

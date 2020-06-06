@@ -70,6 +70,9 @@ The rest are impossible!
 		boolean taken[] = new boolean[2*n*n + 1];
 		for(int i=1; i<n; i++) {
 			for(int j=0; j<=i; j++) {
+				if(taken[i*i + j*j] == true) {
+					System.out.println((i*i + j*j));
+				}
 				taken[i*i + j*j] = true;
 			}
 		}
