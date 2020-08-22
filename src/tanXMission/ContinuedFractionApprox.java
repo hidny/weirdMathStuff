@@ -69,6 +69,24 @@ public class ContinuedFractionApprox {
 			
 			BigInteger X = piApprox.getNumerator().divide(new BigInteger("2"));
 			
+			//TODO:
+			//Try the miller-robin test
+			//https://www.youtube.com/watch?v=RNxr7km8lHo
+			//WANT A PRIME:
+			if(X.divideAndRemainder(new BigInteger("2"))[1] == BigInteger.ZERO
+					|| X.divideAndRemainder(new BigInteger("3"))[1] == BigInteger.ZERO
+							|| X.divideAndRemainder(new BigInteger("5"))[1] == BigInteger.ZERO
+							|| X.divideAndRemainder(new BigInteger("7"))[1] == BigInteger.ZERO) {
+				System.out.println("Skip non-primes!");
+				return;
+			}
+			
+			if(MillerRobin.isMillerRabinPrime(X, 5) == false) {
+				System.out.println("Skip non-primes miller-robin test!");
+				return;
+				
+			}
+			
 			Fraction XDividePi = Fraction.divide(new Fraction(X, BigInteger.ONE), PI.pi5000());
 			BigInteger quotient = XDividePi.getNumerator().divideAndRemainder(XDividePi.getDenominator())[0];
 			/*
@@ -85,6 +103,11 @@ public class ContinuedFractionApprox {
 								Fraction.mult(PI.pi5000(), new Fraction(quotient, BigInteger.ONE)));
 			
 			Fraction cosGoalNumber = new Fraction(BigInteger.ONE, X);
+			
+			if(X.toString().length() > 10) {
+				System.out.println("Try:");
+				System.out.println(X.toString());
+			}
 			Fraction tanX = badTanApprox(remainderAfterDivbyPi, cosGoalNumber);
 			
 			if(Fraction.minus(tanX, new Fraction(X, BigInteger.ONE)).greaterThan0()) {
@@ -173,11 +196,10 @@ public class ContinuedFractionApprox {
 	}
 	
 	
-	public static int STOP_POINT = 400;
 	
 	public static Fraction piOn2 = Fraction.divide(PI.pi5000(), new Fraction(2, 1));
 	
-	public static int LIMIT_NUMERATOR_SIZE = 10000;
+	public static int LIMIT_NUMERATOR_SIZE = 8000;
 
 	//TODO: experiment with approximating the mediant or limiting the precision of each term
 	
@@ -197,7 +219,7 @@ public class ContinuedFractionApprox {
 		
 		System.out.println("Cos of : " + x.getDecimalFormat(20));
 		
-		for(int i=1; i< STOP_POINT; i++) {
+		for(int i=1; true; i++) {
 			System.out.println(i);
 			
 			factorial = Fraction.mult(factorial, new Fraction(i, 1));
@@ -212,6 +234,9 @@ public class ContinuedFractionApprox {
 				
 				xPowerN = Fraction.mult(xPowerN, xSquared);
 				
+
+				xPowerN = approx(xPowerN);
+				
 				Fraction currentTerm =  Fraction.divide(xPowerN, factorial);
 				
 				if(signIsPositive) {
@@ -223,23 +248,7 @@ public class ContinuedFractionApprox {
 				//Approximate a little bit:
 				//truncate term to be "only" 1000+ digits in numerator
 				
-				BigInteger numeratorTerm = currentTerm.getNumerator();
-				BigInteger denominatorTerm = currentTerm.getDenominator();
-				
-				if(numeratorTerm.toString().length() > LIMIT_NUMERATOR_SIZE) {
-					
-					int digitsCut = numeratorTerm.toString().length() - LIMIT_NUMERATOR_SIZE;
-					
-					System.out.println("Cutting " + digitsCut + " digits of the term's fraction");
-					
-					String numTermString = numeratorTerm.toString();
-					String denomTermString = denominatorTerm.toString();
-					
-					numeratorTerm = new BigInteger(numTermString.substring(0, numTermString.length() - digitsCut));
-					denominatorTerm = new BigInteger(denomTermString.substring(0, denomTermString.length() - digitsCut));
-					
-					currentTerm = new Fraction(numeratorTerm, denominatorTerm);
-				}
+				currentTerm = approx(currentTerm);
 				
 				//Cut short but no guarantee that it's above 0.
 				if(signIsPositive) {
@@ -263,8 +272,29 @@ public class ContinuedFractionApprox {
 		}
 		
 		
-		return output;
 		
+	}
+	
+	public static Fraction approx(Fraction input) {
+		BigInteger numeratorTerm = input.getNumerator();
+		BigInteger denominatorTerm = input.getDenominator();
+		
+		if(numeratorTerm.toString().length() > LIMIT_NUMERATOR_SIZE) {
+			
+			int digitsCut = numeratorTerm.toString().length() - LIMIT_NUMERATOR_SIZE;
+			
+			System.out.println("Cutting " + digitsCut + " digits of the term's fraction");
+			
+			String numTermString = numeratorTerm.toString();
+			String denomTermString = denominatorTerm.toString();
+			
+			numeratorTerm = new BigInteger(numTermString.substring(0, numTermString.length() - digitsCut));
+			denominatorTerm = new BigInteger(denomTermString.substring(0, denomTermString.length() - digitsCut));
+			
+			input = new Fraction(numeratorTerm, denominatorTerm);
+		}
+		
+		return input;
 	}
 	
 	//pre: x is near pi.
