@@ -18,6 +18,13 @@ There's actually a way to generate those hits efficiently:
 
  */
 
+/*Update youtube comment:
+ * Samuel Li
+Samuel Li
+1 day ago
+It has 1017 digits, the first 10 of which are 2308358707.
+ */
+
 public class ContinuedFractionApprox {
 
 	//A001203
@@ -170,7 +177,7 @@ public class ContinuedFractionApprox {
 	
 	public static Fraction piOn2 = Fraction.divide(PI.pi5000(), new Fraction(2, 1));
 	
-	
+	public static int LIMIT_NUMERATOR_SIZE = 10000;
 
 	//TODO: experiment with approximating the mediant or limiting the precision of each term
 	
@@ -213,6 +220,26 @@ public class ContinuedFractionApprox {
 					output = Fraction.minus(output,  currentTerm);
 				}
 				
+				//Approximate a little bit:
+				//truncate term to be "only" 1000+ digits in numerator
+				
+				BigInteger numeratorTerm = currentTerm.getNumerator();
+				BigInteger denominatorTerm = currentTerm.getDenominator();
+				
+				if(numeratorTerm.toString().length() > LIMIT_NUMERATOR_SIZE) {
+					
+					int digitsCut = numeratorTerm.toString().length() - LIMIT_NUMERATOR_SIZE;
+					
+					System.out.println("Cutting " + digitsCut + " digits of the term's fraction");
+					
+					String numTermString = numeratorTerm.toString();
+					String denomTermString = denominatorTerm.toString();
+					
+					numeratorTerm = new BigInteger(numTermString.substring(0, numTermString.length() - digitsCut));
+					denominatorTerm = new BigInteger(denomTermString.substring(0, denomTermString.length() - digitsCut));
+					
+					currentTerm = new Fraction(numeratorTerm, denominatorTerm);
+				}
 				
 				//Cut short but no guarantee that it's above 0.
 				if(signIsPositive) {
