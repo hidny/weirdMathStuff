@@ -55,6 +55,38 @@ public class ContinuedFractionApprox {
 	}
 	
 	
+
+	public static void attemptTanXCheckUsePiApproxNoDouble(Fraction piApprox) {
+		if(piApprox.getNumerator().mod(new BigInteger("2")) == BigInteger.ZERO) {
+			//System.out.println("Numerator even (good sign)");
+			
+			BigInteger X = piApprox.getNumerator().divide(new BigInteger("2"));
+			
+			Fraction XDividePi = Fraction.divide(new Fraction(X, BigInteger.ONE), PI.pi5000());
+			BigInteger quotient = XDividePi.getNumerator().divideAndRemainder(XDividePi.getDenominator())[0];
+			/*
+			System.out.println(X);
+			System.out.println(quotient);
+			System.out.println(new Fraction(X, BigInteger.ONE).getDecimalFormat());
+			
+			System.out.println(Fraction.mult(PI.pi5000(), new Fraction(quotient, BigInteger.ONE)).getDecimalFormat());
+			System.out.println("Boo! " + PI.pi5000().getDecimalFormat(15));
+			System.out.println(new Fraction(quotient, BigInteger.ONE).getDecimalFormat(15));
+			*/
+			
+			Fraction remainderAfterDivbyPi = Fraction.minus(new Fraction(X, BigInteger.ONE),
+								Fraction.mult(PI.pi5000(), new Fraction(quotient, BigInteger.ONE)));
+			
+			Fraction cosGoalNumber = new Fraction(BigInteger.ONE, X);
+			Fraction tanX = badTanApprox(remainderAfterDivbyPi, cosGoalNumber);
+			
+			if(Fraction.minus(tanX, new Fraction(X, BigInteger.ONE)).greaterThan0()) {
+				System.out.println("Found X = " + X + " where tan X = " + tanX.getDecimalFormat(10));
+			}
+			
+		}
+	}
+	
 	//TODO: remove need for double (remake own tan function)
 	//With taylor series...
 	//See wolfram: tan(x) power series
@@ -134,10 +166,21 @@ public class ContinuedFractionApprox {
 	}
 	
 	
-	public static int STOP_POINT = 20;
+	public static int STOP_POINT = 400;
 	
-//TODO: make it a range	
-	public static Fraction cosApprox(Fraction x) {
+	public static Fraction piOn2 = Fraction.divide(PI.pi5000(), new Fraction(2, 1));
+	
+	
+
+	//TODO: experiment with approximating the mediant or limiting the precision of each term
+	
+	//I made it figure out when it has enough info to just stop so it could go slightly faster.	
+	public static Fraction cosApprox(Fraction x, Fraction goal) {
+		
+		if(Fraction.minus(x, piOn2).greaterThan0() == true) {
+			System.out.println("X seems slightly too big, skipping");
+			return Fraction.ONE;
+		}
 		
 		Fraction xSquared = Fraction.mult(x, x);
 		Fraction xPowerN = Fraction.ONE;
@@ -170,6 +213,22 @@ public class ContinuedFractionApprox {
 					output = Fraction.minus(output,  currentTerm);
 				}
 				
+				
+				//Cut short but no guarantee that it's above 0.
+				if(signIsPositive) {
+					if( Fraction.minus(goal, output).greaterThan0()) {
+						System.out.println("Early stop 1");
+						return output;
+						
+					}
+				} else {
+					if( Fraction.minus(goal, output).greaterThan0() == false) {
+						System.out.println("Early stop 2");
+						return output;
+					}
+				}
+				
+				
 				System.out.println("i = " + i + ": " + output.getDecimalFormat(40));
 				
 			}
@@ -182,8 +241,8 @@ public class ContinuedFractionApprox {
 	}
 	
 	//pre: x is near pi.
-	public static Fraction badTanApprox(Fraction x) {
-		return Fraction.divide(Fraction.ONE, cosApprox(x));
+	public static Fraction badTanApprox(Fraction x, Fraction goalNumber) {
+		return Fraction.divide(Fraction.ONE, cosApprox(x, goalNumber));
 	}
 	
 	//TODO: make some kind of guarantee that tan x > x

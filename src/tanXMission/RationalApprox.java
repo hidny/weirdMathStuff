@@ -34,9 +34,18 @@ import UtilityFunctions.Fraction;
 //For x near pi where x <pi:
 //(1-cosx)/cos x < tanx < 1/cosx
 
+
+//What if I did mediant between 1 and 3.5?
+//what if I trial less ideal candidates?
+
+//TODO: don't even try it when x is not prime...
+
 class RationalApprox {
 
 
+	//LOL: apparently 355/113 is really really close to pi... 
+	// That's slowing everything down!
+	
 	public static Fraction pi = PI.pi5000();
 
    public static void main(String[] args) {
@@ -57,11 +66,37 @@ class RationalApprox {
     	  }else{
             left = mediant;              // go right
     	  }
+
+
+      	 System.out.println("Left:");
+     	 System.out.println(left.getNumerator().toString());
+     	 System.out.println("--------------------------------------------2");
+     	 System.out.println(left.getDenominator().toString());
+     	 System.out.println();
+     	 
+
+      	 System.out.println("Right:");
+     	 System.out.println(right.getNumerator().toString());
+     	 System.out.println("--------------------------------------------2");
+     	 System.out.println(right.getDenominator().toString());
+     	 System.out.println();
+     	 
+
+     	 System.out.println();
+    	 System.out.println(mediant.getNumerator().toString());
+    	 System.out.println("--------------------------------------------2");
+    	 System.out.println(mediant.getDenominator().toString());
+    	 System.out.println();
     	 
-    	 //System.out.println(mediant.getNumerator().toString());
+    	 
+     	 System.out.println();
+    	 System.out.println(mediant.getNumerator().toString());
+    	 System.out.println("--------------------------------------------2");
+    	 System.out.println(mediant.getDenominator().toString());
+    	 System.out.println();
          
     	 // ContinuedFractionApprox.attemptTanXCheck(mediant);
-    	  ContinuedFractionApprox.attemptTanXCheckUsePiApprox(mediant);
+    	  ContinuedFractionApprox.attemptTanXCheckUsePiApproxNoDouble(mediant);
     	  
     	// System.out.println(i);
       }
