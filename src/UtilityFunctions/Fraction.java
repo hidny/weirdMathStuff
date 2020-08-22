@@ -263,6 +263,25 @@ public class Fraction implements Comparable {
 		}
 	}
 	
+	public boolean equalsZero() {
+		if(this.greaterThan0() == false && this.lessThan0() == false) {
+			
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public boolean equals(Fraction other) {
+		if(Fraction.minus(this, other).equalsZero()) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	
+	
 	@Override
 	public int compareTo(Object arg0) {
 		Fraction a = (Fraction)arg0;
