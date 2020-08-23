@@ -5,8 +5,8 @@ import java.math.BigInteger;
 public class MillerRobin {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 
+		//TEST miller-rabin by comparing it to basic isPrime function: (It passes)
 		for(int i=1; i<=1000000; i++) {
 			
 			boolean millerPrime = isMillerRabinPrime(new BigInteger(i + ""), 5);
@@ -30,6 +30,10 @@ public class MillerRobin {
 		}
 	}
 
+	
+	//TODO: for large numbers, this isn't the perfect test...
+	//Maybe retest if we think we found one...
+	
 	//Input #1: n > 3, an odd integer to be tested for primality
 	//Input #2: k, the number of rounds of testing to perform
 	

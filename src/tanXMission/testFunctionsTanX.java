@@ -16,6 +16,6 @@ public class testFunctionsTanX {
 
 		//System.out.println("cos 90  = About 0: " + ContinuedFractionApprox.cosApprox(ninetyDeg).getDecimalFormat(15));
 		
-		System.out.println("badtad 90 = about inf: " + ContinuedFractionApprox.badTanApprox(ninetyDeg, Fraction.ZERO).getDecimalFormat(15));
+		System.out.println("badtad 90 = about inf: " + ContinuedFractionApprox.tanApproxAtPiOver2(ninetyDeg, Fraction.ZERO).getDecimalFormat(15));
 	}
 }

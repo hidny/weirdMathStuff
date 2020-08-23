@@ -124,4 +124,39 @@ Samuel Li
 @Stand-up Maths I've just found a third solution with 35085 digits, the first 10 of which are 4094619989.
 */
     
+   
+   /*
+    * 
+J L
+1 day ago
+@Σ5 For all integers n, we will always have |tan(n)| < 2 ( (2n+2)/pi )^41 (proof below).
+ Since exp(n) is greater than this once n>200, there will be no solutions to |tan(n)| > exp(n) once n goes past 200. It's easy enough to check the first 200 values of n and see that there are no solutions, so there are no positive integers n such that |tan(n)| > exp(n).
+
+Proof: This uses a result by Mahler (see equation (15) in https://carma.newcastle.edu.au/resources/mahler/docs/119.pdf ): if p/q is any rational number, then the distance of p/q from pi is at least 1/q^42.
+
+
+
+Suppose n is very close to pi/2+k*pi (as the video explains). Using the bound |tan(pi/2 - x)|<1/|x| for x close to 0 (this follows from |tan(x)|>|x| and the identity tan(x)=1/tan(pi/2-x)), we have
+
+|tan(n)| = |tan(pi/2 - (pi/2 + k*pi - n))|
+< 1/|pi/2 + k*pi - n|
+= (2/(2k+1)) / |pi - 2n/(2k+1)|
+< (2/(2k+1)) (2k+1)^42
+= 2 (2k+1)^41.
+
+Now since we were using a value of n that's close to pi/2+k*pi, we must certainly have pi/2 + k*pi < n+1. This implies 2k+1 < (2/pi)(n+1), giving us the desired result.
+*/
+  /*
+   * 
+Samuel Li
+20 hours ago
+@GEL It appears we got lucky: the next known solution has 43,176 digits, the first 10 of which are 1086855570. (This one wasn't found by me, my method skipped over it somehow.)
+  */
+   
+   /*
+    * 
+Samuel Li
+1 day ago
+In addition to the 1017-digit prime that several people have sent you by now, I've just found a 35,085 digit prime with tan(p) > p. The first 10 digits are 4094619989.
+*/
 }
