@@ -1,4 +1,4 @@
-package tanXMission;
+package tanXMissionOldGets2ndPrimeNumber;
 
 import java.math.BigInteger;
 
@@ -29,12 +29,7 @@ public class MillerRobin {
 			}
 		}
 	}
-	
-	//Hard-code first few primes because I'm lazy...
-	public static int primes[] = new int[]{2, 3, 5, 7, 11, 13, 17, 19, 23};
 
-	
-	public static final BigInteger TWO = new BigInteger("2"); 
 	
 	//TODO: for large numbers, this isn't the perfect test...
 	//Maybe retest if we think we found one...
@@ -53,7 +48,7 @@ public class MillerRobin {
 			return true;
 		}
 		
-		if(new BigInteger(primes[k] + "").compareTo(input) > 0) {
+		if(new BigInteger((k+3) + "").compareTo(input) > 0) {
 			System.out.println("k is two");
 			k = 2;
 		}
@@ -61,8 +56,8 @@ public class MillerRobin {
 		BigInteger inputMinus1 = input.subtract(BigInteger.ONE);
 		BigInteger d = inputMinus1;
 		int r = 0;
-		while(d.divideAndRemainder(TWO)[1].equals(BigInteger.ZERO)) {
-			d = d.divide(TWO);
+		while(d.divideAndRemainder(new BigInteger("2"))[1].equals(BigInteger.ZERO)) {
+			d = d.divide(new BigInteger("2"));
 			r++;
 		}
 		
@@ -74,8 +69,7 @@ public class MillerRobin {
 		WitnessLoop:
 		for(int i=0; i<k; i++) {
 			//They said pick random, but meh....
-			BigInteger a = new BigInteger("" + primes[i]);
-			
+			BigInteger a = new BigInteger("" + (i + 2));
 			
 			BigInteger x = UtilityFunctions.UtilityFunctions.getAPowerPmodMOD(a, d, input);
 			
@@ -84,7 +78,7 @@ public class MillerRobin {
 			}
 			
 			for(int j=0; j<r-1; j++) {
-				x = UtilityFunctions.UtilityFunctions.getAPowerPmodMOD(x, TWO, input);
+				x = UtilityFunctions.UtilityFunctions.getAPowerPmodMOD(x, new BigInteger("2"), input);
 				
 				if( x.equals(input.subtract(BigInteger.ONE))) {
 					continue WitnessLoop;

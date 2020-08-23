@@ -1,4 +1,4 @@
-package tanXMission;
+package tanXMissionOldGets2ndPrimeNumber;
 
 import UtilityFunctions.Fraction;
 

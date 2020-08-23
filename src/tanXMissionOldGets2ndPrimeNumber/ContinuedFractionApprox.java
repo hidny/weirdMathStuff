@@ -1,4 +1,4 @@
-package tanXMission;
+package tanXMissionOldGets2ndPrimeNumber;
 
 import java.math.BigInteger;
 
@@ -28,41 +28,46 @@ It has 1017 digits, the first 10 of which are 2308358707.
 public class ContinuedFractionApprox {
 
 	
-	public static final BigInteger TWO = new BigInteger("2");
-	public static final BigInteger THREE = new BigInteger("3");
-	public static final BigInteger FIVE = new BigInteger("5");
-	public static final BigInteger SEVEN = new BigInteger("7");
 	
 
-	public static void attemptTanXCheckUsePiApproxNoDouble(Fraction piApproxToDeriveX, Fraction currentPrecisePi) {
-		if(piApproxToDeriveX.getNumerator().mod(TWO) == BigInteger.ZERO) {
+	public static void attemptTanXCheckUsePiApproxNoDouble(Fraction piApprox) {
+		if(piApprox.getNumerator().mod(new BigInteger("2")) == BigInteger.ZERO) {
 			//System.out.println("Numerator even (good sign)");
 			
-			BigInteger X = piApproxToDeriveX.getNumerator().divide(TWO);
+			BigInteger X = piApprox.getNumerator().divide(new BigInteger("2"));
 			
 			//TODO:
 			//Try the miller-robin test
 			//https://www.youtube.com/watch?v=RNxr7km8lHo
 			//WANT A PRIME:
-			if(X.divideAndRemainder(TWO)[1] == BigInteger.ZERO
-					|| X.divideAndRemainder(THREE)[1] == BigInteger.ZERO
-							|| X.divideAndRemainder(FIVE)[1] == BigInteger.ZERO
-							|| X.divideAndRemainder(SEVEN)[1] == BigInteger.ZERO) {
+			if(X.divideAndRemainder(new BigInteger("2"))[1] == BigInteger.ZERO
+					|| X.divideAndRemainder(new BigInteger("3"))[1] == BigInteger.ZERO
+							|| X.divideAndRemainder(new BigInteger("5"))[1] == BigInteger.ZERO
+							|| X.divideAndRemainder(new BigInteger("7"))[1] == BigInteger.ZERO) {
 				//System.out.println("Skip non-primes!");
 				return;
 			}
 			
-			if(MillerRobin.isMillerRabinPrime(X, 7) == false) {
+			if(MillerRobin.isMillerRabinPrime(X, 5) == false) {
 				//System.out.println("Skip non-primes miller-robin test!");
 				return;
 				
 			}
 			
-			Fraction XDividePi = Fraction.divide(new Fraction(X, BigInteger.ONE), currentPrecisePi);
+			Fraction XDividePi = Fraction.divide(new Fraction(X, BigInteger.ONE), PI.pi5000());
 			BigInteger quotient = XDividePi.getNumerator().divideAndRemainder(XDividePi.getDenominator())[0];
+			/*
+			System.out.println(X);
+			System.out.println(quotient);
+			System.out.println(new Fraction(X, BigInteger.ONE).getDecimalFormat());
+			
+			System.out.println(Fraction.mult(PI.pi5000(), new Fraction(quotient, BigInteger.ONE)).getDecimalFormat());
+			System.out.println("Boo! " + PI.pi5000().getDecimalFormat(15));
+			System.out.println(new Fraction(quotient, BigInteger.ONE).getDecimalFormat(15));
+			*/
 			
 			Fraction remainderAfterDivbyPi = Fraction.minus(new Fraction(X, BigInteger.ONE),
-								Fraction.mult(currentPrecisePi, new Fraction(quotient, BigInteger.ONE)));
+								Fraction.mult(PI.pi5000(), new Fraction(quotient, BigInteger.ONE)));
 			
 			Fraction cosGoalNumber = new Fraction(BigInteger.ONE, X);
 			
@@ -70,10 +75,7 @@ public class ContinuedFractionApprox {
 				System.out.println("Try:");
 				System.out.println(X.toString());
 			}
-			
-			Fraction currentPrecisePiOn2 = Fraction.divide(currentPrecisePi, new Fraction(2, 1));
-			
-			Fraction tanX = tanApproxAtPiOver2(remainderAfterDivbyPi, cosGoalNumber, currentPrecisePiOn2);
+			Fraction tanX = tanApproxAtPiOver2(remainderAfterDivbyPi, cosGoalNumber);
 			
 			if(Fraction.minus(tanX, new Fraction(X, BigInteger.ONE)).greaterThan0()) {
 				System.out.println("Found X = " + X + " where tan X = " + tanX.getDecimalFormat(10));
@@ -84,34 +86,33 @@ public class ContinuedFractionApprox {
 	
 	
 	
+	public static Fraction piOn2 = Fraction.divide(PI.pi5000(), new Fraction(2, 1));
+	
+	public static int LIMIT_NUMERATOR_SIZE = 8000;
+
+	//TODO: experiment with approximating the mediant or limiting the precision of each term
 	
 
 	//pre: x is near pi.
 	//post: return 1 /cos x
 	//if x is near pi, then tan x = sin x / cos x almost = 1 /cosx
-	public static Fraction tanApproxAtPiOver2(Fraction x, Fraction cosGoalNumber, Fraction currentPrecisePiOn2) {
-		
-		//Make up some precision:
-		int numDigitsPrecision = 3 * cosGoalNumber.getDenominator().toString().length();
-		//End make up some precision
-		
-		return Fraction.divide(Fraction.ONE, cosApprox(x, cosGoalNumber, currentPrecisePiOn2, numDigitsPrecision));
+	public static Fraction tanApproxAtPiOver2(Fraction x, Fraction goalNumber) {
+		return Fraction.divide(Fraction.ONE, cosApprox(x, goalNumber));
 	}
 	
 	
 	//I made it figure out when it has enough info to just stop so it could go slightly faster.	
-	public static Fraction cosApprox(Fraction x, Fraction cosGoalNumber, Fraction currentPrecisePiOn2, int numDigitsPrecision) {
+	public static Fraction cosApprox(Fraction x, Fraction goal) {
 		
 		//TODO: get relevant value of pi based on size of x
 		
-		if(Fraction.minus(x, currentPrecisePiOn2).greaterThan0() == true) {
-			System.out.println("in cosApprox: X seems slightly too big (i.e. tan x is negative), skipping");
+		if(Fraction.minus(x, piOn2).greaterThan0() == true) {
+			System.out.println("X seems slightly too big, skipping");
 			return Fraction.ONE;
 		}
 		
 		//xSquared should be just smaller than pi/2...
 		Fraction xSquared = Fraction.mult(x, x);
-		
 		Fraction xPowerN = Fraction.ONE;
 		
 		Fraction output = Fraction.ONE;
@@ -123,7 +124,6 @@ public class ContinuedFractionApprox {
 			System.out.println(i);
 			
 			factorial = Fraction.mult(factorial, new Fraction(i, 1));
-			factorial = approx(factorial, numDigitsPrecision);
 			
 			if(i %2 == 0) {
 				boolean signIsPositive = false;
@@ -132,17 +132,13 @@ public class ContinuedFractionApprox {
 				} else {
 					signIsPositive = false;
 				}
-
-				//TODO: approx based on size of factorial... (nah)
-				xPowerN = Fraction.mult(xPowerN, xSquared);
-				xPowerN = approx(xPowerN, numDigitsPrecision);
 				
+				xPowerN = Fraction.mult(xPowerN, xSquared);
+				
+				//TODO: approx based on size of factorial...
+				xPowerN = approx(xPowerN);
 				
 				Fraction currentTerm =  Fraction.divide(xPowerN, factorial);
-
-				//Approximate a little bit:
-				//truncate term to be "only" 1000+ digits in numerator
-				currentTerm = approx(currentTerm, numDigitsPrecision);
 				
 				if(signIsPositive) {
 					output = Fraction.plus(output, currentTerm);
@@ -150,16 +146,20 @@ public class ContinuedFractionApprox {
 					output = Fraction.minus(output,  currentTerm);
 				}
 				
+				//Approximate a little bit:
+				//truncate term to be "only" 1000+ digits in numerator
+				
+				currentTerm = approx(currentTerm);
 				
 				//Cut short but no guarantee that it's above 0.
 				if(signIsPositive) {
-					if( Fraction.minus(cosGoalNumber, output).greaterThan0()) {
+					if( Fraction.minus(goal, output).greaterThan0()) {
 						System.out.println("Early stop 1");
 						return output;
 						
 					}
 				} else {
-					if( Fraction.minus(cosGoalNumber, output).greaterThan0() == false) {
+					if( Fraction.minus(goal, output).greaterThan0() == false) {
 						System.out.println("Early stop 2");
 						return output;
 					}
@@ -178,13 +178,13 @@ public class ContinuedFractionApprox {
 	
 	//TODO: limit denominator size based on goal
 	//Maybe 2*#digits in goal
-	public static Fraction approx(Fraction input, int limitDenomSize) {
+	public static Fraction approx(Fraction input) {
 		BigInteger numeratorTerm = input.getNumerator();
 		BigInteger denominatorTerm = input.getDenominator();
 		
-		if(numeratorTerm.toString().length() > limitDenomSize) {
+		if(numeratorTerm.toString().length() > LIMIT_NUMERATOR_SIZE) {
 			
-			int digitsCut = numeratorTerm.toString().length() - limitDenomSize;
+			int digitsCut = numeratorTerm.toString().length() - LIMIT_NUMERATOR_SIZE;
 			
 			System.out.println("Cutting " + digitsCut + " digits of the term's fraction");
 			

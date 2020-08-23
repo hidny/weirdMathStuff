@@ -1,4 +1,4 @@
-package tanXMission;
+package tanXMissionOldGets2ndPrimeNumber;
 
 import UtilityFunctions.Fraction;
 
@@ -40,45 +40,35 @@ import UtilityFunctions.Fraction;
 
 //TODO: don't even try it when x is not prime...
 
-class RationalApprox {
+class RationalApproxOLD {
 
 
 	//LOL: apparently 355/113 is really really close to pi... 
-	//TODO: fix this! (skip a bunch of mediant iterations!)
 	// That's slowing everything down!
 	
+	public static Fraction pi = PI.pi5000();
 	
-	public static final int ONE_THOUSAND = 1000;
-	public static final int HALF_ONE_THOUSAND = 500;
 
-	//The numerator I use for PI should be at least 3 times the length of the numerator of the rational approx to pi: 
-	public static final double PI_PRECISION_FACTOR = 3.0;
-	
    public static void main(String[] args) {
 
+	   System.out.println("OLD");
 
-      int prevSizeDebug = -1;
+	int prevSizeDebug = -1;
 	 
       Fraction left  = new Fraction(0, 1);
       Fraction right = new Fraction(1, 0);
+      Fraction best = left;
+      
 
-      int numDigitsApproxPi = ONE_THOUSAND;
-      Fraction currentPrecisePi = PI.getPiForNDigits(numDigitsApproxPi);
-    
-      System.out.println("Length precise pi: " + currentPrecisePi.getNumerator().toString().length());
-      
-      
       int numIterDebug = 0;
       
       // do Stern-Brocot binary search
-      for(int i=0; left.getNumerator().toString().length() < 45*ONE_THOUSAND; i++) {
+      for(int i=0; left.getNumerator().toString().length() < 2000; i++) {
 
-    	  
-    	  
          // compute next possible rational approximation
     	  Fraction mediant = new Fraction(left.getNumerator().add(right.getNumerator()), left.getDenominator().add(right.getDenominator()));
 
-    	  if (Fraction.minus(mediant, currentPrecisePi).greaterThan0()) {
+    	  if (Fraction.minus(mediant, pi).greaterThan0()) {
             right = mediant;              // go left
     	  }else{
             left = mediant;              // go right
@@ -103,23 +93,15 @@ class RationalApprox {
      	 //System.out.println();
     	  if(prevSizeDebug < mediant.getNumerator().toString().length()) {
 
-    		  	 int numeratorSize = mediant.getNumerator().toString().length();
-    	    	 System.out.println("New numerator size: " + numeratorSize);
+    	    	 System.out.println("New numerator size: " + mediant.getNumerator().toString().length());
     	    	 prevSizeDebug =  mediant.getNumerator().toString().length();
-    	    	 
-    	    	 if(PI_PRECISION_FACTOR * numeratorSize > numDigitsApproxPi) {
-    	    		 numDigitsApproxPi += ONE_THOUSAND;
-    	    		 currentPrecisePi = PI.getPiForNDigits(numDigitsApproxPi);
-    	    		 
-    	    		 System.out.println("Upgrading size of pi guide...");
-    	    	 }
     	  }
     	 //System.out.println("--------------------------------------------2");
     	 //System.out.println(mediant.getDenominator().toString());
     	 //System.out.println();
          
     	 // ContinuedFractionApprox.attemptTanXCheck(mediant);
-    	  ContinuedFractionApprox.attemptTanXCheckUsePiApproxNoDouble(mediant, currentPrecisePi);
+    	  ContinuedFractionApprox.attemptTanXCheckUsePiApproxNoDouble(mediant);
     	  
     	  numIterDebug++;
     	  if(numIterDebug % 1000 == 0) {
@@ -172,6 +154,12 @@ Suppose n is very close to pi/2+k*pi (as the video explains). Using the bound |t
 
 Now since we were using a value of n that's close to pi/2+k*pi, we must certainly have pi/2 + k*pi < n+1. This implies 2k+1 < (2/pi)(n+1), giving us the desired result.
 */
+  /*
+   * 
+Samuel Li
+20 hours ago
+@GEL It appears we got lucky: the next known solution has 43,176 digits, the first 10 of which are 1086855570. (This one wasn't found by me, my method skipped over it somehow.)
+  */
    
    /*
     * 
@@ -179,12 +167,4 @@ Samuel Li
 1 day ago
 In addition to the 1017-digit prime that several people have sent you by now, I've just found a 35,085 digit prime with tan(p) > p. The first 10 digits are 4094619989.
 */
-   
-  /*
-   * 
-Samuel Li
-20 hours ago
-@GEL It appears we got lucky: the next known solution has 43,176 digits, the first 10 of which are 1086855570. (This one wasn't found by me, my method skipped over it somehow.)
-  */
-
 }
