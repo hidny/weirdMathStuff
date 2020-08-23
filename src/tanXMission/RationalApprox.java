@@ -30,6 +30,7 @@ import UtilityFunctions.Fraction;
 //TODO: what if I do (2*a+c)/(2*b+d)
 //Find tan.... maybe approx: 1/cos(x)
 //https://blogs.ubc.ca/infiniteseriesmodule/units/unit-3-power-series/taylor-series/the-maclaurin-expansion-of-cosx/
+//Nah...
 
 //For x near pi where x <pi:
 //(1-cosx)/cos x < tanx < 1/cosx
@@ -38,13 +39,12 @@ import UtilityFunctions.Fraction;
 //What if I did mediant between 1 and 3.5?
 //what if I trial less ideal candidates?
 
-//TODO: don't even try it when x is not prime...
 
 class RationalApprox {
 
 
 	//LOL: apparently 355/113 is really really close to pi... 
-	//TODO: fix this! (skip a bunch of mediant iterations!)
+	//TODO: fix this! (skip a bunch of mediant iterations!) (See other TODO for details)
 	// That's slowing everything down!
 	
 	
@@ -78,6 +78,13 @@ class RationalApprox {
          // compute next possible rational approximation
     	  Fraction mediant = new Fraction(left.getNumerator().add(right.getNumerator()), left.getDenominator().add(right.getDenominator()));
 
+    	  //TODO: this is probably the slowest part of the algo
+    	  //what if we just need to update the decimal precision of the mediant based on decimal precision of
+    	  //left and right?
+    	  
+    	  //What if we calc n= #times left will be picked in a row
+    	  //or #times right will be picked in a row and use this knowledge to go faster?
+    	  
     	  if (Fraction.minus(mediant, currentPrecisePi).greaterThan0()) {
             right = mediant;              // go left
     	  }else{
@@ -142,7 +149,7 @@ It has 1017 digits, the first 10 of which are 2308358707.
    //What I found:
    //Found X = 230835870782558831561617186504559084198719501221763995608082253627620752053749345488376393822837250198036536001853828659466202612019525543362322174085744303421231446484541625047630462908919109308644634605051209877750956648014568322183373423523622941806761765245932401727973436579786298208782013178059220103271409347616696556052706562092799953175234183483071403726145726928572372071037042523626350312132351311366806233135093893271182587352730075523143635168510803804031460442796778933680674070124730971307185688425634077096234482442639666385695677866015904370207368846631450100939158029908242779848800640038255592227473300237596577845602369215568916732445980431078426390412264603773550384039765410088966381694110344811198325354315338629604946794192217817288101344643511450133142277670683067655250506551517767422160650566385017503208608678491109517443585115317845289832567015746473548492179557935154400719019569904865219030736244089287736334048402066257337090606092966121806567484954460809024219605952851728610326005069 where tan X = Infinity
 
-   //TODO: You need to have the first 70 K digits of Pi to attempt it, but here it is:
+   //TODO: You need to have the first 100 K digits of Pi to attempt it, but here it is:
    /*
     * Samuel Li
 Samuel Li

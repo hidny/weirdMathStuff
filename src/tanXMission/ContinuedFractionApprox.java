@@ -39,11 +39,9 @@ public class ContinuedFractionApprox {
 			//System.out.println("Numerator even (good sign)");
 			
 			BigInteger X = piApproxToDeriveX.getNumerator().divide(TWO);
-			
-			//TODO:
-			//Try the miller-robin test
-			//https://www.youtube.com/watch?v=RNxr7km8lHo
+
 			//WANT A PRIME:
+			//TODO: Test more primes before using miller-robin test:
 			if(X.divideAndRemainder(TWO)[1] == BigInteger.ZERO
 					|| X.divideAndRemainder(THREE)[1] == BigInteger.ZERO
 							|| X.divideAndRemainder(FIVE)[1] == BigInteger.ZERO
@@ -51,7 +49,9 @@ public class ContinuedFractionApprox {
 				//System.out.println("Skip non-primes!");
 				return;
 			}
-			
+
+			//Try the miller-robin test
+			//https://www.youtube.com/watch?v=RNxr7km8lHo
 			if(MillerRobin.isMillerRabinPrime(X, 7) == false) {
 				//System.out.println("Skip non-primes miller-robin test!");
 				return;
@@ -101,8 +101,6 @@ public class ContinuedFractionApprox {
 	
 	//I made it figure out when it has enough info to just stop so it could go slightly faster.	
 	public static Fraction cosApprox(Fraction x, Fraction cosGoalNumber, Fraction currentPrecisePiOn2, int numDigitsPrecision) {
-		
-		//TODO: get relevant value of pi based on size of x
 		
 		if(Fraction.minus(x, currentPrecisePiOn2).greaterThan0() == true) {
 			System.out.println("in cosApprox: X seems slightly too big (i.e. tan x is negative), skipping");
@@ -176,8 +174,6 @@ public class ContinuedFractionApprox {
 		
 	}
 	
-	//TODO: limit denominator size based on goal
-	//Maybe 2*#digits in goal
 	public static Fraction approx(Fraction input, int limitDenomSize) {
 		BigInteger numeratorTerm = input.getNumerator();
 		BigInteger denominatorTerm = input.getDenominator();

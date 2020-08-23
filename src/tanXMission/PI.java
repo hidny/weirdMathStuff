@@ -21,7 +21,7 @@ public class PI {
 
 	public static Fraction getPiForNDigits(int n) {
 		
-		//TODO: string builders
+		//TODO: string builders would be more ideal, but nah...
 		String numeratorString = "";
 		String denumeratorString = "1";
 		

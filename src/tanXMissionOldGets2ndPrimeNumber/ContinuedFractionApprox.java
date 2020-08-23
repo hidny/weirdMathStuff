@@ -36,9 +36,7 @@ public class ContinuedFractionApprox {
 			
 			BigInteger X = piApprox.getNumerator().divide(new BigInteger("2"));
 			
-			//TODO:
-			//Try the miller-robin test
-			//https://www.youtube.com/watch?v=RNxr7km8lHo
+			//TODO: maybe test more because the miller robin test in expensive!
 			//WANT A PRIME:
 			if(X.divideAndRemainder(new BigInteger("2"))[1] == BigInteger.ZERO
 					|| X.divideAndRemainder(new BigInteger("3"))[1] == BigInteger.ZERO
@@ -47,7 +45,9 @@ public class ContinuedFractionApprox {
 				//System.out.println("Skip non-primes!");
 				return;
 			}
-			
+
+			//Try the miller-robin test
+			//https://www.youtube.com/watch?v=RNxr7km8lHo
 			if(MillerRobin.isMillerRabinPrime(X, 5) == false) {
 				//System.out.println("Skip non-primes miller-robin test!");
 				return;
