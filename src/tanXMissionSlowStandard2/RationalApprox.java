@@ -1,4 +1,4 @@
-package tanXMission;
+package tanXMissionSlowStandard2;
 
 import java.math.BigInteger;
 

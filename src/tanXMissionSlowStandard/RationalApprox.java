@@ -1,6 +1,4 @@
-package tanXMission;
-
-import java.math.BigInteger;
+package tanXMissionSlowStandard;
 
 import UtilityFunctions.Fraction;
 
@@ -78,7 +76,7 @@ class RationalApprox {
     	  
     	  
          // compute next possible rational approximation
-    	 // Fraction mediant = new Fraction(left.getNumerator().add(right.getNumerator()), left.getDenominator().add(right.getDenominator()));
+    	  Fraction mediant = new Fraction(left.getNumerator().add(right.getNumerator()), left.getDenominator().add(right.getDenominator()));
 
     	  //TODO: this is probably the slowest part of the algo
     	  //what if we just need to update the decimal precision of the mediant based on decimal precision of
@@ -87,77 +85,34 @@ class RationalApprox {
     	  //What if we calc n= #times left will be picked in a row
     	  //or #times right will be picked in a row and use this knowledge to go faster?
     	  
-
-    	 /*
-       	 System.out.println("Left:");
-      	 System.out.println(left.getNumerator().toString());
-      	 System.out.println("--------------------------------------------2");
-      	 System.out.println(left.getDenominator().toString());
-      	 System.out.println();
-      	 
-
-       	 System.out.println("Right:");
-      	 System.out.println(right.getNumerator().toString());
-      	 System.out.println("--------------------------------------------2");
-      	 System.out.println(right.getDenominator().toString());
-      	 System.out.println();
-      	 */
- 
-    	  
-          BigInteger tmp1 = left.getDenominator().multiply(currentPrecisePi.getNumerator())
-          .subtract(left.getNumerator().multiply(currentPrecisePi.getDenominator()));
-          
-          BigInteger tmp2 = right.getNumerator().multiply(currentPrecisePi.getDenominator())
-                  .subtract(right.getDenominator().multiply(currentPrecisePi.getNumerator()));
-          
-          
-    	  if (tmp2.compareTo(tmp1) > 0) {
-            
-            long n1 =tmp2.divide(tmp1).longValue();
-
-            System.out.println("n1: " + n1);
-            if(n1 <=0) {
-            	System.out.println("doh!");
-            	System.exit(1);
-            }
-            
-            right = new Fraction((left.getNumerator().multiply(new BigInteger(n1 + ""))).add(right.getNumerator()),
-            		(left.getDenominator().multiply(new BigInteger(n1 + ""))).add(right.getDenominator()));
-
-            
+    	  if (Fraction.minus(mediant, currentPrecisePi).greaterThan0()) {
+            right = mediant;              // go left
     	  }else{
-
-            long n2 = tmp1.divide(tmp2).longValue();
-            System.out.println("n2: " + n2);
-
-            if(n2 <=0) {
-            	System.out.println("doh!");
-            	System.exit(1);
-            }
-            
-            Fraction trial = null;
-            for(int j=0; j<n2; j++) {
-            	trial = new Fraction((right.getNumerator().multiply(new BigInteger(((j + 1)) + ""))).add(left.getNumerator()),
-                		(right.getDenominator().multiply(new BigInteger(((j + 1)) + ""))).add(left.getDenominator()));
-            	
-            	
-            	//TODO: maybe the in-between fractions are obviously no good?
-            	ContinuedFractionApprox.attemptTanXCheckUsePiApproxNoDouble(trial, currentPrecisePi);
-            	
-            }
-            left = trial;
-            
-
+            left = mediant;              // go right
     	  }
 
+/*
+      	 System.out.println("Left:");
+     	 System.out.println(left.getNumerator().toString());
+     	 System.out.println("--------------------------------------------2");
+     	 System.out.println(left.getDenominator().toString());
+     	 System.out.println();
+     	 
 
+      	 System.out.println("Right:");
+     	 System.out.println(right.getNumerator().toString());
+     	 System.out.println("--------------------------------------------2");
+     	 System.out.println(right.getDenominator().toString());
+     	 System.out.println();
+     	 
+*/
     	  
      	 //System.out.println();
-    	  if(prevSizeDebug < left.getNumerator().toString().length()) {
+    	  if(prevSizeDebug < mediant.getNumerator().toString().length()) {
 
-    		  	 int numeratorSize = left.getNumerator().toString().length();
+    		  	 int numeratorSize = mediant.getNumerator().toString().length();
     	    	 System.out.println("New numerator size: " + numeratorSize);
-    	    	 prevSizeDebug =  left.getNumerator().toString().length();
+    	    	 prevSizeDebug =  mediant.getNumerator().toString().length();
     	    	 
     	    	 if(PI_PRECISION_FACTOR * numeratorSize > numDigitsApproxPi) {
     	    		 numDigitsApproxPi += ONE_THOUSAND;
@@ -169,8 +124,9 @@ class RationalApprox {
     	 //System.out.println("--------------------------------------------2");
     	 //System.out.println(mediant.getDenominator().toString());
     	 //System.out.println();
-
-    	  
+         
+    	 // ContinuedFractionApprox.attemptTanXCheck(mediant);
+    	  ContinuedFractionApprox.attemptTanXCheckUsePiApproxNoDouble(mediant, currentPrecisePi);
     	  
     	  numIterDebug++;
     	  if(numIterDebug % 1000 == 0) {

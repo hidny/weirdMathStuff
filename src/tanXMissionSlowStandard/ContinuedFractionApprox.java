@@ -1,4 +1,4 @@
-package tanXMission;
+package tanXMissionSlowStandard;
 
 import java.math.BigInteger;
 
@@ -103,11 +103,7 @@ public class ContinuedFractionApprox {
 	public static Fraction cosApprox(Fraction x, Fraction cosGoalNumber, Fraction currentPrecisePiOn2, int numDigitsPrecision) {
 		
 		if(Fraction.minus(x, currentPrecisePiOn2).greaterThan0() == true) {
-			
 			System.out.println("in cosApprox: X seems slightly too big (i.e. tan x is negative), skipping");
-			
-			//TODO: maybe we don't need this check anymore??
-			System.exit(1);
 			return Fraction.ONE;
 		}
 		
