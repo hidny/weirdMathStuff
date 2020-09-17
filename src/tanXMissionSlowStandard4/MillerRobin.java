@@ -1,4 +1,4 @@
-package tanXMission;
+package tanXMissionSlowStandard4;
 
 import java.math.BigInteger;
 
@@ -80,18 +80,15 @@ public class MillerRobin {
 			BigInteger a = new BigInteger("" + primes[i]);
 			
 			
-			//BigInteger x = UtilityFunctions.UtilityFunctions.getAPowerPmodMOD(a, d, input);
-			BigInteger x = a.modPow(d, input);
+			BigInteger x = UtilityFunctions.UtilityFunctions.getAPowerPmodMOD(a, d, input);
 			
 			if(x.equals(BigInteger.ONE) || x.equals(input.subtract(BigInteger.ONE))) {
 				continue WitnessLoop;	
 			}
 			
 			for(int j=0; j<r-1; j++) {
-				//x = UtilityFunctions.UtilityFunctions.getAPowerPmodMOD(x, TWO, input);
-
-				x = x.modPow(TWO, input);
-
+				x = UtilityFunctions.UtilityFunctions.getAPowerPmodMOD(x, TWO, input);
+				
 				if( x.equals(input.subtract(BigInteger.ONE))) {
 					continue WitnessLoop;
 				}

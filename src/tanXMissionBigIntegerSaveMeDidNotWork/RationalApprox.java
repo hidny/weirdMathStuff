@@ -1,4 +1,4 @@
-package tanXMission;
+package tanXMissionBigIntegerSaveMeDidNotWork;
 
 import java.math.BigInteger;
 
@@ -69,6 +69,7 @@ class RationalApprox {
     
       System.out.println("Length precise pi: " + currentPrecisePi.getNumerator().toString().length());
       
+      ContinuedFractionApprox.initializeListOfPrimes();
       
       int numIterDebug = 0;
       
@@ -142,7 +143,9 @@ class RationalApprox {
             	
             	
             	//TODO: maybe the in-between fractions are obviously no good?
-            	ContinuedFractionApprox.attemptTanXCheckUsePiApproxNoDouble(trial, currentPrecisePi);
+            	if(j == n2 - 1) {
+            		ContinuedFractionApprox.attemptTanXCheckUsePiApproxNoDouble(trial, currentPrecisePi);
+            	}
             	
             }
             left = trial;

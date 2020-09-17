@@ -1,4 +1,4 @@
-package tanXMissionSlowStandard;
+package tanXMissionBigIntegerSaveMeDidNotWork;
 
 import java.math.BigInteger;
 
@@ -25,38 +25,28 @@ Samuel Li
 It has 1017 digits, the first 10 of which are 2308358707.
  */
 
+//TODO: rename class name:
 public class ContinuedFractionApprox {
 
 	
-	public static final BigInteger TWO = new BigInteger("2");
-	public static final BigInteger THREE = new BigInteger("3");
-	public static final BigInteger FIVE = new BigInteger("5");
-	public static final BigInteger SEVEN = new BigInteger("7");
-	
 
+	public static void initializeListOfPrimes() {
+		BigIntegerPrimesList.initialize();
+	}
+	
+	public static final BigInteger TWO = new BigInteger("2");
+	
 	public static void attemptTanXCheckUsePiApproxNoDouble(Fraction piApproxToDeriveX, Fraction currentPrecisePi) {
 		if(piApproxToDeriveX.getNumerator().mod(TWO) == BigInteger.ZERO) {
 			//System.out.println("Numerator even (good sign)");
 			
 			BigInteger X = piApproxToDeriveX.getNumerator().divide(TWO);
 
-			//WANT A PRIME:
-			//TODO: Test more primes before using miller-robin test:
-			if(X.divideAndRemainder(TWO)[1] == BigInteger.ZERO
-					|| X.divideAndRemainder(THREE)[1] == BigInteger.ZERO
-							|| X.divideAndRemainder(FIVE)[1] == BigInteger.ZERO
-							|| X.divideAndRemainder(SEVEN)[1] == BigInteger.ZERO) {
-				//System.out.println("Skip non-primes!");
+			//Just use the BigInteger Library...
+			if(X.isProbablePrime(1) == false) {
 				return;
 			}
-
-			//Try the miller-robin test
-			//https://www.youtube.com/watch?v=RNxr7km8lHo
-			if(MillerRobin.isMillerRabinPrime(X, 7) == false) {
-				//System.out.println("Skip non-primes miller-robin test!");
-				return;
-				
-			}
+			System.out.println("prime passed");
 			
 			Fraction XDividePi = Fraction.divide(new Fraction(X, BigInteger.ONE), currentPrecisePi);
 			BigInteger quotient = XDividePi.getNumerator().divideAndRemainder(XDividePi.getDenominator())[0];
@@ -77,6 +67,10 @@ public class ContinuedFractionApprox {
 			
 			if(Fraction.minus(tanX, new Fraction(X, BigInteger.ONE)).greaterThan0()) {
 				System.out.println("Found X = " + X + " where tan X = " + tanX.getDecimalFormat(10));
+				System.out.println("Please double triple check ifs primality!");
+				if(MillerRobin.isMillerRabinPrime(X, 8) == false) {
+					System.out.println("AHH! It is not a real prime!");
+				}
 			}
 			
 		}
@@ -103,7 +97,11 @@ public class ContinuedFractionApprox {
 	public static Fraction cosApprox(Fraction x, Fraction cosGoalNumber, Fraction currentPrecisePiOn2, int numDigitsPrecision) {
 		
 		if(Fraction.minus(x, currentPrecisePiOn2).greaterThan0() == true) {
+			
 			System.out.println("in cosApprox: X seems slightly too big (i.e. tan x is negative), skipping");
+			
+			//TODO: maybe we don't need this check anymore??
+			System.exit(1);
 			return Fraction.ONE;
 		}
 		

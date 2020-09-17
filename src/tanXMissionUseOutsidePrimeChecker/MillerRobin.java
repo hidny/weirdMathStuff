@@ -1,4 +1,4 @@
-package tanXMissionSlowStandard;
+package tanXMissionUseOutsidePrimeChecker;
 
 import java.math.BigInteger;
 
@@ -42,6 +42,9 @@ public class MillerRobin {
 	//Input #1: n > 3, an odd integer to be tested for primality
 	//Input #2: k, the number of rounds of testing to perform
 	
+	
+	//TODO: maybe memorize 2^0 to 2^1000... so 2^n mod b goes faster
+	
 	//https://en.wikipedia.org/wiki/Miller%E2%80%93Rabin_primality_test
 	public static boolean isMillerRabinPrime(BigInteger input, int k) {
 		
@@ -53,7 +56,7 @@ public class MillerRobin {
 			return true;
 		}
 		
-		if(new BigInteger(primes[k] + "").compareTo(input) > 0) {
+		if(new BigInteger(primes[k - 1] + "").compareTo(input) > 0) {
 			System.out.println("k is two");
 			k = 2;
 		}
@@ -77,15 +80,18 @@ public class MillerRobin {
 			BigInteger a = new BigInteger("" + primes[i]);
 			
 			
-			BigInteger x = UtilityFunctions.UtilityFunctions.getAPowerPmodMOD(a, d, input);
+			//BigInteger x = UtilityFunctions.UtilityFunctions.getAPowerPmodMOD(a, d, input);
+			BigInteger x = a.modPow(d, input);
 			
 			if(x.equals(BigInteger.ONE) || x.equals(input.subtract(BigInteger.ONE))) {
 				continue WitnessLoop;	
 			}
 			
 			for(int j=0; j<r-1; j++) {
-				x = UtilityFunctions.UtilityFunctions.getAPowerPmodMOD(x, TWO, input);
-				
+				//x = UtilityFunctions.UtilityFunctions.getAPowerPmodMOD(x, TWO, input);
+
+				x = x.modPow(TWO, input);
+
 				if( x.equals(input.subtract(BigInteger.ONE))) {
 					continue WitnessLoop;
 				}

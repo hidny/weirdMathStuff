@@ -25,66 +25,155 @@ Samuel Li
 It has 1017 digits, the first 10 of which are 2308358707.
  */
 
-public class ContinuedFractionApprox {
+//TODO: rename class name:
+public class ExtremeTanXCalculator {
 
+	
+
+	public static void initializeListOfPrimes() {
+		BigIntegerPrimesList.initialize();
+	}
 	
 	public static final BigInteger TWO = new BigInteger("2");
-	public static final BigInteger THREE = new BigInteger("3");
-	public static final BigInteger FIVE = new BigInteger("5");
-	public static final BigInteger SEVEN = new BigInteger("7");
 	
+	public static void attemptTanXCheckUsePiApproxNoDoublePiOn2(Fraction piOn2ApproxToDeriveX, Fraction currentPrecisePiOn2) {
 
-	public static void attemptTanXCheckUsePiApproxNoDouble(Fraction piApproxToDeriveX, Fraction currentPrecisePi) {
-		if(piApproxToDeriveX.getNumerator().mod(TWO) == BigInteger.ZERO) {
-			//System.out.println("Numerator even (good sign)");
-			
-			BigInteger X = piApproxToDeriveX.getNumerator().divide(TWO);
+			BigInteger X = piOn2ApproxToDeriveX.getNumerator();
 
 			//WANT A PRIME:
 			//TODO: Test more primes before using miller-robin test:
-			if(X.divideAndRemainder(TWO)[1] == BigInteger.ZERO
-					|| X.divideAndRemainder(THREE)[1] == BigInteger.ZERO
-							|| X.divideAndRemainder(FIVE)[1] == BigInteger.ZERO
-							|| X.divideAndRemainder(SEVEN)[1] == BigInteger.ZERO) {
+			if(BigIntegerPrimesList.isProbPrime(X) == false) {
 				//System.out.println("Skip non-primes!");
 				return;
 			}
 
+			//TODO: FastCheck
+			
+			if(fastCheckSaysYes(piOn2ApproxToDeriveX, currentPrecisePiOn2) == false) {
+				return;
+			}
+			/*
+			if(BigIntegerPrimesList.isProbPrime(X) == false) {
+				System.out.println("Stopped by extra prime check!");
+				//System.out.println("Skip non-primes!");
+				return;
+			}
+			*/
+			
+			System.out.println("Checking miller robin prime!");
 			//Try the miller-robin test
 			//https://www.youtube.com/watch?v=RNxr7km8lHo
-			if(MillerRobin.isMillerRabinPrime(X, 7) == false) {
+			if(MillerRobin.isMillerRabinPrime(X, 1) == false) {
 				//System.out.println("Skip non-primes miller-robin test!");
 				return;
 				
 			}
 			
-			Fraction XDividePi = Fraction.divide(new Fraction(X, BigInteger.ONE), currentPrecisePi);
-			BigInteger quotient = XDividePi.getNumerator().divideAndRemainder(XDividePi.getDenominator())[0];
 			
-			Fraction remainderAfterDivbyPi = Fraction.minus(new Fraction(X, BigInteger.ONE),
-								Fraction.mult(currentPrecisePi, new Fraction(quotient, BigInteger.ONE)));
 			
-			Fraction cosGoalNumber = new Fraction(BigInteger.ONE, X);
-			
-			if(X.toString().length() > 10) {
-				System.out.println("Try:");
-				System.out.println(X.toString());
+			System.out.println("Found X = " + X);
+			System.out.println("Please double triple check ifs primality!");
+			if(MillerRobin.isMillerRabinPrime(X, 8) == false) {
+				System.out.println("AHH! It is not a real prime!");
 			}
 			
-			Fraction currentPrecisePiOn2 = Fraction.divide(currentPrecisePi, new Fraction(2, 1));
-			
-			Fraction tanX = tanApproxAtPiOver2(remainderAfterDivbyPi, cosGoalNumber, currentPrecisePiOn2);
-			
-			if(Fraction.minus(tanX, new Fraction(X, BigInteger.ONE)).greaterThan0()) {
-				System.out.println("Found X = " + X + " where tan X = " + tanX.getDecimalFormat(10));
+	}
+	
+	public static boolean fastCheckSaysYes(Fraction piOn2ApproxToDeriveX, Fraction currentPrecisePiOn2) {
+		
+		Fraction A = new Fraction(piOn2ApproxToDeriveX.getNumerator(), BigInteger.ONE);
+		Fraction B = new Fraction(piOn2ApproxToDeriveX.getDenominator(),  BigInteger.ONE);
+		
+		Fraction OneOverA = Fraction.divide( Fraction.ONE, A);
+		
+		Fraction Apart = Fraction.plus(A, OneOverA);
+		
+		
+		Fraction BPiOver2 = Fraction.mult(B, currentPrecisePiOn2);
+		
+		//23083587078255883156161718650455908419871
+		if(Fraction.minus(Apart, BPiOver2).greaterThan0()) {
+
+			System.out.println(A.getNumerator() + " + " + OneOverA.getDecimalFormat(15));
+			System.out.println("vs " + B.getNumerator() + " * (pi/2) = (" + BPiOver2.getDecimalFormat(15) +")");
+
+			if(Fraction.minus(A, BPiOver2).greaterThan0()) {
+				System.out.println("ERROR: A greater than B* (Pi/2)! This should not happen!");
+				System.out.println(A.getNumerator());
+				System.out.println(B.getNumerator());
+				System.exit(1);
 			}
+			//System.out.println("Found X = " + X );
+			//System.out.println("Please double triple check ifs primality!");
 			
+			System.out.println("Got passed fast Check!");
+			System.out.println("Factor LHS/RHS: "  + Fraction.divide(A, BPiOver2).getDecimalFormat(15));
+			return true;
 		}
+		
+		return false;
+	}
+
+	public static boolean fastCheckSaysYes3(Fraction piApproxToDeriveX, Fraction currentPrecisePiOn2) {
+	
+		Fraction currentPrecisePi = Fraction.mult(currentPrecisePiOn2, new Fraction(2, 1));
+		
+		Fraction a = new Fraction(piApproxToDeriveX.getNumerator(), BigInteger.ONE);
+		
+		Fraction XDividePi = Fraction.divide(piApproxToDeriveX, currentPrecisePi); 
+		
+		BigInteger quotient = XDividePi.getNumerator().divideAndRemainder(XDividePi.getDenominator())[0];
+		
+		Fraction aHalfCirc = Fraction.minus(
+						a,
+						Fraction.mult(currentPrecisePi, new Fraction(quotient, BigInteger.ONE))
+				);
+		
+		Fraction sumA = Fraction.plus(aHalfCirc, Fraction.divide(Fraction.ONE, a));
+		
+	
+		if(Fraction.minus(sumA, currentPrecisePiOn2).greaterThan0()) {
+			//System.out.println("Found X = " + X );
+			//System.out.println("Please double triple check ifs primality!");
+			
+			System.out.println("Got passed fast Check!");
+			System.out.println("Factor LHS/LHS: "  + Fraction.divide(sumA, currentPrecisePiOn2).getDecimalFormat(15));
+			return true;
+		}
+		
+		return false;
 	}
 	
 	
-	
-	
+
+	public static boolean fastCheckSaysYes2(Fraction piApproxToDeriveX, Fraction currentPrecisePi) {
+
+		Fraction a = new Fraction(piApproxToDeriveX.getNumerator(), BigInteger.ONE);
+		Fraction b = new Fraction(piApproxToDeriveX.getDenominator(), BigInteger.ONE);
+		
+		Fraction LHS = Fraction.minus(
+				Fraction.mult(currentPrecisePi, b)
+				, a);
+		
+		Fraction RHS = Fraction.divide(Fraction.ONE, a);
+		
+		//TODO: I bet if pi is more precise, I could lower the fudge factor...
+		//Look into it!
+		//Fudge factor of 2... I don't know...
+		Fraction LHStest = Fraction.mult(new Fraction(20,  10), LHS);
+		
+		if(Fraction.minus(RHS, LHS).greaterThan0()) {
+			//System.out.println("Found X = " + X );
+			//System.out.println("Please double triple check ifs primality!");
+			
+			System.out.println("Got passed fast Check!");
+			System.out.println("Factor LHS/LHS: "  + Fraction.divide(RHS, LHS).getDecimalFormat(15));
+			return true;
+		}
+		
+		return false;
+	}
+
 
 	//pre: x is near pi.
 	//post: return 1 /cos x
