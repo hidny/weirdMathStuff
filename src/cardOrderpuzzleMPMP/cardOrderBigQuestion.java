@@ -3,16 +3,42 @@ package cardOrderpuzzleMPMP;
 import UtilityFunctions.UtilityFunctions;
 import number.IsNumber;
 
+//FOUND:
+//A079106		Number of permutations of length n containing the minimum number of monotone subsequences of length 5.
+
+//AND:
+
+//A079105		Number of permutations of length n, in which all monotone subsequences of length 4 are descending or all such subsequences are ascending, containing the minimum number of such subsequences subject to that constraint.
+
+
 public class cardOrderBigQuestion {
 	
 	//TODO: solve big question later...
-	public static int MP_NUM_CARDS = 4;
-	public static int MP_MAX_ALL_SUBSETS_CONTAINS_TRIAL = 2;
+	//public static int MP_NUM_CARDS = 4;
 
+	public static int curentNumberInARow = 1;
+
+	//TODO: save the best 2 perms from prev and use in next...
+	
 	public static void main(String args[]) {
-		solve(MP_NUM_CARDS);
+		
+		for(int curNumCards=1; curNumCards<=20; curNumCards++) {
+
+			int ret = 0;
+			
+			curentNumberInARow--;
+			do {
+				curentNumberInARow++;
+				ret = solve(curNumCards);
+			
+			} while(ret == 0);
+			
+			System.out.println("Num cards: " + curNumCards);
+			System.out.println("Num in a row ascending/descending that must be in a subsequence of every permutation: " + (curentNumberInARow-1));
+			
+		}
 	}
-	public static void solve(int numCards) {
+	public static int solve(int numCards) {
 		
 		String cards[] = new String[numCards];
 		for(int i=0; i<cards.length; i++) {
@@ -38,17 +64,20 @@ public class cardOrderBigQuestion {
 			if(isAscending(numbers) == false && isDescending(numbers) == false) {
 				currentAnswer++;
 				
-				System.out.println("One answer:");
+				/*System.out.println("One answer:");
 				for(int i=0; i<numbers.length; i++) {
 					System.out.print(numbers[i] + "  ");
 				}
 				System.out.println();
+				*/
 			}
 			
 			
 		}
 		
 		System.out.println("Answer: " + currentAnswer);
+		
+		return currentAnswer;
 	}
 	
 	public static boolean isAscending(int numbers[]) {
@@ -57,7 +86,7 @@ public class cardOrderBigQuestion {
 	
 	public static boolean isAscending(int numbers[], int lastSelected, int currentInARow, int currentIndex) {
 		
-		if(currentInARow >= MP_MAX_ALL_SUBSETS_CONTAINS_TRIAL + 1) {
+		if(currentInARow >= curentNumberInARow) {
 			return true;
 	
 		} else if(currentIndex >= numbers.length) {
@@ -86,7 +115,7 @@ public class cardOrderBigQuestion {
 	
 	public static boolean isDescending(int numbers[], int lastSelected, int currentInARow, int currentIndex) {
 		
-		if(currentInARow >= 3) {
+		if(currentInARow >= curentNumberInARow) {
 			return true;
 
 		} else if(currentIndex >= numbers.length) {

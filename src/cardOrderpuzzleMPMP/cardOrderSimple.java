@@ -7,8 +7,11 @@ public class cardOrderSimple {
 	
 	//TODO: solve big question later...
 	//Solve up to 10...
-	public static int MP_NUM_CARDS = 4;
-	public static int MP_NUM_IN_A_ROW_SEARCH = 3;
+	//public static int MP_NUM_CARDS = 4;
+	//public static int MP_NUM_IN_A_ROW_SEARCH = 3;
+
+	public static int MP_NUM_CARDS = 10;
+	public static int MP_NUM_IN_A_ROW_SEARCH = 5;
 
 	public static void main(String args[]) {
 		solve(MP_NUM_CARDS);
@@ -44,6 +47,7 @@ public class cardOrderSimple {
 					System.out.print(numbers[i] + "  ");
 				}
 				System.out.println();
+				//System.exit(1);
 			}
 			
 			
@@ -99,7 +103,7 @@ public class cardOrderSimple {
 	
 	public static boolean isDescending(int numbers[], int lastSelected, int currentInARow, int currentIndex) {
 		
-		if(currentInARow >= 3) {
+		if(currentInARow >= MP_NUM_IN_A_ROW_SEARCH) {
 			return true;
 		}
 		if(currentIndex >= numbers.length) {
