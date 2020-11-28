@@ -61,13 +61,13 @@ public class findPrimeSquares {
 			
 			if(n > 0) {
 				
-				//if( n % 100 == 0) {
-					System.out.println("Num blocks check so far: " + n);
-				//}
+				if( n *(BLOCK_SIZE) % 1000000000 == 0) {
+					System.out.println("Num blocks check so far: " + n + "B");
+				}
 				
 				
 				//System.out.println("Hello!");
-					getBoolListOfPrimesFromStartWithSizeTrial2(n*BLOCK_SIZE, BLOCK_SIZE);
+					getBoolListOfPrimesFromStartWithSize(n*BLOCK_SIZE, BLOCK_SIZE);
 				/*for(int i=0; i<isPrime.length; i++) {
 					if(isPrime[i]) {
 						System.out.println(n*BLOCK_SIZE + i);
@@ -112,35 +112,49 @@ public class findPrimeSquares {
 			System.exit(1);
 		}
 		
-		
-		for(int i=0; i<isPrime.length; i++) {
-			isPrime[i] = true;
+		if(start % 2 != 0 || size %2 != 0) {
+			System.out.println("Error: size and start should both be mult 2");
 		}
+
 		isPrime[0] = false;
+		isPrime[2] = false;
+		for(int i=1; 2*i-1<isPrime.length; i++) {
+			isPrime[2*i-1] = true;
+		}
 		
 		int limitSqrt = (int)Math.floor(Math.sqrt(start+size + 1));
 		
-		for(long i=2; i <= limitSqrt; i++) {
+		for(long i=3; i <= limitSqrt; i++) {
 			if(primesToCheckBool[(int)i] == true) {
 				
-				long offset = start % i;
+				long twoI = 2*i;
+				long offset = start % twoI;
 				
 				long firstMult = 0;
 				if(offset != 0) {
-					firstMult = i - offset;
+					firstMult = twoI - offset;
 				}
 				
+				if(firstMult >= i) {
+					firstMult -=i;
+				} else {
+					firstMult += i;
+				}
+				/*
 				if(start + firstMult < i*i) {
 					firstMult = i*i - start;
-				}
+				}*/
 				
-				for(long j=0; firstMult + i * j < size; j++) {
-					isPrime[(int)(firstMult + i*j)] = false;
+				for(long j=0; firstMult + twoI * j < size; j++) {
+					isPrime[(int)(firstMult + twoI*j)] = false;
 				}
 			}
 		}
 	}
-
-	
+	/*
+	Num blocks check so far: 1380B
+	Found that it works with 51283502951 primes using big integers. (Sum = 31734804589156174948658730855096778)
+	Num blocks check so far: 1381B
+	*/
 
 }
