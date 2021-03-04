@@ -2,7 +2,7 @@ package solitaire;
 
 import java.util.ArrayList;
 
-public class InitState {
+public class InitStateFaster {
 
 	//TODO: make sure all cards including the dragon are unique.
 	public static String state[][] =
@@ -37,12 +37,6 @@ public class InitState {
 		{ "4R", "4B", "4G", "9R", "9B", "9G", "Y1", "Y2" },
 		{ "3R", "3B", "3G", "8R", "8B", "8G", "Y3", "Y4" }};
 	
-
-	public static String stateSmall[][] =
-			new String[][] { 
-		{ "3R", "3B", "3G", "8R", "8B", "8G", "Y3", "Y4" }};
-	
-	
 	public static String testSimple[][] =
 			new String[][] { 
 		{ "1R", "", "", "", "", "", "", "" },
@@ -68,14 +62,36 @@ public class InitState {
 		{ "4R", "4B", "4G", "", "", "", "", "" },
 		{ "5R", "5B", "5G", "", "", "", "", "" }};
 	
+	public static String testSimple4[][] =
+			new String[][] { 
+		{ "1G", "1B", "1R", "", "", "", "", "" },
+		{ "2B", "2G", "2R", "", "", "", "", "" },
+		{ "3G", "3R", "3B", "", "", "", "", "" },
+		{ "4B", "4R", "4G", "", "", "", "", "" },
+		{ "5R", "5B", "5G", "", "", "", "", "" }};
+	
+	
+	
+	
+	//public static String stateSmall[][] =
+	//		new String[][] { 
+	//	{ "3R", "3B", "3G", "8R", "8B", "8G", "Y3", "Y4" }};
 	
 	
 	public static void main(String args[]) {
+		
+		//Questions:
+		// 1: is there a faster way?
+		// 2: Why is it finding the heuristic of the same position sometimes? (At the beginning)
+			//Answer: AstarAlgo assumes the heuristic function is fast so doesn't mind calling it several times...
+			//Workaround is easy... but misses the point.
+		
 		
 		test(testSimple, "simple");
 
 		test(testSimple2, "simple2");
 		test(testSimple3, "simple3");
+		test(testSimple4, "simple4");
 	}
 	
 	public static void testSimple() {
@@ -92,7 +108,7 @@ public class InitState {
 	
 	public static void test(String cards[][], String name) {
 		System.out.println("test " + name + ":");
-		State s = new State(cards);
+		FasterState s = new FasterState(cards);
 
 		ArrayList<AstarNode> path = AstarAlgo.astar(s, null);
 		
@@ -119,7 +135,9 @@ public class InitState {
 			}
 			
 		}
+		System.out.println("Number of moves in total: " + (path.size() - 1));
 		System.out.println("---------------------");
+		
 		
 	}
 	

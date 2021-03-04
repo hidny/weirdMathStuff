@@ -89,6 +89,9 @@ public class AstarAlgo {
 			fScoreOpenNodes.remove(current);
 			
 			closedSet.add(current);
+			if(closedSet.size() % 10000 == 0){
+				System.out.println("closedSet.size() == " + closedSet.size());
+			}
 			
 			ArrayList<AstarNode> neighbours = current.getNodeNeighbours();
 			
@@ -96,6 +99,9 @@ public class AstarAlgo {
 				currentNeighbour = neighbours.get(i);
 				// Ignore the neighbor which is already evaluated
 				if(closedSet.contains(currentNeighbour)) {
+					
+					//System.out.println("TEST: FOUND REPEAT");
+					//System.exit(1);
 					continue;
 				}
 				

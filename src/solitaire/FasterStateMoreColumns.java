@@ -5,24 +5,28 @@ import java.util.ArrayList;
 
 import number.IsNumber;
 
-//TODO: implement AstarAlgo...
-//Later
-public class State implements AstarNode {
+//I think it works, but it's too slow!!!
+
+//TODO: solve this to get a min # of moves...
+//TODO: Solves a simplified version of the problem where there's an infinite number of empty columns
+public class FasterStateMoreColumns implements AstarNode {
 
 	public static final int HEIGHT = 5;
 	public static final int EXTRA_SPACE = 10;
-	public static final int NUM_COLUMNS = 8;
+	public static final int NUM_COLUMNS_MOVEABLE = 8;
+	public static final int NUM_COLUMNS_EXTRA = HEIGHT * EXTRA_SPACE;
+	
 	public static final int NUM_SUITS = 3;
 	public static final int NUM_RANKS = 9;
 	
 	public static final int NUM_GROUP_IDENTICAL = 4;
 
 	public static final String IDENTICAL_CARDS[] = new String[] {"X", "Y", "Z"};
-	public static final int RESERVE_SLOTS = IDENTICAL_CARDS.length;
+	public static final int NUM_RESERVE_SLOTS = IDENTICAL_CARDS.length;
 	
 	private int numDone[] = new int[NUM_SUITS];
-	private String lines[][] = new String[HEIGHT + EXTRA_SPACE][NUM_COLUMNS];
-	private String cardsInReserve[] = new String[RESERVE_SLOTS];
+	private String lines[][] = new String[NUM_COLUMNS_EXTRA][HEIGHT + EXTRA_SPACE];
+	private String cardsInReserve[] = new String[NUM_RESERVE_SLOTS];
 	private String lastMoveDescription = "";
 	
 	//Extra could figure out vars:
@@ -36,64 +40,47 @@ public class State implements AstarNode {
 	
 	*/
 	
-	public State() {
+	public String getLastMoveDescription() {
+		return lastMoveDescription;
+	}
+
+	public FasterStateMoreColumns() {
 		
 	}
-	
-	public State(String deck[]) {
+
+	public FasterStateMoreColumns(String lines[][], String cardsInReserve[], int numDone[]) {
+		/*
+		 * 	private int numDone[] = new int[NUM_SUITS];
+	private String lines[][] = new String[NUM_COLUMNS_EXTRA][HEIGHT + EXTRA_SPACE];
+	private String cardsInReserve[] = new String[NUM_RESERVE_SLOTS];
+	private String lastMoveDescription = "";
+		 */
 		
-		String initLines[][] = new String[HEIGHT][NUM_COLUMNS];
-		
-		for(int i=0; i<initLines.length; i++) {
-			for(int j=0; j<initLines[0].length; j++) {
-				initLines[i][j] = deck[i * NUM_COLUMNS + j];
-			}
-		}
-		initState(initLines);
-	}
-	
-	public State(String initLines[][]) {
-		initState(initLines);
-		
-		//System.out.println("Get moves:");
-		getMoves();
-	}
-	
-	private void initState(String initLines[][]) {
-		for(int i=0; i<this.lines.length; i++) {
-			for(int j=0; j<this.lines[0].length; j++) {
-				this.lines[i][j] = "";
-			}
+		for(int i=0; i<numDone.length; i++) {
+			this.numDone[i] = numDone[i];
 		}
 		
 		for(int i=0; i<cardsInReserve.length; i++) {
-			cardsInReserve[i] = "";
+			this.cardsInReserve[i] = cardsInReserve[i];
 		}
-		
 
-		for(int i=0; i<NUM_SUITS; i++) {
-			numDone[i] = 0;
-		}
-		
-		
-		for(int i=0; i<initLines.length; i++) {
-			for(int j=0; j<initLines[0].length; j++) {
-				this.lines[i][j] = initLines[i][j].toUpperCase();
-				System.out.println(this.lines[i][j]);
+		for(int i=0; i<lines.length; i++) {
+			for(int j=0; j<lines[0].length; j++) {
+				this.lines[i][j] = lines[i][j];
 			}
 		}
 		
-		System.out.println(this.toString());
-
-		System.out.println("Aftr auto movs");
-		doAutoMoves();
-		System.out.println(this.toString());
-		
+		for(int i=lines.length; i<this.lines.length; i++) {
+			for(int j=0; j<lines[0].length; j++) {
+				this.lines[i][j] = "";
+			}
+		}
 	}
 	
+	
 	public void sortCardsInReserve() {
-		for(int i=0; i<RESERVE_SLOTS; i++) {
-			for(int j=i+1; j<RESERVE_SLOTS; j++) {
+		for(int i=0; i<NUM_RESERVE_SLOTS; i++) {
+			for(int j=i+1; j<NUM_RESERVE_SLOTS; j++) {
 				if(cardsInReserve[i].compareTo(cardsInReserve[j]) < 0) {
 					String tmp = cardsInReserve[i];
 					 cardsInReserve[i] = cardsInReserve[j];
@@ -107,8 +94,8 @@ public class State implements AstarNode {
 	public void sortCols() {
 		
 		//TODO: I might be able to make this faster...
-		for(int i=0; i<NUM_COLUMNS; i++) {
-			for(int j=i+1; j<NUM_COLUMNS; j++) {
+		for(int i=0; i<NUM_COLUMNS_EXTRA; i++) {
+			for(int j=i+1; j<NUM_COLUMNS_EXTRA; j++) {
 				if(getColString(i).compareTo(getColString(j)) < 0) {
 					swapColumns(i, j);
 				}
@@ -118,19 +105,17 @@ public class State implements AstarNode {
 	
 	public String getColString(int index) {
 		String ret = "";
-		for(int i=0; i<lines.length; i++) {
-			ret += lines[i][index];
+		for(int j=0; j<lines[index].length; j++) {
+			ret += lines[index][j];
 		}
 		return ret;
 	}
 	
 	public void swapColumns(int i, int j) {
 		
-		for(int k=0; k<lines.length; k++) {
-			String tmp = lines[k][i];
-			lines[k][i] = lines[k][j];
-			lines[k][j] = tmp;
-		}
+		String tmp[] = lines[i];
+		lines[i] = lines[j];
+		lines[j] = tmp;
 	}
 	
 	
@@ -146,14 +131,14 @@ public class State implements AstarNode {
 		}
 		ret += "/";
 		
-		for(int colIndex=0; colIndex<NUM_COLUMNS; colIndex++) {
-			for(int rowIndex = 0; rowIndex<lines[colIndex].length; rowIndex++) {
-				if(this.lines[rowIndex][colIndex].equals("") == false) {
-					ret += lines[rowIndex][colIndex] + " ";
+			for(int colIndex=0; colIndex<NUM_COLUMNS_EXTRA; colIndex++) {
+				for(int rowIndex = 0; rowIndex<lines[0].length; rowIndex++) {
+					if(this.lines[colIndex][rowIndex].equals("") == false) {
+						ret += lines[colIndex][rowIndex] + " ";
+					}
 				}
+				ret += "/";
 			}
-			ret += "/";
-		}
 		
 		return ret;
 	}
@@ -203,42 +188,31 @@ public class State implements AstarNode {
 	public ArrayList<String> getMoves() {
 		ArrayList<String> ret = new ArrayList<String>();
 		
-		//Move bottom of col to reserve
-		if(hasEmptyReserveSlots()) {
-			for(int j=0; j<NUM_COLUMNS; j++) {
-				if(isColumnEmpty(j) == false) {
-					
-					String currentCard = lines[this.getIndexBottomCardOfColumn(j)][j];
-					
-					ret.add("move card " + currentCard + " of col " + j + " to reserve slot");
-				}
-			}
-		}
-		
 		//Move bottom group (length n) to other col (if possible)
-		for(int j=0; j<NUM_COLUMNS; j++) {
+		for(int i=0; i<NUM_COLUMNS_EXTRA; i++) {
 			
-			int indexBottom = this.getIndexBottomCardOfColumn(j);
-			int numGroup = getNumBottomGroupCards(j);
+			int indexBottom = this.getIndexBottomCardOfColumn(i);
+			int numGroup = getNumBottomGroupCards(i);
+			
+			
 			for(int k=0; k<numGroup; k++) {
-				String currentCard = lines[indexBottom-k][j];
+				String currentCard = lines[i][indexBottom-k];
 				
-				//j2 is the column move suggestion...
-				for(int j2=0; j2<NUM_COLUMNS; j2++) {
-					if(j == j2) {
+				//i2 is the column move suggestion...
+				for(int i2=0; i2<NUM_COLUMNS_EXTRA; i2++) {
+					if(i == i2) {
 						//can't move to the same column
 						continue;
 					}
 					
-					if(this.isColumnEmpty(j2)) {
-						ret.add("move card " + currentCard + " of col " + j + " to empty column " + j2);
-					} else {
-						
-						String cardBottomMove = lines[this.getIndexBottomCardOfColumn(j2)][j2];
-						
-						if(cardCouldLetCardMoveUnderIt(cardBottomMove, currentCard)) {
-							ret.add("move card " + currentCard + " of col " + j + " to column " + j2);
+					if(this.isColumnEmpty(i2)) {
+
+						//Make sure we're not moving whole column to empty column because that's a non-move...
+						if(k < indexBottom) {
+							ret.add("move card " + currentCard + " of col " + i + " to empty column " + i2);
+							break;
 						}
+
 					}
 					
 				}
@@ -247,43 +221,23 @@ public class State implements AstarNode {
 		}
 		
 		//Move bottom CARD to done  (if possible)
-		for(int j=0; j<NUM_COLUMNS; j++) {
-			if(this.isColumnEmpty(j)) {
+		for(int i=0; i<NUM_COLUMNS_EXTRA; i++) {
+			if(this.isColumnEmpty(i)) {
 				continue;
 			}
-			String currentCard = lines[this.getIndexBottomCardOfColumn(j)][j];
+			String currentCard = lines[i][this.getIndexBottomCardOfColumn(i)];
 			
 			
 			if(couldMoveSuitedCardToDone(currentCard)) {
-					ret.add("move card " + currentCard + " of col " + j + " to done");
+					ret.add("move card " + currentCard + " of col " + i + " to done");
 			}
 		}
 		
-		//Move reserve to bottom of col (if possible)
-		for(int i=0; i<this.RESERVE_SLOTS; i++) {
+		//Move reserve card to done (if possible)
+		for(int i=0; i<NUM_RESERVE_SLOTS; i++) {
 			if(this.cardsInReserve[i].equals("") == false) {
 				
 				String currentCard = this.cardsInReserve[i];
-				
-				for(int j=0; j<this.NUM_COLUMNS; j++) {
-					
-					if(this.isColumnEmpty(j)) {
-						ret.add("move reserve card " + currentCard + " to empty column " + j);
-					
-					} else if(cardCouldLetCardMoveUnderIt(lines[this.getIndexBottomCardOfColumn(j)][j], currentCard)) {
-						ret.add("move reserve card " + currentCard + " to non-empty column " + j);
-						
-					}
-				}
-			}
-		}
-		
-		
-		//Move reserve card to done (if possible)
-		for(int j=0; j<RESERVE_SLOTS; j++) {
-			if(this.cardsInReserve[j].equals("") == false) {
-				
-				String currentCard = this.cardsInReserve[j];
 				
 				if(couldMoveSuitedCardToDone(currentCard)) {
 					ret.add("move reserve card " + currentCard + " to done");
@@ -293,35 +247,24 @@ public class State implements AstarNode {
 		}
 		
 		//Move all GROUP of 4 X (or Y) (or Z) to reserve (if possible)
-		for(int i=0; i<IDENTICAL_CARDS.length; i++) {
+		for(int identCard=0; identCard<IDENTICAL_CARDS.length; identCard++) {
 			
-			boolean reserveSlotAvailableForDragon = false;
 			
-			String suitIDString = IDENTICAL_CARDS[i];
+			String suitIDString = IDENTICAL_CARDS[identCard];
 			char suitIDChar = suitIDString.charAt(0);
 			
-			for(int k=0; k<this.RESERVE_SLOTS; k++) {
-				if(this.cardsInReserve[k].equals("") || cardIsPartofIdenticalGroup(this.cardsInReserve[k], suitIDChar)) {
-					reserveSlotAvailableForDragon = true;
-					break;
-				}
-			}
-			
-			if(reserveSlotAvailableForDragon == false) {
-				continue;
-			}
 			
 			int numFound = 0;
 			
-			for(int j=0; j<this.NUM_COLUMNS; j++) {
-				if(this.isColumnEmpty(j) == false) {
-					if(cardIsPartofIdenticalGroup(this.lines[this.getIndexBottomCardOfColumn(j)][j], suitIDChar)) {
+			for(int i=0; i<NUM_COLUMNS_EXTRA; i++) {
+				if(this.isColumnEmpty(i) == false) {
+					if(cardIsPartofIdenticalGroup(this.lines[i][this.getIndexBottomCardOfColumn(i)], suitIDChar)) {
 						numFound++;
 					}
 				}
 			}
 			
-			for(int j=0; j<RESERVE_SLOTS; j++) {
+			for(int j=0; j<NUM_RESERVE_SLOTS; j++) {
 				if(cardIsPartofIdenticalGroup(this.cardsInReserve[j], suitIDChar)) {
 					numFound++;
 				}
@@ -331,14 +274,8 @@ public class State implements AstarNode {
 			}
 		}
 		
-	
-		
 		return ret;
 	}
-	
-	
-
-	
 	
 	public boolean couldMoveSuitedCardToDone(String card) {
 		if(isSuitedCard(card)
@@ -369,30 +306,33 @@ public class State implements AstarNode {
 	}
 	
 	
-	private String getBottomOfColumn(int j) {
+	private String getBottomOfColumn(int i) {
 		
-		if(isColumnEmpty(j)) {
+		if(isColumnEmpty(i)) {
 			System.out.println("ERROR: getting bottom of empty column");
 			System.exit(1);
 		}
 		
-		return lines[getIndexBottomCardOfColumn(j)][j];
+		return lines[i][getIndexBottomCardOfColumn(i)];
 	}
 
 
-	private void removeBottomOfColumn(int j) {
-		if(isColumnEmpty(j)) {
+	private void removeBottomOfColumn(int i) {
+		
+		hardCopyColumn(i);
+		
+		if(isColumnEmpty(i)) {
 			System.out.println("ERROR: getting bottom of empty column");
 			System.exit(1);
 		}
 		
 		
-		lines[getIndexBottomCardOfColumn(j)][j] = "";
+		lines[i][getIndexBottomCardOfColumn(i)] = "";
 	}
 	
 
-	private boolean isColumnEmpty(int j) {
-		if(getIndexBottomCardOfColumn(j) == -1) {
+	private boolean isColumnEmpty(int i) {
+		if(getIndexBottomCardOfColumn(i) == -1) {
 			return true;
 		} else {
 			return false;
@@ -402,21 +342,21 @@ public class State implements AstarNode {
 
 	
 	//TODO: test!
-	private int getNumBottomGroupCards(int j) {
-		if(isColumnEmpty(j)) {
+	private int getNumBottomGroupCards(int i) {
+		if(isColumnEmpty(i)) {
 			return 0;
 		}
 		
 		
 		int ret = 1;
 		
-		int indexBottom = getIndexBottomCardOfColumn(j);
-		String currentCard = lines[indexBottom][j];
+		int indexBottom = getIndexBottomCardOfColumn(i);
+		String currentCard = lines[i][indexBottom];
 		
 		if(isSuitedCard(currentCard)) {
 			
-			for(int i2=indexBottom-1; i2>=0; i2--) {
-				String nextCard = lines[i2][j];
+			for(int j=indexBottom-1; j>=0; j--) {
+				String nextCard = lines[i][j];
 				
 				if(cardCouldLetCardMoveUnderIt(nextCard, currentCard)) {
 					ret++;
@@ -445,15 +385,15 @@ public class State implements AstarNode {
 		}
 	}
 	
-	private int getIndexBottomCardOfColumn(int j) {
-		for(int i=0; i<lines.length; i++) {
+	private int getIndexBottomCardOfColumn(int i) {
+		for(int j=0; j<lines[i].length; j++) {
 			if(lines[i][j].equals("")) {
 				
-				return i-1;
+				return j-1;
 			}
 		}
 		
-		return lines.length -1;
+		return lines[i].length -1;
 	}
 	
 	
@@ -499,23 +439,23 @@ public class State implements AstarNode {
 				}
 			}
 			
-			for(int j=0; j<NUM_COLUMNS; j++) {
+			for(int i=0; i<NUM_COLUMNS_EXTRA; i++) {
 	
-				if(isColumnEmpty(j) == false) {
+				if(isColumnEmpty(i) == false) {
 					
-					String card = getBottomOfColumn(j);
+					String card = getBottomOfColumn(i);
 					
 					if(isSuitedCard(card)) {
 						if(getCardRank(card) < min) {
 							
-							removeBottomOfColumn(j);
+							removeBottomOfColumn(i);
 							updateCardsDone(card);
 							autoRemovedCardInIteration = true;
 							
 						}
 						
 					} else if(isFlower(card)) {
-						removeBottomOfColumn(j);
+						removeBottomOfColumn(i);
 						autoRemovedCardInIteration = true;
 						
 					}
@@ -538,14 +478,15 @@ public class State implements AstarNode {
 		}
 		this.numDone[getSuitIndex(card)]++;
 		
-		if(this.getCardRank(card) != this.numDone[getSuitIndex(card)]) {
+		if(getCardRank(card) != this.numDone[getSuitIndex(card)]) {
 			System.out.println("ERROR: setting card to done in the wrong order!");
 			System.exit(1);
 		}
 		
 	}
 	
-	private static boolean isSuitedCard(String card) {
+	//TODO: put these in a utility function
+	public static boolean isSuitedCard(String card) {
 		if(card.length() == 2) {
 			if(card.endsWith("B") || card.endsWith("G") || card.endsWith("R")) {
 				return true;
@@ -555,16 +496,16 @@ public class State implements AstarNode {
 		return false;
 	}
 	
-	private static int getCardRank(String card) {
+	public static int getCardRank(String card) {
 		return (int)(card.charAt(0) - '0');
 	}
 	
 	//pr isSuitdCard
-	private static char getSuit(String card) {
+	public static char getSuit(String card) {
 		return card.charAt(1);
 	}
 	
-	private static int getSuitIndex(String card) {
+	public static int getSuitIndex(String card) {
 		char suit = getSuit(card);
 		if(suit =='B') {
 			return 0;
@@ -583,19 +524,19 @@ public class State implements AstarNode {
 		
 	}
 	
-	private static boolean isFlower(String card) {
+	public static boolean isFlower(String card) {
 		if(card.contains("F")) {
 			return true;
 		} else {
 			return false;
 		}
 	}
-	
+	//END TODO
 	
 
-	//TODO:move based on move description
+	//Do move based on move description string:
 	/*
-	 * 
+	 * //Example string:
 ret.add("move card " + currentCard + " of col " + j + " to reserve slot");
 ret.add("move card " + currentCard + " of col " + j + " to empty column " + j2);
 ret.add("move card " + currentCard + " of col " + j + " to column " + j2);
@@ -606,8 +547,8 @@ ret.add("move reserve card " + currentCard + " to done");
 ret.add("move all of group " + suitIDString + " to reserve slot");
 	 */
 
-	public State doMove(String moveDescription) {
-		State newState = this.hardCopy();
+	public FasterStateMoreColumns doMove(String moveDescription) {
+		FasterStateMoreColumns newState = this.softCopy();
 		
 		
 		newState.lastMoveDescription = moveDescription;
@@ -616,7 +557,7 @@ ret.add("move all of group " + suitIDString + " to reserve slot");
 	}
 	
 	//This does the move and doesn't save the previous move...
-	private State doMoveAndChangeState(String moveDescription) {
+	private FasterStateMoreColumns doMoveAndChangeState(String moveDescription) {
 		//1st get card to use
 		
 		String desc = moveDescription.toUpperCase().trim();
@@ -628,28 +569,29 @@ ret.add("move all of group " + suitIDString + " to reserve slot");
 		//System.out.println("Move description: " + desc);
 		
 		
-		//TODO
 		if(desc.startsWith("MOVE CARD ")) {
+			
 			//FIND card.
 			String cardString = token[2];
-			int cardI = getSuitedCardCoordI(cardString);
-			int cardJ = getSuitedCardCoordJ(cardString);
+			int cardI = getSuitedCardColumn(cardString);
+			int cardJ = getSuitedCardRow(cardString);
 			
 			if(desc.contains("TO RESERVE SLOT")) {
 				
-				if(this.getIndexBottomCardOfColumn(cardJ) != cardI) {
+				if(this.getIndexBottomCardOfColumn(cardI) != cardJ) {
 					System.out.println("ERROR1: card not where it was expected!");
-					System.out.println(this.getIndexBottomCardOfColumn(cardJ) + " vs " + cardI);
-					System.out.println("CardJ: " + cardJ);
+					System.out.println(this.getIndexBottomCardOfColumn(cardI) + " vs " + cardJ);
+					System.out.println("CardI (column): " + cardI);
 					System.exit(1);
 				}
 				
-
+				hardCopyColumn(cardI);
+				
 				this.lines[cardI][cardJ] = "";
 				
 				boolean foundReserveSpot = false;
 				//TODO: constant EMPTY
-				for(int k=0; k<RESERVE_SLOTS; k++) {
+				for(int k=0; k<NUM_RESERVE_SLOTS; k++) {
 					if(this.cardsInReserve[k].equals("")) {
 						foundReserveSpot = true;
 						
@@ -667,12 +609,14 @@ ret.add("move all of group " + suitIDString + " to reserve slot");
 			
 			} else if(desc.contains("TO DONE")) {
 
-				if(this.getIndexBottomCardOfColumn(cardJ) != cardI) {
+				if(this.getIndexBottomCardOfColumn(cardI) != cardJ) {
 					System.out.println("ERROR3: card not where it was expected!");
 					System.exit(1);
 				}
-				
+
+				hardCopyColumn(cardI);
 				this.lines[cardI][cardJ] = "";
+				
 				//TODO: update done
 				updateCardsDone(cardString);
 			} else if(desc.contains("TO EMPTY COLUMN")) {
@@ -684,7 +628,6 @@ ret.add("move all of group " + suitIDString + " to reserve slot");
 					System.exit(1);
 				}
 
-				//TODO: move group of cards.
 				
 				moveGroupOfCards(cardString, newColIndex);
 				
@@ -697,7 +640,6 @@ ret.add("move all of group " + suitIDString + " to reserve slot");
 					System.exit(1);
 				}
 
-				//TODO: move group of cards.
 				
 				moveGroupOfCards(cardString, newColIndex);
 			} else {
@@ -715,7 +657,7 @@ ret.add("move reserve card " + currentCard + " to done");
 
 			boolean foundCard = false;
 			//Find card:
-			for(int i=0; i<RESERVE_SLOTS; i++) {
+			for(int i=0; i<NUM_RESERVE_SLOTS; i++) {
 				if(this.cardsInReserve[i].equals(card)) {
 					this.cardsInReserve[i] = "";
 					foundCard = true;
@@ -734,7 +676,8 @@ ret.add("move reserve card " + currentCard + " to done");
 					System.out.println("ERROR8: card column is not empty when I expected it to be empty!");
 					System.exit(1);
 				}
-				this.lines[0][newColIndex] = card;
+				hardCopyColumn(newColIndex);
+				this.lines[newColIndex][0] = card;
 				
 			} else if(desc.contains("TO NON-EMPTY COLUMN")) {
 				
@@ -744,7 +687,9 @@ ret.add("move reserve card " + currentCard + " to done");
 					System.out.println("ERROR9: card column is empty when I expected it to have cards!");
 					System.exit(1);
 				}
-				this.lines[this.getIndexBottomCardOfColumn(newColIndex) + 1][newColIndex] = card;
+
+				hardCopyColumn(newColIndex);
+				this.lines[newColIndex][this.getIndexBottomCardOfColumn(newColIndex) + 1] = card;
 				
 				
 			} else if(desc.contains("TO DONE")) {
@@ -764,56 +709,29 @@ ret.add("move reserve card " + currentCard + " to done");
 			int numFound = 0;
 			String dragonSuit = token[4];
 			
-			int indexToUse = -1;
-			for(int i=0; i<RESERVE_SLOTS; i++) {
+			for(int i=0; i<NUM_RESERVE_SLOTS; i++) {
 				if(this.cardsInReserve[i].contains(dragonSuit)) {
-					indexToUse = i;
-					break;
-				} else if(this.cardsInReserve[i].equals("")) {
-					indexToUse = i;
-				}
-			}
-			
-			if(indexToUse == -1) {
-				System.out.println("ERROR 9: slot for dragon suit not found!");
-				System.exit(1);
-			}
-			
-			String cardToDelete = "";
-			
-			for(int i=0; i<RESERVE_SLOTS; i++) {
-				if(this.cardsInReserve[i].contains(dragonSuit)) {
-					if(cardToDelete.equals("")) {
-						cardToDelete = this.cardsInReserve[i];
-					} else if(cardToDelete.equals(this.cardsInReserve[i])) {
-						System.out.println("ERROR 10: DRAGON aren't all the same!");
-					}
-					
+				
 					this.cardsInReserve[i] = "";
 					numFound++;
 				}
 				
 			}
 			
-			for(int j=0; j<NUM_COLUMNS; j++) {
-				if(isColumnEmpty(j) == false) {
+			for(int i=0; i<NUM_COLUMNS_EXTRA; i++) {
+				if(isColumnEmpty(i) == false) {
 					
-					String currentCard = lines[this.getIndexBottomCardOfColumn(j)][j];
+					String currentCard = lines[i][this.getIndexBottomCardOfColumn(i)];
 					
 					if(currentCard.contains(dragonSuit)) {
 						
-						if(cardToDelete.equals(currentCard)) {
-							System.out.println("ERROR 10: DRAGON aren't all the same!");
-						}
-						
-						lines[this.getIndexBottomCardOfColumn(j)][j] = "";
+						hardCopyColumn(i);
+						lines[i][this.getIndexBottomCardOfColumn(i)] = "";
 						numFound++;
 					}
 					
 				}
 			}
-
-			this.cardsInReserve[indexToUse] = cardToDelete;
 
 			if(numFound != this.NUM_GROUP_IDENTICAL) {
 				System.out.println("ERROR 11: could not find all 4 dragons.");
@@ -826,19 +744,26 @@ ret.add("move reserve card " + currentCard + " to done");
 			System.exit(1);
 		}
 
+		this.doAutoMoves();
 		
 		//Rearrange cards: (TODO: don't do this in printed solution final path, so I can make sense of it)
 		this.sortCardsInReserve();
 		this.sortCols();
-		
-		//
-		this.doAutoMoves();
 		
 		//System.out.println(this.toString());
 		
 		return this;
 	}
 
+	public void hardCopyColumn(int col) {
+		String newArray[] = new String[lines[col].length];
+		for(int j=0; j<newArray.length; j++) {
+			newArray[j] = lines[col][j];
+		}
+		
+		lines[col] = newArray;
+	}
+	
 	//ASTARNODE FUNCTIONS
 	
 	//Implements AstarNode
@@ -874,49 +799,116 @@ ret.add("move reserve card " + currentCard + " to done");
 	//TODO: work on this (At least identify when done)
 	public long getAdmissibleHeuristic(AstarNode goal) {
 		
-		for(int i=0; i<this.numDone.length; i++) {
-			if(this.numDone[i] < NUM_RANKS) {
-				return 1;
+		boolean goalFound = true;
+		//A solution is when there's nothing in the column for my convenience...
+		for(int i=0; i<this.NUM_COLUMNS_EXTRA; i++) {
+			if(this.isColumnEmpty(i) == false) {
+				goalFound = false;
+				break;
 			}
 		}
 		
-		for(int j=0; j<this.NUM_COLUMNS; j++) {
-			if(this.isColumnEmpty(j) == false) {
-				return 1;
-			}
+		if(goalFound) {
+			return AstarAlgo.GOAL_FOUND;
+		} else {
+			return 1;
 		}
 		
 		
-		return AstarAlgo.GOAL_FOUND;
+		//TODO: use this heuristic all over again
+		//It might make it faster, but it also might be wrong, so not yet!
+		/*
+		
+		//Get numGroupings in col.
+		//Figure this out on paper first maybe....
+		
+		//TODO: make this more clever!
+		int counter = 0;
+		
+		for(int i=0; i<this.NUM_COLUMNS_MOVEABLE; i++) {
+			
+			int indexBottom = this.getIndexBottomCardOfColumn(i);
+
+			int curMax = 0;
+			
+			START_COL_LOOP:
+			for(int j=indexBottom; j>=0; j--) {
+				String cardA = this.lines[i][j];
+				
+				if(isSuitedCard(cardA)) {
+				
+					for(int k=0; k<j; k++) {
+						String cardB = this.lines[i][k];
+						
+						if(isSuitedCard(cardB) && getSuitIndex(cardA) == getSuitIndex(cardB)) {
+							
+							if(getCardRank(cardB) < getCardRank(cardA)) {
+								
+								counter++;
+								
+								//Crazy and necessary logic (Get top of current block of cards)
+								while(j>0) {
+									String nextCardAbove = this.lines[i][j-1];
+									if(cardCouldLetCardMoveUnderIt(nextCardAbove, cardA)) {
+										j--;
+									} else {
+										break;
+									}
+								}
+								//End crazy logic...
+								
+								continue START_COL_LOOP;
+							}
+						}
+						
+					}
+				}
+			}
+			
+		}
+		
+		
+		if(counter > 0) {
+			return counter;
+		} else {
+			return 1;
+		}
+		*/
 	}
 	
 	//END ASTAR NODE FUNCTIONS
 	
 	public void moveGroupOfCards(String cardString, int newColumnIndex) {
-		int cardI = getSuitedCardCoordI(cardString);
-		int cardJ = getSuitedCardCoordJ(cardString);
+		int cardI = getSuitedCardColumn(cardString);
+		int cardJ = getSuitedCardRow(cardString);
 		
+
+		hardCopyColumn(newColumnIndex);
+		hardCopyColumn(cardI);
 		
-		int startNewColI = 0;
+		int startNewColJ = 0;
 		
 		if(this.isColumnEmpty(newColumnIndex) == false) {
-			startNewColI = this.getIndexBottomCardOfColumn(newColumnIndex) + 1;
+			System.out.println("ERROR: Not allowed to move cards to non-empty column!");
+			System.exit(1);
 		}
 		
 		
-		for(int k=0; lines[cardI + k][cardJ].equals("") == false; k++) {
+		for(int k=0; lines[cardI][cardJ + k].equals("") == false; k++) {
 			
-			String currentCard = lines[cardI + k][cardJ];
-			lines[cardI + k][cardJ] = "";
+			String currentCard = lines[cardI][cardJ + k];
+			lines[cardI][cardJ + k] = "";
 			
-			if(k > 0 || startNewColI > 0) {
+			//TODO: this just slows it down: delete once confident!
+			if(k > 0 || startNewColJ > 0) {
 				if(cardCouldLetCardMoveUnderIt(this.getBottomOfColumn(newColumnIndex), currentCard) == false) {
 					System.out.println("ERROR5: can't move top of group of cards under card!");
 					System.exit(1);
 				}
 			}
+			//END TODO
 
-			this.lines[startNewColI + k][newColumnIndex] = currentCard;
+			this.lines[newColumnIndex][startNewColJ + k] = currentCard;
 		}
 	}
 	
@@ -924,12 +916,12 @@ ret.add("move reserve card " + currentCard + " to done");
 	
 	//TODO: maybe getCardDragon(String dragon, int column) {
 	//
-	public int getSuitedCardCoordI(String card) {
-		return getCardCodeCoordInColumns(card) / NUM_COLUMNS;
+	public int getSuitedCardRow(String card) {
+		return getCardCodeCoordInColumns(card) % lines[0].length;
 	}
 	
-	public int getSuitedCardCoordJ(String card) {
-		return getCardCodeCoordInColumns(card) %  NUM_COLUMNS;
+	public int getSuitedCardColumn(String card) {
+		return getCardCodeCoordInColumns(card) /  lines[0].length;
 	}
 	
 	public int getCardCodeCoordInColumns(String card) {
@@ -948,7 +940,7 @@ ret.add("move reserve card " + currentCard + " to done");
 	
 	
 	
-	public State hardCopy() {
+	public FasterStateMoreColumns softCopy() {
 		
 		/*
 		 * 
@@ -958,7 +950,7 @@ ret.add("move reserve card " + currentCard + " to done");
 	private String lastMoveDescription = "";
 		 */
 		
-		State newState = new State();
+		FasterStateMoreColumns newState = new FasterStateMoreColumns();
 		
 		newState.numDone = new int[this.numDone.length];
 		
@@ -969,9 +961,7 @@ ret.add("move reserve card " + currentCard + " to done");
 		newState.lines = new String[this.lines.length][this.lines[0].length];
 		
 		for(int i=0; i<this.lines.length; i++) {
-			for(int j=0; j<this.lines[0].length; j++) {
-				newState.lines[i][j] = lines[i][j];
-			}
+			newState.lines[i] = lines[i];
 		}
 		newState.cardsInReserve = new String[this.cardsInReserve.length];
 		
