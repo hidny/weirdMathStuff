@@ -1,6 +1,7 @@
 package hatproblem;
 
 //Main problem:
+
 //https://www.youtube.com/watch?v=4YG4QnhVV7A
 //Stacks of Hats (extra) - Numberphile
 
@@ -12,6 +13,15 @@ package hatproblem;
 
 // If they had time to make an optimal plan, what's the probability that they both win
 
+//Gah! I can't find anyone trying to solve the simplified problem!
+
+//Found solution to simplified problem:
+//From paper: //linked in https://www.brand.site.co.il/riddles/201607a.html
+// ---> https://arxiv.org/pdf/1407.4711.pdf
+// ---> 2.3. Constructing Strategies
+
+
+// https://arxiv.org/pdf/2103.01541.pdf
 
 import UtilityFunctions.Fraction;
 
@@ -37,7 +47,7 @@ Strat player1:
  */
 public class SolveNAndMHats {
 	
-	public static int PLAYER1_HAT_COUNT = 4;
+	public static int PLAYER1_HAT_COUNT =4;
 	public static int PLAYER2_HAT_COUNT = 4;
 
 	
@@ -110,6 +120,7 @@ public class SolveNAndMHats {
 					System.out.println();
 				} else if(Fraction.minus(current, best).equals(Fraction.ZERO)) {
 					System.out.println("Alternative optimal strategy with probability: " +  best.getDecimalFormat(10));
+					System.out.println("=  " +  best.getNumerator() + "/" + best.getDenominator());
 					System.out.println("Strat player1:");
 					for(int i=0; i<stratPlayer1.length; i++) {
 						System.out.println(i + ":" + stratPlayer1[i]);

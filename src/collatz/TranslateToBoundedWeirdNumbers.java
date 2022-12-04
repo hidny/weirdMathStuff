@@ -37,7 +37,7 @@ public class TranslateToBoundedWeirdNumbers {
 		//AH: It's not one-to-one! f(x) = -3 doesn't exist! (Assuming f is the orig way)
 	
 	//TODO: Make a log(2) plot of it
-	//TODO: maybe make output hex in the hopes that it'll be easier to spot patterns.
+	//TODO: maybe make output hex in the hopes that it'll be easier to spot patterns in the output.
 	
 	public static int NUM_BITS_IN_LONG = 64;
 	

@@ -25,6 +25,7 @@ public class SolveUsingSolutionOnPaper {
 
 	
 	//From paper: //linked in https://www.brand.site.co.il/riddles/201607a.html
+	// ---> https://arxiv.org/pdf/1407.4711.pdf
 	/*
 	 * "Strategy S1:
 (1) If the first three hats of the other player are not all of the same color, play
