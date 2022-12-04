@@ -13,13 +13,12 @@ public class twoDeckProblem {
 	//Solution: it's 1- 1/e^1 or 1- e^(-1)
 	// Or about 63.21205588 %
 	// Question: why???
-	public static BigInteger counts[] = null;
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 
 		int N = 1000;
-		counts= new BigInteger[N + 1];
+		foundAnswer= new BigInteger[N + 1];
 		
 		for(int i=0; i<=N; i++) {
 			
@@ -31,14 +30,17 @@ public class twoDeckProblem {
 
 	
 	public static double solve(int n) {
-		Fraction result = new Fraction(solveNumerator(n), solveDenominator(n));
+		Fraction result = new Fraction(solveNumeratorOddsMatch(n), solveDenominator(n));
 		
-		System.out.println(solveNumerator(n));
+		System.out.println(solveNumeratorOddsMatch(n));
 		System.out.println(factorial(n));
 		return result.getDecimalFormat(19);
 	}
 	
-	public static BigInteger solveNumerator(int n) {
+
+	public static BigInteger foundAnswer[] = null;
+	
+	public static BigInteger solveNumeratorOddsMatch(int n) {
 		
 		if(n < 1) {
 			return BigInteger.ZERO;
@@ -46,14 +48,15 @@ public class twoDeckProblem {
 		if(n == 1) {
 			return BigInteger.ZERO;
 			
-		} else if(counts[n] != null) {
-			return counts[n];
+		} else if(foundAnswer[n] != null) {
+			return foundAnswer[n];
 		}
 		//First all mix in 1 big chain:
 		
 		
 		BigInteger ret = BigInteger.ZERO;
 		
+		//First element matches:
 		BigInteger allChained = factorial(n-1);
 		
 		ret = ret.add(allChained);
@@ -61,14 +64,19 @@ public class twoDeckProblem {
 		//hard part
 		
 		for(int i=2; i<n; i++) {
+			//2: 1st element has loop length 2
+			//3: 1st element has loop length 3
+			//...
+			//n: 1st element has loop length n
+			
 
-			BigInteger nextTerm = factorial(n-1).divide(factorial(n-i)).multiply(solveNumerator(n-i));
+			BigInteger nextTerm = factorial(n-1).divide(factorial(n-i)).multiply(solveNumeratorOddsMatch(n-i));
 			
 			ret = ret.add(nextTerm);
 		}
 		
-		counts[n] = ret;
-		return counts[n];
+		foundAnswer[n] = ret;
+		return foundAnswer[n];
 	}
 	public static BigInteger solveDenominator(int n) {
 		return factorial(n);

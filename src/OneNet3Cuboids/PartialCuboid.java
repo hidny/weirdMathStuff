@@ -141,7 +141,370 @@ public class PartialCuboid {
 			System.exit(1);
 			
 		}
+		
+		for(int i=0; i<flatArray.length; i++) {
+			for(int j=0; j<flatArray[0].length; j++) {
+				if(flatArray[i][j] >= 0) {
+					//figureOutNeighboursWithRotation(flatArray, i, j);
+				}
+			}
+		}
+
+		handleAboveNeighbours(flatArray);
+
+		System.out.println("---------");
+		System.out.println("---------");
+		System.out.println("---------");
+		handleBelowNeighbours(flatArray);
+		System.out.println("---------");
+		System.out.println("---------");
+		System.out.println("---------");
+		
+		handleLeftNeighbours(flatArray);
+		System.out.println("---------");
+		System.out.println("---------");
+		System.out.println("---------");
+		
+		handleRightNeighbours(flatArray);
 	}
+	
+	
+	//TODO: Prob a bug in 4th row...
+	public CoordWithRotation[] handleAboveNeighbours(int flatArray[][]) {
+		
+		//Only do easy ones for now:
+		int size = 2*(a*b + a*c + b*c);
+		CoordWithRotation ret[] = new CoordWithRotation[size];
+		
+
+		System.out.println("Handle above neighbours:");
+		
+		//Above:
+		for(int i=0; i<flatArray.length; i++) {
+			for(int j=0; j<flatArray[0].length; j++) {
+
+				int curIndex = flatArray[i][j];
+				
+				if(curIndex < 0) {
+					continue;
+				}
+				
+				if(i == 0) {
+
+					//Weird opposite case:
+					//With 180 rotation
+					if(flatArray[flatArray.length - 1][j] >=0) {
+						int tmp = flatArray[flatArray.length - 1][j];
+						ret[curIndex] = new CoordWithRotation(numberingInv[tmp], 2);
+						System.out.println(tmp + " is above " + curIndex + ". (with 180 rotation)");
+
+					
+					}
+					
+				} else if(i>0 && i<2*c + a) {
+					
+					
+					if(flatArray[i-1][j] >=0) {
+						//No rotation (normal case)
+						int tmp = flatArray[i-1][j];
+						ret[curIndex] = new CoordWithRotation(numberingInv[tmp], 0);
+
+						System.out.println(tmp + " is above " + curIndex + ".");
+						
+						
+					} else if(i == c) {
+						//Diagonal tricks:
+						if(j < c) {
+							for(int d=1; d<=c; d++) {
+								if(flatArray[i-d][j+d] >=0) {
+									int tmp = flatArray[i-d][j+d];
+									ret[curIndex] = new CoordWithRotation(numberingInv[tmp], 1);
+									
+									System.out.println(tmp + " is above " + curIndex + ". (with 90 clockwise rotation)");
+
+									break;
+								}
+							}
+						} else if(j >= c+b && j< 2*c + b) {
+							for(int d=1; d<=c; d++) {
+								if(flatArray[i-d][j-d] >=0) {
+									
+									int tmp = flatArray[i-d][j-d];
+									ret[curIndex] = new CoordWithRotation(numberingInv[tmp], 3);
+									
+									System.out.println(tmp + " is above " + curIndex + ". (with 90 counter-clockwise rotation)");
+
+									break;
+								}
+							}
+						}
+					}
+					
+					
+				} else if(i == 2*c + 2*a - 1) {
+
+					//Weird opposite case:
+					//With 180 rotation
+					
+					int tmp = flatArray[0][j];
+					
+					ret[curIndex] = new CoordWithRotation(numberingInv[tmp], 2);
+					System.out.println(tmp + " is above " + curIndex + ". (with 180 rotation)");
+					
+					
+					
+					
+				}
+			}
+		}
+		return ret;
+		
+	}
+	
+	//4th row is more trouble than it's worth
+	//Scrap it? Nah! Just be careful!
+	
+	public CoordWithRotation[] handleBelowNeighbours(int flatArray[][]) {
+		
+		//Only do easy ones for now:
+		int size = 2*(a*b + a*c + b*c);
+		CoordWithRotation ret[] = new CoordWithRotation[size];
+		
+		System.out.println("Handle below neighbours:");
+		
+		for(int i=0; i<flatArray.length; i++) {
+			for(int j=0; j<flatArray[0].length; j++) {
+
+				int curIndex = flatArray[i][j];
+				
+
+				if(curIndex < 0) {
+					continue;
+				}
+				
+				if(i < c + a + c - 1) {
+					
+					if(flatArray[i+1][j] >=0) {
+						//No rotation: (Normal case)
+						int tmp = flatArray[i+1][j];
+						ret[curIndex] = new CoordWithRotation(numberingInv[tmp], 0);
+						
+						System.out.println(tmp + " is below " + curIndex + ".");
+						
+						
+					} else if(i == c + a - 1 && j < 2*c + b) {
+						
+						//Diagonal tricks:
+						if(j < c) {
+							for(int d=1; d<=c; d++) {
+								if(flatArray[i+d][j+d] >=0) {
+									int tmp = flatArray[i+d][j+d];
+									ret[curIndex] = new CoordWithRotation(numberingInv[tmp], 3);
+									
+									System.out.println(tmp + " is below " + curIndex + ". (with 90 counter-clockwise rotation)");
+									
+									break;
+								}
+							}
+						} else if(j >= c+b && j< 2*c + b) {
+							for(int d=1; d<=c; d++) {
+								if(flatArray[i+d][j-d] >=0) {
+									
+									int tmp = flatArray[i+d][j-d];
+									ret[curIndex] = new CoordWithRotation(numberingInv[tmp], 1);
+									
+									System.out.println(tmp + " is below " + curIndex + ". (with 90 clockwise rotation)");
+									
+									break;
+								}
+							}
+						}
+					}
+		
+				} else if(i == 2*c + a - 1) {
+					
+					//opposite case:
+					if(flatArray[i+1][j] >=0) {
+						//180 rotation:
+						int tmp = flatArray[i+1][j];
+						ret[curIndex] = new CoordWithRotation(numberingInv[tmp], 2);
+						
+						System.out.println(tmp + " is below " + curIndex + ". (180 degree rotation)");
+						
+						
+					}
+					
+				} else if(i == 2*c + a) {
+					
+					//Weird opposite case:
+					if(flatArray[i-1][j] >=0) {
+						//180 rotation:
+						int tmp = flatArray[i-1][j];
+						ret[curIndex] = new CoordWithRotation(numberingInv[tmp], 2);
+						
+						System.out.println(tmp + " is below " + curIndex + ". (180 degree rotation)");
+						
+						
+					}
+				}
+			}
+		}
+		
+		return ret;
+		
+	}
+	
+
+	public CoordWithRotation[] handleLeftNeighbours(int flatArray[][]) {
+		
+		//Only do easy ones for now:
+		int size = 2*(a*b + a*c + b*c);
+		CoordWithRotation ret[] = new CoordWithRotation[size];
+		
+		System.out.println("Handle left neighbours:");
+		
+		for(int i=0; i<flatArray.length; i++) {
+			for(int j=0; j<flatArray[0].length; j++) {
+
+				int curIndex = flatArray[i][j];
+				
+
+				if(curIndex < 0 || i >= 2*c + a) {
+					continue;
+				}
+
+
+				//All the way to the left case:
+				if(j == 0) {
+					
+					int tmp = flatArray[i][flatArray[0].length - 1];
+					
+					ret[curIndex] = new CoordWithRotation(numberingInv[tmp], 0);
+					
+					System.out.println(tmp + " is left of " + curIndex + ".");
+					
+				} else {
+					
+					//Normal case:
+					if(flatArray[i][j-1] >=0) {
+						//No rotation:
+						int tmp = flatArray[i][j-1];
+						ret[curIndex] = new CoordWithRotation(numberingInv[tmp], 0);
+						
+						System.out.println(tmp + " is left of " + curIndex + ".");
+						
+					} else {
+
+						//Diagonal tricks:
+						if(i < c) {
+							for(int d=1; d<=c; d++) {
+								if(flatArray[i+d][j-d] >=0) {
+									int tmp = flatArray[i+d][j-d];
+									ret[curIndex] = new CoordWithRotation(numberingInv[tmp], 3);
+									
+									System.out.println(tmp + " is left of " + curIndex + ". (with 90 counter-clockwise rotation)");
+									
+									break;
+								}
+							}
+						} else {
+							for(int d=1; d<=c; d++) {
+								if(flatArray[i-d][j-d] >=0) {
+									
+									int tmp = flatArray[i-d][j-d];
+									ret[curIndex] = new CoordWithRotation(numberingInv[tmp], 1);
+									
+									System.out.println(tmp + " is left of " + curIndex + ". (with 90 clockwise rotation)");
+									
+									break;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		return ret;
+		
+	}
+
+
+
+	public CoordWithRotation[] handleRightNeighbours(int flatArray[][]) {
+		
+		//Only do easy ones for now:
+		int size = 2*(a*b + a*c + b*c);
+		CoordWithRotation ret[] = new CoordWithRotation[size];
+		
+		System.out.println("Handle right neighbours:");
+		
+		for(int i=0; i<flatArray.length; i++) {
+			for(int j=0; j<flatArray[0].length; j++) {
+
+				int curIndex = flatArray[i][j];
+				
+
+				if(curIndex < 0 || i >= 2*c + a) {
+					continue;
+				}
+
+				//All the way to the right case:
+				if(j == flatArray[0].length - 1) {
+					
+					int tmp = flatArray[i][0];
+					
+					ret[curIndex] = new CoordWithRotation(numberingInv[tmp], 0);
+					
+					System.out.println(tmp + " is right of " + curIndex + ".");
+					
+				//Normal case:
+				} else {
+
+					//No rotation:
+					if(flatArray[i][j+1] >=0) {
+						int tmp = flatArray[i][j+1];
+						ret[curIndex] = new CoordWithRotation(numberingInv[tmp], 0);
+						
+						System.out.println(tmp + " is right of " + curIndex + ".");
+						
+						
+					} else {
+
+						//Diagonal tricks:
+						if(i < c) {
+							for(int d=1; d<=c; d++) {
+								if(flatArray[i+d][j+d] >=0) {
+									int tmp = flatArray[i+d][j+d];
+									ret[curIndex] = new CoordWithRotation(numberingInv[tmp], 1);
+									
+									System.out.println(tmp + " is right of " + curIndex + ". (with 90 clockwise rotation)");
+									
+									break;
+								}
+							}
+						} else {
+							for(int d=1; d<=c; d++) {
+								if(flatArray[i-d][j+d] >=0) {
+									
+									int tmp = flatArray[i-d][j+d];
+									ret[curIndex] = new CoordWithRotation(numberingInv[tmp], 3);
+									
+									System.out.println(tmp + " is right of " + curIndex + ". (with 90 counter-clockwise rotation)");
+									
+									break;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		return ret;
+		
+	}
+	
 	
 	public String getFlatNumbering() {
 		//TODO

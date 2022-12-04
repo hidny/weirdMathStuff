@@ -5,13 +5,24 @@ public class CoordWithRotation {
 	private int a;
 	private int b;
 	private int c;
+	
+	//0: none
+	//1: clockwise 90
+	//2: opposite dir
+	//3: counter-clockwise 90 
 	private int rot;
 	
 	public CoordWithRotation(int a, int b, int c, int rot) {
-		super();
 		this.a = a;
 		this.b = b;
 		this.c = c;
+		this.rot = rot;
+	}
+	
+	public CoordWithRotation(Coord c, int rot) {
+		this.a = c.a;
+		this.b = c.b;
+		this.c = c.c;
 		this.rot = rot;
 	}
 
