@@ -118,6 +118,8 @@ public class PartialCuboid {
 	}
 	
 	
+	private CoordWithRotation[][] neighbours;
+
 	//TODO: if this gets complicated enough, move to different class:
 	public void initNeighbourhood() {
 		String ret1 = getFlatNumbering();
@@ -150,22 +152,63 @@ public class PartialCuboid {
 			}
 		}
 
-		handleAboveNeighbours(flatArray);
+		CoordWithRotation[][] neighboursTranspose = new CoordWithRotation[4][];
+		//TODO: organize! 
+		neighboursTranspose[0] = handleAboveNeighbours(flatArray);
 
 		System.out.println("---------");
 		System.out.println("---------");
 		System.out.println("---------");
-		handleBelowNeighbours(flatArray);
+		neighboursTranspose[1] = handleRightNeighbours(flatArray);
 		System.out.println("---------");
 		System.out.println("---------");
 		System.out.println("---------");
 		
-		handleLeftNeighbours(flatArray);
+		neighboursTranspose[2] = handleBelowNeighbours(flatArray);
 		System.out.println("---------");
 		System.out.println("---------");
 		System.out.println("---------");
 		
-		handleRightNeighbours(flatArray);
+		neighboursTranspose[3] = handleLeftNeighbours(flatArray);
+		
+		neighbours = new CoordWithRotation[getTotalArea(a, b, c)][NUM_NEIGHBOURS];
+		
+		for(int i=0; i<neighbours.length; i++) {
+			for(int j=0; j<NUM_NEIGHBOURS; j++) {
+
+				neighbours[i][j]  = neighboursTranspose[j][i];
+			}
+			//TOP
+		}
+		System.out.println("---------");
+		System.out.println("---------");
+		System.out.println("---------");
+		for(int i=0; i<neighbours.length; i++) {
+			
+			System.out.println("Neighbours for " + i + ":");
+			for(int j=0; j<NUM_NEIGHBOURS; j++) {
+
+				
+				int numNeighbour = numbering[neighbours[i][j].getA()][neighbours[i][j].getB()][neighbours[i][j].getC()];
+
+				if(neighbours[i][j].getRot() == 0) {
+					System.out.println(numNeighbour);
+					
+				} else if(neighbours[i][j].getRot() == 1) {
+					System.out.println(numNeighbour + " with 90 clockwise");
+					
+				} else if(neighbours[i][j].getRot() == 2) {
+					System.out.println(numNeighbour + " with 180 rotation");
+					
+				} else if(neighbours[i][j].getRot() == 3) {
+					System.out.println(numNeighbour + " with 90 counter");
+					
+				}
+				
+			}
+			System.out.println();
+			//TOP
+		}
 	}
 	
 	
