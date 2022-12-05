@@ -1,95 +1,69 @@
 package OneNet3Cuboids;
 
+import OneNet3Cuboids.Coord.CoordWithRotation;
+
 public class CuboidToFoldOn {
 
 	public static final int SIDES_CUBOID = 6;
 
 	public static final int NUM_NEIGHBOURS = 4;
 	
-	private boolean sidesUsed[][][] = new boolean[SIDES_CUBOID][][];
-	
-	//I don't like that the ground truth is a 3D array and not just a single array,
-	// but whatever! numbering and numberingInv allows me to jump from coord to state and back.
-	private int numbering[][][] = new int[SIDES_CUBOID][][];
-	private Coord numberingInv[];
-	
-	//TODO: turn coord into number
-	//TODO: get neighbour function
+
+	//TODO: use this later:
+	private boolean cellsUsed[];
+	//TODO: make sure this is an appropriate name:
+	private int rotationRelativePaperUsed[];
 	
 
+	
+	//TODO: allow function to insert paper at 1st cell with any rotation
+	
+	//TODO: for next cell to insert, make function to add cell relative to neighbour and record that
+	// it's taken with the appropriate rotation
+	
+	//TODO: allow a cell to be removed no questions asked.
+	
+	//TODO: this should be able to handle a depth first search and 
+	//for efficiency purposes, I'll make it mutable (it changes state when actions are done on it)
+	
+	//TODO: This should be simple!
+	// Just use neighbours to help navigate and cellsUsed + rotationRelativePaperUsed to keep track of state.
+	
+	//TODO: if move invalid:
+	// Current idea: return error number and stop changing state util :allow state change" function is run:
+	
+	//Maybe in another class:
+	//TODO: have a function that checks for forced moves somewhere
+	//TODO: also have a function that checks for less obvious impossibilities? (I haven't thought that hard yet)
+	
 	private CoordWithRotation[][] neighbours;
 
 	
 	public CuboidToFoldOn(int a, int b, int c) {
-		
-		//b always "j" and a always "i"
-		sidesUsed[0] = new boolean[c][b];
-		sidesUsed[1] = new boolean[a][c];
-		sidesUsed[2] = new boolean[a][b];
-		sidesUsed[3] = new boolean[a][c];
-		sidesUsed[4] = new boolean[a][b];
-		sidesUsed[5] = new boolean[c][b];
 
-		numbering[0] = new int[c][b];
-		numbering[1] = new int[a][c];
-		numbering[2] = new int[a][b];
-		numbering[3] = new int[a][c];
-		numbering[4] = new int[a][b];
-		numbering[5] = new int[c][b];
-
+		neighbours = NeighbourGraphCreator.initNeighbourhood(a, b, c);
 		
-		int currentNum = 0;
-		numberingInv = new Coord[getTotalArea(a, b, c)];
-		
-		
-		for(int i=0; i<numbering.length; i++) {
-			for(int j=0; j<numbering[i].length; j++) {
-				for(int k=0; k<numbering[i][j].length; k++) {
-					numbering[i][j][k] = currentNum;
-					numberingInv[currentNum] = new Coord(i, j, k);
-					currentNum++;
-				}
-			}
-		}
-		if(currentNum != getTotalArea(a, b, c)) {
-			System.out.println("Current num is not the total area. Something went wrong!");
-			System.exit(1);
-		}
-
-		neighbours = NeighbourGraphCreator.initNeighbourhood(a, b, c, numbering, numberingInv);
 	}
 	
-	public static int getTotalArea(int a, int b, int c) {
-		return 2*(a*b + a*c + b*c);
+	public CoordWithRotation[] getNeighbours(int cellIndex) {
+		return neighbours[cellIndex];
 	}
-	
-	public static  int indexLeft(int side) {
+
+	public static int indexPaperAbove(int cellIndex) {
 		return -1;
 	}
-	
-	public static int indexRight(int side) {
+
+	public static int indexPaperRight(int cellIndex) {
 		return -1;
 	}
-	
-	public static int indexAbove(int side) {
+
+	public static int indexPaperBelow(int cellIndex) {
 		return -1;
 	}
-	
 
-	public static int indexBelow(int side) {
+	public static int indexPaperLeft(int cellIndex) {
 		return -1;
 	}
-	
-
-
-	public int getNumber(Coord coord) {
-		return numbering[coord.a][coord.b][coord.c];
-	}
-	
-	public CoordWithRotation[] getNeighbours(Coord start) {
-		return neighbours[numbering[start.a][start.b][start.c]];
-	}
-	
 
 	public static void main(String args[]) {
 		CuboidToFoldOn c = new CuboidToFoldOn(3, 4, 5);

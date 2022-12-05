@@ -1,4 +1,4 @@
-package OneNet3Cuboids;
+package OneNet3Cuboids.Coord;
 
 public class Coord {
 

@@ -1,12 +1,24 @@
 package OneNet3Cuboids;
 
+import OneNet3Cuboids.Coord.Coord;
+import OneNet3Cuboids.Coord.CoordWithRotation;
+
 public class NeighbourGraphCreator {
 
+	//Goal:
+	// Give CuboidToFoldOn a graph/state machine to work with, so it can easily keep track of state.
+	// This goal seems to already be acomplished and what's returned looks good.
+	// TODO: I still need to test it against a 1x1x1 cube though...
 	
 	public static int NUM_NEIGHBOURS =4;
 
-	public static CoordWithRotation[][] initNeighbourhood(int a, int b, int c, int numbering[][][], Coord numberingInv[]) {
-		String ret1 = DataModelViews.getFlatNumberingView(a, b, c, numbering);
+	public static CoordWithRotation[][] initNeighbourhood(int a, int b, int c) {
+
+		int numbering[][][] = Utils.getFlatNumberingOfCuboid(a, b, c);
+		
+		Coord numberingInv[] = Utils.getFlatInverseNumberingOfCuboid(numbering, a, b, c);
+		
+		String ret1 = DataModelViews.getFlatNumberingView(a, b, c);
 		System.out.println(ret1);
 
 		System.out.println("Printed flattened cuboid with bonus square at bottom...");
@@ -32,7 +44,7 @@ public class NeighbourGraphCreator {
 		neighboursTranspose[2] = handleBelowNeighbours(a, b, c, flatArray, numberingInv);
 		neighboursTranspose[3] = handleLeftNeighbours(a, b, c, flatArray, numberingInv);
 		
-		CoordWithRotation neighbours[][] = new CoordWithRotation[CuboidToFoldOn.getTotalArea(a, b, c)][NUM_NEIGHBOURS];
+		CoordWithRotation neighbours[][] = new CoordWithRotation[Utils.getTotalArea(a, b, c)][NUM_NEIGHBOURS];
 		
 		for(int i=0; i<neighbours.length; i++) {
 			for(int j=0; j<NUM_NEIGHBOURS; j++) {
@@ -70,10 +82,10 @@ public class NeighbourGraphCreator {
 	}
 	
 	
-	public static CoordWithRotation[] handleAboveNeighbours(int a, int b, int c, int flatArray[][], Coord numberingInv[]) {
+	private static CoordWithRotation[] handleAboveNeighbours(int a, int b, int c, int flatArray[][], Coord numberingInv[]) {
 		
 		//Only do easy ones for now:
-		int size = CuboidToFoldOn.getTotalArea(a, b, c);
+		int size = Utils.getTotalArea(a, b, c);
 		CoordWithRotation ret[] = new CoordWithRotation[size];
 		
 
@@ -164,7 +176,7 @@ public class NeighbourGraphCreator {
 	//4th row is more trouble than it's worth
 	//Scrap it? Nah! Just be careful!
 	
-	public static CoordWithRotation[] handleBelowNeighbours(int a, int b, int c, int flatArray[][], Coord numberingInv[]) {
+	private static CoordWithRotation[] handleBelowNeighbours(int a, int b, int c, int flatArray[][], Coord numberingInv[]) {
 		
 		//Only do easy ones for now:
 		int size = 2*(a*b + a*c + b*c);
@@ -255,7 +267,7 @@ public class NeighbourGraphCreator {
 	}
 	
 
-	public static CoordWithRotation[] handleLeftNeighbours(int a, int b, int c, int flatArray[][], Coord numberingInv[]) {
+	private static CoordWithRotation[] handleLeftNeighbours(int a, int b, int c, int flatArray[][], Coord numberingInv[]) {
 		
 		//Only do easy ones for now:
 		int size = 2*(a*b + a*c + b*c);
@@ -331,7 +343,7 @@ public class NeighbourGraphCreator {
 
 
 
-	public static CoordWithRotation[] handleRightNeighbours(int a, int b, int c, int flatArray[][], Coord numberingInv[]) {
+	private static CoordWithRotation[] handleRightNeighbours(int a, int b, int c, int flatArray[][], Coord numberingInv[]) {
 		
 		//Only do easy ones for now:
 		int size = 2*(a*b + a*c + b*c);
@@ -406,7 +418,7 @@ public class NeighbourGraphCreator {
 	}
 	
 	
-	public static int[][] makeTempFlatMapArray(int a, int b, int c, int numbering[][][]) {
+	private static int[][] makeTempFlatMapArray(int a, int b, int c, int numbering[][][]) {
 		
 		int ret2[][] = new int[2*a + 2*c][2*b + 2*c];
 		for(int i=0; i<ret2.length; i++) {
@@ -550,7 +562,7 @@ public class NeighbourGraphCreator {
 	}
 	
 
-	public static String sanityGetFlatNumberingFromTempFlatArray(int a, int b, int c, int flatArray[][]) {
+	private static String sanityGetFlatNumberingFromTempFlatArray(int a, int b, int c, int flatArray[][]) {
 		
 		String ret ="";
 		
