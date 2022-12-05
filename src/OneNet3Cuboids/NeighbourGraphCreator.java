@@ -5,9 +5,8 @@ public class NeighbourGraphCreator {
 	
 	public static int NUM_NEIGHBOURS =4;
 
-	//TODO: if this gets complicated enough, move to different class:
 	public static CoordWithRotation[][] initNeighbourhood(int a, int b, int c, int numbering[][][], Coord numberingInv[]) {
-		String ret1 = getFlatNumbering(a, b, c, numbering);
+		String ret1 = DataModelViews.getFlatNumberingView(a, b, c, numbering);
 		System.out.println(ret1);
 
 		System.out.println("Printed flattened cuboid with bonus square at bottom...");
@@ -27,13 +26,13 @@ public class NeighbourGraphCreator {
 		
 
 		CoordWithRotation[][] neighboursTranspose = new CoordWithRotation[4][];
-		//TODO: organize! 
+
 		neighboursTranspose[0] = handleAboveNeighbours(a, b, c, flatArray, numberingInv);
 		neighboursTranspose[1] = handleRightNeighbours(a, b, c, flatArray, numberingInv);
 		neighboursTranspose[2] = handleBelowNeighbours(a, b, c, flatArray, numberingInv);
 		neighboursTranspose[3] = handleLeftNeighbours(a, b, c, flatArray, numberingInv);
 		
-		CoordWithRotation neighbours[][] = new CoordWithRotation[PartialCuboid.getTotalArea(a, b, c)][NUM_NEIGHBOURS];
+		CoordWithRotation neighbours[][] = new CoordWithRotation[CuboidToFoldOn.getTotalArea(a, b, c)][NUM_NEIGHBOURS];
 		
 		for(int i=0; i<neighbours.length; i++) {
 			for(int j=0; j<NUM_NEIGHBOURS; j++) {
@@ -71,11 +70,10 @@ public class NeighbourGraphCreator {
 	}
 	
 	
-	//TODO: Prob a bug in 4th row...
 	public static CoordWithRotation[] handleAboveNeighbours(int a, int b, int c, int flatArray[][], Coord numberingInv[]) {
 		
 		//Only do easy ones for now:
-		int size = PartialCuboid.getTotalArea(a, b, c);
+		int size = CuboidToFoldOn.getTotalArea(a, b, c);
 		CoordWithRotation ret[] = new CoordWithRotation[size];
 		
 
@@ -549,133 +547,6 @@ public class NeighbourGraphCreator {
 		}
 		
 		return ret2;
-	}
-	
-	
-	public static String getFlatNumbering(int a, int b, int c, int numbering[][][]) {
-		//TODO
-		//1st row only has side 0:
-
-		String ret ="";
-		ret += "Map:\n";
-		
-		for(int i=0; i<c; i++) {
-			
-			for(int j=0; j < 2*b + 2 *c; j++) {
-
-				if( j == c || j == c + b || j == 2*c + b || j== 2*c + 2*b) {
-					ret += "    ";
-				}
-				
-				if(j >= c && j<c + b) {
-
-					int num = numbering[0][i][j - c];
-					ret += " " + "  ".substring(((num) + "").length()) + num + " ";
-					
-				} else {
-					ret += "    ";
-				}
-			}
-			
-			ret += "\n";
-		}
-		
-		//2nd row has 4 sides:
-		ret += "\n";
-
-		for(int i=0; i<a; i++) {
-			
-			for(int j=0; j < 2*b + 2 *c; j++) {
-				
-				if( j == c || j == c + b || j == 2*c + b || j== 2*c + 2*b) {
-					ret += "    ";
-				}
-				if( j < c) {
-					
-					int num = numbering[1][i][j];
-
-					ret += " " + "  ".substring(((num) + "").length()) + num + " ";
-					
-				} else if(j >= c && j<c + b) {
-					
-					int num = numbering[2][i][j - c];
-					
-					ret += " " + "  ".substring(((num) + "").length()) + num + " ";
-					
-				} else if(j >= c + b && j<2*c + b) {
-					
-					int num = numbering[3][i][j - c - b];
-					
-					ret += " " + "  ".substring(((num) + "").length()) + num + " ";
-					
-				} else if(j >= 2*c + b && j<2*c + 2*b) {
-					
-					int num = numbering[4][i][j - 2*c - b];
-					
-					ret += " " + "  ".substring(((num) + "").length()) + num + " ";
-				} else {
-					System.out.println("Doh!");
-					System.exit(1);
-				}
-			}
-			
-			ret += "\n";
-		}
-		
-
-		//3rd row has 1 side:
-		ret += "\n";
-		
-		for(int i=0; i<c; i++) {
-			
-			for(int j=0; j < 2*b + 2 *c; j++) {
-
-				if( j == c || j == c + b || j == 2*c + b || j== 2*c + 2*b) {
-					ret += "    ";
-				}
-				
-				if(j >= c && j<c + b) {
-
-					int num = numbering[5][i][j - c];
-					ret += " " + "  ".substring(((num) + "").length()) + num + " ";
-					
-				} else {
-					ret += "    ";
-				}
-			}
-			
-			ret += "\n";
-		}
-		
-		//Bonus 4th row:
-		ret += "\n";
-		
-		for(int i=0; i<a; i++) {
-			
-			for(int j=0; j < 2*b + 2 *c; j++) {
-
-				if( j == c || j == c + b || j == 2*c + b || j== 2*c + 2*b) {
-					ret += "    ";
-				}
-				
-				if(j >= c && j<c + b) {
-
-					//Mind bender: It gets flipped!
-					// because it's a 3D cuboid or something!
-					int num = numbering[4][(a-1) - (i)][(b-1) - (j - c)];
-					ret += " " + "  ".substring(((num) + "").length()) + num + " ";
-					
-				} else {
-					ret += "    ";
-				}
-			}
-			
-			ret += "\n";
-		}
-				
-		
-		return ret;
-		
 	}
 	
 

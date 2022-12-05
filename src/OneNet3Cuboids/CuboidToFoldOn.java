@@ -1,6 +1,6 @@
 package OneNet3Cuboids;
 
-public class PartialCuboid {
+public class CuboidToFoldOn {
 
 	public static final int SIDES_CUBOID = 6;
 
@@ -8,25 +8,19 @@ public class PartialCuboid {
 	
 	private boolean sidesUsed[][][] = new boolean[SIDES_CUBOID][][];
 	
+	//I don't like that the ground truth is a 3D array and not just a single array,
+	// but whatever! numbering and numberingInv allows me to jump from coord to state and back.
 	private int numbering[][][] = new int[SIDES_CUBOID][][];
 	private Coord numberingInv[];
 	
 	//TODO: turn coord into number
 	//TODO: get neighbour function
 	
-	private int a;
-	private int b;
-	private int c;
-	
 
 	private CoordWithRotation[][] neighbours;
 
 	
-	public PartialCuboid(int a, int b, int c) {
-		
-		this.a = a;
-		this.b = b;
-		this.c = c;
+	public CuboidToFoldOn(int a, int b, int c) {
 		
 		//b always "j" and a always "i"
 		sidesUsed[0] = new boolean[c][b];
@@ -54,8 +48,6 @@ public class PartialCuboid {
 					numbering[i][j][k] = currentNum;
 					numberingInv[currentNum] = new Coord(i, j, k);
 					currentNum++;
-					
-					//TODO: make an array that does the inverse (number to coord)
 				}
 			}
 		}
@@ -80,13 +72,11 @@ public class PartialCuboid {
 	}
 	
 	public static int indexAbove(int side) {
-		
 		return -1;
 	}
 	
 
 	public static int indexBelow(int side) {
-		
 		return -1;
 	}
 	
@@ -96,21 +86,13 @@ public class PartialCuboid {
 		return numbering[coord.a][coord.b][coord.c];
 	}
 	
-	public static void main(String args[]) {
-		PartialCuboid c = new PartialCuboid(3, 4, 5);
+	public CoordWithRotation[] getNeighbours(Coord start) {
+		return neighbours[numbering[start.a][start.b][start.c]];
 	}
 	
-	
-	//TODO: figuring out the neighbourhood:
-	
-	
 
-	public CoordWithRotation[] getNeighbours(Coord start) {
-		CoordWithRotation ret[] = new CoordWithRotation[NUM_NEIGHBOURS];
-		
-		//TODO: have this ready after initNeighbourhood() call...
-		
-		return null;
+	public static void main(String args[]) {
+		CuboidToFoldOn c = new CuboidToFoldOn(3, 4, 5);
 	}
 	
 }
