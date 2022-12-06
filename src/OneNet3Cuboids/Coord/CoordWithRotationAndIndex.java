@@ -1,6 +1,6 @@
 package OneNet3Cuboids.Coord;
 
-public class CoordWithRotation {
+public class CoordWithRotationAndIndex {
 
 	private int a;
 	private int b;
@@ -12,18 +12,22 @@ public class CoordWithRotation {
 	//3: counter-clockwise 90 
 	private int rot;
 	
-	public CoordWithRotation(int a, int b, int c, int rot) {
+	private int index;
+	
+	public CoordWithRotationAndIndex(int a, int b, int c, int rot, int index) {
 		this.a = a;
 		this.b = b;
 		this.c = c;
 		this.rot = rot;
+		this.index = index;
 	}
 	
-	public CoordWithRotation(Coord c, int rot) {
+	public CoordWithRotationAndIndex(Coord c, int rot, int index) {
 		this.a = c.a;
 		this.b = c.b;
 		this.c = c.c;
 		this.rot = rot;
+		this.index = index;
 	}
 
 	public int getA() {
@@ -41,6 +45,9 @@ public class CoordWithRotation {
 	public int getRot() {
 		return rot;
 	}
-	
+
+	public int getIndex() {
+		return index;
+	}
 	
 }

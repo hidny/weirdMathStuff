@@ -1,6 +1,7 @@
 package OneNet3Cuboids;
 
-import OneNet3Cuboids.Coord.CoordWithRotation;
+import OneNet3Cuboids.Coord.CoordWithRotationAndIndex;
+import number.IsNumber;
 
 public class CuboidToFoldOn {
 
@@ -36,17 +37,58 @@ public class CuboidToFoldOn {
 	//TODO: have a function that checks for forced moves somewhere
 	//TODO: also have a function that checks for less obvious impossibilities? (I haven't thought that hard yet)
 	
-	private CoordWithRotation[][] neighbours;
+	private CoordWithRotationAndIndex[][] neighbours;
 
 	
 	public CuboidToFoldOn(int a, int b, int c) {
 
 		neighbours = NeighbourGraphCreator.initNeighbourhood(a, b, c);
 		
+		cellsUsed = new boolean[Utils.getTotalArea(a, b, c)];
+		rotationRelativePaperUsed = new int[Utils.getTotalArea(a, b, c)];
+		
+		for(int i=0; i<cellsUsed.length; i++) {
+			cellsUsed[i] = false;
+			rotationRelativePaperUsed[i] = -1;
+		}
+		
+	}
+
+	public void setCell(int index, int rotation) {
+		if(cellsUsed[index]) {
+			System.out.println("Error: Setting cell when a cell is already activated!");
+			System.exit(1);
+		}
+		
+
+		cellsUsed[index] = true;
+		rotationRelativePaperUsed[index] = rotation;
 	}
 	
-	public CoordWithRotation[] getNeighbours(int cellIndex) {
+	public void removeCell(int index) {
+		if(!cellsUsed[index]) {
+			System.out.println("Error: removing cell when a cell is not activated!");
+			System.exit(1);
+		}
+		
+		cellsUsed[index] = false;
+		rotationRelativePaperUsed[index] = -1;
+	}
+	
+	public int getNumCellsToFill() {
+		return cellsUsed.length;
+	}
+	
+	public CoordWithRotationAndIndex[] getNeighbours(int cellIndex) {
 		return neighbours[cellIndex];
+	}
+	
+	public int getRotationRelativeToPaper(int cellIndex) {
+		return rotationRelativePaperUsed[cellIndex];
+	}
+	
+	public boolean isCellIndexUsed(int cellIndex) {
+		return cellsUsed[cellIndex];
 	}
 
 	public static int indexPaperAbove(int cellIndex) {
@@ -67,6 +109,7 @@ public class CuboidToFoldOn {
 
 	public static void main(String args[]) {
 		CuboidToFoldOn c = new CuboidToFoldOn(3, 4, 5);
+		//CuboidToFoldOn c = new CuboidToFoldOn(1, 1, 1);
 	}
-	
+
 }

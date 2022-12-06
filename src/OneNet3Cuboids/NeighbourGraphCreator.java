@@ -1,7 +1,7 @@
 package OneNet3Cuboids;
 
 import OneNet3Cuboids.Coord.Coord;
-import OneNet3Cuboids.Coord.CoordWithRotation;
+import OneNet3Cuboids.Coord.CoordWithRotationAndIndex;
 
 public class NeighbourGraphCreator {
 
@@ -12,7 +12,7 @@ public class NeighbourGraphCreator {
 	
 	public static int NUM_NEIGHBOURS =4;
 
-	public static CoordWithRotation[][] initNeighbourhood(int a, int b, int c) {
+	public static CoordWithRotationAndIndex[][] initNeighbourhood(int a, int b, int c) {
 
 		int numbering[][][] = Utils.getFlatNumberingOfCuboid(a, b, c);
 		
@@ -37,14 +37,14 @@ public class NeighbourGraphCreator {
 		//End sanity check
 		
 
-		CoordWithRotation[][] neighboursTranspose = new CoordWithRotation[4][];
+		CoordWithRotationAndIndex[][] neighboursTranspose = new CoordWithRotationAndIndex[4][];
 
 		neighboursTranspose[0] = handleAboveNeighbours(a, b, c, flatArray, numberingInv);
 		neighboursTranspose[1] = handleRightNeighbours(a, b, c, flatArray, numberingInv);
 		neighboursTranspose[2] = handleBelowNeighbours(a, b, c, flatArray, numberingInv);
 		neighboursTranspose[3] = handleLeftNeighbours(a, b, c, flatArray, numberingInv);
 		
-		CoordWithRotation neighbours[][] = new CoordWithRotation[Utils.getTotalArea(a, b, c)][NUM_NEIGHBOURS];
+		CoordWithRotationAndIndex neighbours[][] = new CoordWithRotationAndIndex[Utils.getTotalArea(a, b, c)][NUM_NEIGHBOURS];
 		
 		for(int i=0; i<neighbours.length; i++) {
 			for(int j=0; j<NUM_NEIGHBOURS; j++) {
@@ -82,11 +82,11 @@ public class NeighbourGraphCreator {
 	}
 	
 	
-	private static CoordWithRotation[] handleAboveNeighbours(int a, int b, int c, int flatArray[][], Coord numberingInv[]) {
+	private static CoordWithRotationAndIndex[] handleAboveNeighbours(int a, int b, int c, int flatArray[][], Coord numberingInv[]) {
 		
 		//Only do easy ones for now:
 		int size = Utils.getTotalArea(a, b, c);
-		CoordWithRotation ret[] = new CoordWithRotation[size];
+		CoordWithRotationAndIndex ret[] = new CoordWithRotationAndIndex[size];
 		
 
 		//System.out.println("Handle above neighbours:");
@@ -106,9 +106,9 @@ public class NeighbourGraphCreator {
 					//Weird opposite case:
 					//With 180 rotation
 					if(flatArray[flatArray.length - 1][j] >=0) {
-						int tmp = flatArray[flatArray.length - 1][j];
-						ret[curIndex] = new CoordWithRotation(numberingInv[tmp], 2);
-						//System.out.println(tmp + " is above " + curIndex + ". (with 180 rotation)");
+						int indexToUse = flatArray[flatArray.length - 1][j];
+						ret[curIndex] = new CoordWithRotationAndIndex(numberingInv[indexToUse], 2, indexToUse);
+						//System.out.println(indexToUse + " is above " + curIndex + ". (with 180 rotation)");
 
 					
 					}
@@ -118,10 +118,10 @@ public class NeighbourGraphCreator {
 					
 					if(flatArray[i-1][j] >=0) {
 						//No rotation (normal case)
-						int tmp = flatArray[i-1][j];
-						ret[curIndex] = new CoordWithRotation(numberingInv[tmp], 0);
+						int indexToUse = flatArray[i-1][j];
+						ret[curIndex] = new CoordWithRotationAndIndex(numberingInv[indexToUse], 0, indexToUse);
 
-						//System.out.println(tmp + " is above " + curIndex + ".");
+						//System.out.println(indexToUse + " is above " + curIndex + ".");
 						
 						
 					} else if(i == c) {
@@ -129,10 +129,10 @@ public class NeighbourGraphCreator {
 						if(j < c) {
 							for(int d=1; d<=c; d++) {
 								if(flatArray[i-d][j+d] >=0) {
-									int tmp = flatArray[i-d][j+d];
-									ret[curIndex] = new CoordWithRotation(numberingInv[tmp], 1);
+									int indexToUse = flatArray[i-d][j+d];
+									ret[curIndex] = new CoordWithRotationAndIndex(numberingInv[indexToUse], 1, indexToUse);
 									
-									//System.out.println(tmp + " is above " + curIndex + ". (with 90 clockwise rotation)");
+									//System.out.println(indexToUse + " is above " + curIndex + ". (with 90 clockwise rotation)");
 
 									break;
 								}
@@ -141,10 +141,10 @@ public class NeighbourGraphCreator {
 							for(int d=1; d<=c; d++) {
 								if(flatArray[i-d][j-d] >=0) {
 									
-									int tmp = flatArray[i-d][j-d];
-									ret[curIndex] = new CoordWithRotation(numberingInv[tmp], 3);
+									int indexToUse = flatArray[i-d][j-d];
+									ret[curIndex] = new CoordWithRotationAndIndex(numberingInv[indexToUse], 3, indexToUse);
 									
-									//System.out.println(tmp + " is above " + curIndex + ". (with 90 counter-clockwise rotation)");
+									//System.out.println(indexToUse + " is above " + curIndex + ". (with 90 counter-clockwise rotation)");
 
 									break;
 								}
@@ -158,10 +158,10 @@ public class NeighbourGraphCreator {
 					//Weird opposite case:
 					//With 180 rotation
 					
-					int tmp = flatArray[0][j];
+					int indexToUse = flatArray[0][j];
 					
-					ret[curIndex] = new CoordWithRotation(numberingInv[tmp], 2);
-					//System.out.println(tmp + " is above " + curIndex + ". (with 180 rotation)");
+					ret[curIndex] = new CoordWithRotationAndIndex(numberingInv[indexToUse], 2, indexToUse);
+					//System.out.println(indexToUse + " is above " + curIndex + ". (with 180 rotation)");
 					
 					
 					
@@ -176,11 +176,11 @@ public class NeighbourGraphCreator {
 	//4th row is more trouble than it's worth
 	//Scrap it? Nah! Just be careful!
 	
-	private static CoordWithRotation[] handleBelowNeighbours(int a, int b, int c, int flatArray[][], Coord numberingInv[]) {
+	private static CoordWithRotationAndIndex[] handleBelowNeighbours(int a, int b, int c, int flatArray[][], Coord numberingInv[]) {
 		
 		//Only do easy ones for now:
 		int size = 2*(a*b + a*c + b*c);
-		CoordWithRotation ret[] = new CoordWithRotation[size];
+		CoordWithRotationAndIndex ret[] = new CoordWithRotationAndIndex[size];
 		
 		//System.out.println("Handle below neighbours:");
 		
@@ -198,10 +198,10 @@ public class NeighbourGraphCreator {
 					
 					if(flatArray[i+1][j] >=0) {
 						//No rotation: (Normal case)
-						int tmp = flatArray[i+1][j];
-						ret[curIndex] = new CoordWithRotation(numberingInv[tmp], 0);
+						int indexToUse = flatArray[i+1][j];
+						ret[curIndex] = new CoordWithRotationAndIndex(numberingInv[indexToUse], 0, indexToUse);
 						
-						//System.out.println(tmp + " is below " + curIndex + ".");
+						//System.out.println(indexToUse + " is below " + curIndex + ".");
 						
 						
 					} else if(i == c + a - 1 && j < 2*c + b) {
@@ -210,10 +210,10 @@ public class NeighbourGraphCreator {
 						if(j < c) {
 							for(int d=1; d<=c; d++) {
 								if(flatArray[i+d][j+d] >=0) {
-									int tmp = flatArray[i+d][j+d];
-									ret[curIndex] = new CoordWithRotation(numberingInv[tmp], 3);
+									int indexToUse = flatArray[i+d][j+d];
+									ret[curIndex] = new CoordWithRotationAndIndex(numberingInv[indexToUse], 3, indexToUse);
 									
-									//System.out.println(tmp + " is below " + curIndex + ". (with 90 counter-clockwise rotation)");
+									//System.out.println(indexToUse + " is below " + curIndex + ". (with 90 counter-clockwise rotation)");
 									
 									break;
 								}
@@ -222,10 +222,10 @@ public class NeighbourGraphCreator {
 							for(int d=1; d<=c; d++) {
 								if(flatArray[i+d][j-d] >=0) {
 									
-									int tmp = flatArray[i+d][j-d];
-									ret[curIndex] = new CoordWithRotation(numberingInv[tmp], 1);
+									int indexToUse = flatArray[i+d][j-d];
+									ret[curIndex] = new CoordWithRotationAndIndex(numberingInv[indexToUse], 1, indexToUse);
 									
-									//System.out.println(tmp + " is below " + curIndex + ". (with 90 clockwise rotation)");
+									//System.out.println(indexToUse + " is below " + curIndex + ". (with 90 clockwise rotation)");
 									
 									break;
 								}
@@ -238,10 +238,10 @@ public class NeighbourGraphCreator {
 					//opposite case:
 					if(flatArray[i+1][j] >=0) {
 						//180 rotation:
-						int tmp = flatArray[i+1][j];
-						ret[curIndex] = new CoordWithRotation(numberingInv[tmp], 2);
+						int indexToUse = flatArray[i+1][j];
+						ret[curIndex] = new CoordWithRotationAndIndex(numberingInv[indexToUse], 2, indexToUse);
 						
-						//System.out.println(tmp + " is below " + curIndex + ". (180 degree rotation)");
+						//System.out.println(indexToUse + " is below " + curIndex + ". (180 degree rotation)");
 						
 						
 					}
@@ -251,10 +251,10 @@ public class NeighbourGraphCreator {
 					//Weird opposite case:
 					if(flatArray[i-1][j] >=0) {
 						//180 rotation:
-						int tmp = flatArray[i-1][j];
-						ret[curIndex] = new CoordWithRotation(numberingInv[tmp], 2);
+						int indexToUse = flatArray[i-1][j];
+						ret[curIndex] = new CoordWithRotationAndIndex(numberingInv[indexToUse], 2, indexToUse);
 						
-						//System.out.println(tmp + " is below " + curIndex + ". (180 degree rotation)");
+						//System.out.println(indexToUse + " is below " + curIndex + ". (180 degree rotation)");
 						
 						
 					}
@@ -267,11 +267,11 @@ public class NeighbourGraphCreator {
 	}
 	
 
-	private static CoordWithRotation[] handleLeftNeighbours(int a, int b, int c, int flatArray[][], Coord numberingInv[]) {
+	private static CoordWithRotationAndIndex[] handleLeftNeighbours(int a, int b, int c, int flatArray[][], Coord numberingInv[]) {
 		
 		//Only do easy ones for now:
 		int size = 2*(a*b + a*c + b*c);
-		CoordWithRotation ret[] = new CoordWithRotation[size];
+		CoordWithRotationAndIndex ret[] = new CoordWithRotationAndIndex[size];
 		
 		//System.out.println("Handle left neighbours:");
 		
@@ -289,21 +289,21 @@ public class NeighbourGraphCreator {
 				//All the way to the left case:
 				if(j == 0) {
 					
-					int tmp = flatArray[i][flatArray[0].length - 1];
+					int indexToUse = flatArray[i][flatArray[0].length - 1];
 					
-					ret[curIndex] = new CoordWithRotation(numberingInv[tmp], 0);
+					ret[curIndex] = new CoordWithRotationAndIndex(numberingInv[indexToUse], 0, indexToUse);
 					
-					//System.out.println(tmp + " is left of " + curIndex + ".");
+					//System.out.println(indexToUse + " is left of " + curIndex + ".");
 					
 				} else {
 					
 					//Normal case:
 					if(flatArray[i][j-1] >=0) {
 						//No rotation:
-						int tmp = flatArray[i][j-1];
-						ret[curIndex] = new CoordWithRotation(numberingInv[tmp], 0);
+						int indexToUse = flatArray[i][j-1];
+						ret[curIndex] = new CoordWithRotationAndIndex(numberingInv[indexToUse], 0, indexToUse);
 						
-						//System.out.println(tmp + " is left of " + curIndex + ".");
+						//System.out.println(indexToUse + " is left of " + curIndex + ".");
 						
 					} else {
 
@@ -311,10 +311,10 @@ public class NeighbourGraphCreator {
 						if(i < c) {
 							for(int d=1; d<=c; d++) {
 								if(flatArray[i+d][j-d] >=0) {
-									int tmp = flatArray[i+d][j-d];
-									ret[curIndex] = new CoordWithRotation(numberingInv[tmp], 3);
+									int indexToUse = flatArray[i+d][j-d];
+									ret[curIndex] = new CoordWithRotationAndIndex(numberingInv[indexToUse], 3, indexToUse);
 									
-									//System.out.println(tmp + " is left of " + curIndex + ". (with 90 counter-clockwise rotation)");
+									//System.out.println(indexToUse + " is left of " + curIndex + ". (with 90 counter-clockwise rotation)");
 									
 									break;
 								}
@@ -323,10 +323,10 @@ public class NeighbourGraphCreator {
 							for(int d=1; d<=c; d++) {
 								if(flatArray[i-d][j-d] >=0) {
 									
-									int tmp = flatArray[i-d][j-d];
-									ret[curIndex] = new CoordWithRotation(numberingInv[tmp], 1);
+									int indexToUse = flatArray[i-d][j-d];
+									ret[curIndex] = new CoordWithRotationAndIndex(numberingInv[indexToUse], 1, indexToUse);
 									
-									//System.out.println(tmp + " is left of " + curIndex + ". (with 90 clockwise rotation)");
+									//System.out.println(indexToUse + " is left of " + curIndex + ". (with 90 clockwise rotation)");
 									
 									break;
 								}
@@ -343,11 +343,11 @@ public class NeighbourGraphCreator {
 
 
 
-	private static CoordWithRotation[] handleRightNeighbours(int a, int b, int c, int flatArray[][], Coord numberingInv[]) {
+	private static CoordWithRotationAndIndex[] handleRightNeighbours(int a, int b, int c, int flatArray[][], Coord numberingInv[]) {
 		
 		//Only do easy ones for now:
 		int size = 2*(a*b + a*c + b*c);
-		CoordWithRotation ret[] = new CoordWithRotation[size];
+		CoordWithRotationAndIndex ret[] = new CoordWithRotationAndIndex[size];
 		
 		//System.out.println("Handle right neighbours:");
 		
@@ -364,21 +364,21 @@ public class NeighbourGraphCreator {
 				//All the way to the right case:
 				if(j == flatArray[0].length - 1) {
 					
-					int tmp = flatArray[i][0];
+					int indexToUse = flatArray[i][0];
 					
-					ret[curIndex] = new CoordWithRotation(numberingInv[tmp], 0);
+					ret[curIndex] = new CoordWithRotationAndIndex(numberingInv[indexToUse], 0, indexToUse);
 					
-					//System.out.println(tmp + " is right of " + curIndex + ".");
+					//System.out.println(indexToUse + " is right of " + curIndex + ".");
 					
 				//Normal case:
 				} else {
 
 					//No rotation:
 					if(flatArray[i][j+1] >=0) {
-						int tmp = flatArray[i][j+1];
-						ret[curIndex] = new CoordWithRotation(numberingInv[tmp], 0);
+						int indexToUse = flatArray[i][j+1];
+						ret[curIndex] = new CoordWithRotationAndIndex(numberingInv[indexToUse], 0, indexToUse);
 						
-						//System.out.println(tmp + " is right of " + curIndex + ".");
+						//System.out.println(indexToUse + " is right of " + curIndex + ".");
 						
 						
 					} else {
@@ -387,10 +387,10 @@ public class NeighbourGraphCreator {
 						if(i < c) {
 							for(int d=1; d<=c; d++) {
 								if(flatArray[i+d][j+d] >=0) {
-									int tmp = flatArray[i+d][j+d];
-									ret[curIndex] = new CoordWithRotation(numberingInv[tmp], 1);
+									int indexToUse = flatArray[i+d][j+d];
+									ret[curIndex] = new CoordWithRotationAndIndex(numberingInv[indexToUse], 1, indexToUse);
 									
-									//System.out.println(tmp + " is right of " + curIndex + ". (with 90 clockwise rotation)");
+									//System.out.println(indexToUse + " is right of " + curIndex + ". (with 90 clockwise rotation)");
 									
 									break;
 								}
@@ -399,10 +399,10 @@ public class NeighbourGraphCreator {
 							for(int d=1; d<=c; d++) {
 								if(flatArray[i-d][j+d] >=0) {
 									
-									int tmp = flatArray[i-d][j+d];
-									ret[curIndex] = new CoordWithRotation(numberingInv[tmp], 3);
+									int indexToUse = flatArray[i-d][j+d];
+									ret[curIndex] = new CoordWithRotationAndIndex(numberingInv[indexToUse], 3, indexToUse);
 									
-									//System.out.println(tmp + " is right of " + curIndex + ". (with 90 counter-clockwise rotation)");
+									//System.out.println(indexToUse + " is right of " + curIndex + ". (with 90 counter-clockwise rotation)");
 									
 									break;
 								}
