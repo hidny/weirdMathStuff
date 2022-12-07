@@ -1,5 +1,6 @@
 package OneNet3Cuboids.FoldingAlgos;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -61,20 +62,34 @@ public class FoldResolver1 {
 		doDepthFirstSearch(paperToDevelop, indexCuboidOnPaper, paperUsed, cuboid, numCellsUsedDepth, 0);
 	}
 	
+	private static int numFound = 0;
+	private static int numUniqueFound = 0;
 	//TODO: indexCuboid -> indexCuboidOnPaper
 	//TODO: paper -> paperUsed
 	public static void doDepthFirstSearch(HashSet <String>paperToDevelop, int indexCuboidonPaper[][], boolean paperUsed[][], CuboidToFoldOn cuboid, int numCellsUsedDepth, int debugLastIndex) {
 
 		
 		if(numCellsUsedDepth == cuboid.getNumCellsToFill()) {
-			System.out.println("Done!");
+			//System.out.println("Done!");
 			
 			//TODO: do something more complicated than printing later:
-			printFold(paperUsed);
-			printFoldWithIndex(indexCuboidonPaper);
+			//printFold(paperUsed);
+			//printFoldWithIndex(indexCuboidonPaper);
 			
-			if(indexCuboidonPaper[6][6] == 0 && indexCuboidonPaper[5][7] == 5) {
-				System.out.println("Debug");
+			numFound++;
+			
+			if(numFound % 100000 == 0) {
+				System.out.println(numFound);
+			}
+			
+			if(isUnique(paperUsed)) {
+				numUniqueFound++;
+				System.out.println("Found unique net:");
+				printFold(paperUsed);
+				printFoldWithIndex(indexCuboidonPaper);
+				
+				System.out.println("Num unique solutions found: " + numUniqueFound);
+				
 			}
 		}
 		
@@ -177,7 +192,7 @@ public class FoldResolver1 {
 				numCellsUsedDepth += 1;
 				paperToDevelop.add(new_i +"," + new_j);
 				
-				if(indexCuboidonPaper[5][7] == 5) {
+				if(cuboid.getNumCellsToFill() == 6 && indexCuboidonPaper[5][7] == 5) {
 					System.out.println("Doh for 1x1x1!");
 					printFold(paperUsed);
 					printFoldWithIndex(indexCuboidonPaper);
@@ -287,12 +302,39 @@ public class FoldResolver1 {
 	//TODO: improve and make it return a string
 	public static void printFoldWithIndex(int array[][]) {
 		
+		int maxLength = 0;
 		for(int i=0; i<array.length; i++) {
 			for(int j=0; j<array[0].length; j++) {
 				if(array[i][j] >= 0) {
-					System.out.print(array[i][j]);
+					if((array[i][j] + "").length() > maxLength) {
+						maxLength = (array[i][j] + "").length();
+					}
+				}
+			}
+		}
+		
+		String space ="";
+		String points = "";
+		
+		for(int i=0; i<maxLength; i++) {
+			space += " ";
+			points += ".";
+			
+		}
+		
+		for(int i=0; i<array.length; i++) {
+			for(int j=0; j<array[0].length; j++) {
+				if(array[i][j] >= 0) {
+					int lengthNum = (array[i][j] + "").length();
+					
+					if(lengthNum < maxLength) {
+						System.out.print("|" + space.substring(lengthNum) + array[i][j]);
+					} else {
+						System.out.print("|"+ array[i][j]);
+					}
+					
 				} else {
-					System.out.print(".");
+					System.out.print("|" + points);
 				}
 			}
 			System.out.println();
@@ -301,12 +343,167 @@ public class FoldResolver1 {
 	}
 
 	public static void main(String args[]) {
-		solveFoldsForSingleCuboid(1, 1, 1);
+		solveFoldsForSingleCuboid(2, 1, 1);
 
+		//Mission add to OEIS:
+		//So far, the pattern is:
+		//11, 348
 		
+		//2nd mission:
+		// get to 11.
 		
 		
 	}
+	
+	public static int NUM_REFLECTIONS = 2;
+	public static HashSet<BigInteger> uniqList = new HashSet<BigInteger>();
+	
+	public static boolean isUnique(boolean array[][]) {
+		
+		//TODO: make function to get borders...
+		int firsti = 0;
+		
+		int lasti = array.length - 1;
+		
+		int firstj = 0;
+		int lastj = array[0].length - 1;
+		
+		TOP_BORDER:
+		for(int i=0; i<array.length; i++) {
+			for(int j=0; j<array[0].length; j++) {
+				
+				if(array[i][j]) {
+					firsti = i;
+					break TOP_BORDER;
+				}
+			}
+		}
+		
+
+		BOTTOM_BORDER:
+		for(int i=array.length - 1; i>=0; i--) {
+			for(int j=0; j<array[0].length; j++) {
+				
+				if(array[i][j]) {
+					lasti = i;
+					break BOTTOM_BORDER;
+				}
+			}
+		}
+		
+		
+		LEFT_BORDER:
+		for(int j=0; j<array[0].length; j++) {
+			for(int i=0; i<array.length; i++) {
+				
+				if(array[i][j]) {
+					firstj = j;
+					break LEFT_BORDER;
+				}
+			}
+		}
+		
+
+		RIGHT_BORDER:
+		for(int j=array[0].length - 1; j>=0; j--) {
+			for(int i=0; i<array.length; i++) {
+				
+				if(array[i][j]) {
+					lastj = j;
+					break RIGHT_BORDER;
+				}
+			}
+		}
+
+		//END TODO: make function to get borders...
+		
+		
+		//TODO: make function to get scores:
+		//I could condense this and make it less repetitive, but I'm lazy.
+		
+		BigInteger scores[] = new BigInteger[NUM_REFLECTIONS * NUM_ROTATIONS];
+		
+		for(int i=0; i<scores.length; i++) {
+			scores[i] = BigInteger.ZERO;
+		}
+		BigInteger TWO = new BigInteger("2");
+		
+		for(int i=firsti, irev = lasti; i<=lasti; i++, irev--) {
+			for(int j=firstj, jrev = lastj; j<=lastj; j++, jrev--) {
+				
+				scores[0] = scores[0].multiply(TWO);
+				scores[1] = scores[1].multiply(TWO);
+				scores[2] = scores[2].multiply(TWO);
+				scores[3] = scores[3].multiply(TWO);
+
+				if(array[i][j]) {
+					scores[0] = scores[0].add(BigInteger.ONE);
+				}
+				
+				if(array[i][jrev]) {
+					scores[1] = scores[1].add(BigInteger.ONE);
+				}
+				
+				if(array[irev][j]) {
+					scores[2] = scores[2].add(BigInteger.ONE);
+				}
+				
+				if(array[irev][jrev]) {
+					scores[3] = scores[3].add(BigInteger.ONE);
+				}
+				
+			}
+		}
+
+		for(int j=firstj, jrev = lastj; j<=lastj; j++, jrev--) {
+			for(int i=firsti, irev = lasti; i<=lasti; i++, irev--) {
+				
+				scores[4] = scores[4].multiply(TWO);
+				scores[5] = scores[5].multiply(TWO);
+				scores[6] = scores[6].multiply(TWO);
+				scores[7] = scores[7].multiply(TWO);
+
+				if(array[i][j]) {
+					scores[4] = scores[4].add(BigInteger.ONE);
+				}
+				
+				if(array[i][jrev]) {
+					scores[5] = scores[5].add(BigInteger.ONE);
+				}
+				
+				if(array[irev][j]) {
+					scores[6] = scores[6].add(BigInteger.ONE);
+				}
+				
+				if(array[irev][jrev]) {
+					scores[7] = scores[7].add(BigInteger.ONE);
+				}
+				
+			}
+		}
+		//END TODO: make function to get scores:
+		
+		//Deal with symmetries by getting max scores from 8 possible symmetries:
+		BigInteger max = BigInteger.ZERO;
+		
+		for(int i=0; i<scores.length; i++) {
+			if(max.compareTo(scores[i]) < 0) {
+				max = scores[i];
+			}
+		}
+		
+		if(! uniqList.contains(max)) {
+			uniqList.add(max);
+			
+			System.out.println("Max number: " + max);
+			
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	
 	
 	public static void moveToListInNormalWay() {
 		HashSet <String>toDevelop = new HashSet<String>();
