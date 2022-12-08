@@ -530,7 +530,7 @@ public class FoldResolver1 {
 		if(! uniqList.contains(max)) {
 			uniqList.add(max);
 			
-			System.out.println("Max number: " + max);
+			//System.out.println("Max number: " + max);
 			
 			return true;
 		} else {

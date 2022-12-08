@@ -67,6 +67,8 @@ public class FoldResolverOrdered {
 		CellIndexToOrderOfDev.put(START_INDEX, 0);
 		
 		doDepthFirstSearch(paperToDevelop, indexCuboidOnPaper, paperUsed, cuboid, numCellsUsedDepth, 0, CellIndexToOrderOfDev, minOrderedCellCouldUse, minCellRotationOfMinCellToDev);
+		
+		System.out.println("Final number of unique solutions: " + numUniqueFound);
 	}
 	
 	private static int numFound = 0;
@@ -97,11 +99,14 @@ public class FoldResolverOrdered {
 			
 			if(FoldResolver1.isUnique(paperUsed)) {
 				numUniqueFound++;
-				System.out.println("Found unique net:");
-				FoldResolver1.printFold(paperUsed);
-				FoldResolver1.printFoldWithIndex(indexCuboidonPaper);
 				
-				System.out.println("Num unique solutions found: " + numUniqueFound);
+				if(numUniqueFound % 20000 == 0) {
+					System.out.println("Found unique net:");
+					FoldResolver1.printFold(paperUsed);
+					FoldResolver1.printFoldWithIndex(indexCuboidonPaper);
+				
+					System.out.println("Num unique solutions found: " + numUniqueFound);
+				}
 				
 			}
 		}
@@ -161,10 +166,10 @@ public class FoldResolverOrdered {
 			
 			for(int j=0; j<neighbours.length; j++) {
 				
-				if(CellIndexToOrderOfDev.get(indexToUse) == minOrderedCellCouldUse && j < minCellRotationOfMinCellToDev) {
-					continue;
-				} else if(cuboid.isCellIndexUsed(neighbours[j].getIndex())) {
+				if(cuboid.isCellIndexUsed(neighbours[j].getIndex())) {
 					//Don't reuse a used cell:
+					continue;
+				} else if(CellIndexToOrderOfDev.get(indexToUse) == minOrderedCellCouldUse && j < minCellRotationOfMinCellToDev) {
 					continue;
 				}
 				//TODO: neighbours should have an index!
@@ -326,7 +331,7 @@ public class FoldResolverOrdered {
 
 	public static void main(String args[]) {
 		System.out.println("Fold Resolver Ordered:");
-		solveFoldsForSingleCuboid(3, 1, 1);
+		solveFoldsForSingleCuboid(1, 1, 1);
 
 		//Mission add to OEIS:
 		//So far, the pattern is:
@@ -335,6 +340,18 @@ public class FoldResolverOrdered {
 		//2nd mission:
 		// get to 11.
 		
+		
+		/* 5x1x1 on December 8th:
+		 * 47800000
+			47900000
+			48000000
+			48100000
+			48200000 (duplicated solution)
+			Final number of unique solutions: 3014430
+		 */
+		//I hope it's right...
+		//It took 6.5 hours.
+		// Try to get it under 1 hour.
 		
 	}
 	
