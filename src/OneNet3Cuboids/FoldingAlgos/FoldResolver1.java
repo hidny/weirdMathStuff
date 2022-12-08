@@ -422,7 +422,7 @@ public class FoldResolver1 {
 		
 
 		// sideFactor and vertFactor is to make sure all nets that get converted to binary num
-		// have the same background dimensions to work with
+		// have the same background dimensions to work with.
 		// If they don't, there could be a false match.
 		BigInteger sideFactor = BigInteger.ONE;
 		BigInteger vertFactor = BigInteger.ONE;
