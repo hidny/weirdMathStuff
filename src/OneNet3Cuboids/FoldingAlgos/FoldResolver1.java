@@ -349,7 +349,7 @@ public class FoldResolver1 {
 
 		//Mission add to OEIS:
 		//So far, the pattern is:
-		//11, 348
+		//11, 349, ??
 		
 		//2nd mission:
 		// get to 11.
