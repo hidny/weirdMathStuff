@@ -281,7 +281,8 @@ public class FoldResolver1 {
 		
 	}
 	
-	
+
+	//TODO: remove empty border (reuse code)
 	//TODO: improve and make it return a string
 	public static void printFold(boolean array[][]) {
 		
@@ -299,6 +300,7 @@ public class FoldResolver1 {
 	}
 	
 
+	//TODO: remove empty border (reuse code)
 	//TODO: improve and make it return a string
 	public static void printFoldWithIndex(int array[][]) {
 		
@@ -365,6 +367,7 @@ public class FoldResolver1 {
 		
 		int lasti = array.length - 1;
 		
+		
 		int firstj = 0;
 		int lastj = array[0].length - 1;
 		
@@ -417,6 +420,20 @@ public class FoldResolver1 {
 
 		//END TODO: make function to get borders...
 		
+
+		BigInteger sideFactor = BigInteger.ONE;
+		BigInteger vertFactor = BigInteger.ONE;
+
+		BigInteger TWO = new BigInteger("2");
+		
+		for(int i = lasti - firsti; i<array.length; i++) {
+			vertFactor = vertFactor.multiply(TWO);
+		}
+		
+
+		for(int j = lastj - firstj; j<array[0].length; j++) {
+			sideFactor = sideFactor.multiply(TWO);
+		}
 		
 		//TODO: make function to get scores:
 		//I could condense this and make it less repetitive, but I'm lazy.
@@ -426,7 +443,6 @@ public class FoldResolver1 {
 		for(int i=0; i<scores.length; i++) {
 			scores[i] = BigInteger.ZERO;
 		}
-		BigInteger TWO = new BigInteger("2");
 		
 		for(int i=firsti, irev = lasti; i<=lasti; i++, irev--) {
 			for(int j=firstj, jrev = lastj; j<=lastj; j++, jrev--) {
@@ -453,7 +469,15 @@ public class FoldResolver1 {
 				}
 				
 			}
+			scores[0] = scores[0].multiply(sideFactor);
+			scores[1] = scores[1].multiply(sideFactor);
+			scores[2] = scores[2].multiply(sideFactor);
+			scores[3] = scores[3].multiply(sideFactor);
 		}
+		scores[0] = scores[0].multiply(vertFactor);
+		scores[1] = scores[1].multiply(vertFactor);
+		scores[2] = scores[2].multiply(vertFactor);
+		scores[3] = scores[3].multiply(vertFactor);
 
 		for(int j=firstj, jrev = lastj; j<=lastj; j++, jrev--) {
 			for(int i=firsti, irev = lasti; i<=lasti; i++, irev--) {
@@ -480,7 +504,15 @@ public class FoldResolver1 {
 				}
 				
 			}
+			scores[4] = scores[4].multiply(vertFactor);
+			scores[5] = scores[5].multiply(vertFactor);
+			scores[6] = scores[6].multiply(vertFactor);
+			scores[7] = scores[7].multiply(vertFactor);
 		}
+		scores[4] = scores[4].multiply(sideFactor);
+		scores[5] = scores[5].multiply(sideFactor);
+		scores[6] = scores[6].multiply(sideFactor);
+		scores[7] = scores[7].multiply(sideFactor);
 		//END TODO: make function to get scores:
 		
 		//Deal with symmetries by getting max scores from 8 possible symmetries:
