@@ -119,6 +119,8 @@ public class BasicUniqueChecksMaxSpeedUp {
 			scores[i] = BigInteger.ZERO;
 		}
 		
+		//Idea: don't do bigInteger mults on scores you know won't be the max score
+		// this is a bit ugly, but it works!
 		boolean tooLow[] = new boolean[NUM_REFLECTIONS * NUM_ROTATIONS];
 		boolean onlyOneContender = false;
 		
@@ -173,79 +175,19 @@ public class BasicUniqueChecksMaxSpeedUp {
 				}
 
 				if(! onlyOneContender  ) {
-					int numContender = 0;
 
-					BigInteger tmpScores[] = new BigInteger[NUM_REFLECTIONS * NUM_ROTATIONS];
+					int numExtraPow2FirstHalfScores = (i - firsti)* ((array[0].length - 1) - (lastj - firstj));
+					int numExtraPow2SecondHalfScores = (j2 - firstj)* ((array.length - 1) - (lasti - firsti));
 					
-					int numExtra1 = (i - firsti)* ((array[0].length - 1) - (lastj - firstj));
-					int numExtra2 = (j2 - firstj)* ((array.length - 1) - (lasti - firsti));
+					tooLow = refreshNumContenders(scores, tooLow, numExtraPow2FirstHalfScores, numExtraPow2SecondHalfScores);
 					
-					if(i == firsti && j2 == firstj) {
-						tmpScores = scores;
-					} else {
-						
-						
-						BigInteger factorToUse = BigInteger.ONE;
-						for(int n=0; n < Math.abs(numExtra1 - numExtra2); n++) {
-							factorToUse = factorToUse.multiply(TWO);
-						}
-						
-						for(int m=0; m<scores.length; m++) {
-							if(numExtra1 < numExtra2 && m < 4) {
-								tmpScores[m] = scores[m].multiply(factorToUse);
-							} else if(numExtra1 > numExtra2 && m >= 4) {
-								tmpScores[m] = scores[m].multiply(factorToUse);
-							} else {
-								tmpScores[m] = scores[m];
-							}
-							
-						}
-						
-					}
-					
-					for(int k=0; k<tmpScores.length; k++) {
+					int numContender = 0;
+					for(int k=0; k<scores.length; k++) {
 						if(! tooLow[k]) {
 							numContender++;
 						}
 					}
-					for(int k=0; k<tmpScores.length; k++) {
-						if(tooLow[k]) {
-							continue;
-						}
-						for(int m=k+1; m<tmpScores.length; m++) {
-							if(tooLow[m]) {
-								continue;
-							}
-							
-							if(tmpScores[k].compareTo(tmpScores[m]) < 0) {
-								
-								//System.out.println(tmpScores[k] + " <");
-								//System.out.println(tmpScores[m]);
-								
-								if( (m <4 && k<4) || (m >= 4 && k >= 4)
-										|| (numExtra2 > numExtra1 && k >= 4)
-										|| (numExtra2 < numExtra1 && k < 4)) {
-									tooLow[k] = true;
-									numContender--;
-								}
-								break;
-							} else if(tmpScores[k].compareTo(tmpScores[m]) > 0) {
-								
-								
-								if( (m <4 && k<4) || (m >= 4 && k >= 4)
-										|| (numExtra2 > numExtra1 && m >= 4)
-										|| (numExtra2 < numExtra1 && m < 4)) {
-									numContender--;
-									tooLow[m] = true;
-									
-								
-								}
-							}
-						}
-					}
-					
 					if(numContender == 1) {
-						//System.out.println("Only 1 contender");
 						onlyOneContender = true;
 					}
 				}
@@ -259,10 +201,8 @@ public class BasicUniqueChecksMaxSpeedUp {
 						}
 						scores[4 + k] = scores[4 + k].multiply(vertFactor2);
 					}
+					
 				}
-				
-				
-				
 			}
 			
 			for(int k=0; k<scores.length/2; k++) {
@@ -271,6 +211,7 @@ public class BasicUniqueChecksMaxSpeedUp {
 				}
 				scores[k] = scores[k].multiply(sideFactor);
 			}
+			
 		
 			
 		}
@@ -306,12 +247,12 @@ public class BasicUniqueChecksMaxSpeedUp {
 		
 		//Sanity check:
 		
-		/*BasicUniqueCheck.isUnique(array);
+		BasicUniqueCheck.isUnique(array);
 		
 		if(! BasicUniqueCheck.uniqList.contains(max)) {
 			System.out.println("DOH!");
 			System.exit(1);
-		}*/
+		}
 		
 		if(! uniqList.contains(max)) {
 			uniqList.add(max);
@@ -325,8 +266,62 @@ public class BasicUniqueChecksMaxSpeedUp {
 	}
 	
 	
-	//public static boolean[] refreshNumContenders(BigInteger scores[]) {
+	public static boolean[] refreshNumContenders(BigInteger scores[], boolean tooLow[], int numExtraPower2FirstHalfScore, int numExtra2) {
+
+		BigInteger tmpScores[] = new BigInteger[NUM_REFLECTIONS * NUM_ROTATIONS];
 		
-	//}
+		
+		BigInteger TWO = new BigInteger("2");
+		BigInteger factorToUse = BigInteger.ONE;
+		for(int n=0; n < Math.abs(numExtraPower2FirstHalfScore - numExtra2); n++) {
+			factorToUse = factorToUse.multiply(TWO);
+		}
+		
+		for(int m=0; m<scores.length; m++) {
+			if(numExtraPower2FirstHalfScore < numExtra2 && m < 4) {
+				tmpScores[m] = scores[m].multiply(factorToUse);
+			} else if(numExtraPower2FirstHalfScore > numExtra2 && m >= 4) {
+				tmpScores[m] = scores[m].multiply(factorToUse);
+			} else {
+				tmpScores[m] = scores[m];
+			}
+			
+		}
+		
+		for(int k=0; k<tmpScores.length; k++) {
+			if(tooLow[k]) {
+				continue;
+			}
+			for(int m=k+1; m<tmpScores.length; m++) {
+				if(tooLow[m]) {
+					continue;
+				}
+				
+				if(tmpScores[k].compareTo(tmpScores[m]) < 0) {
+					
+					//System.out.println(tmpScores[k] + " <");
+					//System.out.println(tmpScores[m]);
+					
+					if( (m <4 && k<4) || (m >= 4 && k >= 4)
+							|| (numExtra2 > numExtraPower2FirstHalfScore && k >= 4)
+							|| (numExtra2 < numExtraPower2FirstHalfScore && k < 4)) {
+						tooLow[k] = true;
+					}
+					break;
+				} else if(tmpScores[k].compareTo(tmpScores[m]) > 0) {
+					
+					
+					if( (m <4 && k<4) || (m >= 4 && k >= 4)
+							|| (numExtra2 > numExtraPower2FirstHalfScore && m >= 4)
+							|| (numExtra2 < numExtraPower2FirstHalfScore && m < 4)) {
+						tooLow[m] = true;
+						
+					
+					}
+				}
+			}
+		}
+		return tooLow;
+	}
 	
 }
