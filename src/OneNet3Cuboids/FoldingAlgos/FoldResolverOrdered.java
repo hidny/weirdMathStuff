@@ -1,6 +1,5 @@
 package OneNet3Cuboids.FoldingAlgos;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -9,6 +8,7 @@ import java.util.Iterator;
 import OneNet3Cuboids.CuboidToFoldOn;
 import OneNet3Cuboids.Utils;
 import OneNet3Cuboids.Coord.CoordWithRotationAndIndex;
+import OneNet3Cuboids.DupRemover.BasicUniqueCheck;
 import number.IsNumber;
 
 public class FoldResolverOrdered {
@@ -28,7 +28,7 @@ public class FoldResolverOrdered {
 		//TODO: LATER use hashes to help.. (record potential expansions, and no-nos...)
 		HashSet <String>paperToDevelop = new HashSet<String>();
 		
-		int GRID_SIZE = 2 * Utils.getTotalArea(a, b, c);
+		int GRID_SIZE = 2*Utils.getTotalArea(a, b, c);
 	
 		boolean paperUsed[][] = new boolean[GRID_SIZE][GRID_SIZE];
 		int indexCuboidOnPaper[][] = new int[GRID_SIZE][GRID_SIZE];
@@ -93,14 +93,14 @@ public class FoldResolverOrdered {
 			
 			numFound++;
 			
-			if(numFound % 100000 == 0) {
+			if(numFound % 10000 == 0) {
 				System.out.println(numFound);
 			}
 			
-			if(FoldResolver1.isUnique(paperUsed)) {
+			if(BasicUniqueCheck.isUnique(paperUsed)) {
 				numUniqueFound++;
 				
-				if(numUniqueFound % 20000 == 0) {
+				if(numUniqueFound % 2000 == 0) {
 					System.out.println("Found unique net:");
 					FoldResolver1.printFold(paperUsed);
 					FoldResolver1.printFoldWithIndex(indexCuboidonPaper);
@@ -331,7 +331,7 @@ public class FoldResolverOrdered {
 
 	public static void main(String args[]) {
 		System.out.println("Fold Resolver Ordered:");
-		solveFoldsForSingleCuboid(1, 1, 1);
+		solveFoldsForSingleCuboid(4, 1, 1);
 
 		//Mission add to OEIS:
 		//So far, the pattern is:
