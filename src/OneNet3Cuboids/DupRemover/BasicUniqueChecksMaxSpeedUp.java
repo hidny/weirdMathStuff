@@ -113,26 +113,22 @@ public class BasicUniqueChecksMaxSpeedUp {
 			sideFactor2 = sideFactor2.multiply(intermediateFactor);
 		}
 		
-		//TODO: make function to get scores:
-		//I could condense this and make it less repetitive, but I'm lazy.
-		
 		BigInteger scores[] = new BigInteger[NUM_REFLECTIONS * NUM_ROTATIONS];
 		
 		for(int i=0; i<scores.length; i++) {
 			scores[i] = BigInteger.ZERO;
 		}
 		
-		//boolean tooLow[] = new boolean[NUM_REFLECTIONS * NUM_ROTATIONS];
-		//boolean maybeTooLow[] = new boolean[NUM_REFLECTIONS * NUM_ROTATIONS];
-		//boolean onlyOneContender = false;
+		boolean tooLow[] = new boolean[NUM_REFLECTIONS * NUM_ROTATIONS];
+		boolean onlyOneContender = false;
 		
 		for(int i=firsti, irev = lasti; i<=lasti; i++, irev--) {
 			for(int j=firstj, jrev = lastj; j<=lastj; j++, jrev--) {
 				
 				for(int k=0; k<scores.length; k++) {
-					//if(tooLow[k]) {
-					//	continue;
-					//}
+					if(tooLow[k]) {
+						continue;
+					}
 					scores[k] = scores[k].multiply(TWO);
 				}
 				
@@ -143,67 +139,155 @@ public class BasicUniqueChecksMaxSpeedUp {
 				int i2rev = lasti - (tmp % (lasti - firsti + 1));
 				int j2rev = lastj - (tmp / (lasti - firsti + 1));
 
-				if(array[i][j]) {
+				if(!tooLow[0] && array[i][j]) {
 					scores[0] = scores[0].add(BigInteger.ONE);
 				}
 				
-				if(array[i][jrev]) {
+				if(!tooLow[1] && array[i][jrev]) {
 					scores[1] = scores[1].add(BigInteger.ONE);
 				}
 				
-				if(array[irev][j]) {
+				if(!tooLow[2] && array[irev][j]) {
 					scores[2] = scores[2].add(BigInteger.ONE);
 				}
 				
-				if(array[irev][jrev]) {
+				if(!tooLow[3] && array[irev][jrev]) {
 					scores[3] = scores[3].add(BigInteger.ONE);
 				}
 
 				
-				if(array[i2][j2]) {
+				if(!tooLow[4] && array[i2][j2]) {
 					scores[4] = scores[4].add(BigInteger.ONE);
 				}
 				
-				if(array[i2][j2rev]) {
+				if(!tooLow[5] && array[i2][j2rev]) {
 					scores[5] = scores[5].add(BigInteger.ONE);
 				}
 				
-				if(array[i2rev][j2]) {
+				if(!tooLow[6] && array[i2rev][j2]) {
 					scores[6] = scores[6].add(BigInteger.ONE);
 				}
 				
-				if(array[i2rev][j2rev]) {
+				if(!tooLow[7] && array[i2rev][j2rev]) {
 					scores[7] = scores[7].add(BigInteger.ONE);
 				}
 
-				if(tmp > 0 && /* tmp % (lasti - firsti + 1) == 0*/
-						i2 == lasti) {
-					scores[4] = scores[4].multiply(vertFactor2);
-					scores[5] = scores[5].multiply(vertFactor2);
-					scores[6] = scores[6].multiply(vertFactor2);
-					scores[7] = scores[7].multiply(vertFactor2);
-					System.out.println("Vert factor 2");
+				if(! onlyOneContender  ) {
+					int numContender = 0;
+
+					BigInteger tmpScores[] = new BigInteger[NUM_REFLECTIONS * NUM_ROTATIONS];
+					
+					int numExtra1 = (i - firsti)* ((array[0].length - 1) - (lastj - firstj));
+					int numExtra2 = (j2 - firstj)* ((array.length - 1) - (lasti - firsti));
+					
+					if(i == firsti && j2 == firstj) {
+						tmpScores = scores;
+					} else {
+						
+						
+						BigInteger factorToUse = BigInteger.ONE;
+						for(int n=0; n < Math.abs(numExtra1 - numExtra2); n++) {
+							factorToUse = factorToUse.multiply(TWO);
+						}
+						
+						for(int m=0; m<scores.length; m++) {
+							if(numExtra1 < numExtra2 && m < 4) {
+								tmpScores[m] = scores[m].multiply(factorToUse);
+							} else if(numExtra1 > numExtra2 && m >= 4) {
+								tmpScores[m] = scores[m].multiply(factorToUse);
+							} else {
+								tmpScores[m] = scores[m];
+							}
+							
+						}
+						
+					}
+					
+					for(int k=0; k<tmpScores.length; k++) {
+						if(! tooLow[k]) {
+							numContender++;
+						}
+					}
+					for(int k=0; k<tmpScores.length; k++) {
+						if(tooLow[k]) {
+							continue;
+						}
+						for(int m=k+1; m<tmpScores.length; m++) {
+							if(tooLow[m]) {
+								continue;
+							}
+							
+							if(tmpScores[k].compareTo(tmpScores[m]) < 0) {
+								
+								//System.out.println(tmpScores[k] + " <");
+								//System.out.println(tmpScores[m]);
+								
+								if( (m <4 && k<4) || (m >= 4 && k >= 4)
+										|| (numExtra2 > numExtra1 && k >= 4)
+										|| (numExtra2 < numExtra1 && k < 4)) {
+									tooLow[k] = true;
+									numContender--;
+								}
+								break;
+							} else if(tmpScores[k].compareTo(tmpScores[m]) > 0) {
+								
+								
+								if( (m <4 && k<4) || (m >= 4 && k >= 4)
+										|| (numExtra2 > numExtra1 && m >= 4)
+										|| (numExtra2 < numExtra1 && m < 4)) {
+									numContender--;
+									tooLow[m] = true;
+									
+								
+								}
+							}
+						}
+					}
+					
+					if(numContender == 1) {
+						//System.out.println("Only 1 contender");
+						onlyOneContender = true;
+					}
 				}
+				
+				if(tmp > 0 &&
+						i2 == lasti) {
+					
+					for(int k=0; k<scores.length/2; k++) {
+						if(tooLow[4 + k]) {
+							continue;
+						}
+						scores[4 + k] = scores[4 + k].multiply(vertFactor2);
+					}
+				}
+				
+				
+				
 			}
 			
-			scores[0] = scores[0].multiply(sideFactor);
-			scores[1] = scores[1].multiply(sideFactor);
-			scores[2] = scores[2].multiply(sideFactor);
-			scores[3] = scores[3].multiply(sideFactor);
-			
+			for(int k=0; k<scores.length/2; k++) {
+				if(tooLow[k]) {
+					continue;
+				}
+				scores[k] = scores[k].multiply(sideFactor);
+			}
 		
 			
 		}
-		scores[0] = scores[0].multiply(vertFactor);
-		scores[1] = scores[1].multiply(vertFactor);
-		scores[2] = scores[2].multiply(vertFactor);
-		scores[3] = scores[3].multiply(vertFactor);
+		for(int k=0; k<scores.length/2; k++) {
+			if(tooLow[k]) {
+				continue;
+			}
+			scores[k] = scores[k].multiply(vertFactor);
+		}
 		
-
-		scores[4] = scores[4].multiply(sideFactor2);
-		scores[5] = scores[5].multiply(sideFactor2);
-		scores[6] = scores[6].multiply(sideFactor2);
-		scores[7] = scores[7].multiply(sideFactor2);
+		for(int k=0; k<scores.length/2; k++) {
+			if(tooLow[4 + k]) {
+				continue;
+			}
+			scores[4 + k] = scores[4 + k].multiply(sideFactor2);
+		}
+		
 
 		
 		//End update the side Factor and vertFactor:
@@ -218,7 +302,16 @@ public class BasicUniqueChecksMaxSpeedUp {
 			}
 		}
 		
-		SanityCheckScoresForUniqueness.sanityCheckScoresWithSimplerMethod(scores, array);
+		//System.out.println("Max: " + max);
+		
+		//Sanity check:
+		
+		/*BasicUniqueCheck.isUnique(array);
+		
+		if(! BasicUniqueCheck.uniqList.contains(max)) {
+			System.out.println("DOH!");
+			System.exit(1);
+		}*/
 		
 		if(! uniqList.contains(max)) {
 			uniqList.add(max);
@@ -231,5 +324,9 @@ public class BasicUniqueChecksMaxSpeedUp {
 		}
 	}
 	
+	
+	//public static boolean[] refreshNumContenders(BigInteger scores[]) {
+		
+	//}
 	
 }
