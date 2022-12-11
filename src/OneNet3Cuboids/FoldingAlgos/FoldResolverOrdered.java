@@ -9,6 +9,7 @@ import OneNet3Cuboids.CuboidToFoldOn;
 import OneNet3Cuboids.Utils;
 import OneNet3Cuboids.Coord.CoordWithRotationAndIndex;
 import OneNet3Cuboids.DupRemover.BasicUniqueCheck;
+import OneNet3Cuboids.DupRemover.BasicUniqueCheckImproved;
 import number.IsNumber;
 
 public class FoldResolverOrdered {
@@ -88,22 +89,24 @@ public class FoldResolverOrdered {
 			//System.out.println("Done!");
 			
 			//TODO: do something more complicated than printing later:
-			//printFold(paperUsed);
-			//printFoldWithIndex(indexCuboidonPaper);
+			//Utils.printFold(paperUsed);
+			//Utils.printFoldWithIndex(indexCuboidonPaper);
 			
 			numFound++;
 			
-			if(numFound % 10000 == 0) {
-				System.out.println(numFound);
+			if((numCellsUsedDepth < 20 && numFound % 10000 == 0)
+					|| numFound % 100000 == 0) {
+				System.out.println(numFound + " (num unique: " + numUniqueFound + ")");
 			}
 			
-			if(BasicUniqueCheck.isUnique(paperUsed)) {
+			if(BasicUniqueCheckImproved.isUnique(paperUsed)) {
 				numUniqueFound++;
 				
-				if(numUniqueFound % 2000 == 0) {
+				if((numCellsUsedDepth < 20 && numUniqueFound % 2000 == 0)
+						|| numUniqueFound % 10000 == 0) {
 					System.out.println("Found unique net:");
-					FoldResolver1.printFold(paperUsed);
-					FoldResolver1.printFoldWithIndex(indexCuboidonPaper);
+					Utils.printFold(paperUsed);
+					Utils.printFoldWithIndex(indexCuboidonPaper);
 				
 					System.out.println("Num unique solutions found: " + numUniqueFound);
 				}
@@ -331,7 +334,7 @@ public class FoldResolverOrdered {
 
 	public static void main(String args[]) {
 		System.out.println("Fold Resolver Ordered:");
-		solveFoldsForSingleCuboid(4, 1, 1);
+		solveFoldsForSingleCuboid(5, 1, 1);
 
 		//Mission add to OEIS:
 		//So far, the pattern is:
