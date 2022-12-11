@@ -7,14 +7,13 @@ import java.util.Iterator;
 
 import OneNet3Cuboids.CuboidToFoldOn;
 import OneNet3Cuboids.Utils;
+import OneNet3Cuboids.Coord.Coord2D;
 import OneNet3Cuboids.Coord.CoordWithRotationAndIndex;
-import OneNet3Cuboids.DupRemover.BasicUniqueCheck;
 import OneNet3Cuboids.DupRemover.BasicUniqueCheckImproved;
 import number.IsNumber;
 
 public class FoldResolverOrdered {
 
-	//TODO: find the number of ways to fold a 1x1x1 cube (should be 11)
 	
 
 	public static final int NUM_ROTATIONS = 4;
@@ -27,7 +26,10 @@ public class FoldResolverOrdered {
 		
 
 		//TODO: LATER use hashes to help.. (record potential expansions, and no-nos...)
-		HashSet <String>paperToDevelop = new HashSet<String>();
+		Coord2D paperToDevelop[] = new Coord2D[Utils.getTotalArea(a, b, c)];
+		for(int i=0; i<paperToDevelop.length; i++) {
+			paperToDevelop[i] = null;
+		}
 		
 		int GRID_SIZE = 2*Utils.getTotalArea(a, b, c);
 	
@@ -55,11 +57,11 @@ public class FoldResolverOrdered {
 		int START_INDEX = 0;
 		int START_ROTATION = 0;
 		paperUsed[START_I][START_J] = true;
+		paperToDevelop[numCellsUsedDepth] = new Coord2D(START_I, START_J);
 		
 		cuboid.setCell(START_INDEX, START_ROTATION);
 		indexCuboidOnPaper[START_I][START_J] = START_INDEX;
 		numCellsUsedDepth += 1;
-		paperToDevelop.add(START_I +"," + START_J);
 		
 
 		int minOrderedCellCouldUse = 0;
@@ -81,7 +83,7 @@ public class FoldResolverOrdered {
 	//TODO
 	
 	
-	public static void doDepthFirstSearch(HashSet <String>paperToDevelop, int indexCuboidonPaper[][], boolean paperUsed[][], CuboidToFoldOn cuboid, int numCellsUsedDepth, int debugLastIndex,
+	public static void doDepthFirstSearch(Coord2D paperToDevelop[], int indexCuboidonPaper[][], boolean paperUsed[][], CuboidToFoldOn cuboid, int numCellsUsedDepth, int debugLastIndex,
 			HashMap <Integer, Integer> CellIndexToOrderOfDev, int minOrderedCellCouldUse, int minCellRotationOfMinCellToDev) {
 
 		
@@ -112,34 +114,18 @@ public class FoldResolverOrdered {
 				}
 				
 			}
+
+			return;
 		}
 		
 		//DEPTH-FIRST START:
 		
-		Iterator<String> it = paperToDevelop.iterator();
-		
-		ArrayList<String> toDev = new ArrayList<String>();
-		
-		//Get the keys in a weird way:
-		while(it.hasNext()) {
-			toDev.add(it.next());
-		}
-		
-		for(int i=0; i<toDev.size(); i++) {
+		for(int i=0; paperToDevelop[i] != null && i<paperToDevelop.length; i++) {
 			
-			String coordToDev = toDev.get(i);
 			
-			//TODO: assume all indexes before shouldn't be developed (enforce an ordering)
-			//Do it later... and try to do it efficiently.
-			
-			//ew so inefficient:
-			String token[] = coordToDev.split(",");
-			int coord_i = pint(token[0]);
-			int coord_j = pint(token[1]);
-
 			//System.out.println("Coord i,j : " + coord_i + ", " + coord_j);
 			
-			int indexToUse = indexCuboidonPaper[coord_i][coord_j];
+			int indexToUse = indexCuboidonPaper[paperToDevelop[i].i][paperToDevelop[i].j];
 			if(indexToUse < 0) {
 				System.out.println("Doh!");
 				System.exit(1);
@@ -186,20 +172,20 @@ public class FoldResolverOrdered {
 				int new_i = -1;
 				int new_j = -1;
 				if(rotationToAddCellOn == 0) {
-					new_i = coord_i-1;
-					new_j = coord_j;
+					new_i = paperToDevelop[i].i-1;
+					new_j = paperToDevelop[i].j;
 					
 				} else if(rotationToAddCellOn == 1) {
-					new_i = coord_i;
-					new_j = coord_j+1;
+					new_i = paperToDevelop[i].i;
+					new_j = paperToDevelop[i].j+1;
 					
 				} else if(rotationToAddCellOn == 2) {
-					new_i = coord_i+1;
-					new_j = coord_j;
+					new_i = paperToDevelop[i].i+1;
+					new_j = paperToDevelop[i].j;
 					
 				} else if(rotationToAddCellOn == 3) {
-					new_i = coord_i;
-					new_j = coord_j-1;
+					new_i = paperToDevelop[i].i;
+					new_j = paperToDevelop[i].j-1;
 				} else {
 					System.out.println("Doh! 3");
 					System.out.println("Unknown rotation!");
@@ -228,7 +214,7 @@ public class FoldResolverOrdered {
 						if((i1 == new_i && j1 != new_j)
 								|| (i1 != new_i && j1 == new_j)) {
 							
-							if(coord_i == i1 && coord_j == j1) {
+							if(paperToDevelop[i].i == i1 && paperToDevelop[i].j == j1) {
 								continue;
 							}
 							
@@ -289,9 +275,9 @@ public class FoldResolverOrdered {
 					
 					paperUsed[new_i][new_j] = true;
 					indexCuboidonPaper[new_i][new_j] = indexNewCell;
+					paperToDevelop[numCellsUsedDepth] = new Coord2D(new_i, new_j);
 
 					numCellsUsedDepth += 1;
-					paperToDevelop.add(new_i +"," + new_j);
 
 					CellIndexToOrderOfDev.put(indexNewCell, numCellsUsedDepth);
 					//End setep
@@ -312,8 +298,10 @@ public class FoldResolverOrdered {
 					cuboid.removeCell(indexNewCell);
 					paperUsed[new_i][new_j] = false;
 					indexCuboidonPaper[new_i][new_j] = -1;
+					
 					numCellsUsedDepth -= 1;
-					paperToDevelop.remove(new_i +"," + new_j);
+					
+					paperToDevelop[numCellsUsedDepth] = null;
 					CellIndexToOrderOfDev.remove(indexNewCell);
 					//End tear down
 					
@@ -334,7 +322,7 @@ public class FoldResolverOrdered {
 
 	public static void main(String args[]) {
 		System.out.println("Fold Resolver Ordered:");
-		solveFoldsForSingleCuboid(5, 1, 1);
+		solveFoldsForSingleCuboid(4, 1, 1);
 
 		//Mission add to OEIS:
 		//So far, the pattern is:
