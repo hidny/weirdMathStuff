@@ -48,7 +48,6 @@ public class FoldResolverOrdered {
 		int START_J = GRID_SIZE/2;
 		
 		CuboidToFoldOn cuboid = new CuboidToFoldOn(a, b, b);
-		
 		//Insert start cell:
 		
 		//Once this reaches the total area, we're done!
@@ -96,6 +95,7 @@ public class FoldResolverOrdered {
 			
 			numFound++;
 			
+			
 			if((numCellsUsedDepth < 20 && numFound % 10000 == 0)
 					|| numFound % 100000 == 0) {
 				System.out.println(numFound + " (num unique: " + numUniqueFound + ")");
@@ -139,6 +139,20 @@ public class FoldResolverOrdered {
 				continue;
 			}
 			
+			//Hack to enforce order where bottom of cuboid has just as many or more than top of cuboid.
+			//TODO: improve hack for Neighbours ==2 (seperate corner vs straight case)
+			//i.e. if 0/bottom has straight, top has straight (at least enforces 1 rotation vs 3 rotations 
+			if(indexToUse == cuboid.getNumCellsToFill() -1 ) {
+				if(getNumUsedNeighbourCellonPaper(indexCuboidonPaper, paperToDevelop[i])  >=
+						getNumUsedNeighbourCellonPaper(indexCuboidonPaper, paperToDevelop[0])) {
+					
+					
+					//TODO: have a flag that says to not bother getting neighbours for future depth...
+					//Won't save much though...
+					continue;
+				}
+			}
+			//End Hack to enforce order where bottom of cuboid has just as many or more than top of cuboid.
 			
 			
 			CoordWithRotationAndIndex neighbours[] = cuboid.getNeighbours(indexToUse);
@@ -156,11 +170,16 @@ public class FoldResolverOrdered {
 			for(int j=0; j<neighbours.length; j++) {
 				
 				if(cuboid.isCellIndexUsed(neighbours[j].getIndex())) {
+					
+					//TODO2: have a flag that says to not bother getting neighbours for future depth...
+					//Won't save much though... if no rotation works.
+					
 					//Don't reuse a used cell:
 					continue;
 				} else if(CellIndexToOrderOfDev.get(indexToUse) == minOrderedCellCouldUse && j < minCellRotationOfMinCellToDev) {
 					continue;
 				}
+				
 				//TODO: neighbours should have an index!
 				
 				//Try adding it or not
@@ -318,6 +337,32 @@ public class FoldResolverOrdered {
 		//TODO: figure out how to record distinct answers
 		
 	}
+	
+	public static int getNumUsedNeighbourCellonPaper(
+			int indexCuboidonPaper[][],
+			Coord2D cellLocation) {
+
+		
+		int ret = 0;
+		
+		if(indexCuboidonPaper[cellLocation.i-1][cellLocation.j] >= 0) {
+			ret++;
+		}
+		if(indexCuboidonPaper[cellLocation.i][cellLocation.j+1] >= 0) {
+			ret++;
+		}
+		if(indexCuboidonPaper[cellLocation.i+1][cellLocation.j] >= 0) {
+			ret++;
+		}
+		if(indexCuboidonPaper[cellLocation.i][cellLocation.j-1] >= 0) {
+			ret++;
+		}
+		
+		
+		return ret;
+	}
+	
+	
 	
 
 	public static void main(String args[]) {
