@@ -221,6 +221,22 @@ public class FoldResolverOrdered {
 				
 				int rotationNeighbourRelativePaper = (curRotation - neighbours[j].getRot() + NUM_ROTATIONS) % NUM_ROTATIONS;
 				
+				//Special rules for the 1st/bottom node:
+				//These rules work because of the 4-way symmetry
+				if(indexToUse == 0) {
+					
+					if(getNumUsedNeighbourCellonPaper(indexCuboidonPaper,paperToDevelop[0]) < 3 && rotationToAddCellOn == 3) {
+						//(Leave cell on left alone unless bottom is touching all 4 cells)
+						//nope
+						continue;
+					} else if(rotationToAddCellOn > 0 && indexCuboidonPaper[paperToDevelop[i].i-1][paperToDevelop[i].j] <0) {
+						//If bottom is done with the cell on top, we're done!
+						//nope
+						continue;
+					}
+					
+				}
+				//End special rules for the 1st/bottom node.
 				
 				
 				
@@ -366,8 +382,8 @@ public class FoldResolverOrdered {
 	
 
 	public static void main(String args[]) {
-		System.out.println("Fold Resolver Ordered:");
-		solveFoldsForSingleCuboid(4, 1, 1);
+		System.out.println("Fold Rsolver Ordered:");
+		solveFoldsForSingleCuboid(5, 1, 1);
 
 		//Mission add to OEIS:
 		//So far, the pattern is:
