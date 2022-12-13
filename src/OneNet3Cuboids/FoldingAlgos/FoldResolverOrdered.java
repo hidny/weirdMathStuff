@@ -234,9 +234,42 @@ public class FoldResolverOrdered {
 						//nope
 						continue;
 					}
+
+					//End special rules for the 1st/bottom node.
 					
+				//Special rules about where to put top in order to take advantage of symmetry:
+				} else if(neighbours[j].getIndex() == cuboid.getNumCellsToFill() -1 ) {
+					
+					
+					
+					if(curRotation != 2) {
+						//If curRotation is not 2, top isn't above bottom, and that's
+						//probably going to mean a duplicate, unless it's a specific 3 bottom case.
+						//In that case, it can be right of hub/bottom too.
+						//we want top to be above except for (the T intersection case.)
+						if(getNumUsedNeighbourCellonPaper(indexCuboidonPaper, paperToDevelop[0]) == 3
+								&& curRotation == 3) {
+								//The exception where top can be right of bottom:
+								//(the T intersection case.)
+								
+						} else {
+							continue;
+						}
+						
+					} else if(new_j < paperToDevelop[0].j
+							&& (getNumUsedNeighbourCellonPaper(indexCuboidonPaper, paperToDevelop[0]) == 1 ||
+									getNumUsedNeighbourCellonPaper(indexCuboidonPaper, paperToDevelop[0]) == 4 ||
+									(getNumUsedNeighbourCellonPaper(indexCuboidonPaper, paperToDevelop[0]) == 2 
+										&& paperUsed[paperToDevelop[0].i + 1][paperToDevelop[0].j]
+										&& paperUsed[paperToDevelop[0].i - 1][paperToDevelop[0].j]))
+							) {
+						//If bottom has 1 or 4 neighbours, or 2 neighbours that are above and below, make top right left of bottom on paper (or directly above)
+						
+						//i.e.: Only go up and to the right in the 1 bottom and 1 top case.
+						continue;
+					}
 				}
-				//End special rules for the 1st/bottom node.
+				//END special rules about where to put top in order to take advantage of symmetry
 				
 				
 				
