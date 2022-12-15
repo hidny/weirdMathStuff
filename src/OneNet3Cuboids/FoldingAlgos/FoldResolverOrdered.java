@@ -97,7 +97,8 @@ public class FoldResolverOrdered {
 			
 			
 			if((numCellsUsedDepth < 20 && numFound % 10000 == 0)
-					|| numFound % 100000 == 0) {
+					|| (numCellsUsedDepth < 27 && numFound % 100000 == 0)
+					|| numFound % 10000000 == 0) {
 				System.out.println(numFound + " (num unique: " + numUniqueFound + ")");
 			}
 			
@@ -105,7 +106,8 @@ public class FoldResolverOrdered {
 				numUniqueFound++;
 				
 				if((numCellsUsedDepth < 20 && numUniqueFound % 2000 == 0)
-						|| numUniqueFound % 10000 == 0) {
+						|| (numCellsUsedDepth < 27 && numUniqueFound % 100000 == 0)
+						|| numUniqueFound % 1000000 == 0) {
 					System.out.println("Found unique net:");
 					Utils.printFold(paperUsed);
 					Utils.printFoldWithIndex(indexCuboidonPaper);
@@ -416,7 +418,7 @@ public class FoldResolverOrdered {
 
 	public static void main(String args[]) {
 		System.out.println("Fold Rsolver Ordered:");
-		solveFoldsForSingleCuboid(5, 1, 1);
+		solveFoldsForSingleCuboid(7, 1, 1);
 
 		//Mission add to OEIS:
 		//So far, the pattern is:
