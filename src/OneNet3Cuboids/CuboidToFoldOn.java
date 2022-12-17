@@ -1,7 +1,6 @@
 package OneNet3Cuboids;
 
 import OneNet3Cuboids.Coord.CoordWithRotationAndIndex;
-import number.IsNumber;
 
 public class CuboidToFoldOn {
 
@@ -9,33 +8,10 @@ public class CuboidToFoldOn {
 
 	public static final int NUM_NEIGHBOURS = 4;
 	
-
-	//TODO: use this later:
 	private boolean cellsUsed[];
-	//TODO: make sure this is an appropriate name:
-	private int rotationRelativePaperUsed[];
+	private int rotationPaperRelativeToCuboidFlatMap[];
 	
 
-	
-	//TODO: allow function to insert paper at 1st cell with any rotation
-	
-	//TODO: for next cell to insert, make function to add cell relative to neighbour and record that
-	// it's taken with the appropriate rotation
-	
-	//TODO: allow a cell to be removed no questions asked.
-	
-	//TODO: this should be able to handle a depth first search and 
-	//for efficiency purposes, I'll make it mutable (it changes state when actions are done on it)
-	
-	//TODO: This should be simple!
-	// Just use neighbours to help navigate and cellsUsed + rotationRelativePaperUsed to keep track of state.
-	
-	//TODO: if move invalid:
-	// Current idea: return error number and stop changing state util :allow state change" function is run:
-	
-	//Maybe in another class:
-	//TODO: have a function that checks for forced moves somewhere
-	//TODO: also have a function that checks for less obvious impossibilities? (I haven't thought that hard yet)
 	
 	private CoordWithRotationAndIndex[][] neighbours;
 
@@ -45,11 +21,11 @@ public class CuboidToFoldOn {
 		neighbours = NeighbourGraphCreator.initNeighbourhood(a, b, c);
 		
 		cellsUsed = new boolean[Utils.getTotalArea(a, b, c)];
-		rotationRelativePaperUsed = new int[Utils.getTotalArea(a, b, c)];
+		rotationPaperRelativeToCuboidFlatMap = new int[Utils.getTotalArea(a, b, c)];
 		
 		for(int i=0; i<cellsUsed.length; i++) {
 			cellsUsed[i] = false;
-			rotationRelativePaperUsed[i] = -1;
+			rotationPaperRelativeToCuboidFlatMap[i] = -1;
 		}
 		
 	}
@@ -62,7 +38,7 @@ public class CuboidToFoldOn {
 		
 
 		cellsUsed[index] = true;
-		rotationRelativePaperUsed[index] = rotation;
+		rotationPaperRelativeToCuboidFlatMap[index] = rotation;
 	}
 	
 	public void removeCell(int index) {
@@ -72,7 +48,7 @@ public class CuboidToFoldOn {
 		}
 		
 		cellsUsed[index] = false;
-		rotationRelativePaperUsed[index] = -1;
+		rotationPaperRelativeToCuboidFlatMap[index] = -1;
 	}
 	
 	public int getNumCellsToFill() {
@@ -83,8 +59,8 @@ public class CuboidToFoldOn {
 		return neighbours[cellIndex];
 	}
 	
-	public int getRotationRelativeToPaper(int cellIndex) {
-		return rotationRelativePaperUsed[cellIndex];
+	public int getRotationPaperRelativeToMap(int cellIndex) {
+		return rotationPaperRelativeToCuboidFlatMap[cellIndex];
 	}
 	
 	public boolean isCellIndexUsed(int cellIndex) {
@@ -113,3 +89,25 @@ public class CuboidToFoldOn {
 	}
 
 }
+
+//Old ideas i won't follow up on:
+
+//TODO: allow function to insert paper at 1st cell with any rotation
+
+//TODO: for next cell to insert, make function to add cell relative to neighbour and record that
+// it's taken with the appropriate rotation
+
+//TODO: allow a cell to be removed no questions asked.
+
+//TODO: this should be able to handle a depth first search and 
+//for efficiency purposes, I'll make it mutable (it changes state when actions are done on it)
+
+//TODO: This should be simple!
+// Just use neighbours to help navigate and cellsUsed + rotationPaperRelativeToCuboidFlatMap to keep track of state.
+
+//TODO: if move invalid:
+// Current idea: return error number and stop changing state util :allow state change" function is run:
+
+//Maybe in another class:
+//TODO: have a function that checks for forced moves somewhere
+//TODO: also have a function that checks for less obvious impossibilities? (I haven't thought that hard yet)

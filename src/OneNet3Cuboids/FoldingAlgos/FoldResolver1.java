@@ -127,7 +127,7 @@ public class FoldResolver1 {
 			
 			CoordWithRotationAndIndex neighbours[] = cuboid.getNeighbours(indexToUse);
 			
-			int curRotation = cuboid.getRotationRelativeToPaper(indexToUse);
+			int curRotation = cuboid.getRotationPaperRelativeToMap(indexToUse);
 			if(curRotation < 0) {
 				System.out.println("Doh! 2");
 				System.exit(1);
@@ -220,7 +220,7 @@ public class FoldResolver1 {
 								//TODO: make sure that it fits!
 								
 								int indexOtherCell = indexCuboidonPaper[i1][j1];
-								int rotationOtherCell = cuboid.getRotationRelativeToPaper(indexOtherCell);
+								int rotationOtherCell = cuboid.getRotationPaperRelativeToMap(indexOtherCell);
 								
 								//TODO: put in function
 								int rotReq = -1;

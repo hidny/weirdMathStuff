@@ -6,13 +6,14 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 import OneNet3Cuboids.CuboidToFoldOn;
+import OneNet3Cuboids.DataModelViews;
 import OneNet3Cuboids.Utils;
 import OneNet3Cuboids.Coord.Coord2D;
 import OneNet3Cuboids.Coord.CoordWithRotationAndIndex;
 import OneNet3Cuboids.DupRemover.BasicUniqueCheckImproved;
 import number.IsNumber;
 
-public class FoldResolverOrdered {
+public class FoldResolverDivideAndConquer {
 
 	
 
@@ -221,7 +222,7 @@ public class FoldResolverOrdered {
 					continue;
 				}
 				
-				int rotationNeighbourRelativePaper = (curRotation - neighbours[j].getRot() + NUM_ROTATIONS) % NUM_ROTATIONS;
+				int rotationNeighbourPaperRelativeToMap = (curRotation - neighbours[j].getRot() + NUM_ROTATIONS) % NUM_ROTATIONS;
 				
 				//Special rules for the 1st/bottom node:
 				//These rules work because of the 4-way symmetry
@@ -276,7 +277,7 @@ public class FoldResolverOrdered {
 				
 				
 				//TODO: put in function A
-				boolean couldAddCellBecauseOfOtherPaperNeighbours = true;
+				boolean cantAddCellBecauseOfOtherPaperNeighbours = false;
 				
 				SEARCH_FOR_BAD_SECOND_NEIGHBOURS:
 				for(int i1=new_i-1; i1<=new_i+1; i1++) {
@@ -298,7 +299,7 @@ public class FoldResolverOrdered {
 								int rotationOtherCell = cuboid.getRotationPaperRelativeToMap(indexOtherCell);
 
 								if(CellIndexToOrderOfDev.get(indexOtherCell) < CellIndexToOrderOfDev.get(indexToUse) ) {
-									couldAddCellBecauseOfOtherPaperNeighbours = false;
+									cantAddCellBecauseOfOtherPaperNeighbours = true;
 									break SEARCH_FOR_BAD_SECOND_NEIGHBOURS;
 								}
 								
@@ -325,23 +326,161 @@ public class FoldResolverOrdered {
 								//End TODO: put in function
 
 								if(cuboid.getNeighbours(indexOtherCell)[neighbourIndexNeeded].getIndex() != indexNewCell) {
-									couldAddCellBecauseOfOtherPaperNeighbours = false;
+									cantAddCellBecauseOfOtherPaperNeighbours = true;
 									break SEARCH_FOR_BAD_SECOND_NEIGHBOURS;
 								}
+								
+								
 								
 							}
 							
 						}
 					}
 				}
+				
+				
+				
+				
+				
+				CoordWithRotationAndIndex neighboursOfNewCell[] = cuboid.getNeighbours(indexNewCell);
+				
+				//TODO: replace with more complex algo
+				//Search for isolated new neighbours:
+				//TODO: it's wrong :(
+				SEARCH_FOR_BAD_SECOND_NEIGHBOURS_2:
+				for(int rotIndexToFill=0; rotIndexToFill<NUM_ROTATIONS; rotIndexToFill++) {
+
+					if(indexToUse == 0 && indexNewCell == 1 && neighboursOfNewCell[rotIndexToFill].getIndex() == 2) {
+						System.out.println("Debug");
+					}
+						
+					if( ! cuboid.isCellIndexUsed(neighboursOfNewCell[rotIndexToFill].getIndex())) {
+						
+						
+						//All three of these are wrong:
+						//int rotationNeighbourPaperRelativeToMap2 = (rotationNeighbourPaperRelativeToMap - neighboursOfNewCell[rotIndexToFill].getRot() + NUM_ROTATIONS) % NUM_ROTATIONS;
+						
+						//int rotationToAddCellOn2 = (rotationNeighbourPaperRelativeToMap2 - rotIndexToFill + NUM_ROTATIONS) % NUM_ROTATIONS;
+						
+						//int rotationToAddCellOn2 = (j + rotationNeighbourPaperRelativeToMap2) % NUM_ROTATIONS;
+						
+						//End all three of these are wrong.
+						
+						//TODO: put in function
+						int new_i2 = -1;
+						int new_j2 = -1;
+						if(rotationToAddCellOn2 == 0) {
+							new_i2 = new_i-1;
+							new_j2 = new_j;
+							
+						} else if(rotationToAddCellOn2 == 1) {
+							new_i2 = new_i;
+							new_j2 = new_j+1;
+							
+						} else if(rotationToAddCellOn2 == 2) {
+							new_i2 = new_i+1;
+							new_j2 = new_j;
+							
+						} else if(rotationToAddCellOn2 == 3) {
+							new_i2 = new_i;
+							new_j2 = new_j-1;
+						} else {
+							System.out.println("Doh! 3");
+							System.out.println("Unknown rotation!");
+							System.exit(1);
+						}
+						//END TODO: put in function
+						
+						if(getNumUsedNeighbourCellonPaper(
+								indexCuboidonPaper,
+								new Coord2D(new_i2, new_j2)) == 3) {
+		
+							if( neighboursCellonPaperAreNeighbourOnCuboid(cuboid, indexCuboidonPaper, new Coord2D(new_i2, new_j2),
+									//TODO: give index a name
+									neighboursOfNewCell[rotIndexToFill].getIndex())) {
+							
+								if(cellHasNeighbourWithIndexUnderSomeMinIndex(
+										cuboid, neighboursOfNewCell[rotIndexToFill].getIndex(), CellIndexToOrderOfDev, CellIndexToOrderOfDev.get(indexToUse))
+									) {
+									
+									
+									System.out.println("....");
+									System.out.println(DataModelViews.getFlatNumberingView(cuboid.getNumCellsToFill()/4, 1, 1));
+									System.out.println("HOLE FOUND!");
+									System.out.println("Index to used as bridge: " + indexToUse);
+									System.out.println("Trying to add index: " + indexNewCell);
+									System.out.println("Neighbour with hole problem: " + neighboursOfNewCell[rotIndexToFill].getIndex());
+									Utils.printFold(paperUsed);
+									Utils.printFoldWithIndex(indexCuboidonPaper);
+									
+									if(rotationToAddCellOn2 == 0) {
+										System.out.println("up");
+		
+									} else if(rotationToAddCellOn2 == 1) {
+										System.out.println("right");
+										
+									} else if(rotationToAddCellOn2 == 2) {
+										System.out.println("down");
+										
+									} else if(rotationToAddCellOn2 == 3) {
+										System.out.println("left");
+									}
+
+									System.exit(1);
+									
+									cantAddCellBecauseOfOtherPaperNeighbours = true;
+									break SEARCH_FOR_BAD_SECOND_NEIGHBOURS_2;
+								} else {
+									System.out.println("....");
+									System.out.println(DataModelViews.getFlatNumberingView(cuboid.getNumCellsToFill()/4, 1, 1));
+									System.out.println("Could fill it up exception!");
+									System.out.println("Index to used as bridge: " + indexToUse);
+									System.out.println("Trying to add index: " + indexNewCell);
+									System.out.println("Neighbour with hole problem: " + neighboursOfNewCell[rotIndexToFill].getIndex());
+									Utils.printFold(paperUsed);
+									Utils.printFoldWithIndex(indexCuboidonPaper);
+									if(rotationToAddCellOn2 == 0) {
+										System.out.println("up");
+		
+									} else if(rotationToAddCellOn2 == 1) {
+										System.out.println("right");
+										
+									} else if(rotationToAddCellOn2 == 2) {
+										System.out.println("down");
+										
+									} else if(rotationToAddCellOn2 == 3) {
+										System.out.println("left");
+									}
+									System.exit(1);
+								}
+								
+							} else {
+								
+								System.out.println("Paper doesn't match the cuboid!");
+								System.out.println(DataModelViews.getFlatNumberingView(cuboid.getNumCellsToFill()/4, 1, 1));
+								System.out.println("Index to used as bridge: " + indexToUse);
+								System.out.println("Trying to add index: " + indexNewCell);
+								System.out.println("Neighbour with hole problem: " + neighboursOfNewCell[rotIndexToFill].getIndex());
+								Utils.printFold(paperUsed);
+								Utils.printFoldWithIndex(indexCuboidonPaper);
+								//System.exit(1);
+							}
+							
+						}
+						
+					}
+				}
+				//END TODO
+				
+				
 				//END TODO: put in function A
 				
-				if(couldAddCellBecauseOfOtherPaperNeighbours) {
+				if( ! cantAddCellBecauseOfOtherPaperNeighbours) {
 					//TODO: go next level!
 					
 
 					//Setup:
-					cuboid.setCell(indexNewCell, rotationNeighbourRelativePaper);
+					cuboid.setCell(indexNewCell, rotationNeighbourPaperRelativeToMap);
 					
 					paperUsed[new_i][new_j] = true;
 					indexCuboidonPaper[new_i][new_j] = indexNewCell;
@@ -355,7 +494,6 @@ public class FoldResolverOrdered {
 					int newMinOrderedCellCouldUse = CellIndexToOrderOfDev.get(indexToUse);
 					int newMinCellRotationOfMinCellToDev = j;
 	
-					
 					
 					int debugLastIndex2 = indexNewCell;
 					//TODO: remove choices based on ordering here
@@ -413,12 +551,96 @@ public class FoldResolverOrdered {
 		return ret;
 	}
 	
+
+	//Don't use yet!
+	public static int getNumUsedNeighbourCellonCuboidDoNotUse(
+			CuboidToFoldOn cuboid, int indexCell) {
+		int ret = 0;
+		
+		for(int r=0; r<NUM_ROTATIONS; r++) {
+			if(cuboid.isCellIndexUsed(cuboid.getNeighbours(indexCell)[r].getIndex())) {
+				ret++;
+			}
+		}
+		
+		return ret;
+	}
 	
+	public static boolean cellHasNeighbourWithIndexUnderSomeMinIndex(
+			CuboidToFoldOn cuboid, int index, HashMap <Integer, Integer> CellIndexToOrderOfDev, int minOrderedCellCouldUse) {
+		
+		for(int r=0; r<NUM_ROTATIONS; r++) {
+			if(CellIndexToOrderOfDev.containsKey(cuboid.getNeighbours(index)[r].getIndex())
+					&& CellIndexToOrderOfDev.get(cuboid.getNeighbours(index)[r].getIndex()) < minOrderedCellCouldUse) {
+				return true;
+			}
+		}
+		
+		return false;
+		
+	}
+	
+	//TODO: test
+	public static boolean  neighboursCellonPaperAreNeighbourOnCuboid(
+	CuboidToFoldOn cuboid, int indexCuboidonPaper[][], Coord2D coord, int indexToInsert) {
+		
+		CoordWithRotationAndIndex neighbour[] = cuboid.getNeighbours(indexToInsert);
+		
+		
+		int paperIndexes[] = new int[4];
+		paperIndexes[0] = indexCuboidonPaper[coord.i - 1][coord.j];
+		paperIndexes[1] = indexCuboidonPaper[coord.i][coord.j + 1];
+		paperIndexes[2] = indexCuboidonPaper[coord.i + 1][coord.j];
+		paperIndexes[3] = indexCuboidonPaper[coord.i][coord.j - 1];
+		
+		int alignment = -1;
+		
+		
+		FOUND_ALIGNMENT:
+		for(int p=0; p<paperIndexes.length; p++) {
+			if(paperIndexes[p] < 0) {
+				continue;
+			}
+			//TODO: figure out the rotation yourself.
+			for(int i=0; i<neighbour.length; i++) {
+			
+				if(neighbour[i].getIndex() == paperIndexes[p]) {
+					
+					alignment = (i - p + NUM_ROTATIONS) % NUM_ROTATIONS;
+					
+					break FOUND_ALIGNMENT;
+				}
+				
+				
+			}
+			
+			
+		}
+		
+		if(alignment == -1) {
+			return false;
+		}
+		
+		
+		for(int p=0; p<paperIndexes.length; p++) {
+			if(paperIndexes[p] < 0) {
+				continue;
+			}
+			
+			if(neighbour[(p + alignment) % NUM_ROTATIONS].getIndex() == paperIndexes[p]) {
+				
+				return false;
+			}
+		}
+		
+		return true;
+	}
+
 	
 
 	public static void main(String args[]) {
 		System.out.println("Fold Rsolver Ordered:");
-		solveFoldsForSingleCuboid(3, 1, 1);
+		solveFoldsForSingleCuboid(5, 1, 1);
 
 		//Mission add to OEIS:
 		//So far, the pattern is:
