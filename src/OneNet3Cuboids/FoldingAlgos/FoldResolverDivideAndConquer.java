@@ -344,25 +344,25 @@ public class FoldResolverDivideAndConquer {
 				
 				CoordWithRotationAndIndex neighboursOfNewCell[] = cuboid.getNeighbours(indexNewCell);
 				
+				
 				//TODO: replace with more complex algo
 				//Search for isolated new neighbours:
 				//TODO: it's wrong :(
 				SEARCH_FOR_BAD_SECOND_NEIGHBOURS_2:
 				for(int rotIndexToFill=0; rotIndexToFill<NUM_ROTATIONS; rotIndexToFill++) {
 
-					if(indexToUse == 0 && indexNewCell == 1 && neighboursOfNewCell[rotIndexToFill].getIndex() == 2) {
+					
+
+					int indexWithPotentialHole = neighboursOfNewCell[rotIndexToFill].getIndex();
+
+					if(indexToUse == 0 && indexNewCell == 1 && indexWithPotentialHole == 2) {
 						System.out.println("Debug");
 					}
+					
+					if( ! cuboid.isCellIndexUsed(indexWithPotentialHole)) {
 						
-					if( ! cuboid.isCellIndexUsed(neighboursOfNewCell[rotIndexToFill].getIndex())) {
 						
-						
-						//All three of these are wrong:
-						//int rotationNeighbourPaperRelativeToMap2 = (rotationNeighbourPaperRelativeToMap - neighboursOfNewCell[rotIndexToFill].getRot() + NUM_ROTATIONS) % NUM_ROTATIONS;
-						
-						//int rotationToAddCellOn2 = (rotationNeighbourPaperRelativeToMap2 - rotIndexToFill + NUM_ROTATIONS) % NUM_ROTATIONS;
-						
-						//int rotationToAddCellOn2 = (j + rotationNeighbourPaperRelativeToMap2) % NUM_ROTATIONS;
+						int rotationToAddCellOn2 = (j + rotationNeighbourPaperRelativeToMap) % NUM_ROTATIONS;
 						
 						//End all three of these are wrong.
 						
@@ -396,20 +396,19 @@ public class FoldResolverDivideAndConquer {
 								new Coord2D(new_i2, new_j2)) == 3) {
 		
 							if( neighboursCellonPaperAreNeighbourOnCuboid(cuboid, indexCuboidonPaper, new Coord2D(new_i2, new_j2),
-									//TODO: give index a name
-									neighboursOfNewCell[rotIndexToFill].getIndex())) {
+									indexWithPotentialHole)) {
 							
 								if(cellHasNeighbourWithIndexUnderSomeMinIndex(
-										cuboid, neighboursOfNewCell[rotIndexToFill].getIndex(), CellIndexToOrderOfDev, CellIndexToOrderOfDev.get(indexToUse))
+										cuboid, indexWithPotentialHole, CellIndexToOrderOfDev, CellIndexToOrderOfDev.get(indexToUse))
 									) {
 									
 									
-									System.out.println("....");
+									/*System.out.println("....");
 									System.out.println(DataModelViews.getFlatNumberingView(cuboid.getNumCellsToFill()/4, 1, 1));
 									System.out.println("HOLE FOUND!");
 									System.out.println("Index to used as bridge: " + indexToUse);
 									System.out.println("Trying to add index: " + indexNewCell);
-									System.out.println("Neighbour with hole problem: " + neighboursOfNewCell[rotIndexToFill].getIndex());
+									System.out.println("Neighbour with hole problem: " + indexWithPotentialHole);
 									Utils.printFold(paperUsed);
 									Utils.printFoldWithIndex(indexCuboidonPaper);
 									
@@ -426,7 +425,7 @@ public class FoldResolverDivideAndConquer {
 										System.out.println("left");
 									}
 
-									System.exit(1);
+									System.exit(1);*/
 									
 									cantAddCellBecauseOfOtherPaperNeighbours = true;
 									break SEARCH_FOR_BAD_SECOND_NEIGHBOURS_2;
@@ -436,7 +435,7 @@ public class FoldResolverDivideAndConquer {
 									System.out.println("Could fill it up exception!");
 									System.out.println("Index to used as bridge: " + indexToUse);
 									System.out.println("Trying to add index: " + indexNewCell);
-									System.out.println("Neighbour with hole problem: " + neighboursOfNewCell[rotIndexToFill].getIndex());
+									System.out.println("Neighbour with hole problem: " + indexWithPotentialHole);
 									Utils.printFold(paperUsed);
 									Utils.printFoldWithIndex(indexCuboidonPaper);
 									if(rotationToAddCellOn2 == 0) {
@@ -456,14 +455,24 @@ public class FoldResolverDivideAndConquer {
 								
 							} else {
 								
+								//Paper doesn't match the cuboid!
+								//So it's not a hole.
+								/*
+								System.out.println();
+								System.out.println();
+								System.out.println();
 								System.out.println("Paper doesn't match the cuboid!");
 								System.out.println(DataModelViews.getFlatNumberingView(cuboid.getNumCellsToFill()/4, 1, 1));
 								System.out.println("Index to used as bridge: " + indexToUse);
 								System.out.println("Trying to add index: " + indexNewCell);
-								System.out.println("Neighbour with hole problem: " + neighboursOfNewCell[rotIndexToFill].getIndex());
+								System.out.println("Neighbour with hole problem: " + indexWithPotentialHole);
 								Utils.printFold(paperUsed);
 								Utils.printFoldWithIndex(indexCuboidonPaper);
-								//System.exit(1);
+								System.out.println("Function with problem:");
+								neighboursCellonPaperAreNeighbourOnCuboid(cuboid, indexCuboidonPaper, new Coord2D(new_i2, new_j2),
+											indexWithPotentialHole);
+								System.exit(1);
+								*/
 							}
 							
 						}
@@ -580,7 +589,8 @@ public class FoldResolverDivideAndConquer {
 		
 	}
 	
-	//TODO: test
+	//TODO: simplify!
+	// you shouldn't need to find the alignment.
 	public static boolean  neighboursCellonPaperAreNeighbourOnCuboid(
 	CuboidToFoldOn cuboid, int indexCuboidonPaper[][], Coord2D coord, int indexToInsert) {
 		
@@ -627,7 +637,7 @@ public class FoldResolverDivideAndConquer {
 				continue;
 			}
 			
-			if(neighbour[(p + alignment) % NUM_ROTATIONS].getIndex() == paperIndexes[p]) {
+			if(neighbour[(p + alignment) % NUM_ROTATIONS].getIndex() != paperIndexes[p]) {
 				
 				return false;
 			}
@@ -639,9 +649,11 @@ public class FoldResolverDivideAndConquer {
 	
 
 	public static void main(String args[]) {
-		System.out.println("Fold Rsolver Ordered:");
+		System.out.println("Fold Resolver divide and Conquer:");
 		solveFoldsForSingleCuboid(5, 1, 1);
 
+		
+		System.out.println(System.currentTimeMillis());
 		//Mission add to OEIS:
 		//So far, the pattern is:
 		//11, 349, ??

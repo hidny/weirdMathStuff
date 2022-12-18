@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 
+
 import OneNet3Cuboids.CuboidToFoldOn;
 import OneNet3Cuboids.Utils;
 import OneNet3Cuboids.Coord.Coord2D;
@@ -417,9 +418,12 @@ public class FoldResolverOrdered {
 	
 
 	public static void main(String args[]) {
+		
 		System.out.println("Fold Rsolver Ordered:");
-		solveFoldsForSingleCuboid(3, 1, 1);
+		solveFoldsForSingleCuboid(5, 1, 1);
 
+		
+		System.out.println(System.currentTimeMillis());
 		//Mission add to OEIS:
 		//So far, the pattern is:
 		//11, 349, ??
