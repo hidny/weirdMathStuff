@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 
 import OneNet3Cuboids.CuboidToFoldOn;
 import OneNet3Cuboids.DataModelViews;
@@ -18,6 +19,7 @@ public class FoldResolverDivideAndConquer {
 	
 
 	public static final int NUM_ROTATIONS = 4;
+	public static final int NUM_NEIGHBOURS = NUM_ROTATIONS;
 	
 	
 	public static void solveFoldsForSingleCuboid(int a, int b, int c) {
@@ -486,8 +488,63 @@ public class FoldResolverDivideAndConquer {
 				}//END IF RELEVANT
 				
 				
+				//Trying to divide and conquer here:
+				if( !cantAddCellBecauseOfOtherPaperNeighbours) {
+					//areCellsSepartedCuboid(CuboidToFoldOn cuboid, int startIndex, int goalIndex)
+					
+					//flag is redundant, but expressive!
+					boolean foundABlankNeighbour = false;
+					int firstIndex = -1;
+
+					//Add potentially new cell just for test:
+					cuboid.setCell(indexNewCell, rotationNeighbourPaperRelativeToMap);
+					
+					//TODO: Don't forget to add cell to paper when the time comes...
+					
+					SEARCH_FOR_BAD_SECOND_NEIGHBOURS_3:
+					for(int rotIndexToFill=0; rotIndexToFill<NUM_ROTATIONS; rotIndexToFill++) {
+						
+						
+	
+						int indexNeighbourOfNewCell = neighboursOfNewCell[rotIndexToFill].getIndex();
+						
+						if( ! cuboid.isCellIndexUsed(indexNeighbourOfNewCell)) {
+							
+							if( ! foundABlankNeighbour) {
+								firstIndex = indexNeighbourOfNewCell;
+								foundABlankNeighbour = true;
+							} else {
+								
+								if(areCellsSepartedCuboid(cuboid, firstIndex, indexNeighbourOfNewCell)) {
+									
+									System.out.println();
+									System.out.println();
+									System.out.println();
+									
+									System.out.println(DataModelViews.getFlatNumberingView(cuboid.getNumCellsToFill()/4, 1, 1));
+									System.out.println("TODO:");
+									System.out.println("Found cell that will separate the cuboid!");
+									System.out.println("Index to used as bridge: " + indexToUse);
+									System.out.println("Trying to add index: " + indexNewCell);
+									System.out.println("Neighbours that are separated: " + firstIndex + " and " + indexNeighbourOfNewCell);
+									Utils.printFold(paperUsed);
+									Utils.printFoldWithIndex(indexCuboidonPaper);
+									
+									
+									//TODO: Do something about this!
+									
+								}
+							}
+						}
+					}
+					
+					//Remove potential new cell once test is done:
+					cuboid.removeCell(indexNewCell);
+					//TODO: Don't forget to remove cell from paper when the time comes...
+					
+				}
+				//End Trying to divide and conquer.
 				
-				//END TODO: put in function A
 				
 				if( ! cantAddCellBecauseOfOtherPaperNeighbours) {
 					//TODO: go next level!
@@ -650,12 +707,63 @@ public class FoldResolverDivideAndConquer {
 		
 		return true;
 	}
+	
+	
+	//Worry about optimizing this later...
+	//Idea 0:
+	// breadth-first search:
+	
+	//Don't do this: maybe combine with a region size function
+	// and return more info?
+	//NAH!
+	public static boolean areCellsSepartedCuboid(CuboidToFoldOn cuboid, int startIndex, int goalIndex) {
+		
+		if(startIndex == goalIndex) {
+			System.err.println("Warning: We're asking if the same cell is seperated from itself. Are you high?");
+			return false;
+		}
+		LinkedList<Integer> queue = new LinkedList<Integer>();
+		
+		boolean explored[] = new boolean[cuboid.getNumCellsToFill()];
+		
+		explored[startIndex] = true;
+		
+		queue.add(startIndex);
+		
+		while( ! queue.isEmpty() ) {
+			int v = queue.removeFirst();
+			
+			if(v == goalIndex) {
+				return false;
+			}
+			
+			for(int j=0; j<NUM_NEIGHBOURS; j++) {
+				
+				int neighbour = cuboid.getNeighbours(v)[j].getIndex();
+				
+				if(!explored[neighbour] && ! cuboid.isCellIndexUsed(neighbour)) {
+					explored[neighbour] = true;
+					queue.add(neighbour);
+				}
+			}
+		}
+		
+		return true;
+	}
 
 	
+	/*https://www.sciencedirect.com/science/article/pii/S0925772117300160
+	 * 
+	 *  "From the necessary condition, the smallest possible surface area that can fold into two boxes is 22,
+	 *   and the smallest possible surface area for three different boxes is 46.
+	 *   (...) However, the area 46 is too huge to search. "
+	 *  
+	 *  Challenge accepted!
+	 */
 
 	public static void main(String args[]) {
 		System.out.println("Fold Resolver divide and Conquer:");
-		solveFoldsForSingleCuboid(5, 1, 1);
+		solveFoldsForSingleCuboid(1, 1, 1);
 
 		
 		

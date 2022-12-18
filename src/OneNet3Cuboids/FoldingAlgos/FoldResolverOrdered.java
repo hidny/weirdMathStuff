@@ -431,6 +431,10 @@ public class FoldResolverOrdered {
 		//2nd mission:
 		// get to 11.
 		
+		//New:
+		//1671345885428
+		//Old:
+		//1671345887913
 		
 		/* 5x1x1 on December 8th:
 		 * 47800000
