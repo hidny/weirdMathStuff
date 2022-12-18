@@ -517,21 +517,58 @@ public class FoldResolverDivideAndConquer {
 								
 								if(areCellsSepartedCuboid(cuboid, firstIndex, indexNeighbourOfNewCell)) {
 									
-									System.out.println();
-									System.out.println();
-									System.out.println();
 									
-									System.out.println(DataModelViews.getFlatNumberingView(cuboid.getNumCellsToFill()/4, 1, 1));
-									System.out.println("TODO:");
-									System.out.println("Found cell that will separate the cuboid!");
-									System.out.println("Index to used as bridge: " + indexToUse);
-									System.out.println("Trying to add index: " + indexNewCell);
-									System.out.println("Neighbours that are separated: " + firstIndex + " and " + indexNeighbourOfNewCell);
-									Utils.printFold(paperUsed);
-									Utils.printFoldWithIndex(indexCuboidonPaper);
+									//Look for a 3-three way:
 									
+									boolean found3Way = false;
+									int indexNeighbourThirdWay = -1;
+									for(int thirdRot=rotIndexToFill+1; thirdRot<NUM_ROTATIONS; thirdRot++) {
+										
+										int curThirdNeighbour = neighboursOfNewCell[thirdRot].getIndex();
+										
+										
+										if(! cuboid.isCellIndexUsed(curThirdNeighbour)
+												&& areCellsSepartedCuboid(cuboid, curThirdNeighbour, firstIndex)
+												&& areCellsSepartedCuboid(cuboid, curThirdNeighbour, indexNeighbourOfNewCell)) {
+											found3Way = true;
+											indexNeighbourThirdWay = curThirdNeighbour;
+										}
+									}
+									//End look for 3-three (cuboid separated into 3 regions)
 									
-									//TODO: Do something about this!
+									if(found3Way) {
+										System.out.println();
+										System.out.println();
+										System.out.println();
+										
+										System.out.println(DataModelViews.getFlatNumberingView(cuboid.getNumCellsToFill()/4, 1, 1));
+										System.out.println("TODO:");
+										System.out.println("Found cell that will separate the cuboid in three ways!");
+										System.out.println("Index to used as bridge: " + indexToUse);
+										System.out.println("Trying to add index: " + indexNewCell);
+										System.out.println("Neighbours that are separated: " + firstIndex + ", " + indexNeighbourOfNewCell + ", and " + indexNeighbourThirdWay);
+										Utils.printFold(paperUsed);
+										Utils.printFoldWithIndex(indexCuboidonPaper);
+										
+										System.exit(0);
+									} else {
+									
+										System.out.println();
+										System.out.println();
+										System.out.println();
+										
+										System.out.println(DataModelViews.getFlatNumberingView(cuboid.getNumCellsToFill()/4, 1, 1));
+										System.out.println("TODO:");
+										System.out.println("Found cell that will separate the cuboid!");
+										System.out.println("Index to used as bridge: " + indexToUse);
+										System.out.println("Trying to add index: " + indexNewCell);
+										System.out.println("Neighbours that are separated: " + firstIndex + " and " + indexNeighbourOfNewCell);
+										Utils.printFold(paperUsed);
+										Utils.printFoldWithIndex(indexCuboidonPaper);
+										
+										
+										//TODO: Do something about this!
+									}
 									
 								}
 							}
@@ -763,7 +800,7 @@ public class FoldResolverDivideAndConquer {
 
 	public static void main(String args[]) {
 		System.out.println("Fold Resolver divide and Conquer:");
-		solveFoldsForSingleCuboid(1, 1, 1);
+		solveFoldsForSingleCuboid(2, 1, 1);
 
 		
 		
