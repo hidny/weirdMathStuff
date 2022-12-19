@@ -66,12 +66,21 @@ public class FoldResolverDivideAndConquer {
 		numCellsUsedDepth += 1;
 		
 
-		int minOrderedCellCouldUse = 0;
-		int minCellRotationOfMinCellToDev = 0;
+		int minOrderedCellCouldUsePerRegion[] = new int[1];
+		minOrderedCellCouldUsePerRegion[0] = 0;
+		int minCellRotationOfMinCellToDevPerRegion[] = new int[1];
+		minCellRotationOfMinCellToDevPerRegion[0] = 0;
+
 		HashMap <Integer, Integer> CellIndexToOrderOfDev = new HashMap <Integer, Integer>();
 		CellIndexToOrderOfDev.put(START_INDEX, 0);
 		
-		doDepthFirstSearch(paperToDevelop, indexCuboidOnPaper, paperUsed, cuboid, numCellsUsedDepth, 0, CellIndexToOrderOfDev, minOrderedCellCouldUse, minCellRotationOfMinCellToDev);
+		boolean CellRegionsToHandleInRevOrder[][] = new boolean[1][cuboid.getNumCellsToFill()];
+		
+		for(int j=0; j<CellRegionsToHandleInRevOrder[0].length; j++) {
+			CellRegionsToHandleInRevOrder[0][j] = true;
+		}
+		
+		doDepthFirstSearch(paperToDevelop, indexCuboidOnPaper, paperUsed, cuboid, numCellsUsedDepth, 0, CellIndexToOrderOfDev, CellRegionsToHandleInRevOrder, minOrderedCellCouldUsePerRegion, minCellRotationOfMinCellToDevPerRegion);
 		
 		System.out.println("Final number of unique solutions: " + numUniqueFound);
 	}
@@ -87,7 +96,7 @@ public class FoldResolverDivideAndConquer {
 	private static int debugNumHolesFound = 0;
 	
 	public static void doDepthFirstSearch(Coord2D paperToDevelop[], int indexCuboidonPaper[][], boolean paperUsed[][], CuboidToFoldOn cuboid, int numCellsUsedDepth, int debugLastIndex,
-			HashMap <Integer, Integer> CellIndexToOrderOfDev, int minOrderedCellCouldUse, int minCellRotationOfMinCellToDev) {
+			HashMap <Integer, Integer> CellIndexToOrderOfDev, boolean CellRegionsToHandleInRevOrder[][], int minOrderedCellCouldUsePerRegion[], int minCellRotationOfMinCellToDevPerRegion[]) {
 
 		
 		if(numCellsUsedDepth == cuboid.getNumCellsToFill()) {
@@ -124,6 +133,8 @@ public class FoldResolverDivideAndConquer {
 			return;
 		}
 		
+		int regionIndex = CellRegionsToHandleInRevOrder.length - 1;
+		
 		//DEPTH-FIRST START:
 		
 		for(int i=0; paperToDevelop[i] != null && i<paperToDevelop.length; i++) {
@@ -141,7 +152,7 @@ public class FoldResolverDivideAndConquer {
 				System.out.println("Doh! Should contain key! Index: " + indexToUse);
 				System.exit(1);
 			}
-			if(CellIndexToOrderOfDev.get(indexToUse) < minOrderedCellCouldUse) {
+			if(CellIndexToOrderOfDev.get(indexToUse) < minOrderedCellCouldUsePerRegion[regionIndex]) {
 				continue;
 			}
 			
@@ -159,6 +170,7 @@ public class FoldResolverDivideAndConquer {
 				}
 			}
 			//End Hack to enforce order where bottom of cuboid has just as many or more than top of cuboid.
+			
 			
 			
 			CoordWithRotationAndIndex neighbours[] = cuboid.getNeighbours(indexToUse);
@@ -182,7 +194,10 @@ public class FoldResolverDivideAndConquer {
 					
 					//Don't reuse a used cell:
 					continue;
-				} else if(CellIndexToOrderOfDev.get(indexToUse) == minOrderedCellCouldUse && j < minCellRotationOfMinCellToDev) {
+				} else if(CellIndexToOrderOfDev.get(indexToUse) == minOrderedCellCouldUsePerRegion[regionIndex] && j < minCellRotationOfMinCellToDevPerRegion[regionIndex]) {
+					continue;
+
+				} else if(CellRegionsToHandleInRevOrder[CellRegionsToHandleInRevOrder.length - 1][neighbours[j].getIndex()] == false) {
 					continue;
 				}
 				
@@ -537,7 +552,7 @@ public class FoldResolverDivideAndConquer {
 									//End look for 3-three (cuboid separated into 3 regions)
 									
 									if(found3Way) {
-										System.out.println();
+										/*System.out.println();
 										System.out.println();
 										System.out.println();
 										
@@ -550,10 +565,10 @@ public class FoldResolverDivideAndConquer {
 										Utils.printFold(paperUsed);
 										Utils.printFoldWithIndex(indexCuboidonPaper);
 										
-										System.exit(0);
+										System.exit(0);*/
 									} else {
 									
-										System.out.println();
+										/*System.out.println();
 										System.out.println();
 										System.out.println();
 										
@@ -565,7 +580,7 @@ public class FoldResolverDivideAndConquer {
 										System.out.println("Neighbours that are separated: " + firstIndex + " and " + indexNeighbourOfNewCell);
 										Utils.printFold(paperUsed);
 										Utils.printFoldWithIndex(indexCuboidonPaper);
-										
+										*/
 										
 										//TODO: Do something about this!
 									}
@@ -597,18 +612,20 @@ public class FoldResolverDivideAndConquer {
 					numCellsUsedDepth += 1;
 
 					CellIndexToOrderOfDev.put(indexNewCell, numCellsUsedDepth);
-					//End setep
+					//End setup
 					
-					int newMinOrderedCellCouldUse = CellIndexToOrderOfDev.get(indexToUse);
-					int newMinCellRotationOfMinCellToDev = j;
-	
+					int prevNewMinOrderedCellCouldUse = minOrderedCellCouldUsePerRegion[regionIndex];
+					int prevMinCellRotationOfMinCellToDev = minCellRotationOfMinCellToDevPerRegion[regionIndex];
+					
+					minOrderedCellCouldUsePerRegion[regionIndex] = CellIndexToOrderOfDev.get(indexToUse);
+					minCellRotationOfMinCellToDevPerRegion[regionIndex] = j;
 					
 					int debugLastIndex2 = indexNewCell;
 					//TODO: remove choices based on ordering here
 					
 					//System.out.println("Doing a recursion depth " + numCellsUsedDepth);
 					
-					doDepthFirstSearch(paperToDevelop, indexCuboidonPaper, paperUsed, cuboid, numCellsUsedDepth, debugLastIndex2, CellIndexToOrderOfDev, newMinOrderedCellCouldUse, newMinCellRotationOfMinCellToDev);
+					doDepthFirstSearch(paperToDevelop, indexCuboidonPaper, paperUsed, cuboid, numCellsUsedDepth, debugLastIndex2, CellIndexToOrderOfDev, CellRegionsToHandleInRevOrder, minOrderedCellCouldUsePerRegion, minCellRotationOfMinCellToDevPerRegion);
 					
 					//Tear down
 					cuboid.removeCell(indexNewCell);
@@ -619,6 +636,9 @@ public class FoldResolverDivideAndConquer {
 					
 					paperToDevelop[numCellsUsedDepth] = null;
 					CellIndexToOrderOfDev.remove(indexNewCell);
+					
+					minOrderedCellCouldUsePerRegion[regionIndex] = prevNewMinOrderedCellCouldUse;
+					minCellRotationOfMinCellToDevPerRegion[regionIndex] = prevMinCellRotationOfMinCellToDev;
 					//End tear down
 					
 					
@@ -633,6 +653,14 @@ public class FoldResolverDivideAndConquer {
 
 		//TODO: figure out how to record distinct answers
 		
+	}
+	
+	
+	//TODO: maybe this can replace the normal depth first search
+	public static boolean regionHasASolution(Coord2D paperToDevelop[], int indexCuboidonPaper[][], boolean paperUsed[][], CuboidToFoldOn cuboid, int numCellsUsedDepth, int debugLastIndex,
+			HashMap <Integer, Integer> CellIndexToOrderOfDev, int minOrderedCellCouldUse, int minCellRotationOfMinCellToDev, int regionIndex, boolean regions[][]) {
+		
+		return false;
 	}
 	
 	public static int getNumUsedNeighbourCellonPaper(
@@ -800,7 +828,7 @@ public class FoldResolverDivideAndConquer {
 
 	public static void main(String args[]) {
 		System.out.println("Fold Resolver divide and Conquer:");
-		solveFoldsForSingleCuboid(2, 1, 1);
+		solveFoldsForSingleCuboid(5, 1, 1);
 
 		
 		
