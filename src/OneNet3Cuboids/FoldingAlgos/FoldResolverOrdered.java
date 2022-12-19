@@ -97,7 +97,8 @@ public class FoldResolverOrdered {
 			numFound++;
 			
 			
-			if((numCellsUsedDepth < 20 && numFound % 10000 == 0)
+			if(numCellsUsedDepth < 12
+					|| (numCellsUsedDepth < 20 && numFound % 10000 == 0)
 					|| (numCellsUsedDepth < 27 && numFound % 100000 == 0)
 					|| numFound % 10000000 == 0) {
 				System.out.println(numFound + " (num unique: " + numUniqueFound + ")");
@@ -106,7 +107,8 @@ public class FoldResolverOrdered {
 			if(BasicUniqueCheckImproved.isUnique(paperUsed)) {
 				numUniqueFound++;
 				
-				if((numCellsUsedDepth < 20 && numUniqueFound % 2000 == 0)
+				if(numCellsUsedDepth < 12
+						|| (numCellsUsedDepth < 20 && numUniqueFound % 2000 == 0)
 						|| (numCellsUsedDepth < 27 && numUniqueFound % 100000 == 0)
 						|| numUniqueFound % 1000000 == 0) {
 					System.out.println("Found unique net:");
@@ -420,7 +422,7 @@ public class FoldResolverOrdered {
 	public static void main(String args[]) {
 		
 		System.out.println("Fold Rsolver Ordered:");
-		solveFoldsForSingleCuboid(5, 1, 1);
+		solveFoldsForSingleCuboid(2, 1, 1);
 
 		
 		System.out.println(System.currentTimeMillis());

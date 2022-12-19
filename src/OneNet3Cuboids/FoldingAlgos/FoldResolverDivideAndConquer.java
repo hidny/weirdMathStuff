@@ -109,7 +109,8 @@ public class FoldResolverDivideAndConquer {
 			numFound++;
 			
 			
-			if((numCellsUsedDepth < 20 && numFound % 10000 == 0)
+			if(numCellsUsedDepth < 12
+					|| (numCellsUsedDepth < 20 && numFound % 10000 == 0)
 					|| (numCellsUsedDepth < 27 && numFound % 100000 == 0)
 					|| numFound % 10000000 == 0) {
 				System.out.println(numFound + " (num unique: " + numUniqueFound + ")");
@@ -118,7 +119,8 @@ public class FoldResolverDivideAndConquer {
 			if(BasicUniqueCheckImproved.isUnique(paperUsed)) {
 				numUniqueFound++;
 				
-				if((numCellsUsedDepth < 20 && numUniqueFound % 2000 == 0)
+				if(numCellsUsedDepth < 12
+						|| (numCellsUsedDepth < 20 && numUniqueFound % 2000 == 0)
 						|| (numCellsUsedDepth < 27 && numUniqueFound % 100000 == 0)
 						|| numUniqueFound % 1000000 == 0) {
 					System.out.println("Found unique net:");
@@ -133,7 +135,60 @@ public class FoldResolverDivideAndConquer {
 			return;
 		}
 		
+		
+		
 		int regionIndex = CellRegionsToHandleInRevOrder.length - 1;
+		
+		//Check if last region is empty and make adjustments if so:
+		if(regionIndex > 0) {
+			int numLeft = 0;
+			for(int i=0; i<CellRegionsToHandleInRevOrder[regionIndex].length; i++) {
+				if(CellRegionsToHandleInRevOrder[regionIndex][i]) {
+					//TODO: loop might be slow, but whatever!
+					numLeft++;
+					break;
+				}
+			}
+			
+			if(numLeft == 0) {
+				regionIndex--;
+				
+				boolean CellRegionsToHandleInRevOrderNew[][] = new boolean[CellRegionsToHandleInRevOrder.length - 1][cuboid.getNumCellsToFill()] ;
+				
+				//TODO: maybe I can be lazy and let this be a long array that doesn't need changing?
+				// Nah...
+				int minOrderedCellCouldUsePerRegionNew[] = new int[minOrderedCellCouldUsePerRegion.length -1];
+				int minCellRotationOfMinCellToDevPerRegionNew[] = new int[minCellRotationOfMinCellToDevPerRegion.length -1];
+				
+				for(int i=0; i<CellRegionsToHandleInRevOrderNew.length; i++) {
+					CellRegionsToHandleInRevOrderNew[i] = CellRegionsToHandleInRevOrder[i];
+					minOrderedCellCouldUsePerRegionNew[i] = minOrderedCellCouldUsePerRegion[i];
+					minCellRotationOfMinCellToDevPerRegionNew[i] = minCellRotationOfMinCellToDevPerRegion[i];
+				}
+				
+				
+				//I'm hoping this won't affect the functions calling this function:
+				CellRegionsToHandleInRevOrder = CellRegionsToHandleInRevOrderNew;
+				minOrderedCellCouldUsePerRegion = minOrderedCellCouldUsePerRegionNew;
+				minCellRotationOfMinCellToDevPerRegion = minCellRotationOfMinCellToDevPerRegionNew;
+				
+				
+				int numLeft2 = 0;
+				for(int i=0; i<CellRegionsToHandleInRevOrder[regionIndex].length; i++) {
+					if(CellRegionsToHandleInRevOrder[regionIndex][i]) {
+						numLeft2++;
+						break;
+					}
+				}
+				
+				if(numLeft2 > 0) {
+					System.out.println("ERROR: 2nd last region is empty. This should not happen!");
+					System.exit(1);
+				}
+				
+			}
+		}
+		//End check if last region is empty and make adjustments
 		
 		//DEPTH-FIRST START:
 		
@@ -146,6 +201,9 @@ public class FoldResolverDivideAndConquer {
 			if(indexToUse < 0) {
 				System.out.println("Doh!");
 				System.exit(1);
+			}
+			if(indexToUse == 8) {
+				System.out.println("DEBUG");
 			}
 			
 			if(! CellIndexToOrderOfDev.containsKey(indexToUse)) {
@@ -503,6 +561,13 @@ public class FoldResolverDivideAndConquer {
 				}//END IF RELEVANT
 				
 				
+				//Default to using the given regions.
+				//That might change if the new cell added, divides a region.
+				boolean CellRegionsToHandleInRevOrderToUse[][] = CellRegionsToHandleInRevOrder;
+				int minOrderedCellCouldUsePerRegionToUse[] = minOrderedCellCouldUsePerRegion;
+				int minCellRotationOfMinCellToDevPerRegionToUse[] = minCellRotationOfMinCellToDevPerRegion;
+				
+				
 				//Trying to divide and conquer here:
 				if( !cantAddCellBecauseOfOtherPaperNeighbours) {
 					//areCellsSepartedCuboid(CuboidToFoldOn cuboid, int startIndex, int goalIndex)
@@ -516,7 +581,6 @@ public class FoldResolverDivideAndConquer {
 					
 					//TODO: Don't forget to add cell to paper when the time comes...
 					
-					SEARCH_FOR_BAD_SECOND_NEIGHBOURS_3:
 					for(int rotIndexToFill=0; rotIndexToFill<NUM_ROTATIONS; rotIndexToFill++) {
 						
 						
@@ -532,6 +596,7 @@ public class FoldResolverDivideAndConquer {
 								
 								if(areCellsSepartedCuboid(cuboid, firstIndex, indexNeighbourOfNewCell)) {
 									
+									//START DIVIDING THE REGION:
 									
 									//Look for a 3-three way:
 									
@@ -550,41 +615,84 @@ public class FoldResolverDivideAndConquer {
 										}
 									}
 									//End look for 3-three (cuboid separated into 3 regions)
-									
+
+									int numNewWays = 1;
 									if(found3Way) {
-										/*System.out.println();
-										System.out.println();
-										System.out.println();
+										numNewWays = 2;
+									}
 										
-										System.out.println(DataModelViews.getFlatNumberingView(cuboid.getNumCellsToFill()/4, 1, 1));
-										System.out.println("TODO:");
-										System.out.println("Found cell that will separate the cuboid in three ways!");
-										System.out.println("Index to used as bridge: " + indexToUse);
-										System.out.println("Trying to add index: " + indexNewCell);
-										System.out.println("Neighbours that are separated: " + firstIndex + ", " + indexNeighbourOfNewCell + ", and " + indexNeighbourThirdWay);
-										Utils.printFold(paperUsed);
-										Utils.printFoldWithIndex(indexCuboidonPaper);
 										
-										System.exit(0);*/
-									} else {
+									CellRegionsToHandleInRevOrderToUse = new boolean[CellRegionsToHandleInRevOrder.length + numNewWays][cuboid.getNumCellsToFill()] ;
 									
-										/*System.out.println();
-										System.out.println();
-										System.out.println();
-										
-										System.out.println(DataModelViews.getFlatNumberingView(cuboid.getNumCellsToFill()/4, 1, 1));
-										System.out.println("TODO:");
-										System.out.println("Found cell that will separate the cuboid!");
-										System.out.println("Index to used as bridge: " + indexToUse);
-										System.out.println("Trying to add index: " + indexNewCell);
-										System.out.println("Neighbours that are separated: " + firstIndex + " and " + indexNeighbourOfNewCell);
-										Utils.printFold(paperUsed);
-										Utils.printFoldWithIndex(indexCuboidonPaper);
-										*/
-										
-										//TODO: Do something about this!
+									//TODO: maybe I can be lazy and let this be a long array that doesn't need changing?
+									
+									//TODO: Reduce code duplication by combining 3way case with 2 way case (They aren't that different)
+									// Nah...
+									minOrderedCellCouldUsePerRegionToUse = new int[minOrderedCellCouldUsePerRegion.length + numNewWays];
+									minCellRotationOfMinCellToDevPerRegionToUse = new int[minCellRotationOfMinCellToDevPerRegion.length + numNewWays];
+									
+									for(int k=0; k<CellRegionsToHandleInRevOrder.length - 1; k++) {
+										CellRegionsToHandleInRevOrderToUse[k] = CellRegionsToHandleInRevOrder[k];
+										minOrderedCellCouldUsePerRegionToUse[k] = minOrderedCellCouldUsePerRegion[k];
+										minCellRotationOfMinCellToDevPerRegionToUse[k] = minCellRotationOfMinCellToDevPerRegion[k];
 									}
 									
+									for(int k=0; k<numNewWays + 1; k++) {
+											
+										int indexToAdd = CellRegionsToHandleInRevOrder.length - 1 + k;
+										if(k==0) {
+											CellRegionsToHandleInRevOrderToUse[indexToAdd] = getCellsInUnfilledCuboidRegion(cuboid, firstIndex);
+										} else if(k == 1) {
+											CellRegionsToHandleInRevOrderToUse[indexToAdd] = getCellsInUnfilledCuboidRegion(cuboid, indexNeighbourOfNewCell);	
+										} else if(k == 2) {
+											CellRegionsToHandleInRevOrderToUse[indexToAdd] = getCellsInUnfilledCuboidRegion(cuboid, indexNeighbourThirdWay);
+											
+										} else {
+											System.out.println("ERROR: k is too high. k= " + k);
+											System.exit(1);
+										}
+
+										//Don't make current cell to add the minOrdered cell. That happens right before recursion.
+										minOrderedCellCouldUsePerRegionToUse[indexToAdd] = minOrderedCellCouldUsePerRegion[CellRegionsToHandleInRevOrder.length - 1];
+										minCellRotationOfMinCellToDevPerRegionToUse[indexToAdd] = minCellRotationOfMinCellToDevPerRegion[CellRegionsToHandleInRevOrder.length - 1];
+										//End don't make current cell to add the minOrdered cell. That happens right before recursion.
+											
+									}
+									
+									regionIndex = CellRegionsToHandleInRevOrderToUse.length - 1;
+									
+									//Later:
+									//TODO: check if each region has 1 solution
+									//TODO: check if region is the same as a hole in the net to go faster (Also useful for the 3Cuboid 1 net check)
+									
+									
+									
+									System.out.println();
+									System.out.println();
+									System.out.println();
+									
+									System.out.println(DataModelViews.getFlatNumberingView(cuboid.getNumCellsToFill()/4, 1, 1));
+									System.out.println("TODO:");
+									if(found3Way){
+										System.out.println("Found cell that will separate the cuboid in three ways!");
+									} else {
+										System.out.println("Found cell that will separate the cuboid!");
+									}
+									System.out.println("Index to used as bridge: " + indexToUse);
+									System.out.println("Trying to add index: " + indexNewCell);
+									if(found3Way) {
+										System.out.println("Neighbours that are separated: " + firstIndex + ", " + indexNeighbourOfNewCell + ", and " + indexNeighbourThirdWay);
+									} else {
+										System.out.println("Neighbours that are separated: " + firstIndex + " and " + indexNeighbourOfNewCell);
+									}
+									Utils.printFold(paperUsed);
+									Utils.printFoldWithIndex(indexCuboidonPaper);
+									
+									if(found3Way) {
+										System.out.println("Stop at 3-way?");
+									}
+
+									//END DIVIDING THE REGION
 								}
 							}
 						}
@@ -595,7 +703,8 @@ public class FoldResolverDivideAndConquer {
 					//TODO: Don't forget to remove cell from paper when the time comes...
 					
 				}
-				//End Trying to divide and conquer.
+				
+				
 				
 				
 				if( ! cantAddCellBecauseOfOtherPaperNeighbours) {
@@ -612,20 +721,21 @@ public class FoldResolverDivideAndConquer {
 					numCellsUsedDepth += 1;
 
 					CellIndexToOrderOfDev.put(indexNewCell, numCellsUsedDepth);
+					
+					int prevNewMinOrderedCellCouldUse = minOrderedCellCouldUsePerRegionToUse[regionIndex];
+					int prevMinCellRotationOfMinCellToDev = minCellRotationOfMinCellToDevPerRegionToUse[regionIndex];
+
+					
+					CellRegionsToHandleInRevOrderToUse[regionIndex][indexToUse] = false;
+					minOrderedCellCouldUsePerRegionToUse[regionIndex] = CellIndexToOrderOfDev.get(indexToUse);
+					minCellRotationOfMinCellToDevPerRegionToUse[regionIndex] = j;
+					
 					//End setup
 					
-					int prevNewMinOrderedCellCouldUse = minOrderedCellCouldUsePerRegion[regionIndex];
-					int prevMinCellRotationOfMinCellToDev = minCellRotationOfMinCellToDevPerRegion[regionIndex];
+					int lastIndexUsed = indexNewCell;
 					
-					minOrderedCellCouldUsePerRegion[regionIndex] = CellIndexToOrderOfDev.get(indexToUse);
-					minCellRotationOfMinCellToDevPerRegion[regionIndex] = j;
 					
-					int debugLastIndex2 = indexNewCell;
-					//TODO: remove choices based on ordering here
-					
-					//System.out.println("Doing a recursion depth " + numCellsUsedDepth);
-					
-					doDepthFirstSearch(paperToDevelop, indexCuboidonPaper, paperUsed, cuboid, numCellsUsedDepth, debugLastIndex2, CellIndexToOrderOfDev, CellRegionsToHandleInRevOrder, minOrderedCellCouldUsePerRegion, minCellRotationOfMinCellToDevPerRegion);
+					doDepthFirstSearch(paperToDevelop, indexCuboidonPaper, paperUsed, cuboid, numCellsUsedDepth, lastIndexUsed, CellIndexToOrderOfDev, CellRegionsToHandleInRevOrderToUse, minOrderedCellCouldUsePerRegionToUse, minCellRotationOfMinCellToDevPerRegionToUse);
 					
 					//Tear down
 					cuboid.removeCell(indexNewCell);
@@ -636,9 +746,15 @@ public class FoldResolverDivideAndConquer {
 					
 					paperToDevelop[numCellsUsedDepth] = null;
 					CellIndexToOrderOfDev.remove(indexNewCell);
-					
+
+					//New Region tear down
+					regionIndex = CellRegionsToHandleInRevOrder.length - 1;
+
+					CellRegionsToHandleInRevOrderToUse[regionIndex][indexToUse] = true;
 					minOrderedCellCouldUsePerRegion[regionIndex] = prevNewMinOrderedCellCouldUse;
 					minCellRotationOfMinCellToDevPerRegion[regionIndex] = prevMinCellRotationOfMinCellToDev;
+					
+
 					//End tear down
 					
 					
@@ -816,6 +932,33 @@ public class FoldResolverDivideAndConquer {
 		return true;
 	}
 
+	public static boolean[] getCellsInUnfilledCuboidRegion(CuboidToFoldOn cuboid, int startIndex) {
+		
+		LinkedList<Integer> queue = new LinkedList<Integer>();
+		
+		boolean explored[] = new boolean[cuboid.getNumCellsToFill()];
+		
+		explored[startIndex] = true;
+		
+		queue.add(startIndex);
+		
+		while( ! queue.isEmpty() ) {
+			int v = queue.removeFirst();
+			
+			
+			for(int j=0; j<NUM_NEIGHBOURS; j++) {
+				
+				int neighbour = cuboid.getNeighbours(v)[j].getIndex();
+				
+				if(!explored[neighbour] && ! cuboid.isCellIndexUsed(neighbour)) {
+					explored[neighbour] = true;
+					queue.add(neighbour);
+				}
+			}
+		}
+		
+		return explored;
+	}
 	
 	/*https://www.sciencedirect.com/science/article/pii/S0925772117300160
 	 * 
@@ -828,7 +971,7 @@ public class FoldResolverDivideAndConquer {
 
 	public static void main(String args[]) {
 		System.out.println("Fold Resolver divide and Conquer:");
-		solveFoldsForSingleCuboid(5, 1, 1);
+		solveFoldsForSingleCuboid(2, 1, 1);
 
 		
 		
