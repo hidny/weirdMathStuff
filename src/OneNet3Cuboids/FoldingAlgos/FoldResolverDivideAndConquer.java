@@ -651,11 +651,8 @@ public class FoldResolverDivideAndConquer {
 											System.out.println("ERROR: k is too high. k= " + k);
 											System.exit(1);
 										}
-
-										//Don't make current cell to add the minOrdered cell. That happens right before recursion.
-										minOrderedCellCouldUsePerRegionToUse[indexToAdd] = minOrderedCellCouldUsePerRegion[CellRegionsToHandleInRevOrder.length - 1];
-										minCellRotationOfMinCellToDevPerRegionToUse[indexToAdd] = minCellRotationOfMinCellToDevPerRegion[CellRegionsToHandleInRevOrder.length - 1];
-										//End don't make current cell to add the minOrdered cell. That happens right before recursion.
+										minOrderedCellCouldUsePerRegionToUse[indexToAdd] = CellIndexToOrderOfDev.get(indexToUse);
+										minCellRotationOfMinCellToDevPerRegionToUse[indexToAdd] = j;
 											
 									}
 									
