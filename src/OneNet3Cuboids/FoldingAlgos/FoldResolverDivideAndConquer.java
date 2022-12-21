@@ -140,14 +140,6 @@ public class FoldResolverDivideAndConquer {
 		
 		int regionIndex = CellRegionsToHandleInRevOrder.length - 1;
 		
-
-		if(regionIndex > 0) {
-			System.out.println(DataModelViews.getFlatNumberingView(cuboid.getNumCellsToFill()/4, 1, 1));
-			
-			Utils.printFold(paperUsed);
-			Utils.printFoldWithIndex(indexCuboidonPaper);
-			System.out.println("Debug");
-		}
 		
 		//Check if last region is empty and make adjustments if so:
 		if(regionIndex > 0) {
@@ -217,10 +209,7 @@ public class FoldResolverDivideAndConquer {
 				System.out.println("Doh!");
 				System.exit(1);
 			}
-			if(indexToUse == 4) {
-				System.out.println("DEBUG");
-			}
-			
+
 			if(CellIndexToOrderOfDev[regionIndex].containsKey(indexToUse)
 					&& CellIndexToOrderOfDev[regionIndex].get(indexToUse) < minOrderedCellCouldUsePerRegion[regionIndex]) {
 				continue;
@@ -264,7 +253,8 @@ public class FoldResolverDivideAndConquer {
 					
 					//Don't reuse a used cell:
 					continue;
-				} else if(CellIndexToOrderOfDev[regionIndex].get(indexToUse) == minOrderedCellCouldUsePerRegion[regionIndex] && j < minCellRotationOfMinCellToDevPerRegion[regionIndex]) {
+				} else if(CellIndexToOrderOfDev[regionIndex].containsKey(indexToUse)
+						&& CellIndexToOrderOfDev[regionIndex].get(indexToUse) == minOrderedCellCouldUsePerRegion[regionIndex] && j < minCellRotationOfMinCellToDevPerRegion[regionIndex]) {
 					continue;
 
 				} else if(CellRegionsToHandleInRevOrder[CellRegionsToHandleInRevOrder.length - 1][neighbours[j].getIndex()] == false) {
@@ -386,7 +376,8 @@ public class FoldResolverDivideAndConquer {
 								int indexOtherCell = indexCuboidonPaper[i1][j1];
 								int rotationOtherCell = cuboid.getRotationPaperRelativeToMap(indexOtherCell);
 
-								if(CellIndexToOrderOfDev[regionIndex].get(indexOtherCell) < CellIndexToOrderOfDev[regionIndex].get(indexToUse) ) {
+								if(CellIndexToOrderOfDev[regionIndex].containsKey(indexOtherCell)
+										&& CellIndexToOrderOfDev[regionIndex].get(indexOtherCell) < CellIndexToOrderOfDev[regionIndex].get(indexToUse) ) {
 									cantAddCellBecauseOfOtherPaperNeighbours = true;
 									break SEARCH_FOR_BAD_SECOND_NEIGHBOURS;
 								}
@@ -689,7 +680,7 @@ public class FoldResolverDivideAndConquer {
 									//TODO: check if region is the same as a hole in the net to go faster (Also useful for the 3Cuboid 1 net check)
 									
 									
-									
+									/*
 									System.out.println();
 									System.out.println();
 									System.out.println();
@@ -714,6 +705,7 @@ public class FoldResolverDivideAndConquer {
 									if(found3Way) {
 										System.out.println("Stop at 3-way?");
 									}
+									 */
 
 									//END DIVIDING THE REGION
 									
@@ -998,7 +990,7 @@ public class FoldResolverDivideAndConquer {
 
 	public static void main(String args[]) {
 		System.out.println("Fold Resolver divide and Conquer:");
-		solveFoldsForSingleCuboid(2, 1, 1);
+		solveFoldsForSingleCuboid(5, 1, 1);
 
 		
 		
