@@ -81,7 +81,7 @@ public class FoldResolverDivideAndConquer {
 			CellRegionsToHandleInRevOrder[0][j] = true;
 		}
 		
-		doDepthFirstSearch(paperToDevelop, indexCuboidOnPaper, paperUsed, cuboid, numCellsUsedDepth, 0, CellIndexToOrderOfDev, CellRegionsToHandleInRevOrder, minOrderedCellCouldUsePerRegion, minCellRotationOfMinCellToDevPerRegion);
+		doDepthFirstSearch(paperToDevelop, indexCuboidOnPaper, paperUsed, cuboid, numCellsUsedDepth, 0, CellIndexToOrderOfDev, CellRegionsToHandleInRevOrder, minOrderedCellCouldUsePerRegion, minCellRotationOfMinCellToDevPerRegion, -1L);
 		
 		System.out.println("Final number of unique solutions: " + numUniqueFound);
 	}
@@ -96,9 +96,14 @@ public class FoldResolverDivideAndConquer {
 	
 	private static int debugNumHolesFound = 0;
 	
-	public static void doDepthFirstSearch(Coord2D paperToDevelop[], int indexCuboidonPaper[][], boolean paperUsed[][], CuboidToFoldOn cuboid, int numCellsUsedDepth, int debugLastIndex,
-			HashMap <Integer, Integer> CellIndexToOrderOfDev[], boolean CellRegionsToHandleInRevOrder[][], int minOrderedCellCouldUsePerRegion[], int minCellRotationOfMinCellToDevPerRegion[]) {
+	public static long doDepthFirstSearch(Coord2D paperToDevelop[], int indexCuboidonPaper[][], boolean paperUsed[][], CuboidToFoldOn cuboid, int numCellsUsedDepth, int debugLastIndex,
+			HashMap <Integer, Integer> CellIndexToOrderOfDev[], boolean CellRegionsToHandleInRevOrder[][], int minOrderedCellCouldUsePerRegion[], int minCellRotationOfMinCellToDevPerRegion[], long limitDupSolutions) {
 
+		//Debug
+		if(numCellsUsedDepth < CellIndexToOrderOfDev[0].size()) {
+			System.out.println("WHAT???");
+			System.exit(1);
+		}
 		
 		if(numCellsUsedDepth == cuboid.getNumCellsToFill()) {
 			//System.out.println("Done!");
@@ -110,7 +115,7 @@ public class FoldResolverDivideAndConquer {
 			numFound++;
 			
 			
-			if(numCellsUsedDepth < 12
+			if((numCellsUsedDepth < 12)
 					|| (numCellsUsedDepth < 20 && numFound % 10000 == 0)
 					|| (numCellsUsedDepth < 27 && numFound % 100000 == 0)
 					|| numFound % 10000000 == 0) {
@@ -133,16 +138,16 @@ public class FoldResolverDivideAndConquer {
 				
 			}
 
-			return;
+			return 1L;
 		}
 		
 
-		
+		long retDuplicateSolutions = 0L;
 		int regionIndex = CellRegionsToHandleInRevOrder.length - 1;
 		
 		
 		//Check if last region is empty and make adjustments if so:
-		if(regionIndex > 0) {
+		if(regionIndex > 0 || limitDupSolutions >= 0) {
 			int numLeft = 0;
 			for(int i=0; i<CellRegionsToHandleInRevOrder[regionIndex].length; i++) {
 				if(CellRegionsToHandleInRevOrder[regionIndex][i]) {
@@ -153,6 +158,19 @@ public class FoldResolverDivideAndConquer {
 			}
 			
 			if(numLeft == 0) {
+				
+				if(regionIndex == 0) {
+					//Found solution to a specific region and not the whole thing
+					// (sorry about the messy code. I didn't want to make a 
+					// separate function for finding seperate regions.
+					
+					if(limitDupSolutions >=0) {
+						return 1L;
+					} else {
+						System.out.println("ERROR: ran out of regions because completing the cuboid. This should not be possible!");
+						System.exit(1);
+					}
+				}
 				
 				regionIndex--;
 				
@@ -190,6 +208,9 @@ public class FoldResolverDivideAndConquer {
 				
 				if(numLeft2 == 0) {
 					System.out.println("ERROR: 2nd last region is empty. This should not happen!");
+
+					Utils.printFold(paperUsed);
+					Utils.printFoldWithIndex(indexCuboidonPaper);
 					System.exit(1);
 				}
 				
@@ -199,7 +220,7 @@ public class FoldResolverDivideAndConquer {
 
 		//DEPTH-FIRST START:
 		
-		for(int i=0; paperToDevelop[i] != null && i<paperToDevelop.length; i++) {
+		for(int i=0; i<paperToDevelop.length && paperToDevelop[i] != null; i++) {
 			
 			
 			//System.out.println("Coord i,j : " + coord_i + ", " + coord_j);
@@ -669,7 +690,65 @@ public class FoldResolverDivideAndConquer {
 										
 										CellIndexToOrderOfDevToUse[indexToAdd] = (HashMap <Integer, Integer>)CellIndexToOrderOfDev[regionIndex].clone();
 										
+										//Quick check if each region has at least 1 solution:
+										//TODO: put quick check in function
+										//Mini setup
+										//System.out.println("Check single solution:");
 										
+										//Don't set it! (It's supposed to be set for now)
+										//cuboid.setCell(indexNewCell, rotationNeighbourPaperRelativeToMap);
+										
+										paperUsed[new_i][new_j] = true;
+										indexCuboidonPaper[new_i][new_j] = indexNewCell;
+										paperToDevelop[numCellsUsedDepth] = new Coord2D(new_i, new_j);
+
+										
+										//TODO: explain this better
+										CellIndexToOrderOfDevToUse[indexToAdd].put(indexNewCell, numCellsUsedDepth);
+										CellRegionsToHandleInRevOrderToUse[indexToAdd][indexNewCell] = false;
+										minOrderedCellCouldUsePerRegionToUse[indexToAdd] = CellIndexToOrderOfDevToUse[regionIndex].get(indexToUse);
+										minCellRotationOfMinCellToDevPerRegionToUse[indexToAdd] = j;
+										
+										//End TODO
+
+										numCellsUsedDepth += 1;
+										
+										if(depthFirstAlgoWillFindAsolutionInRegionIndex(paperToDevelop, indexCuboidonPaper,
+												paperUsed, cuboid, numCellsUsedDepth, debugLastIndex,
+												CellIndexToOrderOfDevToUse, CellRegionsToHandleInRevOrderToUse,
+												minOrderedCellCouldUsePerRegionToUse, minCellRotationOfMinCellToDevPerRegionToUse, indexToAdd)
+											== false) {
+											
+											
+											//System.out.println("Region impossible!");
+											
+											cantAddCellBecauseOfOtherPaperNeighbours = true;
+										}
+										
+										numCellsUsedDepth -= 1;
+										
+										
+										//Mini tear down
+										CellRegionsToHandleInRevOrderToUse[indexToAdd][indexNewCell] = true;
+										CellIndexToOrderOfDevToUse[indexToAdd].remove(indexNewCell);
+										minOrderedCellCouldUsePerRegionToUse[indexToAdd] = prevNewMinOrderedCellCouldUse;
+										minCellRotationOfMinCellToDevPerRegionToUse[indexToAdd] = prevMinCellRotationOfMinCellToDev;
+										
+
+										paperUsed[new_i][new_j] = false;
+										indexCuboidonPaper[new_i][new_j] = -1;
+										paperToDevelop[numCellsUsedDepth] = null;
+										
+										//Don't remove it (It's supposed to be set for now)
+										//cuboid.removeCell(indexNewCell);
+										
+										//End mini-tear down
+										//END TODO:  put quick check in functiop
+										
+										if(cantAddCellBecauseOfOtherPaperNeighbours) {
+											//System.out.println("quick cut off");
+											break STOP_DIVIDING;
+										}
 										
 									}
 									
@@ -753,8 +832,19 @@ public class FoldResolverDivideAndConquer {
 					
 					int lastIndexUsed = indexNewCell;
 					
+					long newLimitDupSolutions = limitDupSolutions;
+					if(limitDupSolutions >= 0) {
+						newLimitDupSolutions -= retDuplicateSolutions;
+					}
 					
-					doDepthFirstSearch(paperToDevelop, indexCuboidonPaper, paperUsed, cuboid, numCellsUsedDepth, lastIndexUsed, CellIndexToOrderOfDevToUse, CellRegionsToHandleInRevOrderToUse, minOrderedCellCouldUsePerRegionToUse, minCellRotationOfMinCellToDevPerRegionToUse);
+					retDuplicateSolutions += doDepthFirstSearch(paperToDevelop, indexCuboidonPaper, paperUsed, cuboid, numCellsUsedDepth, lastIndexUsed, CellIndexToOrderOfDevToUse, CellRegionsToHandleInRevOrderToUse, minOrderedCellCouldUsePerRegionToUse, minCellRotationOfMinCellToDevPerRegionToUse, newLimitDupSolutions);
+
+	
+
+					if(numCellsUsedDepth < CellIndexToOrderOfDev[0].size()) {
+						System.out.println("WHAT???");
+						System.exit(1);
+					}
 					
 					//Tear down
 					numCellsUsedDepth -= 1;
@@ -767,7 +857,6 @@ public class FoldResolverDivideAndConquer {
 						minOrderedCellCouldUsePerRegionToUse[r] = prevNewMinOrderedCellCouldUse;
 						minCellRotationOfMinCellToDevPerRegionToUse[r] = prevMinCellRotationOfMinCellToDev;
 					}
-					regionIndex = CellRegionsToHandleInRevOrder.length - 1;
 
 					paperUsed[new_i][new_j] = false;
 					indexCuboidonPaper[new_i][new_j] = -1;
@@ -775,7 +864,16 @@ public class FoldResolverDivideAndConquer {
 					
 					cuboid.removeCell(indexNewCell);
 					//End tear down
+
+
+					if(limitDupSolutions >= 0 && retDuplicateSolutions > limitDupSolutions) {
+						//Handling option to only find 1 or 2 solutions:
+						//This has to be done after tear-down because these objects are soft-copied...
+						return retDuplicateSolutions;
+					}
 					
+					
+					regionIndex = CellRegionsToHandleInRevOrder.length - 1;
 					
 				//TODO: exit next level!
 				} else {
@@ -788,8 +886,39 @@ public class FoldResolverDivideAndConquer {
 
 		//TODO: figure out how to record distinct answers
 		
+		return retDuplicateSolutions;
 	}
 	
+	
+	//TODO: same idea, but set limit to 1 instead of 0.
+	public static boolean depthFirstAlgoWillFindAsolutionInRegionIndex(Coord2D paperToDevelop[], int indexCuboidonPaper[][],
+			boolean paperUsed[][], CuboidToFoldOn cuboid, int numCellsUsedDepth, int debugLastIndex,
+			HashMap <Integer, Integer> CellIndexToOrderOfDev[], boolean CellRegionsToHandleInRevOrder[][],
+			int minOrderedCellCouldUsePerRegion[], int minCellRotationOfMinCellToDevPerRegion[], int regionIndex) {
+		
+		//doDepthFirstSearch(Coord2D paperToDevelop[], int indexCuboidonPaper[][], boolean paperUsed[][], CuboidToFoldOn cuboid, int numCellsUsedDepth, int debugLastIndex,
+		
+		boolean CellRegionsToHandleInRevOrderToUse[][] = new boolean[1][CellRegionsToHandleInRevOrder.length];
+		int minOrderedCellCouldUsePerRegionToUse[] = new int[1];
+		int minCellRotationOfMinCellToDevPerRegionToUse[] = new int[1];
+		HashMap <Integer, Integer> CellIndexToOrderOfDevToUse[] = new HashMap[1];
+		
+		CellRegionsToHandleInRevOrderToUse[0] = CellRegionsToHandleInRevOrder[regionIndex];
+		minOrderedCellCouldUsePerRegionToUse[0] = minOrderedCellCouldUsePerRegion[regionIndex];
+		minCellRotationOfMinCellToDevPerRegionToUse[0] = minCellRotationOfMinCellToDevPerRegion[regionIndex];
+		CellIndexToOrderOfDevToUse[0] = CellIndexToOrderOfDev[regionIndex];
+		
+		
+		if(doDepthFirstSearch(paperToDevelop, indexCuboidonPaper, paperUsed, cuboid, numCellsUsedDepth, debugLastIndex, CellIndexToOrderOfDevToUse, CellRegionsToHandleInRevOrderToUse, minOrderedCellCouldUsePerRegionToUse, minCellRotationOfMinCellToDevPerRegionToUse, 0L)
+				> 0L) {
+			return true;
+		} else {
+		
+			return false;
+		}
+	}
+ 
+			
 	
 	//TODO: maybe this can replace the normal depth first search
 	public static boolean regionHasASolution(Coord2D paperToDevelop[], int indexCuboidonPaper[][], boolean paperUsed[][], CuboidToFoldOn cuboid, int numCellsUsedDepth, int debugLastIndex,

@@ -422,7 +422,7 @@ public class FoldResolverOrdered {
 	public static void main(String args[]) {
 		
 		System.out.println("Fold Rsolver Ordered:");
-		solveFoldsForSingleCuboid(5, 1, 1);
+		solveFoldsForSingleCuboid(1, 1, 1);
 
 		
 		System.out.println(System.currentTimeMillis());
