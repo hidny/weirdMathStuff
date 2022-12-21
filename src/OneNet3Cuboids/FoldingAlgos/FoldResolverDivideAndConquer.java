@@ -81,22 +81,16 @@ public class FoldResolverDivideAndConquer {
 			CellRegionsToHandleInRevOrder[0][j] = true;
 		}
 		
-		doDepthFirstSearch(paperToDevelop, indexCuboidOnPaper, paperUsed, cuboid, numCellsUsedDepth, 0, CellIndexToOrderOfDev, CellRegionsToHandleInRevOrder, minOrderedCellCouldUsePerRegion, minCellRotationOfMinCellToDevPerRegion, -1L);
+		doDepthFirstSearch(paperToDevelop, indexCuboidOnPaper, paperUsed, cuboid, numCellsUsedDepth, CellIndexToOrderOfDev, CellRegionsToHandleInRevOrder, minOrderedCellCouldUsePerRegion, minCellRotationOfMinCellToDevPerRegion, -1L);
 		
 		System.out.println("Final number of unique solutions: " + numUniqueFound);
 	}
 	
 	private static int numFound = 0;
 	private static int numUniqueFound = 0;
-	//TODO: indexCuboid -> indexCuboidOnPaper
-	//TODO: paper -> paperUsed
 	
-	//TODO:
-	//TODO
 	
-	private static int debugNumHolesFound = 0;
-	
-	public static long doDepthFirstSearch(Coord2D paperToDevelop[], int indexCuboidonPaper[][], boolean paperUsed[][], CuboidToFoldOn cuboid, int numCellsUsedDepth, int debugLastIndex,
+	public static long doDepthFirstSearch(Coord2D paperToDevelop[], int indexCuboidonPaper[][], boolean paperUsed[][], CuboidToFoldOn cuboid, int numCellsUsedDepth,
 			HashMap <Integer, Integer> CellIndexToOrderOfDev[], boolean CellRegionsToHandleInRevOrder[][], int minOrderedCellCouldUsePerRegion[], int minCellRotationOfMinCellToDevPerRegion[], long limitDupSolutions) {
 
 		//Debug
@@ -108,7 +102,6 @@ public class FoldResolverDivideAndConquer {
 		if(numCellsUsedDepth == cuboid.getNumCellsToFill()) {
 			//System.out.println("Done!");
 			
-			//TODO: do something more complicated than printing later:
 			//Utils.printFold(paperUsed);
 			//Utils.printFoldWithIndex(indexCuboidonPaper);
 			
@@ -446,145 +439,6 @@ public class FoldResolverDivideAndConquer {
 				
 				
 				
-				if( ! cantAddCellBecauseOfOtherPaperNeighbours) {
-
-					//TODO: replace with more complex algo
-					//Search for isolated new neighbours:
-
-					SEARCH_FOR_BAD_SECOND_NEIGHBOURS_2:
-					for(int rotIndexToFill=0; rotIndexToFill<NUM_ROTATIONS; rotIndexToFill++) {
-	
-						
-	
-						int indexWithPotentialHole = neighboursOfNewCell[rotIndexToFill].getIndex();
-	
-						
-						if( ! cuboid.isCellIndexUsed(indexWithPotentialHole)) {
-							
-							
-							int rotationToAddCellOn2 = (j + rotationNeighbourPaperRelativeToMap) % NUM_ROTATIONS;
-							
-							//End all three of these are wrong.
-							
-							//TODO: put in function
-							int new_i2 = -1;
-							int new_j2 = -1;
-							if(rotationToAddCellOn2 == 0) {
-								new_i2 = new_i-1;
-								new_j2 = new_j;
-								
-							} else if(rotationToAddCellOn2 == 1) {
-								new_i2 = new_i;
-								new_j2 = new_j+1;
-								
-							} else if(rotationToAddCellOn2 == 2) {
-								new_i2 = new_i+1;
-								new_j2 = new_j;
-								
-							} else if(rotationToAddCellOn2 == 3) {
-								new_i2 = new_i;
-								new_j2 = new_j-1;
-							} else {
-								System.out.println("Doh! 3");
-								System.out.println("Unknown rotation!");
-								System.exit(1);
-							}
-							//END TODO: put in function
-							
-							if(getNumUsedNeighbourCellonPaper(
-									indexCuboidonPaper,
-									new Coord2D(new_i2, new_j2)) == 3) {
-			
-								if( neighboursCellonPaperAreNeighbourOnCuboid(cuboid, indexCuboidonPaper, new Coord2D(new_i2, new_j2),
-										indexWithPotentialHole)) {
-								
-									if(cellHasNeighbourWithIndexUnderSomeMinIndex(
-											cuboid, indexWithPotentialHole, CellIndexToOrderOfDev[regionIndex], CellIndexToOrderOfDev[regionIndex].get(indexToUse))
-										) {
-										
-										
-										/*System.out.println("....");
-										System.out.println(DataModelViews.getFlatNumberingView(cuboid.getNumCellsToFill()/4, 1, 1));
-										System.out.println("HOLE FOUND!");
-										System.out.println("Index to used as bridge: " + indexToUse);
-										System.out.println("Trying to add index: " + indexNewCell);
-										System.out.println("Neighbour with hole problem: " + indexWithPotentialHole);
-										Utils.printFold(paperUsed);
-										Utils.printFoldWithIndex(indexCuboidonPaper);
-										
-										if(rotationToAddCellOn2 == 0) {
-											System.out.println("up");
-			
-										} else if(rotationToAddCellOn2 == 1) {
-											System.out.println("right");
-											
-										} else if(rotationToAddCellOn2 == 2) {
-											System.out.println("down");
-											
-										} else if(rotationToAddCellOn2 == 3) {
-											System.out.println("left");
-										}
-	
-										System.exit(1);*/
-										
-										cantAddCellBecauseOfOtherPaperNeighbours = true;
-										debugNumHolesFound++;
-										break SEARCH_FOR_BAD_SECOND_NEIGHBOURS_2;
-									} else {
-										System.out.println("....");
-										System.out.println(DataModelViews.getFlatNumberingView(cuboid.getNumCellsToFill()/4, 1, 1));
-										System.out.println("Could fill it up exception!");
-										System.out.println("Index to used as bridge: " + indexToUse);
-										System.out.println("Trying to add index: " + indexNewCell);
-										System.out.println("Neighbour with hole problem: " + indexWithPotentialHole);
-										Utils.printFold(paperUsed);
-										Utils.printFoldWithIndex(indexCuboidonPaper);
-										if(rotationToAddCellOn2 == 0) {
-											System.out.println("up");
-			
-										} else if(rotationToAddCellOn2 == 1) {
-											System.out.println("right");
-											
-										} else if(rotationToAddCellOn2 == 2) {
-											System.out.println("down");
-											
-										} else if(rotationToAddCellOn2 == 3) {
-											System.out.println("left");
-										}
-										System.exit(1);
-									}
-									
-								} else {
-									
-									//Paper doesn't match the cuboid!
-									//So it's not a hole.
-									/*
-									System.out.println();
-									System.out.println();
-									System.out.println();
-									System.out.println("Paper doesn't match the cuboid!");
-									System.out.println(DataModelViews.getFlatNumberingView(cuboid.getNumCellsToFill()/4, 1, 1));
-									System.out.println("Index to used as bridge: " + indexToUse);
-									System.out.println("Trying to add index: " + indexNewCell);
-									System.out.println("Neighbour with hole problem: " + indexWithPotentialHole);
-									Utils.printFold(paperUsed);
-									Utils.printFoldWithIndex(indexCuboidonPaper);
-									System.out.println("Function with problem:");
-									neighboursCellonPaperAreNeighbourOnCuboid(cuboid, indexCuboidonPaper, new Coord2D(new_i2, new_j2),
-												indexWithPotentialHole);
-									System.exit(1);
-									*/
-								}
-								
-							}
-							
-						}
-					}
-				
-					//END TODO: make more complex algo
-				}//END IF RELEVANT
-
-				
 				//Let region specific variable default to using the given regions.
 				//That might change if the new cell added, divides a region.
 				boolean CellRegionsToHandleInRevOrderToUse[][] = CellRegionsToHandleInRevOrder;
@@ -714,7 +568,7 @@ public class FoldResolverDivideAndConquer {
 										numCellsUsedDepth += 1;
 										
 										if(depthFirstAlgoWillFindAsolutionInRegionIndex(paperToDevelop, indexCuboidonPaper,
-												paperUsed, cuboid, numCellsUsedDepth, debugLastIndex,
+												paperUsed, cuboid, numCellsUsedDepth,
 												CellIndexToOrderOfDevToUse, CellRegionsToHandleInRevOrderToUse,
 												minOrderedCellCouldUsePerRegionToUse, minCellRotationOfMinCellToDevPerRegionToUse, indexToAdd)
 											== false) {
@@ -830,14 +684,13 @@ public class FoldResolverDivideAndConquer {
 					
 					//End setup
 					
-					int lastIndexUsed = indexNewCell;
 					
 					long newLimitDupSolutions = limitDupSolutions;
 					if(limitDupSolutions >= 0) {
 						newLimitDupSolutions -= retDuplicateSolutions;
 					}
 					
-					retDuplicateSolutions += doDepthFirstSearch(paperToDevelop, indexCuboidonPaper, paperUsed, cuboid, numCellsUsedDepth, lastIndexUsed, CellIndexToOrderOfDevToUse, CellRegionsToHandleInRevOrderToUse, minOrderedCellCouldUsePerRegionToUse, minCellRotationOfMinCellToDevPerRegionToUse, newLimitDupSolutions);
+					retDuplicateSolutions += doDepthFirstSearch(paperToDevelop, indexCuboidonPaper, paperUsed, cuboid, numCellsUsedDepth, CellIndexToOrderOfDevToUse, CellRegionsToHandleInRevOrderToUse, minOrderedCellCouldUsePerRegionToUse, minCellRotationOfMinCellToDevPerRegionToUse, newLimitDupSolutions);
 
 	
 
@@ -884,15 +737,14 @@ public class FoldResolverDivideAndConquer {
 			}
 		}
 
-		//TODO: figure out how to record distinct answers
 		
 		return retDuplicateSolutions;
 	}
 	
 	
-	//TODO: same idea, but set limit to 1 instead of 0.
+	//TODO: make an function that checks if there's only 1 solution
 	public static boolean depthFirstAlgoWillFindAsolutionInRegionIndex(Coord2D paperToDevelop[], int indexCuboidonPaper[][],
-			boolean paperUsed[][], CuboidToFoldOn cuboid, int numCellsUsedDepth, int debugLastIndex,
+			boolean paperUsed[][], CuboidToFoldOn cuboid, int numCellsUsedDepth,
 			HashMap <Integer, Integer> CellIndexToOrderOfDev[], boolean CellRegionsToHandleInRevOrder[][],
 			int minOrderedCellCouldUsePerRegion[], int minCellRotationOfMinCellToDevPerRegion[], int regionIndex) {
 		
@@ -909,7 +761,7 @@ public class FoldResolverDivideAndConquer {
 		CellIndexToOrderOfDevToUse[0] = CellIndexToOrderOfDev[regionIndex];
 		
 		
-		if(doDepthFirstSearch(paperToDevelop, indexCuboidonPaper, paperUsed, cuboid, numCellsUsedDepth, debugLastIndex, CellIndexToOrderOfDevToUse, CellRegionsToHandleInRevOrderToUse, minOrderedCellCouldUsePerRegionToUse, minCellRotationOfMinCellToDevPerRegionToUse, 0L)
+		if(doDepthFirstSearch(paperToDevelop, indexCuboidonPaper, paperUsed, cuboid, numCellsUsedDepth, CellIndexToOrderOfDevToUse, CellRegionsToHandleInRevOrderToUse, minOrderedCellCouldUsePerRegionToUse, minCellRotationOfMinCellToDevPerRegionToUse, 0L)
 				> 0L) {
 			return true;
 		} else {
@@ -920,12 +772,6 @@ public class FoldResolverDivideAndConquer {
  
 			
 	
-	//TODO: maybe this can replace the normal depth first search
-	public static boolean regionHasASolution(Coord2D paperToDevelop[], int indexCuboidonPaper[][], boolean paperUsed[][], CuboidToFoldOn cuboid, int numCellsUsedDepth, int debugLastIndex,
-			HashMap <Integer, Integer> CellIndexToOrderOfDev, int minOrderedCellCouldUse, int minCellRotationOfMinCellToDev, int regionIndex, boolean regions[][]) {
-		
-		return false;
-	}
 	
 	public static int getNumUsedNeighbourCellonPaper(
 			int indexCuboidonPaper[][],
@@ -978,63 +824,6 @@ public class FoldResolverDivideAndConquer {
 		
 		return false;
 		
-	}
-	
-	//TODO: simplify!
-	// you shouldn't need to find the alignment.
-	public static boolean  neighboursCellonPaperAreNeighbourOnCuboid(
-	CuboidToFoldOn cuboid, int indexCuboidonPaper[][], Coord2D coord, int indexToInsert) {
-		
-		CoordWithRotationAndIndex neighbour[] = cuboid.getNeighbours(indexToInsert);
-		
-		
-		int paperIndexes[] = new int[4];
-		paperIndexes[0] = indexCuboidonPaper[coord.i - 1][coord.j];
-		paperIndexes[1] = indexCuboidonPaper[coord.i][coord.j + 1];
-		paperIndexes[2] = indexCuboidonPaper[coord.i + 1][coord.j];
-		paperIndexes[3] = indexCuboidonPaper[coord.i][coord.j - 1];
-		
-		int alignment = -1;
-		
-		
-		FOUND_ALIGNMENT:
-		for(int p=0; p<paperIndexes.length; p++) {
-			if(paperIndexes[p] < 0) {
-				continue;
-			}
-			//TODO: figure out the rotation yourself.
-			for(int i=0; i<neighbour.length; i++) {
-			
-				if(neighbour[i].getIndex() == paperIndexes[p]) {
-					
-					alignment = (i - p + NUM_ROTATIONS) % NUM_ROTATIONS;
-					
-					break FOUND_ALIGNMENT;
-				}
-				
-				
-			}
-			
-			
-		}
-		
-		if(alignment == -1) {
-			return false;
-		}
-		
-		
-		for(int p=0; p<paperIndexes.length; p++) {
-			if(paperIndexes[p] < 0) {
-				continue;
-			}
-			
-			if(neighbour[(p + alignment) % NUM_ROTATIONS].getIndex() != paperIndexes[p]) {
-				
-				return false;
-			}
-		}
-		
-		return true;
 	}
 	
 	
@@ -1124,7 +913,6 @@ public class FoldResolverDivideAndConquer {
 		
 		
 		System.out.println(System.currentTimeMillis());
-		System.out.println("Number of holes found: " + debugNumHolesFound);
 		//Mission add to OEIS:
 		//So far, the pattern is:
 		//11, 349, ??
