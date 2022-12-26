@@ -17,7 +17,7 @@ import number.IsNumber;
 public class FoldResolverDivideAndConquer {
 
 	
-
+//TEST GIT PAT
 	public static final int NUM_ROTATIONS = 4;
 	public static final int NUM_NEIGHBOURS = NUM_ROTATIONS;
 	
