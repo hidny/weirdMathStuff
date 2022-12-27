@@ -537,37 +537,74 @@ public class FoldResolveOrderedRegions {
 									//TODO: check if each region has 1 solution
 									//TODO: check if region is the same as a hole in the net to go faster (Also useful for the 3Cuboid 1 net check)
 									
-									
-									/*
-									System.out.println();
-									System.out.println();
-									System.out.println();
-									
-									System.out.println(DataModelViews.getFlatNumberingView(cuboid.getNumCellsToFill()/4, 1, 1));
-									System.out.println("TODO:");
-									if(found3Way){
-										System.out.println("Found cell that will separate the cuboid in three ways!");
-									} else {
-										System.out.println("Found cell that will separate the cuboid!");
-									}
-									System.out.println("Index to used as bridge: " + indexToUse);
-									System.out.println("Trying to add index: " + indexNewCell);
-									if(found3Way) {
-										System.out.println("Neighbours that are separated: " + firstIndex + ", " + indexNeighbourOfNewCell + ", and " + indexNeighbourThirdWay);
-									} else {
-										System.out.println("Neighbours that are separated: " + firstIndex + " and " + indexNeighbourOfNewCell);
-									}
-									Utils.printFold(paperUsed);
-									Utils.printFoldWithIndex(indexCuboidonPaper);
-									
-									if(found3Way) {
-										System.out.println("Stop at 3-way?");
-									}
-									 */
-
 									//END DIVIDING THE REGION
 									
+									
+									/*
+									//Tried reordering regions, and it wasn't faster :(
 									regions = regionsSplit;
+
+									boolean regionHasOneSolution[] = new boolean[regions.length];
+									for(int i2=regions.length - 1 - numNewWays; i2< regions.length; i2++) {
+										
+										paperUsed[new_i][new_j] = true;
+										indexCuboidonPaper[new_i][new_j] = indexNewCell;
+										paperToDevelop[numCellsUsedDepth] = new Coord2D(new_i, new_j);
+
+										
+										regionsSplit[i2].addCellToRegion(indexNewCell, numCellsUsedDepth, indexToUse, j);
+										
+										//End TODO
+
+										numCellsUsedDepth += 1;
+										
+										regionHasOneSolution[i2] = depthFirstAlgoWillFindOnly1solutionInRegionIndex(paperToDevelop, indexCuboidonPaper,
+												paperUsed, cuboid, numCellsUsedDepth,
+												regionsSplit, i2);
+
+										numCellsUsedDepth -= 1;
+										
+										
+										//TODO: this is awkward: I'm tearing it down so I could build it up again later
+										//Mini tear down
+										regionsSplit[i2].removeCellFromRegion(indexNewCell, numCellsUsedDepth, prevNewMinOrderedCellCouldUse, prevMinCellRotationOfMinCellToDev);
+
+
+										paperUsed[new_i][new_j] = false;
+										indexCuboidonPaper[new_i][new_j] = -1;
+										paperToDevelop[numCellsUsedDepth] = null;
+										
+										
+										
+									}
+									
+									//TODO: Sort regions by size:
+									
+									for(int i2=regions.length - 1 - numNewWays; i2< regions.length; i2++) {
+										
+										int curBestIndex = i2;
+										
+										for(int j2=i2+1; j2<regions.length; j2++) {
+											
+											if(regionHasOneSolution[i2] && ! regionHasOneSolution[j2]) {
+												curBestIndex = j2;
+
+											} else if(regions[i2].getNumCellsInRegion() < regions[j2].getNumCellsInRegion()) {
+												curBestIndex = j2;
+											}
+										}
+										
+										Region tmp = regions[i2];
+										regions[i2] = regions[curBestIndex];
+										regions[curBestIndex] = tmp;
+									}
+									//ENDTODO
+									
+									 */
+									
+									//End sort regions by size
+									//TODO: afterwards try incorporating algo that checks if there's only 1 solution.
+									//TODO: afterwards try incorporating algo that checks if there's less than or equal to N solutions? Probably bad...
 									
 									break STOP_DIVIDING;
 								}
@@ -680,8 +717,24 @@ public class FoldResolveOrderedRegions {
 		}
 	}
  
-			
-	
+	public static boolean depthFirstAlgoWillFindOnly1solutionInRegionIndex(Coord2D paperToDevelop[], int indexCuboidonPaper[][],
+			boolean paperUsed[][], CuboidToFoldOn cuboid, int numCellsUsedDepth,
+			Region regions[], int regionIndex) {
+		
+		
+		Region regionArgToUse[] = new Region[1];
+		regionArgToUse[0] = regions[regionIndex];
+		
+		if(doDepthFirstSearch(paperToDevelop, indexCuboidonPaper, paperUsed, cuboid, numCellsUsedDepth, regionArgToUse, 1L)
+				== 1L) {
+			return true;
+		} else {
+		
+			return false;
+		}
+	}
+ 
+		
 	
 	public static int getNumUsedNeighbourCellonPaper(
 			int indexCuboidonPaper[][],
