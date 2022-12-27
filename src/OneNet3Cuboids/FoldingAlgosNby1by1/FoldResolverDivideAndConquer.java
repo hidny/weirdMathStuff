@@ -49,7 +49,7 @@ public class FoldResolverDivideAndConquer {
 		int START_I = GRID_SIZE/2;
 		int START_J = GRID_SIZE/2;
 		
-		CuboidToFoldOn cuboid = new CuboidToFoldOn(a, b, b);
+		CuboidToFoldOn cuboid = new CuboidToFoldOn(a, b, c);
 		//Insert start cell:
 		
 		//Once this reaches the total area, we're done!

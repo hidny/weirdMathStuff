@@ -44,7 +44,7 @@ public class FoldResolver1 {
 		int START_I = GRID_SIZE/2;
 		int START_J = GRID_SIZE/2;
 		
-		CuboidToFoldOn cuboid = new CuboidToFoldOn(a, b, b);
+		CuboidToFoldOn cuboid = new CuboidToFoldOn(a, b, c);
 		
 		//Insert start cell:
 		
