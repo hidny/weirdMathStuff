@@ -11,11 +11,12 @@ import OneNet3Cuboids.DataModelViews;
 import OneNet3Cuboids.Utils;
 import OneNet3Cuboids.Coord.Coord2D;
 import OneNet3Cuboids.Coord.CoordWithRotationAndIndex;
+import OneNet3Cuboids.Cuboid.SymmetryResolver.SymmetryResolver;
 import OneNet3Cuboids.DupRemover.BasicUniqueCheckImproved;
 import OneNet3Cuboids.Region.Region;
 import number.IsNumber;
 
-public class FoldResolveOrderedRegions {
+public class FoldResolveOrderedRegionsSkipSymmetries {
 
 	
 	public static final int NUM_ROTATIONS = 4;
@@ -280,6 +281,11 @@ public class FoldResolveOrderedRegions {
 				
 				int rotationNeighbourPaperRelativeToMap = (curRotation - neighbours[j].getRot() + NUM_ROTATIONS) % NUM_ROTATIONS;
 				
+				if(SymmetryResolver.skipSearchBecauseOfASymmetryArg
+						(cuboid, paperToDevelop, i, indexCuboidonPaper, rotationToAddCellOn,
+							curRotation, paperUsed, indexToUse, indexNewCell)) {
+					continue;
+				}
 				
 				//TODO: put in function A
 				boolean cantAddCellBecauseOfOtherPaperNeighbours = false;

@@ -15,7 +15,7 @@ import OneNet3Cuboids.DupRemover.BasicUniqueCheckImproved;
 import OneNet3Cuboids.Region.Region;
 import number.IsNumber;
 
-public class FoldResolveOrderedRegions {
+public class FoldResolveOrderedRegionsNby1by1 {
 
 	
 	public static final int NUM_ROTATIONS = 4;

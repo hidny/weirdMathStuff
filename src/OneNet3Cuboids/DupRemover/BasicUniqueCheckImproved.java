@@ -25,15 +25,15 @@ public class BasicUniqueCheckImproved {
 		BigInteger TWO = new BigInteger("2");
 		
 	
-		int colCountFactor = 1;
+		long colCountFactor = 1;
 		int maxDimLength =  Math.max(array.length, array[0].length);
 		
 		while( colCountFactor <= maxDimLength) {
 			colCountFactor *= 2;
 		}
 		
-		int heightShape = lasti - firsti + 1;
-		int widthShape = lastj - firstj + 1;
+		long heightShape = lasti - firsti + 1;
+		long widthShape = lastj - firstj + 1;
 		
 		BigInteger scores[] = new BigInteger[NUM_REFLECTIONS * NUM_ROTATIONS];
 		
@@ -101,7 +101,7 @@ public class BasicUniqueCheckImproved {
 
 				if(! onlyOneContender  ) {
 
-					//refreshNumContenders(scores, tooLow);
+					tooLow = refreshNumContenders(scores, tooLow);
 					
 					int numContender = 0;
 					for(int k=0; k<scores.length; k++) {
@@ -129,21 +129,7 @@ public class BasicUniqueCheckImproved {
 		}
 		
 		//Sanity check:
-		/*
-		boolean basicCheckResultUniq = BasicUniqueCheck.isUnique(array);
-		//System.out.println(max);
-		
-		if(basicCheckResultUniq && uniqList.contains(max)) {
-			System.out.println("Orig Basic unique check says this is a new solution but Improved says it isn't");
-			System.out.println("HERE");
-			System.exit(1);
-		} else if(! basicCheckResultUniq && ! uniqList.contains(max)) {
-
-			System.out.println("Orig Basic unique check same this is a dup but Improved says this is new");
-			System.out.println("HERE 2");
-			System.exit(1);
-		}
-		*/
+		//sanityCheck(array, max);
 		//End Sanity check
 		
 		if(! uniqList.contains(max)) {
@@ -181,5 +167,23 @@ public class BasicUniqueCheckImproved {
 		}
 		
 		return tooLow;
+	}
+	
+	public static void sanityCheck(boolean array[][], BigInteger max) {
+		
+		boolean basicCheckResultUniq = BasicUniqueCheck.isUnique(array);
+		//System.out.println(max);
+		
+		if(basicCheckResultUniq && uniqList.contains(max)) {
+			System.out.println("Orig Basic unique check says this is a new solution but Improved says it isn't");
+			System.out.println("HERE");
+			System.exit(1);
+		} else if(! basicCheckResultUniq && ! uniqList.contains(max)) {
+
+			System.out.println("Orig Basic unique check same this is a dup but Improved says this is new");
+			System.out.println("HERE 2");
+			System.exit(1);
+		}
+		
 	}
 }

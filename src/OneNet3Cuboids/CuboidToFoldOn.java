@@ -14,6 +14,8 @@ public class CuboidToFoldOn {
 
 	
 	private CoordWithRotationAndIndex[][] neighbours;
+	
+	private int dimensions[] = new int[3];
 
 	
 	public CuboidToFoldOn(int a, int b, int c) {
@@ -28,6 +30,14 @@ public class CuboidToFoldOn {
 			rotationPaperRelativeToCuboidFlatMap[i] = -1;
 		}
 		
+		dimensions[0] = a;
+		dimensions[1] = b;
+		dimensions[2] = c;
+	}
+
+	//Get dimensions for symmetry-resolver functions:
+	public int[] getDimensions() {
+		return dimensions;
 	}
 
 	public void setCell(int index, int rotation) {
