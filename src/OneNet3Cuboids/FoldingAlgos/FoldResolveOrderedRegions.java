@@ -170,7 +170,7 @@ public class FoldResolveOrderedRegions {
 
 		//DEPTH-FIRST START:
 		
-		for(int i=0; i<paperToDevelop.length && paperToDevelop[i] != null; i++) {
+		for(int i=regions[regionIndex].getMinOrderedCellCouldUsePerRegion(); i<paperToDevelop.length && paperToDevelop[i] != null; i++) {
 			
 			
 			//System.out.println("Coord i,j : " + coord_i + ", " + coord_j);
@@ -540,7 +540,7 @@ public class FoldResolveOrderedRegions {
 									//END DIVIDING THE REGION
 									
 									
-									/*
+									
 									//Tried reordering regions, and it wasn't faster :(
 									regions = regionsSplit;
 
@@ -600,7 +600,7 @@ public class FoldResolveOrderedRegions {
 									}
 									//ENDTODO
 									
-									 */
+									 
 									
 									//End sort regions by size
 									//TODO: afterwards try incorporating algo that checks if there's only 1 solution.
