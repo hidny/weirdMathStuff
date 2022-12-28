@@ -171,19 +171,32 @@ public class SymmetryResolver {
 		//END TODO: put in function
 		
 		int numNeighboursOrig = FoldResolveOrderedRegionsNby1by1.getNumUsedNeighbourCellonPaper(indexCuboidonPaper,paperToDevelop[0]);
-		int numNeighboursForIndexToUse = FoldResolveOrderedRegionsNby1by1.getNumUsedNeighbourCellonPaper(indexCuboidonPaper, paperToDevelop[cuboidOnPaperIndex]);
 		int numNeighboursForIndexToAdd = FoldResolveOrderedRegionsNby1by1.getNumUsedNeighbourCellonPaper(indexCuboidonPaper, new Coord2D(new_i, new_j) );
 		
-		
-		if(cellIndexToUse != 0
-				&& numNeighboursForIndexToUse >= numNeighboursOrig) {
-				return true;
-		}
-		
+
 		if(cellIndexToUse != 0
 				&& numNeighboursForIndexToAdd > numNeighboursOrig) {
 			return true;
 		}
+		
+		//Make sure no cell neighbour will have too many neighbours:
+		for(int i2=new_i-1; i2<=new_i+1; i2++) {
+			for(int j2=new_j-1; j2<=new_j+1; j2++) {
+				
+				if(i2 == paperToDevelop[0].i && j2 == paperToDevelop[0].j) {
+					continue;
+
+				} else if( 
+					((i2 == new_i && j2 != new_j)
+					|| (i2 != new_i && j2 == new_j))	
+					&&	paperUsed[i2][j2]
+					&& FoldResolveOrderedRegionsNby1by1.getNumUsedNeighbourCellonPaper(indexCuboidonPaper, new Coord2D(i2, j2))
+						>= numNeighboursOrig) {
+					return true;
+				}
+			}
+		}
+		
 		
 		/*if(numNeighboursOrig >=3) {
 			//Final number of unique solutions: 180
