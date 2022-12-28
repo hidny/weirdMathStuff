@@ -1,5 +1,6 @@
 package OneNet3Cuboids.FoldingAlgoStartAnywhere;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -13,6 +14,7 @@ import OneNet3Cuboids.Coord.Coord2D;
 import OneNet3Cuboids.Coord.CoordWithRotationAndIndex;
 import OneNet3Cuboids.Cuboid.SymmetryResolver.SymmetryResolver;
 import OneNet3Cuboids.DupRemover.BasicUniqueCheckImproved;
+import OneNet3Cuboids.FoldingAlgosNby1by1.FoldResolveOrderedRegionsNby1by1;
 import OneNet3Cuboids.Region.Region;
 import number.IsNumber;
 
@@ -72,11 +74,20 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 		doDepthFirstSearch(paperToDevelop, indexCuboidOnPaper, paperUsed, cuboid, numCellsUsedDepth, regionsToHandleRevOrder, -1L);
 		
 		System.out.println("Final number of unique solutions: " + numUniqueFound);
+		System.out.println("First to last 4 neigh:         "+ debugFirst4 + " to " + debugLast4);
+		System.out.println("First to last 3 neigh or less: "+ debugFirst3 + " to " + debugLast3);
 	}
 	
 	private static int numFound = 0;
 	private static int numUniqueFound = 0;
 	
+	public static HashSet<BigInteger> debugList4 = new HashSet<BigInteger>();
+	private static int debugFirst4 = -1;
+	private static int debugLast4 = -1;
+
+	public static HashSet<BigInteger> debugList3 = new HashSet<BigInteger>();
+	private static int debugFirst3 = -1;
+	private static int debugLast3 = -1;
 	
 	public static long doDepthFirstSearch(Coord2D paperToDevelop[], int indexCuboidonPaper[][], boolean paperUsed[][], CuboidToFoldOn cuboid, int numCellsUsedDepth,
 			Region regions[], long limitDupSolutions) {
@@ -109,9 +120,58 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 				
 			}
 			
-			if(BasicUniqueCheckImproved.isUnique(paperUsed)) {
-				numUniqueFound++;
+			
+			BasicUniqueCheckImproved.isUnique(paperUsed);
+			boolean foundNew = false;
+			
+			if(FoldResolveOrderedRegionsNby1by1.getNumUsedNeighbourCellonPaper(indexCuboidonPaper,paperToDevelop[0]) >= 4
+					&& !debugList4.contains(BasicUniqueCheckImproved.debugLastScore)) {
+				debugList4.add(BasicUniqueCheckImproved.debugLastScore);
+				
+				if(debugFirst4 == -1) {
+					debugFirst4 = numUniqueFound;
+				}
+				debugLast4 = numUniqueFound;
+				
+				if(debugList3.contains(BasicUniqueCheckImproved.debugLastScore)) {
+					System.out.println("ERROR:");
+					System.out.println("Collision when trying to add solution with 4 neighbours:");
+					Utils.printFold(paperUsed);
+					Utils.printFoldWithIndex(indexCuboidonPaper);
+					System.out.println("code:");
+					System.out.println(BasicUniqueCheckImproved.debugLastScore);
+				}
+				
+				foundNew = true;
+				
+			} else if(FoldResolveOrderedRegionsNby1by1.getNumUsedNeighbourCellonPaper(indexCuboidonPaper,paperToDevelop[0]) < 4
+					&& !debugList3.contains(BasicUniqueCheckImproved.debugLastScore)
+			){
+				debugList3.add(BasicUniqueCheckImproved.debugLastScore);
+				
 
+				if(debugFirst3 == -1) {
+					debugFirst3 = numUniqueFound;
+				}
+				debugLast3 = numUniqueFound;
+				
+
+				if(debugList4.contains(BasicUniqueCheckImproved.debugLastScore)) {
+					System.out.println("ERROR:");
+					System.out.println("Collision when trying to add solution with 3 neighbours or less:");
+					Utils.printFold(paperUsed);
+					Utils.printFoldWithIndex(indexCuboidonPaper);
+					System.out.println("code:");
+					System.out.println(BasicUniqueCheckImproved.debugLastScore);
+				}
+				
+				foundNew = true;
+			}
+			
+			if(foundNew) {
+				numUniqueFound++;
+	
+				
 				//Utils.printFold(paperUsed);
 				//Utils.printFoldWithIndex(indexCuboidonPaper);
 				if(numCellsUsedDepth < 12
@@ -123,6 +183,11 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 					Utils.printFoldWithIndex(indexCuboidonPaper);
 				
 					System.out.println("Num unique solutions found: " + numUniqueFound);
+					System.out.println("First to last 4 neigh:         "+ debugFirst4 + " to " + debugLast4);
+					System.out.println("First to last 3 neigh or less: "+ debugFirst3 + " to " + debugLast3);
+					
+					System.out.println("---");
+					BasicUniqueCheckImproved.uniqList = new HashSet<BigInteger>();
 				}
 				
 			}

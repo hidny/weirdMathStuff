@@ -15,6 +15,7 @@ public class BasicUniqueCheckImproved {
 	public static int BIG_ENOUGH_NUMBER = 256;
 	
 	public static HashSet<BigInteger> uniqList = new HashSet<BigInteger>();
+	public static BigInteger debugLastScore = null;
 	
 	public static boolean isUnique(boolean array[][]) {
 		
@@ -38,7 +39,7 @@ public class BasicUniqueCheckImproved {
 		
 		
 		
-		if(maxDim > minDim) {
+		if(maxDim != minDim) {
 			scores = new BigInteger[NUM_REFLECTIONS * NUM_ROTATIONS / CHECK_SYMMETRIES_ONE_DIM_FACTOR];
 			
 
@@ -245,6 +246,7 @@ public class BasicUniqueCheckImproved {
 		if(! uniqList.contains(max)) {
 			uniqList.add(max);
 			
+			debugLastScore = max;
 			
 			//System.out.println("Max number: " + max);
 			
