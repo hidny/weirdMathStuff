@@ -180,19 +180,21 @@ public class SymmetryResolver {
 		}
 		
 		//Make sure no cell neighbour will have too many neighbours:
-		for(int i2=new_i-1; i2<=new_i+1; i2++) {
-			for(int j2=new_j-1; j2<=new_j+1; j2++) {
-				
-				if(i2 == paperToDevelop[0].i && j2 == paperToDevelop[0].j) {
-					continue;
-
-				} else if( 
-					((i2 == new_i && j2 != new_j)
-					|| (i2 != new_i && j2 == new_j))	
-					&&	paperUsed[i2][j2]
-					&& FoldResolveOrderedRegionsNby1by1.getNumUsedNeighbourCellonPaper(indexCuboidonPaper, new Coord2D(i2, j2))
-						>= numNeighboursOrig) {
-					return true;
+		if(numNeighboursOrig < 4) {
+			for(int i2=new_i-1; i2<=new_i+1; i2++) {
+				for(int j2=new_j-1; j2<=new_j+1; j2++) {
+					
+					if(i2 == paperToDevelop[0].i && j2 == paperToDevelop[0].j) {
+						continue;
+	
+					} else if( 
+						((i2 == new_i && j2 != new_j)
+						|| (i2 != new_i && j2 == new_j))	
+						&&	paperUsed[i2][j2]
+						&& FoldResolveOrderedRegionsNby1by1.getNumUsedNeighbourCellonPaper(indexCuboidonPaper, new Coord2D(i2, j2))
+							>= numNeighboursOrig) {
+						return true;
+					}
 				}
 			}
 		}
