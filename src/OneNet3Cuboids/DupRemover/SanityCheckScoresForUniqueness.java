@@ -2,7 +2,7 @@ package OneNet3Cuboids.DupRemover;
 
 import java.math.BigInteger;
 
-import OneNet3Cuboids.FoldingAlgosNby1by1.FoldResolver1;
+import OneNet3Cuboids.OldReferenceFoldingAlgosNby1by1.FoldResolver1;
 
 public class SanityCheckScoresForUniqueness {
 

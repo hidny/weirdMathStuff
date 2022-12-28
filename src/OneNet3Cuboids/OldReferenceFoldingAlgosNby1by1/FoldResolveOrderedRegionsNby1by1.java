@@ -1,4 +1,4 @@
-package OneNet3Cuboids.FoldingAlgoStartAnywhere;
+package OneNet3Cuboids.OldReferenceFoldingAlgosNby1by1;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,7 +15,7 @@ import OneNet3Cuboids.DupRemover.BasicUniqueCheckImproved;
 import OneNet3Cuboids.Region.Region;
 import number.IsNumber;
 
-public class FoldResolveOrderedRegions {
+public class FoldResolveOrderedRegionsNby1by1 {
 
 	
 	public static final int NUM_ROTATIONS = 4;
@@ -100,12 +100,6 @@ public class FoldResolveOrderedRegions {
 					|| (numCellsUsedDepth < 27 && numFound % 100000 == 0)
 					|| numFound % 10000000 == 0) {
 				System.out.println(numFound + " (num unique: " + numUniqueFound + ")");
-			}
-			if(numFound % 10000000L == 0) {
-				System.out.println("Print possible duplicate solution:");
-				Utils.printFold(paperUsed);
-				Utils.printFoldWithIndex(indexCuboidonPaper);
-				
 			}
 			
 			if(BasicUniqueCheckImproved.isUnique(paperUsed)) {
@@ -279,6 +273,57 @@ public class FoldResolveOrderedRegions {
 				}
 				
 				int rotationNeighbourPaperRelativeToMap = (curRotation - neighbours[j].getRot() + NUM_ROTATIONS) % NUM_ROTATIONS;
+				
+				//Special rules for the 1st/bottom node:
+				//These rules work because of the 4-way symmetry
+				if(indexToUse == 0) {
+					
+					if(getNumUsedNeighbourCellonPaper(indexCuboidonPaper,paperToDevelop[0]) < 3 && rotationToAddCellOn == 3) {
+						//(Leave cell on left alone unless bottom is touching all 4 cells)
+						//nope
+						continue;
+					} else if(rotationToAddCellOn > 0 && indexCuboidonPaper[paperToDevelop[i].i-1][paperToDevelop[i].j] <0) {
+						//If bottom is done with the cell on top, we're done!
+						//nope
+						continue;
+					}
+
+					//End special rules for the 1st/bottom node.
+					
+				//Special rules about where to put top in order to take advantage of symmetry:
+				} else if(neighbours[j].getIndex() == cuboid.getNumCellsToFill() -1 ) {
+					
+					
+					
+					if(curRotation != 2) {
+						//If curRotation is not 2, top isn't above bottom, and that's
+						//probably going to mean a duplicate, unless it's a specific 3 bottom case.
+						//In that case, it can be right of hub/bottom too.
+						//we want top to be above except for (the T intersection case.)
+						if(getNumUsedNeighbourCellonPaper(indexCuboidonPaper, paperToDevelop[0]) == 3
+								&& curRotation == 3) {
+								//The exception where top can be right of bottom:
+								//(the T intersection case.)
+								
+						} else {
+							continue;
+						}
+						
+					} else if(new_j < paperToDevelop[0].j
+							&& (getNumUsedNeighbourCellonPaper(indexCuboidonPaper, paperToDevelop[0]) == 1 ||
+									getNumUsedNeighbourCellonPaper(indexCuboidonPaper, paperToDevelop[0]) == 4 ||
+									(getNumUsedNeighbourCellonPaper(indexCuboidonPaper, paperToDevelop[0]) == 2 
+										&& paperUsed[paperToDevelop[0].i + 1][paperToDevelop[0].j]
+										&& paperUsed[paperToDevelop[0].i - 1][paperToDevelop[0].j]))
+							) {
+						//If bottom has 1 or 4 neighbours, or 2 neighbours that are above and below, make top right left of bottom on paper (or directly above)
+						
+						//i.e.: Only go up and to the right in the 1 bottom and 1 top case.
+						continue;
+					}
+				}
+				//END special rules about where to put top in order to take advantage of symmetry
+				
 				
 				
 				//TODO: put in function A
@@ -797,8 +842,8 @@ public class FoldResolveOrderedRegions {
 	 */
 
 	public static void main(String args[]) {
-		System.out.println("Fold Resolver Ordered Regions start anywhere:");
-		solveFoldsForSingleCuboid(2, 2, 2);
+		System.out.println("Fold Resolver Ordered Regions:");
+		solveFoldsForSingleCuboid(5, 1, 1);
 
 		//Best 5,1,1: 11 minute 20 second
 		

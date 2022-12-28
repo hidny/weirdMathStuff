@@ -1,4 +1,4 @@
-package OneNet3Cuboids.FoldingAlgosNby1by1;
+package OneNet3Cuboids.OldReferenceFoldingAlgosNby1by1;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -2,7 +2,7 @@ package OneNet3Cuboids.Cuboid.SymmetryResolver;
 
 import OneNet3Cuboids.CuboidToFoldOn;
 import OneNet3Cuboids.Coord.Coord2D;
-import OneNet3Cuboids.FoldingAlgosNby1by1.FoldResolveOrderedRegionsNby1by1;
+import OneNet3Cuboids.OldReferenceFoldingAlgosNby1by1.FoldResolveOrderedRegionsNby1by1;
 import OneNet3Cuboids.Coord.Coord2D;
 
 public class SymmetryResolver {
