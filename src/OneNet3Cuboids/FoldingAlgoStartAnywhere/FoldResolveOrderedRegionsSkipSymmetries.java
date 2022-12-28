@@ -111,7 +111,9 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 			
 			if(BasicUniqueCheckImproved.isUnique(paperUsed)) {
 				numUniqueFound++;
-				
+
+				//Utils.printFold(paperUsed);
+				//Utils.printFoldWithIndex(indexCuboidonPaper);
 				if(numCellsUsedDepth < 12
 						|| (numCellsUsedDepth < 20 && numUniqueFound % 2000 == 0)
 						|| (numCellsUsedDepth < 27 && numUniqueFound % 100000 == 0)
@@ -806,7 +808,7 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 		System.out.println("Fold Resolver Ordered Regions start anywhere:");
 		solveFoldsForSingleCuboid(2, 2, 2);
 
-		//Best 5,1,1: 11 minute 20 second
+		//Best 5,1,1: 3 minute 45 seconds
 		
 		
 		System.out.println(System.currentTimeMillis());

@@ -169,34 +169,34 @@ public class SymmetryResolver {
 			System.exit(1);
 		}
 		//END TODO: put in function
-				
 		
-		if(cellIndexToUse != 0) {
-			
-			int numNeighboursOrig = FoldResolveOrderedRegionsNby1by1.getNumUsedNeighbourCellonPaper(indexCuboidonPaper,paperToDevelop[0]);
-			int numNeighboursForIndexToUse = FoldResolveOrderedRegionsNby1by1.getNumUsedNeighbourCellonPaper(indexCuboidonPaper, paperToDevelop[cuboidOnPaperIndex]);
-			int numNeighboursForIndexToAdd = FoldResolveOrderedRegionsNby1by1.getNumUsedNeighbourCellonPaper(indexCuboidonPaper, new Coord2D(new_i, new_j) );
-			
-			
-			if(numNeighboursForIndexToUse >= numNeighboursOrig) {
+		int numNeighboursOrig = FoldResolveOrderedRegionsNby1by1.getNumUsedNeighbourCellonPaper(indexCuboidonPaper,paperToDevelop[0]);
+		int numNeighboursForIndexToUse = FoldResolveOrderedRegionsNby1by1.getNumUsedNeighbourCellonPaper(indexCuboidonPaper, paperToDevelop[cuboidOnPaperIndex]);
+		int numNeighboursForIndexToAdd = FoldResolveOrderedRegionsNby1by1.getNumUsedNeighbourCellonPaper(indexCuboidonPaper, new Coord2D(new_i, new_j) );
+		
+		
+		if(cellIndexToUse != 0
+				&& numNeighboursForIndexToUse >= numNeighboursOrig) {
 				return true;
-			} else if(numNeighboursForIndexToAdd > numNeighboursOrig) {
-				return true;
-			}
-			
-			
-			/*if(numNeighboursOrig >=3) {
-				//Final number of unique solutions: 180
-				//180 solutions where all cells have 2 neighbours or less.
-				// I thought there would be 0 while trying to figure it out while holding baby.
-				return true;
-			}*/
-			if(numNeighboursOrig >=4) {
-				//Final number of unique solutions: x
-				//x solutions where all cells have 3 neighbours or less.
-				return true;
-			}
 		}
+		
+		if(cellIndexToUse != 0
+				&& numNeighboursForIndexToAdd > numNeighboursOrig) {
+			return true;
+		}
+		
+		/*if(numNeighboursOrig >=3) {
+			//Final number of unique solutions: 180
+			//180 solutions where all cells have 2 neighbours or less.
+			// I thought there would be 0 while trying to figure it out while holding baby.
+			return true;
+		}*/
+		/*if(numNeighboursOrig >=4) {
+			//Final number of unique solutions: x
+			//x solutions where all cells have 3 neighbours or less.
+			return true;
+		}*/
+		
 		return false;
 	}
 }
