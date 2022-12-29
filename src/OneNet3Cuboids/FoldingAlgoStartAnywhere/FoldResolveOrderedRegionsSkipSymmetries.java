@@ -291,64 +291,11 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 					continue;
 				}
 				
-				//TODO: put in function A
-				boolean cantAddCellBecauseOfOtherPaperNeighbours = false;
-				
-				SEARCH_FOR_BAD_SECOND_NEIGHBOURS:
-				for(int i1=new_i-1; i1<=new_i+1; i1++) {
-					for(int j1=new_j-1; j1<=new_j+1; j1++) {
-						if((i1 == new_i && j1 != new_j)
-								|| (i1 != new_i && j1 == new_j)) {
-							
-							if(paperToDevelop[i].i == i1 && paperToDevelop[i].j == j1) {
-								continue;
-							}
-							
-							//System.out.println("Paper neighbour:" + i1 + ", " + j1);
-							
-							if(paperUsed[i1][j1]) {
-								//System.out.println("Connected to another paper");
-								//TODO: make sure that it fits!
-								
-								int indexOtherCell = indexCuboidonPaper[i1][j1];
-								int rotationOtherCell = cuboid.getRotationPaperRelativeToMap(indexOtherCell);
-
-								if(regions[regionIndex].getCellIndexToOrderOfDev().containsKey(indexOtherCell)
-										&& regions[regionIndex].getCellIndexToOrderOfDev().get(indexOtherCell) < regions[regionIndex].getCellIndexToOrderOfDev().get(indexToUse) ) {
-									cantAddCellBecauseOfOtherPaperNeighbours = true;
-									break SEARCH_FOR_BAD_SECOND_NEIGHBOURS;
-								}
-								
-								//TODO: put in function
-								int rotReq = -1;
-								
-								if(i1 -1 == new_i) {
-									rotReq = 0;
-								} else if(j1 +1 == new_j) {
-									rotReq = 1;
-									
-								} else if(i1 +1 == new_i) {
-									rotReq = 2;
-									
-								} else if(j1 -1 == new_j) {
-									rotReq = 3;
-									
-								} else {
-									System.out.println("Oops! rotation 217");
-								}
-								
-								int neighbourIndexNeeded = (rotReq - rotationOtherCell + NUM_ROTATIONS) % NUM_ROTATIONS;
-
-								//End TODO: put in function
-
-								if(cuboid.getNeighbours(indexOtherCell)[neighbourIndexNeeded].getIndex() != indexNewCell) {
-									cantAddCellBecauseOfOtherPaperNeighbours = true;
-									break SEARCH_FOR_BAD_SECOND_NEIGHBOURS;
-								}
-							}
-						}
-					}
-				}
+				boolean cantAddCellBecauseOfOtherPaperNeighbours = cantAddCellBecauseOfOtherPaperNeighbours(paperToDevelop, indexCuboidonPaper,
+						paperUsed, cuboid, numCellsUsedDepth,
+						regions, regionIndex, skipSymmetries, indexToUse,
+						indexNewCell, new_i, new_j, i
+					);
 				
 				
 				Region regionsBeforePotentailRegionSplit[] = regions;
@@ -478,6 +425,70 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 		}
 	}
  
+	public static boolean cantAddCellBecauseOfOtherPaperNeighbours(Coord2D paperToDevelop[], int indexCuboidonPaper[][],
+			boolean paperUsed[][], CuboidToFoldOn cuboid, int numCellsUsedDepth,
+			Region regions[], int regionIndex, boolean skipSymmetries, int indexToUse,
+			int indexNewCell, int new_i, int new_j, int i
+		) {	
+	boolean cantAddCellBecauseOfOtherPaperNeighbours = false;
+	
+	SEARCH_FOR_BAD_SECOND_NEIGHBOURS:
+	for(int i1=new_i-1; i1<=new_i+1; i1++) {
+		for(int j1=new_j-1; j1<=new_j+1; j1++) {
+			if((i1 == new_i && j1 != new_j)
+					|| (i1 != new_i && j1 == new_j)) {
+				
+				if(paperToDevelop[i].i == i1 && paperToDevelop[i].j == j1) {
+					continue;
+				}
+				
+				//System.out.println("Paper neighbour:" + i1 + ", " + j1);
+				
+				if(paperUsed[i1][j1]) {
+					//System.out.println("Connected to another paper");
+					//TODO: make sure that it fits!
+					
+					int indexOtherCell = indexCuboidonPaper[i1][j1];
+					int rotationOtherCell = cuboid.getRotationPaperRelativeToMap(indexOtherCell);
+
+					if(regions[regionIndex].getCellIndexToOrderOfDev().containsKey(indexOtherCell)
+							&& regions[regionIndex].getCellIndexToOrderOfDev().get(indexOtherCell) < regions[regionIndex].getCellIndexToOrderOfDev().get(indexToUse) ) {
+						cantAddCellBecauseOfOtherPaperNeighbours = true;
+						break SEARCH_FOR_BAD_SECOND_NEIGHBOURS;
+					}
+					
+					//TODO: put in function
+					int rotReq = -1;
+					
+					if(i1 -1 == new_i) {
+						rotReq = 0;
+					} else if(j1 +1 == new_j) {
+						rotReq = 1;
+						
+					} else if(i1 +1 == new_i) {
+						rotReq = 2;
+						
+					} else if(j1 -1 == new_j) {
+						rotReq = 3;
+						
+					} else {
+						System.out.println("Oops! rotation 217");
+					}
+					
+					int neighbourIndexNeeded = (rotReq - rotationOtherCell + NUM_ROTATIONS) % NUM_ROTATIONS;
+
+					//End TODO: put in function
+
+					if(cuboid.getNeighbours(indexOtherCell)[neighbourIndexNeeded].getIndex() != indexNewCell) {
+						cantAddCellBecauseOfOtherPaperNeighbours = true;
+						break SEARCH_FOR_BAD_SECOND_NEIGHBOURS;
+					}
+				}
+			}
+		}
+	}
+	return cantAddCellBecauseOfOtherPaperNeighbours;
+}
 	
 	
 	//j = rotation relativeCuboidMap
