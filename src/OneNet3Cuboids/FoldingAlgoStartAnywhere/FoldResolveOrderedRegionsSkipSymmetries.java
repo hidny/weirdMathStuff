@@ -81,6 +81,8 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 	private static int numFound = 0;
 	private static int numUniqueFound = 0;
 	
+	public static final int nugdeBasedOnRotation[][] = {{-1, 0, 1, 0}, {0, 1, 0 , -1}};
+	
 	
 	public static long doDepthFirstSearch(Coord2D paperToDevelop[], int indexCuboidonPaper[][], boolean paperUsed[][], CuboidToFoldOn cuboid, int numCellsUsedDepth,
 			Region regions[], long limitDupSolutions, boolean skipSymmetries) {
@@ -250,30 +252,8 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 				
 				int rotationToAddCellOn = (j + curRotation) % NUM_ROTATIONS;
 				
-				//TODO: put in function
-				int new_i = -1;
-				int new_j = -1;
-				if(rotationToAddCellOn == 0) {
-					new_i = paperToDevelop[i].i-1;
-					new_j = paperToDevelop[i].j;
-					
-				} else if(rotationToAddCellOn == 1) {
-					new_i = paperToDevelop[i].i;
-					new_j = paperToDevelop[i].j+1;
-					
-				} else if(rotationToAddCellOn == 2) {
-					new_i = paperToDevelop[i].i+1;
-					new_j = paperToDevelop[i].j;
-					
-				} else if(rotationToAddCellOn == 3) {
-					new_i = paperToDevelop[i].i;
-					new_j = paperToDevelop[i].j-1;
-				} else {
-					System.out.println("Doh! 3");
-					System.out.println("Unknown rotation!");
-					System.exit(1);
-				}
-				//END TODO: put in function
+				int new_i = paperToDevelop[i].i + nugdeBasedOnRotation[0][rotationToAddCellOn];
+				int new_j = paperToDevelop[i].j + nugdeBasedOnRotation[1][rotationToAddCellOn];
 
 				int indexNewCell = neighbours[j].getIndex();
 		
@@ -432,58 +412,41 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 		) {	
 	boolean cantAddCellBecauseOfOtherPaperNeighbours = false;
 	
-	SEARCH_FOR_BAD_SECOND_NEIGHBOURS:
-	for(int i1=new_i-1; i1<=new_i+1; i1++) {
-		for(int j1=new_j-1; j1<=new_j+1; j1++) {
-			if((i1 == new_i && j1 != new_j)
-					|| (i1 != new_i && j1 == new_j)) {
-				
-				if(paperToDevelop[i].i == i1 && paperToDevelop[i].j == j1) {
-					continue;
-				}
-				
-				//System.out.println("Paper neighbour:" + i1 + ", " + j1);
-				
-				if(paperUsed[i1][j1]) {
-					//System.out.println("Connected to another paper");
-					//TODO: make sure that it fits!
-					
-					int indexOtherCell = indexCuboidonPaper[i1][j1];
-					int rotationOtherCell = cuboid.getRotationPaperRelativeToMap(indexOtherCell);
+	int neighboursBasedOnRotation[][] = {{new_i-1, new_j}, {new_i, new_j+1},{new_i+1, new_j},{new_i, new_j - 1}};
 
-					if(regions[regionIndex].getCellIndexToOrderOfDev().containsKey(indexOtherCell)
-							&& regions[regionIndex].getCellIndexToOrderOfDev().get(indexOtherCell) < regions[regionIndex].getCellIndexToOrderOfDev().get(indexToUse) ) {
-						cantAddCellBecauseOfOtherPaperNeighbours = true;
-						break SEARCH_FOR_BAD_SECOND_NEIGHBOURS;
-					}
-					
-					//TODO: put in function
-					int rotReq = -1;
-					
-					if(i1 -1 == new_i) {
-						rotReq = 0;
-					} else if(j1 +1 == new_j) {
-						rotReq = 1;
-						
-					} else if(i1 +1 == new_i) {
-						rotReq = 2;
-						
-					} else if(j1 -1 == new_j) {
-						rotReq = 3;
-						
-					} else {
-						System.out.println("Oops! rotation 217");
-					}
-					
-					int neighbourIndexNeeded = (rotReq - rotationOtherCell + NUM_ROTATIONS) % NUM_ROTATIONS;
+	
+	for(int rotReq=0; rotReq<neighboursBasedOnRotation.length; rotReq++) {
+		
+		int i1 = neighboursBasedOnRotation[rotReq][0];
+		int j1 = neighboursBasedOnRotation[rotReq][1];
+	
+		if(paperToDevelop[i].i == i1 && paperToDevelop[i].j == j1) {
+			continue;
+		}
+		
+		//System.out.println("Paper neighbour:" + i1 + ", " + j1);
+		
+		if(paperUsed[i1][j1]) {
+			//System.out.println("Connected to another paper");
+			//TODO: make sure that it fits!
+			
+			int indexOtherCell = indexCuboidonPaper[i1][j1];
+			int rotationOtherCell = cuboid.getRotationPaperRelativeToMap(indexOtherCell);
 
-					//End TODO: put in function
+			if(regions[regionIndex].getCellIndexToOrderOfDev().containsKey(indexOtherCell)
+					&& regions[regionIndex].getCellIndexToOrderOfDev().get(indexOtherCell) < regions[regionIndex].getCellIndexToOrderOfDev().get(indexToUse) ) {
+				cantAddCellBecauseOfOtherPaperNeighbours = true;
+				break;
+			}
+			
+			
+			int neighbourIndexNeeded = (rotReq - rotationOtherCell + NUM_ROTATIONS) % NUM_ROTATIONS;
 
-					if(cuboid.getNeighbours(indexOtherCell)[neighbourIndexNeeded].getIndex() != indexNewCell) {
-						cantAddCellBecauseOfOtherPaperNeighbours = true;
-						break SEARCH_FOR_BAD_SECOND_NEIGHBOURS;
-					}
-				}
+			//End TODO: put in function
+
+			if(cuboid.getNeighbours(indexOtherCell)[neighbourIndexNeeded].getIndex() != indexNewCell) {
+				cantAddCellBecauseOfOtherPaperNeighbours = true;
+				break;
 			}
 		}
 	}
@@ -585,7 +548,7 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 							//TODO: END COPY/PASTE FOR CREATION HERE
 							
 							//Quick check if each region has at least 1 solution:
-							//TODO: put quick check in function
+							//TODO: put this quick check in function
 							//Mini setup
 							//System.out.println("Check single solution:");
 							
@@ -599,7 +562,6 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 							
 							regionsSplit[indexToAdd].addCellToRegion(indexNewCell, numCellsUsedDepth, indexToUse, newMinRotationToUse);
 							
-							//End TODO
 
 							numCellsUsedDepth += 1;
 							
