@@ -140,44 +140,41 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 		
 		
 		//Check if last region is empty and make adjustments if so:
-		if(regionIndex > 0 || limitDupSolutions >= 0) {
-
+		
+		if(regions[regionIndex].getNumCellsInRegion() == 0) {
 			
-			if(regions[regionIndex].getNumCellsInRegion() == 0) {
+			if(regionIndex == 0) {
+				//Found solution to a specific region and not the whole thing
+				// (sorry about the messy code. I didn't want to make a 
+				// separate function for finding seperate regions.
 				
-				if(regionIndex == 0) {
-					//Found solution to a specific region and not the whole thing
-					// (sorry about the messy code. I didn't want to make a 
-					// separate function for finding seperate regions.
-					
-					if(limitDupSolutions >=0) {
-						return 1L;
-					} else {
-						System.out.println("ERROR: ran out of regions because completing the cuboid. This should not be possible!");
-						System.exit(1);
-					}
-				}
-				
-				regionIndex--;
-				
-				Region oneLessRegion[] = new Region[regions.length - 1];
-				
-				for(int i=0; i<oneLessRegion.length; i++) {
-					oneLessRegion[i] = regions[i];
-				}
-				
-				regions = oneLessRegion;
-				
-				
-				if(regions[regionIndex].getNumCellsInRegion() == 0) {
-					System.out.println("ERROR: 2nd last region is empty. This should not happen!");
-
-					Utils.printFold(paperUsed);
-					Utils.printFoldWithIndex(indexCuboidonPaper);
+				if(limitDupSolutions >=0) {
+					return 1L;
+				} else {
+					System.out.println("ERROR: ran out of regions because completing the cuboid. This should not be possible!");
 					System.exit(1);
 				}
-				
 			}
+			
+			regionIndex--;
+			
+			Region oneLessRegion[] = new Region[regions.length - 1];
+			
+			for(int i=0; i<oneLessRegion.length; i++) {
+				oneLessRegion[i] = regions[i];
+			}
+			
+			regions = oneLessRegion;
+			
+			
+			if(regions[regionIndex].getNumCellsInRegion() == 0) {
+				System.out.println("ERROR: 2nd last region is empty. This should not happen!");
+
+				Utils.printFold(paperUsed);
+				Utils.printFoldWithIndex(indexCuboidonPaper);
+				System.exit(1);
+			}
+			
 		}
 		//End check if last region is empty and make adjustments
 
