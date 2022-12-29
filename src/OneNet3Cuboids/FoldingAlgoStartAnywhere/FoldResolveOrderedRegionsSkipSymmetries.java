@@ -137,48 +137,17 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 		}
 		
 
-		long retDuplicateSolutions = 0L;
-		int regionIndex = regions.length - 1;
+		regions = handleCompletedRegionIfApplicable(regions, limitDupSolutions, indexCuboidonPaper, paperUsed);
 		
-		
-		//Check if last region is empty and make adjustments if so:
-		
-		if(regions[regionIndex].getNumCellsInRegion() == 0) {
-			
-			if(regionIndex == 0) {
-				//Found solution to a specific region and not the whole thing
-				// (sorry about the messy code. I didn't want to make a 
-				// separate function for finding seperate regions.
-				
-				if(limitDupSolutions >=0) {
-					return 1L;
-				} else {
-					System.out.println("ERROR: ran out of regions because completing the cuboid. This should not be possible!");
-					System.exit(1);
-				}
-			}
-			
-			regionIndex--;
-			
-			Region oneLessRegion[] = new Region[regions.length - 1];
-			
-			for(int i=0; i<oneLessRegion.length; i++) {
-				oneLessRegion[i] = regions[i];
-			}
-			
-			regions = oneLessRegion;
-			
-			
-			if(regions[regionIndex].getNumCellsInRegion() == 0) {
-				System.out.println("ERROR: 2nd last region is empty. This should not happen!");
-
-				Utils.printFold(paperUsed);
-				Utils.printFoldWithIndex(indexCuboidonPaper);
-				System.exit(1);
-			}
-			
+		if(regions == null) {
+			return 1L;
 		}
-		//End check if last region is empty and make adjustments
+		
+		int regionIndex = regions.length - 1;
+
+
+		long retDuplicateSolutions = 0L;
+		
 
 		//DEPTH-FIRST START:
 		
@@ -404,6 +373,59 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 			return false;
 		}
 	}
+	
+	
+
+	public static Region[] handleCompletedRegionIfApplicable(Region regions[], long limitDupSolutions, int indexCuboidonPaper[][],
+			boolean paperUsed[][]) {
+		
+		int regionIndex = regions.length - 1;
+		
+		
+		
+		//Check if last region is empty and make adjustments if so:
+		
+		if(regions[regionIndex].getNumCellsInRegion() == 0) {
+
+			if(regionIndex == 0) {
+				//Found solution to a specific region and not the whole thing
+				// (sorry about the messy code. I didn't want to make a 
+				// separate function for finding seperate regions.
+				
+				if(limitDupSolutions >=0) {
+					return null;
+				} else {
+					System.out.println("ERROR: ran out of regions because completing the cuboid. This should not be possible!");
+					System.exit(1);
+				}
+			}
+			
+			regionIndex--;
+			
+			Region oneLessRegion[] = new Region[regions.length - 1];
+			
+			for(int i=0; i<oneLessRegion.length; i++) {
+				oneLessRegion[i] = regions[i];
+			}
+			
+			regions = oneLessRegion;
+			
+			
+			if(regions[regionIndex].getNumCellsInRegion() == 0) {
+				System.out.println("ERROR: 2nd last region is empty. This should not happen!");
+	
+				Utils.printFold(paperUsed);
+				Utils.printFoldWithIndex(indexCuboidonPaper);
+				System.exit(1);
+			}
+			
+		}
+		
+		return regions;
+	}
+	//End check if last region is empty and make adjustments
+
+	public static final int ONE_EIGHTY_ROTATION = 2;
  
 	public static boolean cantAddCellBecauseOfOtherPaperNeighbours(Coord2D paperToDevelop[], int indexCuboidonPaper[][],
 			boolean paperUsed[][], CuboidToFoldOn cuboid, int numCellsUsedDepth,
@@ -428,7 +450,6 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 		
 		if(paperUsed[i1][j1]) {
 			//System.out.println("Connected to another paper");
-			//TODO: make sure that it fits!
 			
 			int indexOtherCell = indexCuboidonPaper[i1][j1];
 			int rotationOtherCell = cuboid.getRotationPaperRelativeToMap(indexOtherCell);
@@ -439,10 +460,9 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 				break;
 			}
 			
-			
-			int neighbourIndexNeeded = (rotReq - rotationOtherCell + NUM_ROTATIONS) % NUM_ROTATIONS;
+			//There's a 180 rotation because the neighbour is attaching to the new cell (so it's flipped!)
+			int neighbourIndexNeeded = (rotReq + ONE_EIGHTY_ROTATION - rotationOtherCell+ NUM_ROTATIONS) % NUM_ROTATIONS;
 
-			//End TODO: put in function
 
 			if(cuboid.getNeighbours(indexOtherCell)[neighbourIndexNeeded].getIndex() != indexNewCell) {
 				cantAddCellBecauseOfOtherPaperNeighbours = true;
@@ -479,10 +499,8 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 		//Add potentially new cell just for test:
 		cuboid.setCell(indexNewCell, rotationNeighbourPaperRelativeToMap);
 				
-		//TODO: Don't forget to add cell to paper when the time comes...
 		
-		//TODO: rename to TRY_TO_DIVDE
-		STOP_DIVIDING:
+		TRY_TO_DIVDE_REGIONS:
 		for(int rotIndexToFill=0; rotIndexToFill<NUM_ROTATIONS; rotIndexToFill++) {
 			
 			
@@ -579,7 +597,6 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 							numCellsUsedDepth -= 1;
 							
 							
-							//TODO: this is awkward: I'm tearing it down so I could build it up again later
 							//Mini tear down
 							regionsSplit[indexToAdd].removeCellFromRegion(indexNewCell, numCellsUsedDepth, prevNewMinOrderedCellCouldUse, prevMinCellRotationOfMinCellToDev);
 
@@ -596,7 +613,7 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 							
 							if(cantAddCellBecauseOfOtherPaperNeighbours) {
 								//System.out.println("quick cut off");
-								break STOP_DIVIDING;
+								break TRY_TO_DIVDE_REGIONS;
 							}
 							
 						}
@@ -621,7 +638,6 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 							
 							regionsSplit[i2].addCellToRegion(indexNewCell, numCellsUsedDepth, indexToUse, newMinRotationToUse);
 							
-							//End TODO
 
 							numCellsUsedDepth += 1;
 							
@@ -632,8 +648,6 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 							numCellsUsedDepth -= 1;
 							
 							
-							//TODO: this is awkward: I'm tearing it down so I could build it up again later
-							//Mini tear down
 							regionsSplit[i2].removeCellFromRegion(indexNewCell, numCellsUsedDepth, prevNewMinOrderedCellCouldUse, prevMinCellRotationOfMinCellToDev);
 
 
@@ -670,7 +684,7 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 						
 						//End sort regions by size and if the region only has 1 solution
 						
-						break STOP_DIVIDING;
+						break TRY_TO_DIVDE_REGIONS;
 					}
 				}
 			}
@@ -679,7 +693,6 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 		
 		//Remove potential new cell once test is done:
 		cuboid.removeCell(indexNewCell);
-		//TODO: Don't forget to remove cell from paper when the time comes...
 		
 		if(! cantAddCellBecauseOfOtherPaperNeighbours) {
 			return regions;
