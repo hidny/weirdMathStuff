@@ -1,20 +1,16 @@
 package OneNet3Cuboids.FoldingAlgoStartAnywhere;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 
 import OneNet3Cuboids.CuboidToFoldOn;
-import OneNet3Cuboids.DataModelViews;
 import OneNet3Cuboids.Utils;
 import OneNet3Cuboids.Coord.Coord2D;
 import OneNet3Cuboids.Coord.CoordWithRotationAndIndex;
 import OneNet3Cuboids.Cuboid.SymmetryResolver.SymmetryResolver;
 import OneNet3Cuboids.DupRemover.BasicUniqueCheckImproved;
 import OneNet3Cuboids.Region.Region;
-import number.IsNumber;
+import OneNet3Cuboids.SolutionResovler.*;
 
 public class FoldResolveOrderedRegionsSkipSymmetries {
 
@@ -73,69 +69,40 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 		Region regionsToHandleRevOrder[] = new Region[1];
 		regionsToHandleRevOrder[0] = new Region(cuboid);
 		
-		doDepthFirstSearch(paperToDevelop, indexCuboidOnPaper, paperUsed, cuboid, numCellsUsedDepth, regionsToHandleRevOrder, -1L, skipSymmetries);
+		
+		
+		SolutionResolverInterface solutionResolver = null;
+		
+		int areaCuboid = Utils.getTotalArea(a, b, c);
+		// Set the solution resolver to different things depending on the size of the cuboid:
+		if(areaCuboid < 12) {
+			solutionResolver = new StandardResolverForSmallSolutions();
+		} else if(areaCuboid < 20) {
+			solutionResolver = new StandardResolverForMediumSolutions();
+		} else if(areaCuboid < 27) {
+			solutionResolver = new StandardResolverForLargeSolutions();
+		} else {
+			solutionResolver = new StandardResolverForXLSolutions();
+		}
+		
+		
+		doDepthFirstSearch(paperToDevelop, indexCuboidOnPaper, paperUsed, cuboid, numCellsUsedDepth, regionsToHandleRevOrder, -1L, skipSymmetries, solutionResolver);
 		
 		System.out.println("Final number of unique solutions: " + numUniqueFound);
 	}
 	
-	private static int numFound = 0;
-	private static int numUniqueFound = 0;
+	public static int numFound = 0;
+	public static int numUniqueFound = 0;
 	
 	public static final int nugdeBasedOnRotation[][] = {{-1, 0, 1, 0}, {0, 1, 0 , -1}};
 	
 	
 	public static long doDepthFirstSearch(Coord2D paperToDevelop[], int indexCuboidonPaper[][], boolean paperUsed[][], CuboidToFoldOn cuboid, int numCellsUsedDepth,
-			Region regions[], long limitDupSolutions, boolean skipSymmetries) {
+			Region regions[], long limitDupSolutions, boolean skipSymmetries, SolutionResolverInterface solutionResolver) {
 
-		//Debug
-		if(numCellsUsedDepth < regions[0].getCellIndexToOrderOfDev().size()) {
-			System.out.println("WHAT???");
-			System.exit(1);
-		}
-		
 		if(numCellsUsedDepth == cuboid.getNumCellsToFill()) {
-			//System.out.println("Done!");
-			
-			//Utils.printFold(paperUsed);
-			//Utils.printFoldWithIndex(indexCuboidonPaper);
-			
-			numFound++;
-			
-			
-			if((numCellsUsedDepth < 12)
-					|| (numCellsUsedDepth < 20 && numFound % 10000 == 0)
-					|| (numCellsUsedDepth < 27 && numFound % 100000 == 0)
-					|| numFound % 10000000 == 0) {
-				System.out.println(numFound + " (num unique: " + numUniqueFound + ")");
-			}
-			if(numFound % 10000000L == 0) {
-				System.out.println("Print possible duplicate solution:");
-				Utils.printFold(paperUsed);
-				Utils.printFoldWithIndex(indexCuboidonPaper);
-				
-			}
-			
-			if(BasicUniqueCheckImproved.isUnique(paperUsed)) {
-				numUniqueFound++;
-
-				//Utils.printFold(paperUsed);
-				//Utils.printFoldWithIndex(indexCuboidonPaper);
-				if(numCellsUsedDepth < 12
-						|| (numCellsUsedDepth < 20 && numUniqueFound % 2000 == 0)
-						|| (numCellsUsedDepth < 27 && numUniqueFound % 100000 == 0)
-						|| numUniqueFound % 1000000 == 0) {
-					System.out.println("Found unique net:");
-					Utils.printFold(paperUsed);
-					Utils.printFoldWithIndex(indexCuboidonPaper);
-				
-					System.out.println("Num unique solutions found: " + numUniqueFound);
-				}
-				
-			}
-
-			return 1L;
+			return solutionResolver.resolveSolution(indexCuboidonPaper, paperUsed);
 		}
-		
 
 		regions = handleCompletedRegionIfApplicable(regions, limitDupSolutions, indexCuboidonPaper, paperUsed);
 		
@@ -160,23 +127,17 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 				continue;
 			}
 			
-			//Hack to enforce order where bottom of cuboid has just as many or more than top of cuboid.
-			//TODO: improve hack for Neighbours ==2 (seperate corner vs straight case)
-			//i.e. if 0/bottom has straight, top has straight (at least enforces 1 rotation vs 3 rotations 
-			if(indexToUse == cuboid.getNumCellsToFill() -1 ) {
-				if(getNumUsedNeighbourCellonPaper(indexCuboidonPaper, paperToDevelop[i])  >=
-						getNumUsedNeighbourCellonPaper(indexCuboidonPaper, paperToDevelop[0])) {
-					
-					//Won't save much though...
-					continue;
-				}
+			if(SymmetryResolver.skipSearchBecauseOfASymmetryArgDontCareAboutRotation
+					(cuboid, paperToDevelop, indexCuboidonPaper, i,indexToUse)
+				&& skipSymmetries) {
+				continue;
 			}
-			//End Hack to enforce order where bottom of cuboid has just as many or more than top of cuboid.
 			
 			CoordWithRotationAndIndex neighbours[] = cuboid.getNeighbours(indexToUse);
 			
 			int curRotation = cuboid.getRotationPaperRelativeToMap(indexToUse);
 			
+			//Try to attach a cell onto indexToUse using all 4 rotations:
 			for(int j=0; j<neighbours.length; j++) {
 				
 				if(cuboid.isCellIndexUsed(neighbours[j].getIndex())) {
@@ -208,8 +169,7 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 				int rotationNeighbourPaperRelativeToMap = (curRotation - neighbours[j].getRot() + NUM_ROTATIONS) % NUM_ROTATIONS;
 				
 				if(SymmetryResolver.skipSearchBecauseOfASymmetryArg
-						(cuboid, paperToDevelop, i, indexCuboidonPaper, rotationToAddCellOn,
-							curRotation, paperUsed, indexToUse, indexNewCell)
+						(cuboid, paperToDevelop, i, indexCuboidonPaper, rotationToAddCellOn, curRotation, paperUsed, indexToUse, indexNewCell)
 					&& skipSymmetries == true) {
 					continue;
 				}
@@ -220,11 +180,9 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 						indexNewCell, new_i, new_j, i
 					);
 				
-				
 				Region regionsBeforePotentailRegionSplit[] = regions;
 				int prevNewMinOrderedCellCouldUse = regions[regionIndex].getMinOrderedCellCouldUsePerRegion();
 				int prevMinCellRotationOfMinCellToDev = regions[regionIndex].getMinCellRotationOfMinCellToDevPerRegion();
-				
 				
 				if( !cantAddCellBecauseOfOtherPaperNeighbours) {
 					
@@ -235,7 +193,7 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 							regions,
 							indexToUse, j, prevNewMinOrderedCellCouldUse, prevMinCellRotationOfMinCellToDev,
 							new_i, new_j, indexNewCell, rotationNeighbourPaperRelativeToMap,
-							skipSymmetries);
+							skipSymmetries, solutionResolver);
 					
 					if(regions == null) {
 						cantAddCellBecauseOfOtherPaperNeighbours = true;
@@ -245,7 +203,7 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 				
 				if( ! cantAddCellBecauseOfOtherPaperNeighbours) {
 					
-					//Setup:
+					//Setup for adding new cell:
 					cuboid.setCell(indexNewCell, rotationNeighbourPaperRelativeToMap);
 					
 					paperUsed[new_i][new_j] = true;
@@ -265,14 +223,14 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 						newLimitDupSolutions -= retDuplicateSolutions;
 					}
 					
-					retDuplicateSolutions += doDepthFirstSearch(paperToDevelop, indexCuboidonPaper, paperUsed, cuboid, numCellsUsedDepth, regions, newLimitDupSolutions, skipSymmetries);
+					retDuplicateSolutions += doDepthFirstSearch(paperToDevelop, indexCuboidonPaper, paperUsed, cuboid, numCellsUsedDepth, regions, newLimitDupSolutions, skipSymmetries, solutionResolver);
 
 					if(numCellsUsedDepth < regions[0].getCellIndexToOrderOfDev().size()) {
 						System.out.println("WHAT???");
 						System.exit(1);
 					}
 					
-					//Tear down
+					//Tear down (undo add of new cell)
 					numCellsUsedDepth -= 1;
 
 					regions = regionsBeforePotentailRegionSplit;
@@ -306,13 +264,13 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 	
 	public static boolean depthFirstAlgoWillFindAsolutionInRegionIndex(Coord2D paperToDevelop[], int indexCuboidonPaper[][],
 			boolean paperUsed[][], CuboidToFoldOn cuboid, int numCellsUsedDepth,
-			Region regions[], int regionIndex, boolean skipSymmetries) {
+			Region regions[], int regionIndex, boolean skipSymmetries, SolutionResolverInterface solutionResolver) {
 		
 		
 		Region regionArgToUse[] = new Region[1];
 		regionArgToUse[0] = regions[regionIndex];
 		
-		if(doDepthFirstSearch(paperToDevelop, indexCuboidonPaper, paperUsed, cuboid, numCellsUsedDepth, regionArgToUse, 0L, skipSymmetries)
+		if(doDepthFirstSearch(paperToDevelop, indexCuboidonPaper, paperUsed, cuboid, numCellsUsedDepth, regionArgToUse, 0L, skipSymmetries, solutionResolver)
 				> 0L) {
 			return true;
 		} else {
@@ -323,13 +281,13 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
  
 	public static boolean depthFirstAlgoWillFindOnly1solutionInRegionIndex(Coord2D paperToDevelop[], int indexCuboidonPaper[][],
 			boolean paperUsed[][], CuboidToFoldOn cuboid, int numCellsUsedDepth,
-			Region regions[], int regionIndex, boolean skipSymmetries) {
+			Region regions[], int regionIndex, boolean skipSymmetries, SolutionResolverInterface solutionResolver) {
 		
 		
 		Region regionArgToUse[] = new Region[1];
 		regionArgToUse[0] = regions[regionIndex];
 		
-		if(doDepthFirstSearch(paperToDevelop, indexCuboidonPaper, paperUsed, cuboid, numCellsUsedDepth, regionArgToUse, 1L, skipSymmetries)
+		if(doDepthFirstSearch(paperToDevelop, indexCuboidonPaper, paperUsed, cuboid, numCellsUsedDepth, regionArgToUse, 1L, skipSymmetries, solutionResolver)
 				== 1L) {
 			return true;
 		} else {
@@ -444,7 +402,7 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 			Region regions[],
 			int indexToUse, int newMinRotationToUse, int prevNewMinOrderedCellCouldUse, int prevMinCellRotationOfMinCellToDev,
 			int new_i, int new_j, int indexNewCell, int rotationNeighbourPaperRelativeToMap,
-			boolean skipSymmetries) {
+			boolean skipSymmetries, SolutionResolverInterface solutionResolver) {
 		
 		boolean cantAddCellBecauseOfOtherPaperNeighbours = false;
 		
@@ -547,7 +505,7 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 							
 							if(depthFirstAlgoWillFindAsolutionInRegionIndex(paperToDevelop, indexCuboidonPaper,
 									paperUsed, cuboid, numCellsUsedDepth,
-									regionsSplit, indexToAdd, skipSymmetries)
+									regionsSplit, indexToAdd, skipSymmetries, solutionResolver)
 								== false) {
 								
 								
@@ -605,7 +563,7 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 							
 							regionHasOneSolution[i2] = depthFirstAlgoWillFindOnly1solutionInRegionIndex(paperToDevelop, indexCuboidonPaper,
 									paperUsed, cuboid, numCellsUsedDepth,
-									regionsSplit, i2, skipSymmetries);
+									regionsSplit, i2, skipSymmetries, solutionResolver);
 
 							numCellsUsedDepth -= 1;
 							
@@ -763,7 +721,7 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 
 	public static void main(String args[]) {
 		System.out.println("Fold Resolver Ordered Regions start anywhere:");
-		solveFoldsForSingleCuboid(3, 2, 1);
+		solveFoldsForSingleCuboid(5, 1, 1);
 
 		//Best 5,1,1: 3 minute 45 seconds (3014430 solutions) (December 27th)
 		

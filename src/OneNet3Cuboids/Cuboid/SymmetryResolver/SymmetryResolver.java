@@ -2,11 +2,37 @@ package OneNet3Cuboids.Cuboid.SymmetryResolver;
 
 import OneNet3Cuboids.CuboidToFoldOn;
 import OneNet3Cuboids.Coord.Coord2D;
+import OneNet3Cuboids.FoldingAlgoStartAnywhere.FoldResolveOrderedRegionsSkipSymmetries;
 import OneNet3Cuboids.OldReferenceFoldingAlgosNby1by1.FoldResolveOrderedRegionsNby1by1;
 import OneNet3Cuboids.Coord.Coord2D;
 
 public class SymmetryResolver {
 
+	public static boolean skipSearchBecauseOfASymmetryArgDontCareAboutRotation(CuboidToFoldOn cuboid,
+			Coord2D paperToDevelop[],
+			int indexCuboidonPaper[][], int cuboidOnPaperIndex,
+			int cellIndexToUse) {
+		
+		//Hack to enforce order where bottom of cuboid has just as many or more than top of cuboid.
+		//this is for Nx1x1
+		//for Nxkxk, you could do the same thing with corners.
+		
+		//TODO: this assumes the index cuboid.getNumCellsToFill() -1 is at a corner on the other side of the cuboid...
+		//TODO: if bottom isn't just 1 cell, apply this rules to all 4 or corner cells
+		
+		if(cellIndexToUse == cuboid.getNumCellsToFill() -1 ) {
+			if(FoldResolveOrderedRegionsSkipSymmetries.getNumUsedNeighbourCellonPaper(indexCuboidonPaper, paperToDevelop[cuboidOnPaperIndex])  >=
+					FoldResolveOrderedRegionsSkipSymmetries.getNumUsedNeighbourCellonPaper(indexCuboidonPaper, paperToDevelop[0])) {
+				
+				//Won't save much though...
+				return true;
+			}
+		}
+		//End Hack to enforce order where bottom of cuboid has just as many or more than top of cuboid.
+		
+		return false;
+		
+	}
 	public static boolean skipSearchBecauseOfASymmetryArg(CuboidToFoldOn cuboid,
 			Coord2D paperToDevelop[],
 			int cuboidOnPaperIndex,

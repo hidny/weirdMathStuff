@@ -420,6 +420,13 @@ public class NeighbourGraphCreator {
 	
 	private static int[][] makeTempFlatMapArray(int a, int b, int c, int numbering[][][]) {
 		
+		int lengthSpace = (Utils.getTotalArea(a, b, c) + "").length();
+		
+		String SPACE = "";
+		for(int i=0; i<lengthSpace; i++) {
+			SPACE = SPACE + " ";
+		}
+		
 		int ret2[][] = new int[2*a + 2*c][2*b + 2*c];
 		for(int i=0; i<ret2.length; i++) {
 			for(int j=0; j<ret2[0].length; j++) {
@@ -434,18 +441,18 @@ public class NeighbourGraphCreator {
 			for(int j=0; j < 2*b + 2 *c; j++) {
 
 				if( j == c || j == c + b || j == 2*c + b || j== 2*c + 2*b) {
-					ret += "    ";
+					ret += " " + SPACE + " ";
 				}
 				
 				if(j >= c && j<c + b) {
 
 					
 					int num = numbering[0][i][j - c];
-					ret += " " + "  ".substring(((num) + "").length()) + num + " ";
+					ret += " " + SPACE.substring(((num) + "").length()) + num + " ";
 					ret2[i][j] = num;
 					
 				} else {
-					ret += "    ";
+					ret += " " + SPACE + " ";
 				}
 			}
 			
@@ -460,13 +467,13 @@ public class NeighbourGraphCreator {
 			for(int j=0; j < 2*b + 2 *c; j++) {
 				
 				if( j == c || j == c + b || j == 2*c + b || j== 2*c + 2*b) {
-					ret += "    ";
+					ret += " " + SPACE + " ";
 				}
 				if( j < c) {
 					
 					int num = numbering[1][i][j];
 
-					ret += " " + "  ".substring(((num) + "").length()) + num + " ";
+					ret += " " + SPACE.substring(((num) + "").length()) + num + " ";
 
 					ret2[c + i][j] = num;
 					
@@ -474,7 +481,7 @@ public class NeighbourGraphCreator {
 					
 					int num = numbering[2][i][j - c];
 					
-					ret += " " + "  ".substring(((num) + "").length()) + num + " ";
+					ret += " " + SPACE.substring(((num) + "").length()) + num + " ";
 					
 					ret2[c + i][j] = num;
 					
@@ -482,7 +489,7 @@ public class NeighbourGraphCreator {
 					
 					int num = numbering[3][i][j - c - b];
 					
-					ret += " " + "  ".substring(((num) + "").length()) + num + " ";
+					ret += " " + SPACE.substring(((num) + "").length()) + num + " ";
 					
 					ret2[c + i][j] = num;
 					
@@ -490,7 +497,7 @@ public class NeighbourGraphCreator {
 					
 					int num = numbering[4][i][j - 2*c - b];
 					
-					ret += " " + "  ".substring(((num) + "").length()) + num + " ";
+					ret += " " + SPACE.substring(((num) + "").length()) + num + " ";
 
 					ret2[c + i][j] = num;
 				} else {
@@ -511,19 +518,19 @@ public class NeighbourGraphCreator {
 			for(int j=0; j < 2*b + 2 *c; j++) {
 
 				if( j == c || j == c + b || j == 2*c + b || j== 2*c + 2*b) {
-					ret += "    ";
+					ret += " " + SPACE + " ";
 				}
 				
 				if(j >= c && j<c + b) {
 
 					int num = numbering[5][i][j - c];
-					ret += " " + "  ".substring(((num) + "").length()) + num + " ";
+					ret += " " + SPACE.substring(((num) + "").length()) + num + " ";
 					
 
 					ret2[c + a + i][j] = num;
 					
 				} else {
-					ret += "    ";
+					ret += " " + SPACE + " ";
 				}
 			}
 			
@@ -538,7 +545,7 @@ public class NeighbourGraphCreator {
 			for(int j=0; j < 2*b + 2 *c; j++) {
 
 				if( j == c || j == c + b || j == 2*c + b || j== 2*c + 2*b) {
-					ret += "    ";
+					ret += " " + SPACE + " ";
 				}
 				
 				if(j >= c && j<c + b) {
@@ -546,12 +553,12 @@ public class NeighbourGraphCreator {
 					//Mind bender: It gets flipped!
 					// because it's a 3D cuboid or something!
 					int num = numbering[4][(a-1) - (i)][(b-1) - (j - c)];
-					ret += " " + "  ".substring(((num) + "").length()) + num + " ";
+					ret += " " + SPACE.substring(((num) + "").length()) + num + " ";
 
 					ret2[2*c + a + i][j] = num;
 					
 				} else {
-					ret += "    ";
+					ret += " " + SPACE + " ";
 				}
 			}
 			
@@ -563,6 +570,13 @@ public class NeighbourGraphCreator {
 	
 
 	private static String sanityGetFlatNumberingFromTempFlatArray(int a, int b, int c, int flatArray[][]) {
+		
+		int lengthSpace = (Utils.getTotalArea(a, b, c) + "").length();
+		
+		String SPACE = "";
+		for(int i=0; i<lengthSpace; i++) {
+			SPACE = SPACE + " ";
+		}
 		
 		String ret ="";
 		
@@ -577,16 +591,16 @@ public class NeighbourGraphCreator {
 			for(int j=0; j<flatArray[0].length; j++) {
 				
 				if( j == c || j == c + b || j == 2*c + b || j== 2*c + 2*b) {
-					ret += "    ";
+					ret += " " + SPACE + " ";
 				}
 				
 				if(flatArray[i][j] >= 0) {
 
 					int num = flatArray[i][j];
-					ret += " " + "  ".substring(((num) + "").length()) + num + " ";
+					ret += " " + SPACE.substring(((num) + "").length()) + num + " ";
 					
 				} else {
-					ret += "    ";
+					ret += " " + SPACE + " ";
 				}
 			}
 

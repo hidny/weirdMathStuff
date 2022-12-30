@@ -22,6 +22,13 @@ public class DataModelViews {
 	// int [] instead of boolean (This shouldn't be too hard!)
 	public static String getFlatNumberingView(int a, int b, int c, boolean addX[]) {
 		
+		int lengthSpace = (Utils.getTotalArea(a, b, c) + "").length();
+		
+		String SPACE = "";
+		for(int i=0; i<lengthSpace; i++) {
+			SPACE = SPACE + " ";
+		}
+		
 		int numbering[][][] = Utils.getFlatNumberingOfCuboid(a, b, c);
 		//1st row only has side 0:
 
@@ -33,16 +40,16 @@ public class DataModelViews {
 			for(int j=0; j < 2*b + 2 *c; j++) {
 
 				if( j == c || j == c + b || j == 2*c + b || j== 2*c + 2*b) {
-					ret += "    ";
+					ret += " " + SPACE + " ";
 				}
 				
 				if(j >= c && j<c + b) {
 
 					int num = numbering[0][i][j - c];
-					ret += addCellNumberOrXs(num, addX[num]);
+					ret += addCellNumberOrXs(num, addX[num], SPACE);
 					
 				} else {
-					ret += "    ";
+					ret += " " + SPACE + " ";
 				}
 			}
 			
@@ -57,31 +64,31 @@ public class DataModelViews {
 			for(int j=0; j < 2*b + 2 *c; j++) {
 				
 				if( j == c || j == c + b || j == 2*c + b || j== 2*c + 2*b) {
-					ret += "    ";
+					ret += " " + SPACE + " ";
 				}
 				if( j < c) {
 					
 					int num = numbering[1][i][j];
 
-					ret += addCellNumberOrXs(num, addX[num]);
+					ret += addCellNumberOrXs(num, addX[num], SPACE);
 					
 				} else if(j >= c && j<c + b) {
 					
 					int num = numbering[2][i][j - c];
 					
-					ret += addCellNumberOrXs(num, addX[num]);
+					ret += addCellNumberOrXs(num, addX[num], SPACE);
 					
 				} else if(j >= c + b && j<2*c + b) {
 					
 					int num = numbering[3][i][j - c - b];
 					
-					ret += addCellNumberOrXs(num, addX[num]);
+					ret += addCellNumberOrXs(num, addX[num], SPACE);
 					
 				} else if(j >= 2*c + b && j<2*c + 2*b) {
 					
 					int num = numbering[4][i][j - 2*c - b];
 					
-					ret += addCellNumberOrXs(num, addX[num]);
+					ret += addCellNumberOrXs(num, addX[num], SPACE);
 				} else {
 					System.out.println("Doh!");
 					System.exit(1);
@@ -100,16 +107,16 @@ public class DataModelViews {
 			for(int j=0; j < 2*b + 2 *c; j++) {
 
 				if( j == c || j == c + b || j == 2*c + b || j== 2*c + 2*b) {
-					ret += "    ";
+					ret += " " + SPACE + " ";
 				}
 				
 				if(j >= c && j<c + b) {
 
 					int num = numbering[5][i][j - c];
-					ret += addCellNumberOrXs(num, false);
+					ret += addCellNumberOrXs(num, false, SPACE);
 					
 				} else {
-					ret += "    ";
+					ret += " " + SPACE + " ";
 				}
 			}
 			
@@ -124,7 +131,7 @@ public class DataModelViews {
 			for(int j=0; j < 2*b + 2 *c; j++) {
 
 				if( j == c || j == c + b || j == 2*c + b || j== 2*c + 2*b) {
-					ret += "    ";
+					ret += " " + SPACE + " ";
 				}
 				
 				if(j >= c && j<c + b) {
@@ -132,10 +139,10 @@ public class DataModelViews {
 					//Mind bender: It gets flipped!
 					// because it's a 3D cuboid or something!
 					int num = numbering[4][(a-1) - (i)][(b-1) - (j - c)];
-					ret += addCellNumberOrXs(num, false);
+					ret += addCellNumberOrXs(num, false, SPACE);
 					
 				} else {
-					ret += "    ";
+					ret += " " + SPACE + " ";
 				}
 			}
 			
@@ -147,13 +154,18 @@ public class DataModelViews {
 		
 	}
 	
-	private static String addCellNumberOrXs(int num, boolean addX) {
+	private static String addCellNumberOrXs(int num, boolean addX, String Space) {
+		
+		String X = "";
+		for(int i=0; i<Space.length(); i++) {
+			X = X + "X";
+		}
 		
 		if(addX) {
 			//Add X to mark that the spot has been filled... if you want.
-			return " XX ";
+			return " " + X + " ";
 		} else {
-			return " " + "  ".substring(((num) + "").length()) + num + " ";
+			return " " + Space.substring(((num) + "").length()) + num + " ";
 		}
 	}
 }
