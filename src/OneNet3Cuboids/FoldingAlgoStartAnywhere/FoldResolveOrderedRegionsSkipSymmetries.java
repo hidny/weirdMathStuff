@@ -144,17 +144,10 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 		}
 		
 		int regionIndex = regions.length - 1;
-
-
 		long retDuplicateSolutions = 0L;
 		
-
 		//DEPTH-FIRST START:
-		
 		for(int i=regions[regionIndex].getMinOrderedCellCouldUsePerRegion(); i<paperToDevelop.length && paperToDevelop[i] != null; i++) {
-			
-			
-			//System.out.println("Coord i,j : " + coord_i + ", " + coord_j);
 			
 			int indexToUse = indexCuboidonPaper[paperToDevelop[i].i][paperToDevelop[i].j];
 			if(indexToUse < 0) {
@@ -174,37 +167,23 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 				if(getNumUsedNeighbourCellonPaper(indexCuboidonPaper, paperToDevelop[i])  >=
 						getNumUsedNeighbourCellonPaper(indexCuboidonPaper, paperToDevelop[0])) {
 					
-					
-					//TODO: have a flag that says to not bother getting neighbours for future depth...
 					//Won't save much though...
 					continue;
 				}
 			}
 			//End Hack to enforce order where bottom of cuboid has just as many or more than top of cuboid.
 			
-			
-			
 			CoordWithRotationAndIndex neighbours[] = cuboid.getNeighbours(indexToUse);
 			
 			int curRotation = cuboid.getRotationPaperRelativeToMap(indexToUse);
-			if(curRotation < 0) {
-				System.out.println("Doh! 2");
-				System.exit(1);
-			}
-			
-			//System.out.println("Current rotation:");
-			//System.out.println(curRotation);
-			
 			
 			for(int j=0; j<neighbours.length; j++) {
 				
 				if(cuboid.isCellIndexUsed(neighbours[j].getIndex())) {
 					
-					//TODO2: have a flag that says to not bother getting neighbours for future depth...
-					//Won't save much though... if no rotation works.
-					
 					//Don't reuse a used cell:
 					continue;
+					
 				} else if(regions[regionIndex].getCellIndexToOrderOfDev().containsKey(indexToUse)
 						&& regions[regionIndex].getCellIndexToOrderOfDev().get(indexToUse) == regions[regionIndex].getMinOrderedCellCouldUsePerRegion() 
 						&& j <  regions[regionIndex].getMinCellRotationOfMinCellToDevPerRegion()) {
@@ -213,11 +192,6 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 				} else if(regions[regionIndex].getCellRegionsToHandleInRevOrder()[neighbours[j].getIndex()] == false) {
 					continue;
 				}
-				
-				//TODO: neighbours should have an index!
-				
-				//Try adding it or not
-				//System.out.println(neighbours[j].getA() + "," + neighbours[j].getB() + "," + neighbours[j].getC());
 				
 				int rotationToAddCellOn = (j + curRotation) % NUM_ROTATIONS;
 				
@@ -242,7 +216,7 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 				
 				boolean cantAddCellBecauseOfOtherPaperNeighbours = cantAddCellBecauseOfOtherPaperNeighbours(paperToDevelop, indexCuboidonPaper,
 						paperUsed, cuboid, numCellsUsedDepth,
-						regions, regionIndex, skipSymmetries, indexToUse,
+						regions, regionIndex, indexToUse,
 						indexNewCell, new_i, new_j, i
 					);
 				
@@ -271,8 +245,6 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 				
 				if( ! cantAddCellBecauseOfOtherPaperNeighbours) {
 					
-
-					
 					//Setup:
 					cuboid.setCell(indexNewCell, rotationNeighbourPaperRelativeToMap);
 					
@@ -280,14 +252,12 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 					indexCuboidonPaper[new_i][new_j] = indexNewCell;
 					paperToDevelop[numCellsUsedDepth] = new Coord2D(new_i, new_j);
 
-					
 					//Add cell to new region(s):
 					for(int r=regionsBeforePotentailRegionSplit.length - 1; r<regions.length; r++) {
 						regions[r].addCellToRegion(indexNewCell, numCellsUsedDepth, indexToUse, j);						
 					}
 
 					numCellsUsedDepth += 1;
-					
 					//End setup
 
 					long newLimitDupSolutions = limitDupSolutions;
@@ -310,7 +280,6 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 					//Remove cell from last region(s):
 					regions[regions.length - 1].removeCellFromRegion(indexNewCell, numCellsUsedDepth, prevNewMinOrderedCellCouldUse, prevMinCellRotationOfMinCellToDev);
 	
-
 					paperUsed[new_i][new_j] = false;
 					indexCuboidonPaper[new_i][new_j] = -1;
 					paperToDevelop[numCellsUsedDepth] = null;
@@ -327,15 +296,10 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 
 					regionIndex = regions.length - 1;
 					
-				} else {
-					//System.out.println("can't add cell because of other paper neighbours or it creates an impossible region");
-				}
-				
-				
-			}
-		}
+				} // End recursive if cond
+			} // End loop rotation
+		} //End loop index
 
-		
 		return retDuplicateSolutions;
 	}
 	
@@ -429,7 +393,7 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
  
 	public static boolean cantAddCellBecauseOfOtherPaperNeighbours(Coord2D paperToDevelop[], int indexCuboidonPaper[][],
 			boolean paperUsed[][], CuboidToFoldOn cuboid, int numCellsUsedDepth,
-			Region regions[], int regionIndex, boolean skipSymmetries, int indexToUse,
+			Region regions[], int regionIndex, int indexToUse,
 			int indexNewCell, int new_i, int new_j, int i
 		) {	
 	boolean cantAddCellBecauseOfOtherPaperNeighbours = false;
@@ -563,12 +527,10 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 								System.exit(1);
 							}
 							
-							//TODO: END COPY/PASTE FOR CREATION HERE
 							
 							//Quick check if each region has at least 1 solution:
 							//TODO: put this quick check in function
-							//Mini setup
-							//System.out.println("Check single solution:");
+							//Mini setup for checking a single solution:
 							
 							//Don't set it! (It's supposed to be set for now)
 							//cuboid.setCell(indexNewCell, rotationNeighbourPaperRelativeToMap);
@@ -801,7 +763,7 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 
 	public static void main(String args[]) {
 		System.out.println("Fold Resolver Ordered Regions start anywhere:");
-		solveFoldsForSingleCuboid(5, 1, 1);
+		solveFoldsForSingleCuboid(3, 2, 1);
 
 		//Best 5,1,1: 3 minute 45 seconds (3014430 solutions) (December 27th)
 		
