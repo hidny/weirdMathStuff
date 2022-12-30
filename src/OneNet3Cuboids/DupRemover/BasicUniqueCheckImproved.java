@@ -252,6 +252,8 @@ public class BasicUniqueCheckImproved {
 			
 			return true;
 		} else {
+			
+			debugLastScore = max;
 			return false;
 		}
 	}

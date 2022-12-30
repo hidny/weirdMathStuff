@@ -1,0 +1,46 @@
+package OneNet3Cuboids.SolutionResovler;
+
+import OneNet3Cuboids.Utils;
+import OneNet3Cuboids.DupRemover.BasicUniqueCheckImproved;
+import OneNet3Cuboids.FoldingAlgoStartAnywhere.FoldResolveOrderedRegionsSkipSymmetries;
+
+public class BadIntersectResolverForSmallSolutions implements SolutionResolverInterface {
+
+	//Hack to find intersections
+	//This assumes that BasicUniqueCheckImproved has all the solution for the 1st cuboid,
+	// and we found a solution for the 2nd cuboid:
+	@Override
+	public long resolveSolution(int[][] indexCuboidonPaper, boolean[][] paperUsed) {
+		
+		//TODO: Maybe have global vars elsewhere? 
+		FoldResolveOrderedRegionsSkipSymmetries.numFound++;
+		
+		if(FoldResolveOrderedRegionsSkipSymmetries.numFound % 100000 == 0) {
+			System.out.println(FoldResolveOrderedRegionsSkipSymmetries.numFound +
+				" (num unique: " + FoldResolveOrderedRegionsSkipSymmetries.numUniqueFound + ")");
+		}
+		boolean foundMatchInOtherCuboid = ! BasicUniqueCheckImproved.isUnique(paperUsed);
+		
+		 BasicUniqueCheckImproved.uniqList.remove(BasicUniqueCheckImproved.debugLastScore);
+		
+		//System.out.println("Current list size: " + BasicUniqueCheckImproved.uniqList.size());
+		
+		if(! foundMatchInOtherCuboid) {
+			
+			return 0L;
+		} else {
+
+			
+			FoldResolveOrderedRegionsSkipSymmetries.numUniqueFound++;
+
+			Utils.printFold(paperUsed);
+			Utils.printFoldWithIndex(indexCuboidonPaper);
+			System.out.println("Num solutions found that fit both cuboids: " + 
+					FoldResolveOrderedRegionsSkipSymmetries.numUniqueFound);
+			
+			return 1L;
+		}
+	}
+
+	
+}

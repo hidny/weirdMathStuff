@@ -22,8 +22,27 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 	public static void solveFoldsForSingleCuboid(int a, int b, int c) {
 		solveFoldsForSingleCuboid(a, b, c, true);
 	}
-
+	
 	public static void solveFoldsForSingleCuboid(int a, int b, int c, boolean skipSymmetries) {
+		SolutionResolverInterface solutionResolver = null;
+		
+		int areaCuboid = Utils.getTotalArea(a, b, c);
+		// Set the solution resolver to different things depending on the size of the cuboid:
+		if(areaCuboid < 12) {
+			solutionResolver = new StandardResolverForSmallSolutions();
+		} else if(areaCuboid < 20) {
+			solutionResolver = new StandardResolverForMediumSolutions();
+		} else if(areaCuboid < 27) {
+			solutionResolver = new StandardResolverForLargeSolutions();
+		} else {
+			solutionResolver = new StandardResolverForXLSolutions();
+		}
+		
+		
+		solveFoldsForSingleCuboid(a, b, c, skipSymmetries, solutionResolver);
+	}
+
+	public static void solveFoldsForSingleCuboid(int a, int b, int c, boolean skipSymmetries, SolutionResolverInterface solutionResolver) {
 		
 		
 		//cube.set start location 0 and rotation 0
@@ -70,20 +89,6 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 		regionsToHandleRevOrder[0] = new Region(cuboid);
 		
 		
-		
-		SolutionResolverInterface solutionResolver = null;
-		
-		int areaCuboid = Utils.getTotalArea(a, b, c);
-		// Set the solution resolver to different things depending on the size of the cuboid:
-		if(areaCuboid < 12) {
-			solutionResolver = new StandardResolverForSmallSolutions();
-		} else if(areaCuboid < 20) {
-			solutionResolver = new StandardResolverForMediumSolutions();
-		} else if(areaCuboid < 27) {
-			solutionResolver = new StandardResolverForLargeSolutions();
-		} else {
-			solutionResolver = new StandardResolverForXLSolutions();
-		}
 		
 		
 		doDepthFirstSearch(paperToDevelop, indexCuboidOnPaper, paperUsed, cuboid, numCellsUsedDepth, regionsToHandleRevOrder, -1L, skipSymmetries, solutionResolver);
@@ -187,8 +192,7 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 				if( !cantAddCellBecauseOfOtherPaperNeighbours) {
 					
 					//Split the regions if possible:
-					regions = 
-					splitRegionsIfNewCellSplitsRegions(paperToDevelop, indexCuboidonPaper,
+					regions = splitRegionsIfNewCellSplitsRegions(paperToDevelop, indexCuboidonPaper,
 							paperUsed, cuboid, numCellsUsedDepth,
 							regions,
 							indexToUse, j, prevNewMinOrderedCellCouldUse, prevMinCellRotationOfMinCellToDev,
