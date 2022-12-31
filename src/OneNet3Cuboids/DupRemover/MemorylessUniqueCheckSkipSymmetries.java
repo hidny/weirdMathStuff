@@ -13,90 +13,156 @@ public class MemorylessUniqueCheckSkipSymmetries {
 
 	public static boolean isUnique(CuboidToFoldOn orig, Coord2D paperToDevelop[], boolean array[][]) {
 		
+		int quickestAnswerToCompareTo[] = null;
+		boolean isCurrentlyAloneInFirst = true;
+		boolean isUniqueSoFar = true;
 		
-		//TODO
-		//COPY/PASTE CODE FOR SETUP:
-		
-		boolean paperUsed[][] = new boolean[array.length][array[0].length];
-		int indexCuboidOnPaper[][] = new int[array.length][array[0].length];
-		
-		for(int i=0; i<paperUsed.length; i++) {
-			for(int j=0; j<paperUsed[0].length; j++) {
-				paperUsed[i][j] = false;
-				indexCuboidOnPaper[i][j] = -1;
+		int START_INDEX = 0;
+
+		//Loop other start locations and rotations to see if there's anything faster.
+		// (i.e.: Anything that could be found first)
+
+		SEARCH_UNREFLECTED:
+		for(int i=0; i<paperToDevelop.length; i++) {
+			for(int startRotationRelativeMap=0; startRotationRelativeMap<NUM_ROTATIONS; startRotationRelativeMap++) {
+				
+				boolean paperUsed[][] = new boolean[array.length][array[0].length];
+				int indexCuboidOnPaper[][] = new int[array.length][array[0].length];
+				
+				//TODO: Eliminate this loop to make it faster, but that would mean changing index on paper 0...
+				//Tough choice! I'll do it much later!
+				for(int i2=0; i2<paperUsed.length; i2++) {
+					for(int j2=0; j2<paperUsed[0].length; j2++) {
+						paperUsed[i2][j2] = false;
+						indexCuboidOnPaper[i2][j2] = -1;
+					}
+				}
+				CuboidToFoldOn cuboid = new CuboidToFoldOn(orig);
+
+				Coord2D newPaperToDevelop[] = new Coord2D[paperToDevelop.length];
+
+				int startI = paperToDevelop[i].i;
+				int startJ = paperToDevelop[i].j;
+				
+				int numCellsUsedDepth = 0;
+
+				paperUsed[startI][startJ] = true;
+				newPaperToDevelop[numCellsUsedDepth] = new Coord2D(startI, startJ);
+				
+				cuboid.setCell(START_INDEX, startRotationRelativeMap);
+				indexCuboidOnPaper[startI][startJ] = START_INDEX;
+				numCellsUsedDepth += 1;
+				
+				Region regionsToHandleRevOrder[] = new Region[1];
+				regionsToHandleRevOrder[0] = new Region(cuboid);
+				
+				
+				
+				int tmp[] = doDepthFirstSearch(array, newPaperToDevelop, indexCuboidOnPaper, paperUsed, cuboid, numCellsUsedDepth,
+						regionsToHandleRevOrder, new int[cuboid.getNumCellsToFill()], quickestAnswerToCompareTo, isCurrentlyAloneInFirst);
+				
+				if(tmp != null) {
+
+					Utils.printFold(array);
+					if(i == 0 && startRotationRelativeMap == 0) {
+						quickestAnswerToCompareTo = tmp;
+						isCurrentlyAloneInFirst = false;
+
+						System.out.println("firstOrderingArray for current solution:");
+						for(int k=0; k<tmp.length; k++) {
+							System.out.println(tmp[k]);
+						}
+					} else {
+
+						isUniqueSoFar = false;
+						
+						System.out.println("FasterOrderingArray for current solution:");
+						for(int k=0; k<tmp.length; k++) {
+							System.out.println(tmp[k]);
+						}
+
+						
+						break SEARCH_UNREFLECTED;
+					}
+					
+				}
 			}
 		}
-
-		//Default start location GRID_SIZE / 2, GRID_SIZE / 2
-		
-
-		//TODO: loop on every possible start position:
-		int START_I = array.length/2;
-		int START_J = array.length/2;
-		//END TODO
-		
-		//TODO: don't let this be verbose:
-		CuboidToFoldOn cuboid = new CuboidToFoldOn(orig);
-		//Insert start cell:
-		
-		//Once this reaches the total area, we're done!
-		int numCellsUsedDepth = 0;
-
-		int START_INDEX = 0;
-		int START_ROTATION = 0;
-		paperUsed[START_I][START_J] = true;
-		paperToDevelop[numCellsUsedDepth] = new Coord2D(START_I, START_J);
-		
-		cuboid.setCell(START_INDEX, START_ROTATION);
-		indexCuboidOnPaper[START_I][START_J] = START_INDEX;
-		numCellsUsedDepth += 1;
-		
-		Region regionsToHandleRevOrder[] = new Region[1];
-		regionsToHandleRevOrder[0] = new Region(cuboid);
-		//END COPY/PASTE CODE FOR SETUP:
-		
-		
-		
-		//TODO: loop 0 to 4
-		//int rotationRelativeNetToReplicate = 0;
-		
-		
-		//TODO: later:
-		int altAnswer[] = null;
-		 
-		boolean isCurrentlyAloneInFirst = true;
-		
-		int firstOrderingArray[] = doDepthFirstSearch(array, paperToDevelop, indexCuboidOnPaper, paperUsed, cuboid, numCellsUsedDepth,
-				regionsToHandleRevOrder, new int[cuboid.getNumCellsToFill()], altAnswer, isCurrentlyAloneInFirst);
-		
-		
-		Utils.printFold(array);
-		System.out.println("firstOrderingArray for current solution:");
-		for(int i=0; i<firstOrderingArray.length; i++) {
-			System.out.println(firstOrderingArray[i]);
-		}
-		//LOL: the numbers actually look correct even though it's 1:20 AM and I'm tired!
-		//TODO: compare to other possible answers to make sure this is the 1st one.
-		
-
-		System.out.println("End firstOrderingArray for current solution:");
-
-
-		//TODO: loop other start locations and rotations to see if there's anything faster.
 		
 		//TODO: also loop for mirrored solution (use getTranspose for this)
 		// Don't forget to also transpose the start locations! 
-		
-		
+		if(isUniqueSoFar) {
+			
+			boolean transposeArray[][] = getTranspose(array);
+			
+			//Search reflected solution (It's just the transpose)
+			SEARCH_REFLECTED:
+			for(int i=0; i<paperToDevelop.length; i++) {
+				for(int startRotationRelativeMap=0; startRotationRelativeMap<NUM_ROTATIONS; startRotationRelativeMap++) {
+					
+					boolean paperUsed[][] = new boolean[transposeArray.length][transposeArray[0].length];
+					int indexCuboidOnPaper[][] = new int[transposeArray.length][transposeArray[0].length];
+					
+					//TODO: Eliminate this loop to make it faster, but that would mean changing index on paper 0...
+					//Tough choice! I'll do it much later!
+					for(int i2=0; i2<paperUsed.length; i2++) {
+						for(int j2=0; j2<paperUsed[0].length; j2++) {
+							paperUsed[i2][j2] = false;
+							indexCuboidOnPaper[i2][j2] = -1;
+						}
+					}
+					CuboidToFoldOn cuboid = new CuboidToFoldOn(orig);
+
+					Coord2D newPaperToDevelop[] = new Coord2D[paperToDevelop.length];
+
+					//Transpose it!
+					int startI = paperToDevelop[i].j;
+					int startJ = paperToDevelop[i].i;
+					
+					int numCellsUsedDepth = 0;
+
+					paperUsed[startI][startJ] = true;
+					newPaperToDevelop[numCellsUsedDepth] = new Coord2D(startI, startJ);
+					
+					cuboid.setCell(START_INDEX, startRotationRelativeMap);
+					indexCuboidOnPaper[startI][startJ] = START_INDEX;
+					numCellsUsedDepth += 1;
+					
+					Region regionsToHandleRevOrder[] = new Region[1];
+					regionsToHandleRevOrder[0] = new Region(cuboid);
+					
+					
+					
+					int tmp[] = doDepthFirstSearch(transposeArray, newPaperToDevelop, indexCuboidOnPaper, paperUsed, cuboid, numCellsUsedDepth,
+							regionsToHandleRevOrder, new int[cuboid.getNumCellsToFill()], quickestAnswerToCompareTo, isCurrentlyAloneInFirst);
+					
+					if(tmp != null) {
+
+						Utils.printFold(transposeArray);
+						
+						isUniqueSoFar = false;
+						
+						System.out.println("FasterOrderingArray for current solution is a reflect solution:");
+						for(int k=0; k<tmp.length; k++) {
+							System.out.println(tmp[k]);
+						}
+
+
+						break SEARCH_REFLECTED;
+						
+					}
+				}
+			}
+		}
 		
 		//TODO:
-		sanityCheck(false, array);
+		sanityCheck(isUniqueSoFar, array);
 		//
 		
-		return false;
+		return isUniqueSoFar;
 	}
 	
-	public boolean[][] getTranspose(boolean array[][]) {
+	public static boolean[][] getTranspose(boolean array[][]) {
 		boolean transpose[][] = new boolean[array[0].length][array.length];
 		
 		for(int i=0; i<transpose.length; i++) {
@@ -113,16 +179,27 @@ public class MemorylessUniqueCheckSkipSymmetries {
 	public static final int NUM_NEIGHBOURS = NUM_ROTATIONS;
 	public static final int nugdeBasedOnRotation[][] = {{-1, 0, 1, 0}, {0, 1, 0 , -1}};
 	
+	
+	//TODO: don't do recursion!
+	//You don't need it!
+
 	//Assumes we skip the symmetries
 	
 	//TODO: maybe it could be a loop instead?
 	//TODO: return int[]
 	//TODO: rotationRelativeNetToReplicate and mirrored could be done before the function starts.
 	public static int[] doDepthFirstSearch(boolean netToReplicate[][], Coord2D paperToDevelop[], int indexCuboidonPaper[][], boolean paperUsed[][], CuboidToFoldOn cuboid, int numCellsUsedDepth,
-			Region regions[], int curAnswer[], int altAnswer[], boolean isCurrentlyAloneInFirst) {
+			Region regions[], int curAnswer[], int quickestAnswerToCompareTo[], boolean isCurrentlyAloneInFirst) {
 
 		if(numCellsUsedDepth == cuboid.getNumCellsToFill()) {
-			return curAnswer;
+			
+			if(isCurrentlyAloneInFirst) {
+				//If you're tied for 1st, you're not faster than current fastest
+				return curAnswer;
+
+			} else {
+				return null;
+			}
 		}
 		
 		int regionIndex = regions.length - 1;
@@ -141,7 +218,7 @@ public class MemorylessUniqueCheckSkipSymmetries {
 				//TODO: maybe try adding a 'don't use index flag here?
 				continue;
 			}
-			
+
 			CoordWithRotationAndIndex neighbours[] = cuboid.getNeighbours(indexToUse);
 			
 			int curRotation = cuboid.getRotationPaperRelativeToMap(indexToUse);
@@ -228,11 +305,20 @@ public class MemorylessUniqueCheckSkipSymmetries {
 					
 					curAnswer[numCellsUsedDepth] = numRotationIterationsSkipped;
 
+					if(isCurrentlyAloneInFirst) {
+						//pass
+	
+					} else if(curAnswer[numCellsUsedDepth] < quickestAnswerToCompareTo[numCellsUsedDepth]) {
+						isCurrentlyAloneInFirst = true;
+						
+					} else if(curAnswer[numCellsUsedDepth] > quickestAnswerToCompareTo[numCellsUsedDepth]) {
+						return null;
+					}
 					numCellsUsedDepth += 1;
 					//End setup
 
 					return doDepthFirstSearch(netToReplicate, paperToDevelop, indexCuboidonPaper, paperUsed, cuboid, numCellsUsedDepth,
-							regions, curAnswer, altAnswer, isCurrentlyAloneInFirst);
+							regions, curAnswer, quickestAnswerToCompareTo, isCurrentlyAloneInFirst);
 
 					
 				} // End recursive if cond
@@ -253,14 +339,12 @@ public class MemorylessUniqueCheckSkipSymmetries {
 		//System.out.println(max);
 		
 		if(basicCheckResultUniq && ! memorylessAnswer) {
-			System.out.println("Orig Basic unique check says this is a new solution but MemorylessUniqueCheck says it isn't");
-			System.out.println("HERE");
-			System.exit(1);
+			System.out.println("ERROR_1: Orig Basic unique check says this is a new solution but MemorylessUniqueCheck says it isn't");
+			//System.exit(1);
 		} else if(! basicCheckResultUniq && memorylessAnswer) {
 
-			System.out.println("Orig Basic unique check same this is a dup but MemorylessUniqueCheck says this is new");
-			System.out.println("HERE 2");
-			System.exit(1);
+			System.out.println("ERROR_2: Orig Basic unique check same this is a dup but MemorylessUniqueCheck says this is new");
+			//System.exit(1);
 		}
 		
 	}
