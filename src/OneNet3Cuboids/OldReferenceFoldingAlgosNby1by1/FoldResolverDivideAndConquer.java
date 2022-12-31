@@ -114,7 +114,7 @@ public class FoldResolverDivideAndConquer {
 				System.out.println(numFound + " (num unique: " + numUniqueFound + ")");
 			}
 			
-			if(BasicUniqueCheckImproved.isUnique(paperUsed)) {
+			if(BasicUniqueCheckImproved.isUnique(paperToDevelop, paperUsed)) {
 				numUniqueFound++;
 				
 				if(numCellsUsedDepth < 12

@@ -1,12 +1,13 @@
 package OneNet3Cuboids.SolutionResovler;
 
 import OneNet3Cuboids.Utils;
+import OneNet3Cuboids.Coord.Coord2D;
 import OneNet3Cuboids.DupRemover.BasicUniqueCheckImproved;
 import OneNet3Cuboids.FoldingAlgoStartAnywhere.FoldResolveOrderedRegionsSkipSymmetries;
 
 public class StandardResolverForMediumSolutions implements SolutionResolverInterface {
 	@Override
-	public long resolveSolution(int[][] indexCuboidonPaper, boolean[][] paperUsed) {
+	public long resolveSolution(Coord2D paperToDevelop[], int[][] indexCuboidonPaper, boolean[][] paperUsed) {
 		
 		//TODO: Maybe have global vars elsewhere? 
 		FoldResolveOrderedRegionsSkipSymmetries.numFound++;
@@ -16,7 +17,7 @@ public class StandardResolverForMediumSolutions implements SolutionResolverInter
 				" (num unique: " + FoldResolveOrderedRegionsSkipSymmetries.numUniqueFound + ")");
 		}
 		
-		if(BasicUniqueCheckImproved.isUnique(paperUsed)) {
+		if(BasicUniqueCheckImproved.isUnique(paperToDevelop, paperUsed)) {
 			FoldResolveOrderedRegionsSkipSymmetries.numUniqueFound++;
 
 			if(FoldResolveOrderedRegionsSkipSymmetries.numUniqueFound % 2000 == 0) {

@@ -106,7 +106,7 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 			Region regions[], long limitDupSolutions, boolean skipSymmetries, SolutionResolverInterface solutionResolver) {
 
 		if(numCellsUsedDepth == cuboid.getNumCellsToFill()) {
-			return solutionResolver.resolveSolution(indexCuboidonPaper, paperUsed);
+			return solutionResolver.resolveSolution(paperToDevelop, indexCuboidonPaper, paperUsed);
 		}
 
 		regions = handleCompletedRegionIfApplicable(regions, limitDupSolutions, indexCuboidonPaper, paperUsed);

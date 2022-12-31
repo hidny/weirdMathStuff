@@ -1,6 +1,7 @@
 package OneNet3Cuboids.SolutionResovler;
 
 import OneNet3Cuboids.Utils;
+import OneNet3Cuboids.Coord.Coord2D;
 import OneNet3Cuboids.DupRemover.BasicUniqueCheckImproved;
 import OneNet3Cuboids.FoldingAlgoStartAnywhere.FoldResolveOrderedRegionsSkipSymmetries;
 
@@ -10,7 +11,7 @@ public class BadIntersectResolverForSmallSolutions implements SolutionResolverIn
 	//This assumes that BasicUniqueCheckImproved has all the solution for the 1st cuboid,
 	// and we found a solution for the 2nd cuboid:
 	@Override
-	public long resolveSolution(int[][] indexCuboidonPaper, boolean[][] paperUsed) {
+	public long resolveSolution(Coord2D paperToDevelop[], int[][] indexCuboidonPaper, boolean[][] paperUsed) {
 		
 		//TODO: Maybe have global vars elsewhere? 
 		FoldResolveOrderedRegionsSkipSymmetries.numFound++;
@@ -19,7 +20,7 @@ public class BadIntersectResolverForSmallSolutions implements SolutionResolverIn
 			System.out.println(FoldResolveOrderedRegionsSkipSymmetries.numFound +
 				" (num unique: " + FoldResolveOrderedRegionsSkipSymmetries.numUniqueFound + ")");
 		}
-		boolean foundMatchInOtherCuboid = ! BasicUniqueCheckImproved.isUnique(paperUsed);
+		boolean foundMatchInOtherCuboid = ! BasicUniqueCheckImproved.isUnique(paperToDevelop, paperUsed);
 		
 		 BasicUniqueCheckImproved.uniqList.remove(BasicUniqueCheckImproved.debugLastScore);
 		

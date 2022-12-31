@@ -1,6 +1,7 @@
 package OneNet3Cuboids;
 
 import OneNet3Cuboids.Coord.Coord;
+import OneNet3Cuboids.Coord.Coord2D;
 
 public class Utils {
 
@@ -73,6 +74,35 @@ public class Utils {
 		return getBorders(array2);
 		
 	}
+	
+	//Returns: new int[] {firsti, lasti, firstj, lastj};
+	public static int[] getBorders(Coord2D paperToDevelop[]) {
+		
+		int ret[] = new int[] {
+			paperToDevelop[0].i,
+			paperToDevelop[0].i,
+			paperToDevelop[0].j, 
+			paperToDevelop[0].j
+		};
+		
+		for(int i=1; i<paperToDevelop.length; i++) {
+			
+			if(paperToDevelop[i].i < ret[0]) {
+				ret[0] = paperToDevelop[i].i;
+			} else if(paperToDevelop[i].i > ret[1]) {
+				ret[1] = paperToDevelop[i].i;
+			}
+
+			if(paperToDevelop[i].j < ret[2]) {
+				ret[2] = paperToDevelop[i].j;
+			} else if(paperToDevelop[i].j > ret[3]) {
+				ret[3] = paperToDevelop[i].j;
+			}
+		}
+
+		return ret;
+	}
+	
 	public static int[] getBorders(boolean array[][]) {
 		//TODO: make function to get borders...
 		int firsti = 0;
