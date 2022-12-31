@@ -122,15 +122,6 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 		for(int i=regions[regionIndex].getMinOrderedCellCouldUsePerRegion(); i<paperToDevelop.length && paperToDevelop[i] != null; i++) {
 			
 			int indexToUse = indexCuboidonPaper[paperToDevelop[i].i][paperToDevelop[i].j];
-			if(indexToUse < 0) {
-				System.out.println("Doh!");
-				System.exit(1);
-			}
-			
-			if(regions[regionIndex].getCellIndexToOrderOfDev().containsKey(indexToUse)
-					&& regions[regionIndex].getCellIndexToOrderOfDev().get(indexToUse) < regions[regionIndex].getMinOrderedCellCouldUsePerRegion()) {
-				continue;
-			}
 			
 			if(SymmetryResolver.skipSearchBecauseOfASymmetryArgDontCareAboutRotation
 					(cuboid, paperToDevelop, indexCuboidonPaper, i,indexToUse)
@@ -725,7 +716,7 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 
 	public static void main(String args[]) {
 		System.out.println("Fold Resolver Ordered Regions start anywhere:");
-		solveFoldsForSingleCuboid(5, 1, 1);
+		solveFoldsForSingleCuboid(1, 1, 1);
 
 		//Best 5,1,1: 3 minute 45 seconds (3014430 solutions) (December 27th)
 		
