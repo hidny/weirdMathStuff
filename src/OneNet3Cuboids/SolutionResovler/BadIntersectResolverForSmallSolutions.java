@@ -1,5 +1,6 @@
 package OneNet3Cuboids.SolutionResovler;
 
+import OneNet3Cuboids.CuboidToFoldOn;
 import OneNet3Cuboids.Utils;
 import OneNet3Cuboids.Coord.Coord2D;
 import OneNet3Cuboids.DupRemover.BasicUniqueCheckImproved;
@@ -11,7 +12,7 @@ public class BadIntersectResolverForSmallSolutions implements SolutionResolverIn
 	//This assumes that BasicUniqueCheckImproved has all the solution for the 1st cuboid,
 	// and we found a solution for the 2nd cuboid:
 	@Override
-	public long resolveSolution(Coord2D paperToDevelop[], int[][] indexCuboidonPaper, boolean[][] paperUsed) {
+	public long resolveSolution(CuboidToFoldOn cuboidDimensionsAndNeighbours, Coord2D paperToDevelop[], int[][] indexCuboidonPaper, boolean[][] paperUsed) {
 		
 		//TODO: Maybe have global vars elsewhere? 
 		FoldResolveOrderedRegionsSkipSymmetries.numFound++;

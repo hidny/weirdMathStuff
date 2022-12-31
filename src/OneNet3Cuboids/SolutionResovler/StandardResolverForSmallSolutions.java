@@ -1,5 +1,6 @@
 package OneNet3Cuboids.SolutionResovler;
 
+import OneNet3Cuboids.CuboidToFoldOn;
 import OneNet3Cuboids.Utils;
 import OneNet3Cuboids.Coord.Coord2D;
 import OneNet3Cuboids.DupRemover.BasicUniqueCheckImproved;
@@ -9,7 +10,7 @@ import OneNet3Cuboids.FoldingAlgoStartAnywhere.FoldResolveOrderedRegionsSkipSymm
 public class StandardResolverForSmallSolutions implements SolutionResolverInterface {
 
 	@Override
-	public long resolveSolution(Coord2D paperToDevelop[], int[][] indexCuboidonPaper, boolean[][] paperUsed) {
+	public long resolveSolution(CuboidToFoldOn cuboidUsed, Coord2D paperToDevelop[], int[][] indexCuboidonPaper, boolean[][] paperUsed) {
 		
 		//TODO: Maybe have global vars elsewhere? 
 		FoldResolveOrderedRegionsSkipSymmetries.numFound++;
@@ -22,7 +23,7 @@ public class StandardResolverForSmallSolutions implements SolutionResolverInterf
 		Utils.printFoldWithIndex(indexCuboidonPaper);
 		
 		//TODO: don't hard-code dimensions:
-		if(MemorylessUniqueCheckSkipSymmetries.isUnique(new int[] {1, 1, 1}, paperToDevelop, paperUsed)) {
+		if(MemorylessUniqueCheckSkipSymmetries.isUnique(cuboidUsed, paperToDevelop, paperUsed)) {
 			System.out.println("TODO");
 		}
 		

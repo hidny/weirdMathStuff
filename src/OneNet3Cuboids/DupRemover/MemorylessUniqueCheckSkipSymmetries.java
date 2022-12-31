@@ -11,7 +11,7 @@ import OneNet3Cuboids.SolutionResovler.SolutionResolverInterface;
 
 public class MemorylessUniqueCheckSkipSymmetries {
 
-	public static boolean isUnique(int dimensionsCuboid[], Coord2D paperToDevelop[], boolean array[][]) {
+	public static boolean isUnique(CuboidToFoldOn orig, Coord2D paperToDevelop[], boolean array[][]) {
 		
 		
 		//TODO
@@ -36,7 +36,7 @@ public class MemorylessUniqueCheckSkipSymmetries {
 		//END TODO
 		
 		//TODO: don't let this be verbose:
-		CuboidToFoldOn cuboid = new CuboidToFoldOn(dimensionsCuboid[0], dimensionsCuboid[1], dimensionsCuboid[2]);
+		CuboidToFoldOn cuboid = new CuboidToFoldOn(orig);
 		//Insert start cell:
 		
 		//Once this reaches the total area, we're done!

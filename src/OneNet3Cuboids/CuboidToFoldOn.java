@@ -35,6 +35,22 @@ public class CuboidToFoldOn {
 		dimensions[2] = c;
 	}
 
+	//Create same cuboid, but remove state info:
+	public CuboidToFoldOn(CuboidToFoldOn orig) {
+
+		neighbours = orig.neighbours;
+		
+		cellsUsed = new boolean[orig.cellsUsed.length];
+		rotationPaperRelativeToCuboidFlatMap = new int[orig.cellsUsed.length];
+		
+		for(int i=0; i<cellsUsed.length; i++) {
+			cellsUsed[i] = false;
+			rotationPaperRelativeToCuboidFlatMap[i] = -1;
+		}
+		
+		dimensions = orig.dimensions;
+	}
+	
 	//Get dimensions for symmetry-resolver functions:
 	public int[] getDimensions() {
 		return dimensions;

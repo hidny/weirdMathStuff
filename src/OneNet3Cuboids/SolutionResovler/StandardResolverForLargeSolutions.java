@@ -1,5 +1,6 @@
 package OneNet3Cuboids.SolutionResovler;
 
+import OneNet3Cuboids.CuboidToFoldOn;
 import OneNet3Cuboids.Utils;
 import OneNet3Cuboids.Coord.Coord2D;
 import OneNet3Cuboids.DupRemover.BasicUniqueCheckImproved;
@@ -7,7 +8,7 @@ import OneNet3Cuboids.FoldingAlgoStartAnywhere.FoldResolveOrderedRegionsSkipSymm
 
 public class StandardResolverForLargeSolutions implements SolutionResolverInterface {
 	@Override
-	public long resolveSolution(Coord2D paperToDevelop[], int[][] indexCuboidonPaper, boolean[][] paperUsed) {
+	public long resolveSolution(CuboidToFoldOn cuboidDimensionsAndNeighbours, Coord2D paperToDevelop[], int[][] indexCuboidonPaper, boolean[][] paperUsed) {
 		
 		//TODO: Maybe have global vars elsewhere? 
 		FoldResolveOrderedRegionsSkipSymmetries.numFound++;
