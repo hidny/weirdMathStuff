@@ -36,7 +36,7 @@ public class MemorylessUniqueCheckSkipSymmetries {
 
 			for(int rotation=0; rotation<NUM_ROTATIONS; rotation++) {
 				
-				//Setup to run imitation algo:
+			//Setup to run imitation algo:
 				boolean paperUsed[][] = new boolean[arrayRotated[rotation].length][arrayRotated[rotation][0].length];
 				int indexCuboidOnPaper[][] = new int[arrayRotated[rotation].length][arrayRotated[rotation][0].length];
 				
@@ -70,8 +70,7 @@ public class MemorylessUniqueCheckSkipSymmetries {
 				
 				Region regionsToHandleRevOrder[] = new Region[1];
 				regionsToHandleRevOrder[0] = new Region(cuboid);
-				
-				//END Setup to run imitation algo.
+			//END Setup to run imitation algo.
 				
 				int tmp[] = doDepthFirstSearch(arrayRotated[rotation], newPaperToDevelop, indexCuboidOnPaper, paperUsed, cuboid, numCellsUsedDepth,
 						regionsToHandleRevOrder, new int[cuboid.getNumCellsToFill()], quickestAnswerToCompareTo, isCurrentlyAloneInFirst);
@@ -119,12 +118,12 @@ public class MemorylessUniqueCheckSkipSymmetries {
 				arrayRotatedAndReflected[rotation] = getArrayRotated(transposeArray, rotation);
 			}
 			
-			//Search reflected solution (It's just the transpose)
+			//Search reflected for solutions (getting the transpose reflects to array)
 			SEARCH_REFLECTED:
 			for(int i=0; i<paperToDevelop.length; i++) {
 				for(int rotation=0; rotation<NUM_ROTATIONS; rotation++) {
 					
-					//Start setup for algo:
+				//Setup to run imitation algo:
 					boolean paperUsed[][] = new boolean[arrayRotatedAndReflected[rotation].length][arrayRotatedAndReflected[rotation][0].length];
 					int indexCuboidOnPaper[][] = new int[arrayRotatedAndReflected[rotation].length][arrayRotatedAndReflected[rotation][0].length];
 					
@@ -161,7 +160,7 @@ public class MemorylessUniqueCheckSkipSymmetries {
 					
 					Region regionsToHandleRevOrder[] = new Region[1];
 					regionsToHandleRevOrder[0] = new Region(cuboid);
-					//End setup for algo.
+				//END Setup to run imitation algo.
 					
 					int tmp[] = doDepthFirstSearch(arrayRotatedAndReflected[rotation], newPaperToDevelop, indexCuboidOnPaper, paperUsed, cuboid, numCellsUsedDepth,
 							regionsToHandleRevOrder, new int[cuboid.getNumCellsToFill()], quickestAnswerToCompareTo, isCurrentlyAloneInFirst);
@@ -285,11 +284,10 @@ public class MemorylessUniqueCheckSkipSymmetries {
 	//TODO: don't do recursion!
 	//You don't need it!
 
-	//Assumes we skip the symmetries
+	//This algo Assumes we skip the symmetries
 	
 	//TODO: maybe it could be a loop instead?
-	//TODO: return int[]
-	//TODO: rotationRelativeNetToReplicate and mirrored could be done before the function starts.
+
 	public static int[] doDepthFirstSearch(boolean netToReplicate[][], Coord2D paperToDevelop[], int indexCuboidonPaper[][], boolean paperUsed[][], CuboidToFoldOn cuboid, int numCellsUsedDepth,
 			Region regions[], int curAnswer[], int quickestAnswerToCompareTo[], boolean isCurrentlyAloneInFirst) {
 
