@@ -290,23 +290,165 @@ public class MemorylessUniqueCheckSkipSymmetries {
 	public static final int nugdeBasedOnRotation[][] = {{-1, 0, 1, 0}, {0, 1, 0 , -1}};
 	
 	
-	//TODO: don't do recursion!
+	//I remove the recursive call because we don't really need it
 	//You don't need it!
 
 	//This algo Assumes we skip the symmetries
-	
-	//TODO: maybe it could be a loop instead?
+
 
 	public static int[] doDepthFirstSearch(boolean netToReplicate[][], Coord2D paperToDevelop[], int indexCuboidonPaper[][], boolean paperUsed[][], CuboidToFoldOn cuboid, int numCellsUsedDepth,
 			Region regions[], int curAnswer[], int quickestAnswerToCompareTo[], boolean isCurrentlyAloneInFirst) {
 
-
+/*
 		if(debugArrayMatchesString(prevOrdering, "0, 0, 1, 2, 3, 6, 10, 9, 3, 14") 
 				&& (quickestAnswerToCompareTo == null)) {//TODO: add depth...
 			System.out.println("DEBUG 1st rotation and 1 try of the solution that failed (numCellsUsedDepth = " + numCellsUsedDepth + ")");
 		}
+	*/
+		ADD_NEXT_CELL:
+		while(numCellsUsedDepth < cuboid.getNumCellsToFill()) {
+			
+			regions = FoldResolveOrderedRegionsSkipSymmetries.handleCompletedRegionIfApplicable(regions, -1, indexCuboidonPaper, paperUsed);
+			
+			//Sanity check
+			if(regions == null) {
+				
+				System.out.println("ERROR in MemorylessUniqueCheckSkipSymmetries: regions is null while not trying to solve 1 specfic region.");
+				System.exit(1);
+			}
+			//End sanity check
+			
+			int regionIndex = regions.length - 1;
+			
+			int numRotationIterationsSkipped = 0;
+			
+			//DEPTH-FIRST START:
+			for(int i=regions[regionIndex].getMinOrderedCellCouldUsePerRegion(); i<paperToDevelop.length && paperToDevelop[i] != null; i++) {
+				
+				int indexToUse = indexCuboidonPaper[paperToDevelop[i].i][paperToDevelop[i].j];
+				
+				if(SymmetryResolver.skipSearchBecauseOfASymmetryArgDontCareAboutRotation
+						(cuboid, paperToDevelop, indexCuboidonPaper, i,indexToUse)) {
 	
+					numRotationIterationsSkipped += NUM_ROTATIONS;
+					continue;
+				}
+	
+				CoordWithRotationAndIndex neighbours[] = cuboid.getNeighbours(indexToUse);
+				
+				int curRotation = cuboid.getRotationPaperRelativeToMap(indexToUse);
+				
+				//Try to attach a cell onto indexToUse using all 4 rotations:
+				for(int j=0; j<neighbours.length; j++, numRotationIterationsSkipped++) {
+					
+					int rotationToAddCellOn = (j + curRotation) % NUM_ROTATIONS;
+					
+					int new_i = paperToDevelop[i].i + nugdeBasedOnRotation[0][rotationToAddCellOn];
+					int new_j = paperToDevelop[i].j + nugdeBasedOnRotation[1][rotationToAddCellOn];
+	
+					int indexNewCell = neighbours[j].getIndex();
+			
+					if(paperUsed[new_i][new_j]) {
+						//Cell we are considering to add is already there...
+						continue;
+	
+					} else if(regions[regionIndex].getCellRegionsToHandleInRevOrder()[neighbours[j].getIndex()] == false) {
+						continue;
+	
+					} else if(! netToReplicate[new_i][new_j]) {
+						//Make sure to follow the netToRelplicate
+						continue;
+					
+					
+					} else if(cuboid.isCellIndexUsed(neighbours[j].getIndex())) {
+	
+						//Don't reuse a used cell:
+						return null;
+						
+					} else if(regions[regionIndex].getCellIndexToOrderOfDev().containsKey(indexToUse)
+							&& regions[regionIndex].getCellIndexToOrderOfDev().get(indexToUse) == regions[regionIndex].getMinOrderedCellCouldUsePerRegion() 
+							&& j <  regions[regionIndex].getMinCellRotationOfMinCellToDevPerRegion()) {
+	
+						//The current rotation is out of order:
+						return null;
+	
+					}
+					
+					int rotationNeighbourPaperRelativeToMap = (curRotation - neighbours[j].getRot() + NUM_ROTATIONS) % NUM_ROTATIONS;
+					
+					if(SymmetryResolver.skipSearchBecauseOfASymmetryArg
+							(cuboid, paperToDevelop, i, indexCuboidonPaper, rotationToAddCellOn, curRotation, paperUsed, indexToUse, indexNewCell)) {
+						return null;
+					}
+					
+					boolean cantAddCellBecauseOfOtherPaperNeighbours = FoldResolveOrderedRegionsSkipSymmetries.cantAddCellBecauseOfOtherPaperNeighbours(paperToDevelop, indexCuboidonPaper,
+							paperUsed, cuboid, numCellsUsedDepth,
+							regions, regionIndex, indexToUse,
+							indexNewCell, new_i, new_j, i
+						);
+					
+					int lastRegionIndexBeforePotentailRegionSplit = regions.length - 1;
+	
+					if( !cantAddCellBecauseOfOtherPaperNeighbours) {
+						
+						//Split the regions if possible:
+						regions = FoldResolveOrderedRegionsSkipSymmetries.splitRegionsIfNewCellSplitsRegions(paperToDevelop, indexCuboidonPaper,
+								paperUsed, cuboid, numCellsUsedDepth,
+								regions,
+								indexToUse, j, regions[regionIndex].getMinOrderedCellCouldUsePerRegion(), regions[regionIndex].getMinCellRotationOfMinCellToDevPerRegion(),
+								new_i, new_j, indexNewCell, rotationNeighbourPaperRelativeToMap,
+								true, null);
+						
+						if(regions == null) {
+							cantAddCellBecauseOfOtherPaperNeighbours = true;
+						}
+					}
+					
+					if( ! cantAddCellBecauseOfOtherPaperNeighbours) {
+						
+						//Setup for adding new cell:
+						cuboid.setCell(indexNewCell, rotationNeighbourPaperRelativeToMap);
+						
+						paperUsed[new_i][new_j] = true;
+						indexCuboidonPaper[new_i][new_j] = indexNewCell;
+						paperToDevelop[numCellsUsedDepth] = new Coord2D(new_i, new_j);
+	
+						//Add cell to new region(s):
+						for(int r=lastRegionIndexBeforePotentailRegionSplit; r<regions.length; r++) {
+							regions[r].addCellToRegion(indexNewCell, numCellsUsedDepth, indexToUse, j);						
+						}
+						
+						curAnswer[numCellsUsedDepth] = numRotationIterationsSkipped;
+	
+						if(isCurrentlyAloneInFirst) {
+							//pass
+		
+						} else if(curAnswer[numCellsUsedDepth] < quickestAnswerToCompareTo[numCellsUsedDepth]) {
+							isCurrentlyAloneInFirst = true;
+							
+						} else if(curAnswer[numCellsUsedDepth] > quickestAnswerToCompareTo[numCellsUsedDepth]) {
+							return null;
+						}
+						numCellsUsedDepth += 1;
+						//End setup
+	
+						// iterated again, but this time with a higher depth:
+						// No need for recursion because we're just following 1 path.
+						continue ADD_NEXT_CELL;
+						
+					} // End recursive if cond
+					
+					//At this point, we can't add the cell.
+					return null;
+	
+				} // End loop rotation
+			} //End loop index
+			
+			//At this point, we can't go any further because we used up all the indexes and all regions:
+			return null;
+		}
 
+		//End of loop:
 		if(numCellsUsedDepth == cuboid.getNumCellsToFill()) {
 			
 			if(isCurrentlyAloneInFirst) {
@@ -316,145 +458,12 @@ public class MemorylessUniqueCheckSkipSymmetries {
 			} else {
 				return null;
 			}
+		} else {
+			
+			//I don't think this is possible, but whatever.
+			return null;
 		}
 		
-		regions = FoldResolveOrderedRegionsSkipSymmetries.handleCompletedRegionIfApplicable(regions, -1, indexCuboidonPaper, paperUsed);
-		
-		//Sanity check
-		if(regions == null) {
-			
-			System.out.println("ERROR in MemorylessUniqueCheckSkipSymmetries: regions is null while not trying to solve 1 specfic region.");
-			System.exit(1);
-		}
-		//End sanity check
-		
-		int regionIndex = regions.length - 1;
-		
-		int numRotationIterationsSkipped = 0;
-		
-		//DEPTH-FIRST START:
-		for(int i=regions[regionIndex].getMinOrderedCellCouldUsePerRegion(); i<paperToDevelop.length && paperToDevelop[i] != null; i++) {
-			
-			int indexToUse = indexCuboidonPaper[paperToDevelop[i].i][paperToDevelop[i].j];
-			
-			if(SymmetryResolver.skipSearchBecauseOfASymmetryArgDontCareAboutRotation
-					(cuboid, paperToDevelop, indexCuboidonPaper, i,indexToUse)) {
-
-				numRotationIterationsSkipped += NUM_ROTATIONS;
-				continue;
-			}
-
-			CoordWithRotationAndIndex neighbours[] = cuboid.getNeighbours(indexToUse);
-			
-			int curRotation = cuboid.getRotationPaperRelativeToMap(indexToUse);
-			
-			//Try to attach a cell onto indexToUse using all 4 rotations:
-			for(int j=0; j<neighbours.length; j++, numRotationIterationsSkipped++) {
-				
-				int rotationToAddCellOn = (j + curRotation) % NUM_ROTATIONS;
-				
-				int new_i = paperToDevelop[i].i + nugdeBasedOnRotation[0][rotationToAddCellOn];
-				int new_j = paperToDevelop[i].j + nugdeBasedOnRotation[1][rotationToAddCellOn];
-
-				int indexNewCell = neighbours[j].getIndex();
-		
-				if(paperUsed[new_i][new_j]) {
-					//Cell we are considering to add is already there...
-					continue;
-
-				} else if(regions[regionIndex].getCellRegionsToHandleInRevOrder()[neighbours[j].getIndex()] == false) {
-					continue;
-
-				} else if(! netToReplicate[new_i][new_j]) {
-					//Make sure to follow the netToRelplicate
-					continue;
-				
-				
-				} else if(cuboid.isCellIndexUsed(neighbours[j].getIndex())) {
-
-					//Don't reuse a used cell:
-					return null;
-					
-				} else if(regions[regionIndex].getCellIndexToOrderOfDev().containsKey(indexToUse)
-						&& regions[regionIndex].getCellIndexToOrderOfDev().get(indexToUse) == regions[regionIndex].getMinOrderedCellCouldUsePerRegion() 
-						&& j <  regions[regionIndex].getMinCellRotationOfMinCellToDevPerRegion()) {
-
-					//The current rotation is out of order:
-					return null;
-
-				}
-				
-				int rotationNeighbourPaperRelativeToMap = (curRotation - neighbours[j].getRot() + NUM_ROTATIONS) % NUM_ROTATIONS;
-				
-				if(SymmetryResolver.skipSearchBecauseOfASymmetryArg
-						(cuboid, paperToDevelop, i, indexCuboidonPaper, rotationToAddCellOn, curRotation, paperUsed, indexToUse, indexNewCell)) {
-					return null;
-				}
-				
-				boolean cantAddCellBecauseOfOtherPaperNeighbours = FoldResolveOrderedRegionsSkipSymmetries.cantAddCellBecauseOfOtherPaperNeighbours(paperToDevelop, indexCuboidonPaper,
-						paperUsed, cuboid, numCellsUsedDepth,
-						regions, regionIndex, indexToUse,
-						indexNewCell, new_i, new_j, i
-					);
-				
-				int lastRegionIndexBeforePotentailRegionSplit = regions.length - 1;
-
-				if( !cantAddCellBecauseOfOtherPaperNeighbours) {
-					
-					//Split the regions if possible:
-					regions = FoldResolveOrderedRegionsSkipSymmetries.splitRegionsIfNewCellSplitsRegions(paperToDevelop, indexCuboidonPaper,
-							paperUsed, cuboid, numCellsUsedDepth,
-							regions,
-							indexToUse, j, regions[regionIndex].getMinOrderedCellCouldUsePerRegion(), regions[regionIndex].getMinCellRotationOfMinCellToDevPerRegion(),
-							new_i, new_j, indexNewCell, rotationNeighbourPaperRelativeToMap,
-							true, null);
-					
-					if(regions == null) {
-						cantAddCellBecauseOfOtherPaperNeighbours = true;
-					}
-				}
-				
-				if( ! cantAddCellBecauseOfOtherPaperNeighbours) {
-					
-					//Setup for adding new cell:
-					cuboid.setCell(indexNewCell, rotationNeighbourPaperRelativeToMap);
-					
-					paperUsed[new_i][new_j] = true;
-					indexCuboidonPaper[new_i][new_j] = indexNewCell;
-					paperToDevelop[numCellsUsedDepth] = new Coord2D(new_i, new_j);
-
-					//Add cell to new region(s):
-					for(int r=lastRegionIndexBeforePotentailRegionSplit; r<regions.length; r++) {
-						regions[r].addCellToRegion(indexNewCell, numCellsUsedDepth, indexToUse, j);						
-					}
-					
-					curAnswer[numCellsUsedDepth] = numRotationIterationsSkipped;
-
-					if(isCurrentlyAloneInFirst) {
-						//pass
-	
-					} else if(curAnswer[numCellsUsedDepth] < quickestAnswerToCompareTo[numCellsUsedDepth]) {
-						isCurrentlyAloneInFirst = true;
-						
-					} else if(curAnswer[numCellsUsedDepth] > quickestAnswerToCompareTo[numCellsUsedDepth]) {
-						return null;
-					}
-					numCellsUsedDepth += 1;
-					//End setup
-
-					return doDepthFirstSearch(netToReplicate, paperToDevelop, indexCuboidonPaper, paperUsed, cuboid, numCellsUsedDepth,
-							regions, curAnswer, quickestAnswerToCompareTo, isCurrentlyAloneInFirst);
-
-					
-				} // End recursive if cond
-				
-				//At this point, we can't add the cell.
-				return null;
-
-			} // End loop rotation
-		} //End loop index
-
-		return null;
 	}
 	
 	
