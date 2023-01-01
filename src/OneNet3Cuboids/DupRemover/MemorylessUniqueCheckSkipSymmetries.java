@@ -49,23 +49,19 @@ public class MemorylessUniqueCheckSkipSymmetries {
 			System.out.println("Top one should be valid.");
 			System.exit(1);
 		}
-		if(debugNumOnlyTopValid > 0 && debugNumOnlyTopValid % 10000 == 0) {
+		if(debugNumOnlyTopValid > 0 && debugNumOnlyTopValid % 100000 == 0) {
 			System.out.println("--");
 			System.out.println("debugNumOnlyTopValid: " + debugNumOnlyTopValid);
 			System.out.println("debugNumMoreThanTopValid: " + debugNumMoreThanTopValid);
 		}
 		
-
-		boolean arrayRotated[][][] = new boolean[NUM_ROTATIONS][][];
-		for(int rotation=0; rotation<NUM_ROTATIONS; rotation++) {
-			arrayRotated[rotation] = getArrayRotated(array, rotation);
-		}
-
-		boolean transposeArray[][] = getTranspose(array);
 		
+		boolean arrayRotated[][][] = new boolean[NUM_ROTATIONS][][];
 		boolean arrayRotatedAndReflected[][][] = new boolean[NUM_ROTATIONS][][];
+		
 		for(int rotation=0; rotation<NUM_ROTATIONS; rotation++) {
-			arrayRotatedAndReflected[rotation] = getArrayRotated(transposeArray, rotation);
+			arrayRotated[rotation] = getArrayRotated2(array, paperToDevelop, rotation, false);
+			arrayRotatedAndReflected[rotation] = getArrayRotated2(array, paperToDevelop, rotation, true);
 		}
 		
 
@@ -301,6 +297,66 @@ public class MemorylessUniqueCheckSkipSymmetries {
 		
 	}
 	
+	public static boolean[][] getArrayRotated2(boolean array[][], Coord2D paperToDevelop[], int rotation, boolean transpose) {
+		
+		boolean ret[][] = null;
+		
+		if(!transpose) {
+			if(rotation == 0) {
+				ret = new boolean[array.length][array[0].length];
+				
+				for(int k=0; k<paperToDevelop.length; k++) {
+					ret[paperToDevelop[k].i][paperToDevelop[k].j] = true;
+				}
+			} else if(rotation == 1) {
+				ret = new boolean[array[0].length][array.length];
+				
+				for(int k=0; k<paperToDevelop.length; k++) {
+					ret[paperToDevelop[k].j][ret.length - 1 - paperToDevelop[k].i] = true;
+				}
+			} else if(rotation == 2) {
+				ret = new boolean[array.length][array[0].length];
+				
+				for(int k=0; k<paperToDevelop.length; k++) {
+					ret[ret.length - 1 - paperToDevelop[k].i][ret[0].length - 1 - paperToDevelop[k].j] = true;
+				}
+			} else if(rotation == 3) {
+				ret = new boolean[array[0].length][array.length];
+				
+				for(int k=0; k<paperToDevelop.length; k++) {
+					ret[ret[0].length - 1 - paperToDevelop[k].j][paperToDevelop[k].i] = true;
+				}
+			}
+		} else {
+			if(rotation == 0) {
+				ret = new boolean[array[0].length][array.length];
+				
+				for(int k=0; k<paperToDevelop.length; k++) {
+					ret[paperToDevelop[k].j][paperToDevelop[k].i] = true;
+				}
+			} else if(rotation == 1) {
+				ret = new boolean[array.length][array[0].length];
+				
+				for(int k=0; k<paperToDevelop.length; k++) {
+					ret[paperToDevelop[k].i][ret.length - 1 - paperToDevelop[k].j] = true;
+				}
+			} else if(rotation == 2) {
+				ret = new boolean[array[0].length][array.length];
+				
+				for(int k=0; k<paperToDevelop.length; k++) {
+					ret[ret.length - 1 - paperToDevelop[k].j][ret[0].length - 1 - paperToDevelop[k].i] = true;
+				}
+			} else if(rotation == 3) {
+				ret = new boolean[array.length][array[0].length];
+				
+				for(int k=0; k<paperToDevelop.length; k++) {
+					ret[ret[0].length - 1 - paperToDevelop[k].i][paperToDevelop[k].j] = true;
+				}
+			}
+		}
+		
+		return ret;
+	}
 	
 	public static boolean[][] getArrayRotated(boolean array[][], int rotation) {
 		
