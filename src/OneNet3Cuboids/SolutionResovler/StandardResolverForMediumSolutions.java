@@ -19,7 +19,7 @@ public class StandardResolverForMediumSolutions implements SolutionResolverInter
 				" (num unique: " + FoldResolveOrderedRegionsSkipSymmetries.numUniqueFound + ")");
 		}
 		
-		if(MemorylessUniqueCheckSkipSymmetries.isUnique(cuboidDimensionsAndNeighbours, paperToDevelop, paperUsed)) {
+		if(BasicUniqueCheckImproved.isUnique(paperToDevelop, paperUsed)) {
 			FoldResolveOrderedRegionsSkipSymmetries.numUniqueFound++;
 
 			if(FoldResolveOrderedRegionsSkipSymmetries.numUniqueFound % 2000 == 0) {

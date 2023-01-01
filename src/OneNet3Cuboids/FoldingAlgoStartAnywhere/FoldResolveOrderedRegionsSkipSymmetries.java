@@ -96,8 +96,8 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 		System.out.println("Final number of unique solutions: " + numUniqueFound);
 	}
 	
-	public static int numFound = 0;
-	public static int numUniqueFound = 0;
+	public static long numFound = 0;
+	public static long numUniqueFound = 0;
 	
 	public static final int nugdeBasedOnRotation[][] = {{-1, 0, 1, 0}, {0, 1, 0 , -1}};
 	
@@ -716,7 +716,7 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 
 	public static void main(String args[]) {
 		System.out.println("Fold Resolver Ordered Regions start anywhere:");
-		solveFoldsForSingleCuboid(6, 1, 1);
+		solveFoldsForSingleCuboid(5, 1, 1);
 
 		//Best 5,1,1: 3 minute 45 seconds (3014430 solutions) (December 27th)
 		

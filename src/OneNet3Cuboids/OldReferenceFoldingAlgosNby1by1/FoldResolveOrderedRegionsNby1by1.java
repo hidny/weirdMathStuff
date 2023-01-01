@@ -843,7 +843,7 @@ public class FoldResolveOrderedRegionsNby1by1 {
 
 	public static void main(String args[]) {
 		System.out.println("Fold Resolver Ordered Regions:");
-		solveFoldsForSingleCuboid(1, 1, 1);
+		solveFoldsForSingleCuboid(4, 1, 1);
 
 		//Best 5,1,1: 11 minute 20 second
 		
