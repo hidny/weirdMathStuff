@@ -51,6 +51,10 @@ public class MemorylessUniqueCheckSkipSymmetries {
 		SEARCH_UNREFLECTED:
 		for(int i=0; i<paperToDevelop.length; i++) {
 
+			if(! validSetup[i]) {
+				continue;
+			}
+
 			for(int rotation=0; rotation<NUM_ROTATIONS; rotation++) {
 				
 			//Setup to run imitation algo:
@@ -99,6 +103,12 @@ public class MemorylessUniqueCheckSkipSymmetries {
 				
 				if(tmp != null) {
 
+					//Sanity check:
+					//if(! validSetup[i]) {
+					//	System.out.println("Invalid setup got results! (unreflected!)");
+					//	System.exit(1);
+					//}
+					
 					//Print fold for debug:
 					//Utils.printFold(arrayRotated[rotation]);
 					
@@ -140,6 +150,11 @@ public class MemorylessUniqueCheckSkipSymmetries {
 			//Search reflected for solutions (getting the transpose reflects to array)
 			SEARCH_REFLECTED:
 			for(int i=0; i<paperToDevelop.length; i++) {
+				
+				if(! validSetup[i]) {
+					continue;
+				}
+				
 				for(int rotation=0; rotation<NUM_ROTATIONS; rotation++) {
 					
 				//Setup to run imitation algo:
@@ -189,6 +204,12 @@ public class MemorylessUniqueCheckSkipSymmetries {
 					
 					if(tmp != null) {
 
+						//Sanity check:
+						//if(! validSetup[i]) {
+						//	System.out.println("Invalid setup got results! (reflected!)");
+						//	System.exit(1);
+						//}
+		
 						//Print fold for debug:
 						//Utils.printFold(arrayRotatedAndReflected[rotation]);
 						
@@ -480,7 +501,7 @@ public class MemorylessUniqueCheckSkipSymmetries {
 		boolean paperUsed[][] = new boolean[netToReplicate.length][netToReplicate[0].length];
 		int indexCuboidOnPaper[][] = new int[netToReplicate.length][netToReplicate[0].length];
 		
-		CuboidToFoldOn cuboid = new CuboidToFoldOn(origCuboidNeighboursAndDim);
+		CuboidToFoldOn newCuboid = new CuboidToFoldOn(origCuboidNeighboursAndDim);
 
 		Coord2D newPaperToDevelop[] = new Coord2D[paperToDevelop.length];
 
@@ -492,20 +513,20 @@ public class MemorylessUniqueCheckSkipSymmetries {
 		paperUsed[startI][startJ] = true;
 		newPaperToDevelop[numCellsUsedDepth] = new Coord2D(startI, startJ);
 		
-		cuboid.setCell(START_INDEX, 0);
+		newCuboid.setCell(START_INDEX, 0);
 		indexCuboidOnPaper[startI][startJ] = START_INDEX;
 		numCellsUsedDepth += 1;
 		
 		Region defaultRegion[] = new Region[1];
-		defaultRegion[0] = new Region(cuboid);
+		defaultRegion[0] = new Region(newCuboid);
 	//END Setup to run imitation algo.
 		
 
 		return isValid(netToReplicate,
-				paperToDevelop,
+				newPaperToDevelop,
 				indexCuboidOnPaper,
 				paperUsed,
-				cuboid, 
+				newCuboid, 
 				numCellsUsedDepth,
 				defaultRegion);
 	}
@@ -518,10 +539,10 @@ public class MemorylessUniqueCheckSkipSymmetries {
 			int numCellsUsedDepth,
 			Region defaultRegion[]) {
 
+		int regionIndex = 0;
+		
 		ADD_NEXT_CELL:
 		while(numCellsUsedDepth < cuboid.getNumCellsToFill()) {
-			
-			int regionIndex = 0;
 			
 			//DEPTH-FIRST START:
 			for(int i=defaultRegion[regionIndex].getMinOrderedCellCouldUsePerRegion(); i<paperToDevelop.length && paperToDevelop[i] != null; i++) {
@@ -585,17 +606,7 @@ public class MemorylessUniqueCheckSkipSymmetries {
 		}
 
 		return true;
-	/*
-		//End of loop:
-		if(numCellsUsedDepth == cuboid.getNumCellsToFill()) {
-			
-			return true;
-		} else {
-			
-			//I don't think this is possible, but whatever.
-			return false;
-		}
-		*/
+	
 	}
 
 	public static void printStateOfRotationBecauseOfError(boolean reflection, Coord2D paperToDevelop[], boolean array[][], boolean arrayRotated[][][], int rotation,

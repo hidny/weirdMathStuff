@@ -669,7 +669,16 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 		
 	}
 	
-	
+
+	/*https://www.sciencedirect.com/science/article/pii/S0925772117300160
+	 * 
+	 *  "From the necessary condition, the smallest possible surface area that can fold into two boxes is 22,
+	 *   and the smallest possible surface area for three different boxes is 46.
+	 *   (...) However, the area 46 is too huge to search. "
+	 *  
+	 *  Challenge accepted!
+	 */
+
 	public static boolean areCellsSepartedCuboid(CuboidToFoldOn cuboid, int startIndex, int goalIndex) {
 		
 		if(startIndex == goalIndex) {
@@ -704,15 +713,6 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 		
 		return true;
 	}
-
-	/*https://www.sciencedirect.com/science/article/pii/S0925772117300160
-	 * 
-	 *  "From the necessary condition, the smallest possible surface area that can fold into two boxes is 22,
-	 *   and the smallest possible surface area for three different boxes is 46.
-	 *   (...) However, the area 46 is too huge to search. "
-	 *  
-	 *  Challenge accepted!
-	 */
 
 	public static void main(String args[]) {
 		System.out.println("Fold Resolver Ordered Regions start anywhere:");
