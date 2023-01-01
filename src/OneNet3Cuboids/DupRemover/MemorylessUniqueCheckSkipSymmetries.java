@@ -1,7 +1,6 @@
 package OneNet3Cuboids.DupRemover;
 
 import OneNet3Cuboids.CuboidToFoldOn;
-import OneNet3Cuboids.Utils;
 import OneNet3Cuboids.Coord.Coord2D;
 import OneNet3Cuboids.Coord.CoordWithRotationAndIndex;
 import OneNet3Cuboids.Cuboid.SymmetryResolver.SymmetryResolver;
@@ -90,9 +89,10 @@ public class MemorylessUniqueCheckSkipSymmetries {
 						quickestAnswerToCompareTo = tmp;
 						isCurrentlyAloneInFirst = false;
 						
-						//TODO: remove when confident:
-						sanityCheckOrderingComparedToPrevOrdering(tmp);
+						//Can't do this because it breaks because of the fact we ignore regions in memoryless Algo:
+						//sanityCheckOrderingComparedToPrevOrdering(tmp);
 
+						//Debug:
 						//System.out.println("firstOrderingArray for current solution:");
 						//printOrderingSolution(tmp);
 
@@ -167,7 +167,10 @@ public class MemorylessUniqueCheckSkipSymmetries {
 					indexCuboidOnPaper[startI][startJ] = START_INDEX;
 					numCellsUsedDepth += 1;
 					
+					//Don't do any of the region splitting/combining because it isn't needed:
 					Region regionsToHandleRevOrder[] = new Region[1];
+					
+					
 					regionsToHandleRevOrder[0] = new Region(cuboid);
 				//END Setup to run imitation algo.
 					
@@ -191,8 +194,8 @@ public class MemorylessUniqueCheckSkipSymmetries {
 			}
 		}
 		
-		//TODO: remove when confident
-		sanityCheckDupResult(isUniqueSoFar, array);
+		//Can't do this because it breaks because of the fact we ignore regions in memoryless Algo:
+		//sanityCheckDupResult(isUniqueSoFar, array);
 		//
 		
 		return isUniqueSoFar;
@@ -308,17 +311,8 @@ public class MemorylessUniqueCheckSkipSymmetries {
 		ADD_NEXT_CELL:
 		while(numCellsUsedDepth < cuboid.getNumCellsToFill()) {
 			
-			regions = FoldResolveOrderedRegionsSkipSymmetries.handleCompletedRegionIfApplicable(regions, -1, indexCuboidonPaper, paperUsed);
 			
-			//Sanity check
-			if(regions == null) {
-				
-				System.out.println("ERROR in MemorylessUniqueCheckSkipSymmetries: regions is null while not trying to solve 1 specfic region.");
-				System.exit(1);
-			}
-			//End sanity check
-			
-			int regionIndex = regions.length - 1;
+			int regionIndex = 0;
 			
 			int numRotationIterationsSkipped = 0;
 			
@@ -408,22 +402,6 @@ public class MemorylessUniqueCheckSkipSymmetries {
 							indexNewCell, new_i, new_j, i
 						);
 					
-					int lastRegionIndexBeforePotentailRegionSplit = regions.length - 1;
-	
-					if( !cantAddCellBecauseOfOtherPaperNeighbours) {
-						
-						//Split the regions if possible:
-						regions = FoldResolveOrderedRegionsSkipSymmetries.splitRegionsIfNewCellSplitsRegions(paperToDevelop, indexCuboidonPaper,
-								paperUsed, cuboid, numCellsUsedDepth,
-								regions,
-								indexToUse, j, regions[regionIndex].getMinOrderedCellCouldUsePerRegion(), regions[regionIndex].getMinCellRotationOfMinCellToDevPerRegion(),
-								new_i, new_j, indexNewCell, rotationNeighbourPaperRelativeToMap,
-								true, null);
-						
-						if(regions == null) {
-							cantAddCellBecauseOfOtherPaperNeighbours = true;
-						}
-					}
 					
 					if( ! cantAddCellBecauseOfOtherPaperNeighbours) {
 						
@@ -435,9 +413,8 @@ public class MemorylessUniqueCheckSkipSymmetries {
 						paperToDevelop[numCellsUsedDepth] = new Coord2D(new_i, new_j);
 	
 						//Add cell to new region(s):
-						for(int r=lastRegionIndexBeforePotentailRegionSplit; r<regions.length; r++) {
-							regions[r].addCellToRegion(indexNewCell, numCellsUsedDepth, indexToUse, j);						
-						}
+						
+						regions[regionIndex].addCellToRegion(indexNewCell, numCellsUsedDepth, indexToUse, j);
 						
 						curAnswer[numCellsUsedDepth] = numRotationIterationsSkipped;
 	
@@ -483,24 +460,6 @@ public class MemorylessUniqueCheckSkipSymmetries {
 			
 			//I don't think this is possible, but whatever.
 			return null;
-		}
-		
-	}
-	
-	
-	public static void sanityCheckDupResult(boolean memorylessAnswer, boolean array[][]) {
-		
-		boolean basicCheckResultUniq = BasicUniqueCheck.isUnique(array);
-		//System.out.println(max);
-		
-		if(basicCheckResultUniq && ! memorylessAnswer) {
-			System.out.println("ERROR_1: Orig Basic unique check says this is a new solution but MemorylessUniqueCheck says it isn't");
-			System.exit(1);
-			
-		} else if(! basicCheckResultUniq && memorylessAnswer) {
-			System.out.println("ERROR_2: Orig Basic unique check same this is a dup but MemorylessUniqueCheck says this is new");
-			System.exit(1);
-
 		}
 		
 	}
@@ -569,34 +528,6 @@ public class MemorylessUniqueCheckSkipSymmetries {
 
 	}
 	
-	private static int prevOrdering[] = null;
-	
-	public static void sanityCheckOrderingComparedToPrevOrdering(int tmp[]) {
-		
-		if(prevOrdering != null) {
-			
-			if(prevOrdering.length != tmp.length) {
-				System.out.println("Error: ordering length inconsistent!");
-				System.exit(1);
-			}
-			for(int i=0; i<tmp.length; i++) {
-				if(prevOrdering[i] < tmp[i]) {
-					//All good!
-					break;
-				} else if(prevOrdering[i] > tmp[i]) {
-					System.out.println("ERROR: previous ordering is bigger than the current ordering!");
-					System.out.println("Previous ordering:");
-					printOrderingSolution(prevOrdering);
-
-					System.out.println("Current ordering:");
-					printOrderingSolution(prevOrdering);
-					System.exit(1);
-				}
-			}
-		}
-		
-		prevOrdering = tmp;
-	}
 	
 	public static boolean debugArrayMatchesString(int array[], String debugOrdering) {
 		
