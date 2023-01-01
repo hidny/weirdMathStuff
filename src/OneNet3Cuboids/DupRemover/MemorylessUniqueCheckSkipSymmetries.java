@@ -25,14 +25,31 @@ public class MemorylessUniqueCheckSkipSymmetries {
 		//TODO: reduce copy/paste code.
 		//TODO: maybe make arrays based on paperToDevelop?
 		
+		boolean validSetup[] = new boolean[paperToDevelop.length];
+		validSetup[0] = true;
+		for(int index=1; index<validSetup.length; index++) {
+			validSetup[index] = isValidSetup(orig,
+						paperToDevelop,
+						array,
+						index);
+		}
+		
+
+		boolean arrayRotated[][][] = new boolean[NUM_ROTATIONS][][];
+		for(int rotation=0; rotation<NUM_ROTATIONS; rotation++) {
+			arrayRotated[rotation] = getArrayRotated(array, rotation);
+		}
+
+		boolean transposeArray[][] = getTranspose(array);
+		
+		boolean arrayRotatedAndReflected[][][] = new boolean[NUM_ROTATIONS][][];
+		for(int rotation=0; rotation<NUM_ROTATIONS; rotation++) {
+			arrayRotatedAndReflected[rotation] = getArrayRotated(transposeArray, rotation);
+		}
+		
 
 		SEARCH_UNREFLECTED:
 		for(int i=0; i<paperToDevelop.length; i++) {
-
-			boolean arrayRotated[][][] = new boolean[NUM_ROTATIONS][][];
-			for(int rotation=0; rotation<NUM_ROTATIONS; rotation++) {
-				arrayRotated[rotation] = getArrayRotated(array, rotation);
-			}
 
 			for(int rotation=0; rotation<NUM_ROTATIONS; rotation++) {
 				
@@ -119,13 +136,6 @@ public class MemorylessUniqueCheckSkipSymmetries {
 		
 		// This sections checks for reflect solutions that are faster: 
 		if(isUniqueSoFar) {
-			
-			boolean transposeArray[][] = getTranspose(array);
-			
-			boolean arrayRotatedAndReflected[][][] = new boolean[NUM_ROTATIONS][][];
-			for(int rotation=0; rotation<NUM_ROTATIONS; rotation++) {
-				arrayRotatedAndReflected[rotation] = getArrayRotated(transposeArray, rotation);
-			}
 			
 			//Search reflected for solutions (getting the transpose reflects to array)
 			SEARCH_REFLECTED:
@@ -302,12 +312,7 @@ public class MemorylessUniqueCheckSkipSymmetries {
 	public static int[] doDepthFirstSearch(boolean netToReplicate[][], Coord2D paperToDevelop[], int indexCuboidonPaper[][], boolean paperUsed[][], CuboidToFoldOn cuboid, int numCellsUsedDepth,
 			Region regions[], int curAnswer[], int quickestAnswerToCompareTo[], boolean isCurrentlyAloneInFirst) {
 
-/*
-		if(debugArrayMatchesString(prevOrdering, "0, 0, 1, 2, 3, 6, 10, 9, 3, 14") 
-				&& (quickestAnswerToCompareTo == null)) {//TODO: add depth...
-			System.out.println("DEBUG 1st rotation and 1 try of the solution that failed (numCellsUsedDepth = " + numCellsUsedDepth + ")");
-		}
-	*/
+
 		ADD_NEXT_CELL:
 		while(numCellsUsedDepth < cuboid.getNumCellsToFill()) {
 			
@@ -464,6 +469,135 @@ public class MemorylessUniqueCheckSkipSymmetries {
 		
 	}
 	
+	public static boolean isValidSetup(CuboidToFoldOn origCuboidNeighboursAndDim,
+			Coord2D paperToDevelop[],
+			boolean netToReplicate[][],
+			int indexCellInList) {
+		
+
+		int START_INDEX = 0;
+
+		boolean paperUsed[][] = new boolean[netToReplicate.length][netToReplicate[0].length];
+		int indexCuboidOnPaper[][] = new int[netToReplicate.length][netToReplicate[0].length];
+		
+		CuboidToFoldOn cuboid = new CuboidToFoldOn(origCuboidNeighboursAndDim);
+
+		Coord2D newPaperToDevelop[] = new Coord2D[paperToDevelop.length];
+
+		int startI = paperToDevelop[indexCellInList].i;
+		int startJ = paperToDevelop[indexCellInList].j;
+		
+		int numCellsUsedDepth = 0;
+
+		paperUsed[startI][startJ] = true;
+		newPaperToDevelop[numCellsUsedDepth] = new Coord2D(startI, startJ);
+		
+		cuboid.setCell(START_INDEX, 0);
+		indexCuboidOnPaper[startI][startJ] = START_INDEX;
+		numCellsUsedDepth += 1;
+		
+		Region defaultRegion[] = new Region[1];
+		defaultRegion[0] = new Region(cuboid);
+	//END Setup to run imitation algo.
+		
+
+		return isValid(netToReplicate,
+				paperToDevelop,
+				indexCuboidOnPaper,
+				paperUsed,
+				cuboid, 
+				numCellsUsedDepth,
+				defaultRegion);
+	}
+	
+	public static boolean isValid(boolean netToReplicate[][],
+			Coord2D paperToDevelop[],
+			int indexCuboidOnPaper[][],
+			boolean paperUsed[][],
+			CuboidToFoldOn cuboid, 
+			int numCellsUsedDepth,
+			Region defaultRegion[]) {
+
+		ADD_NEXT_CELL:
+		while(numCellsUsedDepth < cuboid.getNumCellsToFill()) {
+			
+			int regionIndex = 0;
+			
+			//DEPTH-FIRST START:
+			for(int i=defaultRegion[regionIndex].getMinOrderedCellCouldUsePerRegion(); i<paperToDevelop.length && paperToDevelop[i] != null; i++) {
+				
+				int indexToUse = indexCuboidOnPaper[paperToDevelop[i].i][paperToDevelop[i].j];
+				
+				CoordWithRotationAndIndex neighbours[] = cuboid.getNeighbours(indexToUse);
+				
+				int curRotation = cuboid.getRotationPaperRelativeToMap(indexToUse);
+				
+				//Try to attach a cell onto indexToUse using all 4 rotations:
+				for(int j=0; j<neighbours.length; j++) {
+					
+					int rotationToAddCellOn = (j + curRotation) % NUM_ROTATIONS;
+					
+					int new_i = paperToDevelop[i].i + nugdeBasedOnRotation[0][rotationToAddCellOn];
+					int new_j = paperToDevelop[i].j + nugdeBasedOnRotation[1][rotationToAddCellOn];
+	
+					int indexNewCell = neighbours[j].getIndex();
+			
+					if(paperUsed[new_i][new_j]) {
+						//Cell we are considering to add is already there...
+						continue;
+	
+					} else if(! netToReplicate[new_i][new_j]) {
+						//Make sure to follow the netToRelplicate
+						continue;
+					
+					} else if(cuboid.isCellIndexUsed(neighbours[j].getIndex())) {
+	
+						//Don't reuse a used cell:
+						return false;
+						
+					}
+					
+					int rotationNeighbourPaperRelativeToMap = (curRotation - neighbours[j].getRot() + NUM_ROTATIONS) % NUM_ROTATIONS;
+					
+					//Setup for adding new cell:
+					cuboid.setCell(indexNewCell, rotationNeighbourPaperRelativeToMap);
+					
+					paperUsed[new_i][new_j] = true;
+					indexCuboidOnPaper[new_i][new_j] = indexNewCell;
+					paperToDevelop[numCellsUsedDepth] = new Coord2D(new_i, new_j);
+
+					//Add cell to new region::
+					defaultRegion[regionIndex].addCellToRegion(indexNewCell, numCellsUsedDepth, indexToUse, j);
+					
+					numCellsUsedDepth += 1;
+					//End setup
+
+					// iterated again, but this time with a higher depth:
+					// No need for recursion because we're just following 1 path.
+					continue ADD_NEXT_CELL;
+					
+	
+				} // End loop rotation
+			} //End loop index
+			
+			//At this point, we can't go any further because we used up all the indexes and all regions:
+			return false;
+		}
+
+		return true;
+	/*
+		//End of loop:
+		if(numCellsUsedDepth == cuboid.getNumCellsToFill()) {
+			
+			return true;
+		} else {
+			
+			//I don't think this is possible, but whatever.
+			return false;
+		}
+		*/
+	}
+
 	public static void printStateOfRotationBecauseOfError(boolean reflection, Coord2D paperToDevelop[], boolean array[][], boolean arrayRotated[][][], int rotation,
 			int i, int startI, int startJ) {
 
