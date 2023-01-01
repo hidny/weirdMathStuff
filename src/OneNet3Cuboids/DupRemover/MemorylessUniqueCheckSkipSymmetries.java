@@ -78,7 +78,9 @@ public class MemorylessUniqueCheckSkipSymmetries {
 				
 				if(tmp != null) {
 
-					Utils.printFold(arrayRotated[rotation]);
+					//Print fold for debug:
+					//Utils.printFold(arrayRotated[rotation]);
+					
 					if(i == 0 && rotation == 0) {
 						quickestAnswerToCompareTo = tmp;
 						isCurrentlyAloneInFirst = false;
@@ -166,7 +168,8 @@ public class MemorylessUniqueCheckSkipSymmetries {
 					
 					if(tmp != null) {
 
-						Utils.printFold(arrayRotatedAndReflected[rotation]);
+						//Print fold for debug:
+						//Utils.printFold(arrayRotatedAndReflected[rotation]);
 						
 						isUniqueSoFar = false;
 						//System.out.println("FasterOrderingArray for current solution is a reflect solution:");
@@ -439,11 +442,12 @@ public class MemorylessUniqueCheckSkipSymmetries {
 		
 		if(basicCheckResultUniq && ! memorylessAnswer) {
 			System.out.println("ERROR_1: Orig Basic unique check says this is a new solution but MemorylessUniqueCheck says it isn't");
-			//System.exit(1);
+			System.exit(1);
+			
 		} else if(! basicCheckResultUniq && memorylessAnswer) {
-
 			System.out.println("ERROR_2: Orig Basic unique check same this is a dup but MemorylessUniqueCheck says this is new");
 			System.exit(1);
+
 		}
 		
 	}

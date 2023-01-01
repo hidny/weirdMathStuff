@@ -721,7 +721,7 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 		//Best 5,1,1: 3 minute 45 seconds (3014430 solutions) (December 27th)
 		
 		
-		System.out.println(System.currentTimeMillis());
+		System.out.println("Current UTC timestamp in milliseconds: " + System.currentTimeMillis());
 		
 		
 		/* 5x1x1 on December 8th:

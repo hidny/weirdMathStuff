@@ -23,9 +23,6 @@ public class StandardResolverForSmallSolutions implements SolutionResolverInterf
 		
 		//Utils.printFoldWithIndex(indexCuboidonPaper);
 		
-		//TODO: don't hard-code dimensions:
-		
-		
 		if(MemorylessUniqueCheckSkipSymmetries.isUnique(cuboidUsed, paperToDevelop, paperUsed)) {
 			FoldResolveOrderedRegionsSkipSymmetries.numUniqueFound++;
 
@@ -38,7 +35,7 @@ public class StandardResolverForSmallSolutions implements SolutionResolverInterf
 			return 1L;
 		} else {
 
-			System.out.println("Solution not found");
+			//System.out.println("Solution not found");
 			return 0L;
 		}
 	}
