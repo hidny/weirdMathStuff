@@ -14,6 +14,9 @@ public class MemorylessUniqueCheckSkipSymmetries {
 	// (i.e.: Anything that the algo would be found first)
 	//Warning: This will only work if we model the algo correctly.
 	
+	public static long debugNumOnlyTopValid = 0;
+	public static long debugNumMoreThanTopValid = 0;
+	
 	public static boolean isUnique(CuboidToFoldOn orig, Coord2D paperToDevelop[], boolean array[][]) {
 		
 		int quickestAnswerToCompareTo[] = null;
@@ -27,11 +30,29 @@ public class MemorylessUniqueCheckSkipSymmetries {
 		
 		boolean validSetup[] = new boolean[paperToDevelop.length];
 		validSetup[0] = true;
+		
+		int debugNumOtherValid = 0;
 		for(int index=1; index<validSetup.length; index++) {
 			validSetup[index] = isValidSetup(orig,
 						paperToDevelop,
 						array,
 						index);
+			if(validSetup[index]) {
+				debugNumOtherValid++;
+			}
+		}
+		if(debugNumOtherValid == 1) {
+			debugNumOnlyTopValid++;
+		} else if(debugNumOtherValid >= 2){
+			debugNumMoreThanTopValid++;
+		} else {
+			System.out.println("Top one should be valid.");
+			System.exit(1);
+		}
+		if(debugNumOnlyTopValid > 0 && debugNumOnlyTopValid % 10000 == 0) {
+			System.out.println("--");
+			System.out.println("debugNumOnlyTopValid: " + debugNumOnlyTopValid);
+			System.out.println("debugNumMoreThanTopValid: " + debugNumMoreThanTopValid);
 		}
 		
 
