@@ -22,7 +22,8 @@ public class StandardResolverForXLSolutions implements SolutionResolverInterface
 			Utils.printFold(paperUsed);
 			Utils.printFoldWithIndex(indexCuboidonPaper);
 		}
-		
+
+		//if(BasicUniqueCheckImproved.isUnique(paperToDevelop, paperUsed)) {
 		if(MemorylessUniqueCheckSkipSymmetries.isUnique(cuboidDimensionsAndNeighbours, paperToDevelop, paperUsed)) {
 			FoldResolveOrderedRegionsSkipSymmetries.numUniqueFound++;
 

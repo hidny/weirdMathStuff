@@ -18,8 +18,9 @@ public class StandardResolverForMediumSolutions implements SolutionResolverInter
 			System.out.println(FoldResolveOrderedRegionsSkipSymmetries.numFound +
 				" (num unique: " + FoldResolveOrderedRegionsSkipSymmetries.numUniqueFound + ")");
 		}
-		
-		if(BasicUniqueCheckImproved.isUnique(paperToDevelop, paperUsed)) {
+
+		//if(BasicUniqueCheckImproved.isUnique(paperToDevelop, paperUsed)) {
+		if(MemorylessUniqueCheckSkipSymmetries.isUnique(cuboidDimensionsAndNeighbours, paperToDevelop, paperUsed)) {
 			FoldResolveOrderedRegionsSkipSymmetries.numUniqueFound++;
 
 			if(FoldResolveOrderedRegionsSkipSymmetries.numUniqueFound % 2000 == 0) {
