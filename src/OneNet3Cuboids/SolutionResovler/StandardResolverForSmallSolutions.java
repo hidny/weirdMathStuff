@@ -21,8 +21,7 @@ public class StandardResolverForSmallSolutions implements SolutionResolverInterf
 		FoldResolveOrderedRegionsSkipSymmetries.numFound++;
 		
 		
-		System.out.println("HELLO");
-		Utils.printFoldWithIndex(indexCuboidonPaper);
+		//Utils.printFoldWithIndex(indexCuboidonPaper);
 		
 		//TODO: don't hard-code dimensions:
 		

@@ -7,10 +7,13 @@ import OneNet3Cuboids.Coord.CoordWithRotationAndIndex;
 import OneNet3Cuboids.Cuboid.SymmetryResolver.SymmetryResolver;
 import OneNet3Cuboids.FoldingAlgoStartAnywhere.FoldResolveOrderedRegionsSkipSymmetries;
 import OneNet3Cuboids.Region.Region;
-import OneNet3Cuboids.SolutionResovler.SolutionResolverInterface;
 
 public class MemorylessUniqueCheckSkipSymmetries {
 
+	//Loop other start locations and rotations to see if there's anything faster.
+	// (i.e.: Anything that the algo would be found first)
+	//Warning: This will only work if we model the algo correctly.
+	
 	public static boolean isUnique(CuboidToFoldOn orig, Coord2D paperToDevelop[], boolean array[][]) {
 		
 		int quickestAnswerToCompareTo[] = null;
@@ -22,8 +25,6 @@ public class MemorylessUniqueCheckSkipSymmetries {
 		//TODO: reduce copy/paste code.
 		//TODO: maybe make arrays based on paperToDevelop?
 		
-		//Loop other start locations and rotations to see if there's anything faster.
-		// (i.e.: Anything that could be found first)
 
 		SEARCH_UNREFLECTED:
 		for(int i=0; i<paperToDevelop.length; i++) {
@@ -35,6 +36,7 @@ public class MemorylessUniqueCheckSkipSymmetries {
 
 			for(int rotation=0; rotation<NUM_ROTATIONS; rotation++) {
 				
+				//Setup to run imitation algo:
 				boolean paperUsed[][] = new boolean[arrayRotated[rotation].length][arrayRotated[rotation][0].length];
 				int indexCuboidOnPaper[][] = new int[arrayRotated[rotation].length][arrayRotated[rotation][0].length];
 				
@@ -54,38 +56,9 @@ public class MemorylessUniqueCheckSkipSymmetries {
 				int startJ = getJAfterRotation(arrayRotated[rotation], paperToDevelop[i].i, paperToDevelop[i].j, rotation);
 				
 				if( ! arrayRotated[rotation][startI][startJ]) {
-					
-					System.out.println("DOH! BAD ROTATION 1");
-					System.out.println("rotation: " + rotation);
-					System.out.println("from: " + paperToDevelop[i].i + ", " +  paperToDevelop[i].j);
-					System.out.println("To: " + startI + ", " + startJ);
-					
-					System.out.println("Before:");
-					for(int i2=0; i2<array.length; i2++) {
-						for(int j2=0; j2<array[0].length; j2++) {
-							if(array[i2][j2]) {
-								System.out.print('#');
-							} else {
-								System.out.print(".");
-							}
-						}
-						System.out.println();
-					}
-					System.out.println();
-					System.out.println("After:");
-					for(int i2=0; i2<arrayRotated[rotation].length; i2++) {
-						for(int j2=0; j2<arrayRotated[rotation][0].length; j2++) {
-							if(arrayRotated[rotation][i2][j2]) {
-								System.out.print('#');
-							} else {
-								System.out.print(".");
-							}
-						}
-						System.out.println();
-					}
-					System.out.println();
-					System.exit(1);
+					printStateOfRotationBecauseOfError(false, paperToDevelop, array, arrayRotated, rotation, i, startI, startJ);
 				}
+
 				int numCellsUsedDepth = 0;
 
 				paperUsed[startI][startJ] = true;
@@ -98,7 +71,7 @@ public class MemorylessUniqueCheckSkipSymmetries {
 				Region regionsToHandleRevOrder[] = new Region[1];
 				regionsToHandleRevOrder[0] = new Region(cuboid);
 				
-				
+				//END Setup to run imitation algo.
 				
 				int tmp[] = doDepthFirstSearch(arrayRotated[rotation], newPaperToDevelop, indexCuboidOnPaper, paperUsed, cuboid, numCellsUsedDepth,
 						regionsToHandleRevOrder, new int[cuboid.getNumCellsToFill()], quickestAnswerToCompareTo, isCurrentlyAloneInFirst);
@@ -109,20 +82,20 @@ public class MemorylessUniqueCheckSkipSymmetries {
 					if(i == 0 && rotation == 0) {
 						quickestAnswerToCompareTo = tmp;
 						isCurrentlyAloneInFirst = false;
+						
+						//TODO: remove when confident:
+						sanityCheckOrderingComparedToPrevOrdering(tmp);
 
-						System.out.println("firstOrderingArray for current solution:");
-						for(int k=0; k<tmp.length; k++) {
-							System.out.println(tmp[k]);
-						}
+						//System.out.println("firstOrderingArray for current solution:");
+						//printOrderingSolution(tmp);
 					} else {
 
 						isUniqueSoFar = false;
 						
-						/*System.out.println("FasterOrderingArray for current solution:");
-						for(int k=0; k<tmp.length; k++) {
-							System.out.println(tmp[k]);
-						}*/
-
+						
+						//System.out.println("FasterOrderingArray for current solution:");
+						//printOrderingSolution(tmp);
+						
 						
 						break SEARCH_UNREFLECTED;
 					}
@@ -142,20 +115,6 @@ public class MemorylessUniqueCheckSkipSymmetries {
 			boolean arrayRotatedAndReflected[][][] = new boolean[NUM_ROTATIONS][][];
 			for(int rotation=0; rotation<NUM_ROTATIONS; rotation++) {
 				arrayRotatedAndReflected[rotation] = getArrayRotated(transposeArray, rotation);
-				
-				//TODO: TEMP
-				for(int i2=0; i2<arrayRotatedAndReflected[rotation].length; i2++) {
-					for(int j2=0; j2<arrayRotatedAndReflected[rotation][0].length; j2++) {
-						if(arrayRotatedAndReflected[rotation][i2][j2]) {
-							System.out.print('#');
-						} else {
-							System.out.print(".");
-						}
-					}
-					System.out.println();
-				}
-				System.out.println();
-				//TODO: TEMP
 			}
 			
 			//Search reflected solution (It's just the transpose)
@@ -163,6 +122,7 @@ public class MemorylessUniqueCheckSkipSymmetries {
 			for(int i=0; i<paperToDevelop.length; i++) {
 				for(int rotation=0; rotation<NUM_ROTATIONS; rotation++) {
 					
+					//Start setup for algo:
 					boolean paperUsed[][] = new boolean[arrayRotatedAndReflected[rotation].length][arrayRotatedAndReflected[rotation][0].length];
 					int indexCuboidOnPaper[][] = new int[arrayRotatedAndReflected[rotation].length][arrayRotatedAndReflected[rotation][0].length];
 					
@@ -178,46 +138,14 @@ public class MemorylessUniqueCheckSkipSymmetries {
 
 					Coord2D newPaperToDevelop[] = new Coord2D[paperToDevelop.length];
 
-					//Transpose it!
+					//Transpose it because this is the relection:
 					int startI = getIAfterRotation(arrayRotatedAndReflected[rotation], paperToDevelop[i].j, paperToDevelop[i].i, rotation);
 					int startJ = getJAfterRotation(arrayRotatedAndReflected[rotation], paperToDevelop[i].j, paperToDevelop[i].i, rotation);
-
-					/*if(quickestAnswerToCompareTo[4] == 10 && quickestAnswerToCompareTo[5] == 7 && quickestAnswerToCompareTo[3] == 2
-							&& rotation == 3 && startI == 5 && startJ == 6) {
-						System.out.println("DEBUG");
-					}*/
+					//End transpose it.
 					
 					if( ! arrayRotatedAndReflected[rotation][startI][startJ]) {
-						System.out.println("DOH! BAD ROTATION 2");
-						System.out.println("rotation: " + rotation);
-						System.out.println("from: " + paperToDevelop[i].i + ", " +  paperToDevelop[i].j);
-						System.out.println("To: " + startI + ", " + startJ);
-						
-						System.out.println("Before:");
-						for(int i2=0; i2<array.length; i2++) {
-							for(int j2=0; j2<array[0].length; j2++) {
-								if(array[i2][j2]) {
-									System.out.print('#');
-								} else {
-									System.out.print(".");
-								}
-							}
-							System.out.println();
-						}
-						System.out.println();
-						System.out.println("After:");
-						for(int i2=0; i2<arrayRotatedAndReflected[rotation].length; i2++) {
-							for(int j2=0; j2<arrayRotatedAndReflected[rotation][0].length; j2++) {
-								if(arrayRotatedAndReflected[rotation][i2][j2]) {
-									System.out.print('#');
-								} else {
-									System.out.print(".");
-								}
-							}
-							System.out.println();
-						}
-						System.out.println();
-						System.exit(1);
+						printStateOfRotationBecauseOfError(false, paperToDevelop, array, arrayRotatedAndReflected, rotation,
+								i, startI, startJ);
 					}
 					
 					int numCellsUsedDepth = 0;
@@ -231,8 +159,7 @@ public class MemorylessUniqueCheckSkipSymmetries {
 					
 					Region regionsToHandleRevOrder[] = new Region[1];
 					regionsToHandleRevOrder[0] = new Region(cuboid);
-					
-					
+					//End setup for algo.
 					
 					int tmp[] = doDepthFirstSearch(arrayRotatedAndReflected[rotation], newPaperToDevelop, indexCuboidOnPaper, paperUsed, cuboid, numCellsUsedDepth,
 							regionsToHandleRevOrder, new int[cuboid.getNumCellsToFill()], quickestAnswerToCompareTo, isCurrentlyAloneInFirst);
@@ -242,11 +169,8 @@ public class MemorylessUniqueCheckSkipSymmetries {
 						Utils.printFold(arrayRotatedAndReflected[rotation]);
 						
 						isUniqueSoFar = false;
-						/*
-						System.out.println("FasterOrderingArray for current solution is a reflect solution:");
-						for(int k=0; k<tmp.length; k++) {
-							System.out.println(tmp[k]);
-						}*/
+						//System.out.println("FasterOrderingArray for current solution is a reflect solution:");
+						//printOrderingSolution(tmp);
 
 
 						break SEARCH_REFLECTED;
@@ -256,8 +180,8 @@ public class MemorylessUniqueCheckSkipSymmetries {
 			}
 		}
 		
-		//TODO:
-		sanityCheck(isUniqueSoFar, array);
+		//TODO: remove when confident
+		sanityCheckDupResult(isUniqueSoFar, array);
 		//
 		
 		return isUniqueSoFar;
@@ -508,7 +432,7 @@ public class MemorylessUniqueCheckSkipSymmetries {
 	}
 	
 	
-	public static void sanityCheck(boolean memorylessAnswer, boolean array[][]) {
+	public static void sanityCheckDupResult(boolean memorylessAnswer, boolean array[][]) {
 		
 		boolean basicCheckResultUniq = BasicUniqueCheck.isUnique(array);
 		//System.out.println(max);
@@ -523,4 +447,98 @@ public class MemorylessUniqueCheckSkipSymmetries {
 		}
 		
 	}
+	
+	public static void printStateOfRotationBecauseOfError(boolean reflection, Coord2D paperToDevelop[], boolean array[][], boolean arrayRotated[][][], int rotation,
+			int i, int startI, int startJ) {
+
+		if(reflection) {
+			System.out.println("DOH! BAD ROTATION for reflected array");
+		} else {
+			System.out.println("DOH! BAD ROTATION for unreflected array");
+		}
+		System.out.println("rotation: " + rotation);
+		System.out.println("from: " + paperToDevelop[i].i + ", " +  paperToDevelop[i].j);
+		System.out.println("To: " + startI + ", " + startJ);
+		
+		System.out.println("Before:");
+		for(int i2=0; i2<array.length; i2++) {
+			for(int j2=0; j2<array[0].length; j2++) {
+				if(array[i2][j2]) {
+					System.out.print('#');
+				} else {
+					System.out.print(".");
+				}
+			}
+			System.out.println();
+		}
+		System.out.println();
+		System.out.println("After:");
+		for(int i2=0; i2<arrayRotated[rotation].length; i2++) {
+			for(int j2=0; j2<arrayRotated[rotation][0].length; j2++) {
+				if(arrayRotated[rotation][i2][j2]) {
+					System.out.print('#');
+				} else {
+					System.out.print(".");
+				}
+			}
+			System.out.println();
+		}
+		System.out.println();
+		System.exit(1);
+	}
+	
+	public static void printArrayDebug(boolean array[][]) {
+
+		for(int i2=0; i2<array.length; i2++) {
+			for(int j2=0; j2<array[0].length; j2++) {
+				if(array[i2][j2]) {
+					System.out.print('#');
+				} else {
+					System.out.print(".");
+				}
+			}
+			System.out.println();
+		}
+		System.out.println();
+	}
+	
+	public static void printOrderingSolution(int orderingReturned[]) {
+		
+		System.out.println("Ordering:");
+		for(int k=0; k<orderingReturned.length; k++) {
+			System.out.print(orderingReturned[k] + ", ");
+		}
+		System.out.println();
+
+	}
+	
+	private static int prevOrdering[] = null;
+	
+	public static void sanityCheckOrderingComparedToPrevOrdering(int tmp[]) {
+		
+		if(prevOrdering != null) {
+			
+			if(prevOrdering.length != tmp.length) {
+				System.out.println("Error: ordering length inconsistent!");
+				System.exit(1);
+			}
+			for(int i=0; i<tmp.length; i++) {
+				if(prevOrdering[i] < tmp[i]) {
+					//All good!
+					break;
+				} else if(prevOrdering[i] > tmp[i]) {
+					System.out.println("ERROR: previous ordering is bigger than the current ordering!");
+					System.out.println("Previous ordering:");
+					printOrderingSolution(prevOrdering);
+
+					System.out.println("Current ordering:");
+					printOrderingSolution(prevOrdering);
+					System.exit(1);
+				}
+			}
+		}
+		
+		prevOrdering = tmp;
+	}
+	
 }
