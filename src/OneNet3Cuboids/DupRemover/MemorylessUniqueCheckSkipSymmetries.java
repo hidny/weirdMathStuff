@@ -7,6 +7,7 @@ import OneNet3Cuboids.Coord.CoordWithRotationAndIndex;
 import OneNet3Cuboids.Cuboid.SymmetryResolver.SymmetryResolver;
 import OneNet3Cuboids.FoldingAlgoStartAnywhere.FoldResolveOrderedRegionsSkipSymmetries;
 import OneNet3Cuboids.Region.Region;
+import number.IsNumber;
 
 public class MemorylessUniqueCheckSkipSymmetries {
 
@@ -72,6 +73,11 @@ public class MemorylessUniqueCheckSkipSymmetries {
 				regionsToHandleRevOrder[0] = new Region(cuboid);
 			//END Setup to run imitation algo.
 				
+				//How to debug:
+				//if(debugArrayMatchesString(prevOrdering, "0, 0, 1, 2, 3, 6, 10, 9, 3, 14")) {
+				//	System.out.println("DEBUG");
+				//}
+
 				int tmp[] = doDepthFirstSearch(arrayRotated[rotation], newPaperToDevelop, indexCuboidOnPaper, paperUsed, cuboid, numCellsUsedDepth,
 						regionsToHandleRevOrder, new int[cuboid.getNumCellsToFill()], quickestAnswerToCompareTo, isCurrentlyAloneInFirst);
 				
@@ -89,6 +95,7 @@ public class MemorylessUniqueCheckSkipSymmetries {
 
 						//System.out.println("firstOrderingArray for current solution:");
 						//printOrderingSolution(tmp);
+
 					} else {
 
 						isUniqueSoFar = false;
@@ -101,14 +108,16 @@ public class MemorylessUniqueCheckSkipSymmetries {
 						break SEARCH_UNREFLECTED;
 					}
 					
+				} else if(tmp == null && i == 0 && rotation == 0) {
+					System.out.println("ERROR: imitator algo rejected solution that was found!");
+					System.exit(1);
 				}
 			}
 		}
 		
 		
 		
-		//TODO: also loop for mirrored solution (use getTranspose for this)
-		// Don't forget to also transpose the start locations! 
+		// This sections checks for reflect solutions that are faster: 
 		if(isUniqueSoFar) {
 			
 			boolean transposeArray[][] = getTranspose(array);
@@ -291,6 +300,13 @@ public class MemorylessUniqueCheckSkipSymmetries {
 	public static int[] doDepthFirstSearch(boolean netToReplicate[][], Coord2D paperToDevelop[], int indexCuboidonPaper[][], boolean paperUsed[][], CuboidToFoldOn cuboid, int numCellsUsedDepth,
 			Region regions[], int curAnswer[], int quickestAnswerToCompareTo[], boolean isCurrentlyAloneInFirst) {
 
+
+		if(debugArrayMatchesString(prevOrdering, "0, 0, 1, 2, 3, 6, 10, 9, 3, 14") 
+				&& (quickestAnswerToCompareTo == null)) {//TODO: add depth...
+			System.out.println("DEBUG 1st rotation and 1 try of the solution that failed (numCellsUsedDepth = " + numCellsUsedDepth + ")");
+		}
+	
+
 		if(numCellsUsedDepth == cuboid.getNumCellsToFill()) {
 			
 			if(isCurrentlyAloneInFirst) {
@@ -301,6 +317,16 @@ public class MemorylessUniqueCheckSkipSymmetries {
 				return null;
 			}
 		}
+		
+		regions = FoldResolveOrderedRegionsSkipSymmetries.handleCompletedRegionIfApplicable(regions, -1, indexCuboidonPaper, paperUsed);
+		
+		//Sanity check
+		if(regions == null) {
+			
+			System.out.println("ERROR in MemorylessUniqueCheckSkipSymmetries: regions is null while not trying to solve 1 specfic region.");
+			System.exit(1);
+		}
+		//End sanity check
 		
 		int regionIndex = regions.length - 1;
 		
@@ -315,7 +341,6 @@ public class MemorylessUniqueCheckSkipSymmetries {
 					(cuboid, paperToDevelop, indexCuboidonPaper, i,indexToUse)) {
 
 				numRotationIterationsSkipped += NUM_ROTATIONS;
-				//TODO: maybe try adding a 'don't use index flag here?
 				continue;
 			}
 
@@ -543,4 +568,41 @@ public class MemorylessUniqueCheckSkipSymmetries {
 		prevOrdering = tmp;
 	}
 	
+	public static boolean debugArrayMatchesString(int array[], String debugOrdering) {
+		
+		if(array == null) {
+			return false;
+		}
+
+		debugOrdering = debugOrdering.replace(" ", "");
+		
+		while(debugOrdering.endsWith(",")) {
+			debugOrdering = debugOrdering.substring(0, debugOrdering.length() -1);
+		}
+		
+		String tokens[] = debugOrdering.split(",");
+		
+
+		if(tokens.length != array.length) {
+			return false;
+		}
+		
+		for(int i=0; i<array.length; i++) {
+			if(array[i] != pint(tokens[i])) {
+				return false;
+			}
+		}
+		
+		return true;
+		
+	}
+	
+	public static int pint(String s) {
+		if (IsNumber.isNumber(s)) {
+			return Integer.parseInt(s);
+		} else {
+			System.out.println("Error: (" + s + " is not a number");
+			return -1;
+		}
+	}
 }

@@ -10,7 +10,7 @@ import OneNet3Cuboids.FoldingAlgoStartAnywhere.FoldResolveOrderedRegionsSkipSymm
 public class StandardResolverForSmallSolutions implements SolutionResolverInterface {
 
 	@Override
-	public long resolveSolution(CuboidToFoldOn cuboidUsed, Coord2D paperToDevelop[], int[][] indexCuboidonPaper, boolean[][] paperUsed) {
+	public long resolveSolution(CuboidToFoldOn cuboidDimensionsAndNeighbours, Coord2D paperToDevelop[], int[][] indexCuboidonPaper, boolean[][] paperUsed) {
 		
 
 		System.out.println(FoldResolveOrderedRegionsSkipSymmetries.numFound +
@@ -23,7 +23,7 @@ public class StandardResolverForSmallSolutions implements SolutionResolverInterf
 		
 		//Utils.printFoldWithIndex(indexCuboidonPaper);
 		
-		if(MemorylessUniqueCheckSkipSymmetries.isUnique(cuboidUsed, paperToDevelop, paperUsed)) {
+		if(MemorylessUniqueCheckSkipSymmetries.isUnique(cuboidDimensionsAndNeighbours, paperToDevelop, paperUsed)) {
 			FoldResolveOrderedRegionsSkipSymmetries.numUniqueFound++;
 
 			Utils.printFold(paperUsed);

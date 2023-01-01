@@ -4,6 +4,7 @@ import OneNet3Cuboids.CuboidToFoldOn;
 import OneNet3Cuboids.Utils;
 import OneNet3Cuboids.Coord.Coord2D;
 import OneNet3Cuboids.DupRemover.BasicUniqueCheckImproved;
+import OneNet3Cuboids.DupRemover.MemorylessUniqueCheckSkipSymmetries;
 import OneNet3Cuboids.FoldingAlgoStartAnywhere.FoldResolveOrderedRegionsSkipSymmetries;
 
 public class StandardResolverForMediumSolutions implements SolutionResolverInterface {
@@ -18,7 +19,7 @@ public class StandardResolverForMediumSolutions implements SolutionResolverInter
 				" (num unique: " + FoldResolveOrderedRegionsSkipSymmetries.numUniqueFound + ")");
 		}
 		
-		if(BasicUniqueCheckImproved.isUnique(paperToDevelop, paperUsed)) {
+		if(MemorylessUniqueCheckSkipSymmetries.isUnique(cuboidDimensionsAndNeighbours, paperToDevelop, paperUsed)) {
 			FoldResolveOrderedRegionsSkipSymmetries.numUniqueFound++;
 
 			if(FoldResolveOrderedRegionsSkipSymmetries.numUniqueFound % 2000 == 0) {
