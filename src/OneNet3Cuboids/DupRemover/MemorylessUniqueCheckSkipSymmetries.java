@@ -327,14 +327,35 @@ public class MemorylessUniqueCheckSkipSymmetries {
 				
 				int indexToUse = indexCuboidonPaper[paperToDevelop[i].i][paperToDevelop[i].j];
 				
+
+				CoordWithRotationAndIndex neighbours[] = cuboid.getNeighbours(indexToUse);
+				
 				if(SymmetryResolver.skipSearchBecauseOfASymmetryArgDontCareAboutRotation
 						(cuboid, paperToDevelop, indexCuboidonPaper, i,indexToUse)) {
 	
 					numRotationIterationsSkipped += NUM_ROTATIONS;
+					
+					/*
+					 //This never happens for 4x1x1, so never mind!
+					//Try to find an excuse not to continue:
+					for(int j=0; j<neighbours.length; j++) {
+						
+						
+						int new_i = paperToDevelop[i].i + nugdeBasedOnRotation[0][j];
+						int new_j = paperToDevelop[i].j + nugdeBasedOnRotation[1][j];
+						
+						if(! paperUsed[new_i][new_j]
+								&& netToReplicate[new_i][new_j]
+							){
+							System.out.println("BOOM");
+							return null;
+						}
+		
+					}
+					 */
 					continue;
 				}
 	
-				CoordWithRotationAndIndex neighbours[] = cuboid.getNeighbours(indexToUse);
 				
 				int curRotation = cuboid.getRotationPaperRelativeToMap(indexToUse);
 				
