@@ -106,8 +106,8 @@ public class MemorylessUniqueCheckSkipSymmetriesMemManage {
 				
 				CuboidToFoldOn cuboid = new CuboidToFoldOn(orig);
 
-				int startI = getIAfterRotation(array.length, paperToDevelop[i].i, paperToDevelop[i].j, rotation, reflect);
-				int startJ = getJAfterRotation(array.length, paperToDevelop[i].i, paperToDevelop[i].j, rotation, reflect);
+				int startI = getIAfterRotation(array.length, paperToDevelop[i].i, paperToDevelop[i].j, rotation);
+				int startJ = getJAfterRotation(array.length, paperToDevelop[i].i, paperToDevelop[i].j, rotation);
 				
 
 				if(reflect) {
@@ -218,72 +218,40 @@ public class MemorylessUniqueCheckSkipSymmetriesMemManage {
 		return transpose;
 	}
 	
-	public static int getIAfterRotation(int arrayLength, int i, int j, int rotation, boolean reflect) {
-		
-		if(! reflect) {
-			if(rotation == 0) {
-				return i;
-			} else if(rotation == 1) {
-				return j;
-			} else if(rotation == 2) {
-				return arrayLength - 1 - i;
-			} else if(rotation == 3) {
-				return arrayLength - 1 - j;
-			} else {
-				System.out.println("DOH!");
-				System.exit(1);
-				return -1;
-			}
+	public static int getIAfterRotation(int arrayLength, int i, int j, int rotation) {
+	
+		if(rotation == 0) {
+			return i;
+		} else if(rotation == 1) {
+			return j;
+		} else if(rotation == 2) {
+			return arrayLength - 1 - i;
+		} else if(rotation == 3) {
+			return arrayLength - 1 - j;
 		} else {
-			if(rotation == 0) {
-				return i;
-			} else if(rotation == 3) {
-				return j;
-			} else if(rotation == 2) {
-				return arrayLength - 1 - i;
-			} else if(rotation == 1) {
-				return arrayLength - 1 - j;
-			} else {
-				System.out.println("DOH!");
-				System.exit(1);
-				return -1;
-			}
+			System.out.println("DOH!");
+			System.exit(1);
+			return -1;
 		}
 		
 	}
 	
-	public static int getJAfterRotation(int arrayLength, int i, int j, int rotation, boolean reflect) {
-		if(! reflect) {
-			if(rotation == 0) {
-				return j;
-			} else if(rotation == 1) {
-				return arrayLength - 1 - i;
-			} else if(rotation == 2) {
-				return arrayLength - 1 - j;
-			} else if(rotation == 3) {
-				return i;
-			} else {
-				System.out.println("DOH!");
-				System.exit(1);
-				return -1;
-			}
+	public static int getJAfterRotation(int arrayLength, int i, int j, int rotation) {
+		
+		if(rotation == 0) {
+			return j;
+		} else if(rotation == 1) {
+			return arrayLength - 1 - i;
+		} else if(rotation == 2) {
+			return arrayLength - 1 - j;
+		} else if(rotation == 3) {
+			return i;
 		} else {
-			//TODO: maybe rotation of reflect should be counter-clockwise, so we can get rid of if condition?
-			//i.e: switch rotation 1 and 3 everywhere, so this else block can be removed
-			if(rotation == 0) {
-				return j;
-			} else if(rotation == 1) {
-				return i;
-			} else if(rotation == 2) {
-				return arrayLength - 1 - j;
-			} else if(rotation == 3) {
-				return arrayLength - 1 - i;
-			} else {
-				System.out.println("DOH!");
-				System.exit(1);
-				return -1;
-			}
+			System.out.println("DOH!");
+			System.exit(1);
+			return -1;
 		}
+		
 		
 	}
 	
@@ -327,7 +295,9 @@ public class MemorylessUniqueCheckSkipSymmetriesMemManage {
 					paperUsed[paperToDevelop[k].j][paperToDevelop[k].i] = false;
 					indexCuboidOnPaper[paperToDevelop[k].j][paperToDevelop[k].i] = -1;
 				}
-			} else if(rotation == 1) {
+			
+			//Go counter-clockwise on rotation, so you can save an if condition:
+			} else if(rotation == 3) {
 				
 				for(int k=0; k<paperToDevelop.length; k++) {
 					paperUsed[paperToDevelop[k].i][paperUsed.length - 1 - paperToDevelop[k].j] = false;
@@ -339,7 +309,7 @@ public class MemorylessUniqueCheckSkipSymmetriesMemManage {
 					paperUsed[paperUsed.length - 1 - paperToDevelop[k].j][paperUsed.length - 1 - paperToDevelop[k].i] = false;
 					indexCuboidOnPaper[paperUsed.length - 1 - paperToDevelop[k].j][paperUsed.length - 1 - paperToDevelop[k].i] = -1;
 				}
-			} else if(rotation == 3) {
+			} else if(rotation == 1) {
 				
 				for(int k=0; k<paperToDevelop.length; k++) {
 					paperUsed[paperUsed.length - 1 - paperToDevelop[k].i][paperToDevelop[k].j] = false;
@@ -385,7 +355,9 @@ public class MemorylessUniqueCheckSkipSymmetriesMemManage {
 				for(int k=0; k<paperToDevelop.length; k++) {
 					paperUsed[paperToDevelop[k].j][paperToDevelop[k].i] = isTurnOn;
 				}
-			} else if(rotation == 1) {
+			
+			//Go counter-clockwise on rotation, so you can save an if condition:
+			} else if(rotation == 3) {
 				
 				for(int k=0; k<paperToDevelop.length; k++) {
 					paperUsed[paperToDevelop[k].i][paperUsed.length - 1 - paperToDevelop[k].j] = isTurnOn;
@@ -395,7 +367,7 @@ public class MemorylessUniqueCheckSkipSymmetriesMemManage {
 				for(int k=0; k<paperToDevelop.length; k++) {
 					paperUsed[paperUsed.length - 1 - paperToDevelop[k].j][paperUsed.length - 1 - paperToDevelop[k].i] = isTurnOn;
 				}
-			} else if(rotation == 3) {
+			} else if(rotation == 1) {
 				
 				for(int k=0; k<paperToDevelop.length; k++) {
 					paperUsed[paperUsed.length - 1 - paperToDevelop[k].i][paperToDevelop[k].j] = isTurnOn;
