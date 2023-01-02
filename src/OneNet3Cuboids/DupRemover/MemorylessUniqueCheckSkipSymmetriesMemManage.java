@@ -1,6 +1,7 @@
 package OneNet3Cuboids.DupRemover;
 
 import OneNet3Cuboids.CuboidToFoldOn;
+import OneNet3Cuboids.Utils;
 import OneNet3Cuboids.Coord.Coord2D;
 import OneNet3Cuboids.Coord.CoordWithRotationAndIndex;
 import OneNet3Cuboids.Cuboid.SymmetryResolver.SymmetryResolver;
@@ -18,6 +19,9 @@ public class MemorylessUniqueCheckSkipSymmetriesMemManage {
 	public static long debugNumMoreThanTopValid = 0;
 	
 	public static final int DEFAULT_ROTATION = 0;
+	public static final boolean NO_REFLECTION = false;
+	
+	public static final int ROTATIONS_TIMES_RELECTIONS = 8;
 	
 	public static boolean isUnique(CuboidToFoldOn orig, Coord2D paperToDevelop[], boolean array[][]) {
 		
@@ -31,16 +35,26 @@ public class MemorylessUniqueCheckSkipSymmetriesMemManage {
 		boolean paperUsed[][] = new boolean[array.length][array.length];
 		int indexCuboidOnPaper[][] = new int[array.length][array.length];
 		Coord2D newPaperToDevelop[] = new Coord2D[paperToDevelop.length];
+		
+		//Note that I'm also borrowing the boolean array[][] param... I'll put it back to the way it was.
+		
+		//TODO: Eliminate this loop to make it faster, but that would mean changing index on paper 0...
+		//Tough choice! I'll do it much later!
+		for(int i2=0; i2<paperUsed.length; i2++) {
+			for(int j2=0; j2<paperUsed[0].length; j2++) {
+				indexCuboidOnPaper[i2][j2] = -1;
+			}
+		}
+		
+		//if(array.length != array[0].length) {
+		//	System.out.println("ERROR: dimensions have to be the same for MemManager To work.");
+		//}
+		
 		// End variables to recycle/reuse for each iteration
 				
-				
-		//TODO: reduce copy/paste code.
-		//TODO: maybe make arrays based on paperToDevelop?
-		
+	
 		boolean validSetup[] = new boolean[paperToDevelop.length];
 		validSetup[0] = true;
-		
-		
 		
 		int debugNumOtherValid = 0;
 		for(int index=1; index<validSetup.length; index++) {
@@ -55,7 +69,6 @@ public class MemorylessUniqueCheckSkipSymmetriesMemManage {
 			if(validSetup[index]) {
 				debugNumOtherValid++;
 			}
-			
 			
 			eraseChangesToPaperUsedAndIndexCuboidOnPaper(paperToDevelop, paperUsed, indexCuboidOnPaper, DEFAULT_ROTATION, false);
 		}
@@ -73,49 +86,42 @@ public class MemorylessUniqueCheckSkipSymmetriesMemManage {
 			System.out.println("debugNumMoreThanTopValid: " + debugNumMoreThanTopValid);
 		}
 		
+		//Check to see if current solution is the 1st of every valid reflection/rotation:
 		
-		boolean arrayRotated[][][] = new boolean[NUM_ROTATIONS][][];
-		boolean arrayRotatedAndReflected[][][] = new boolean[NUM_ROTATIONS][][];
-		
-		for(int rotation=0; rotation<NUM_ROTATIONS; rotation++) {
-			arrayRotated[rotation] = getArrayRotated2(array, paperToDevelop, rotation, false);
-			arrayRotatedAndReflected[rotation] = getArrayRotated2(array, paperToDevelop, rotation, true);
-		}
-		
+		for(int symmetryIndex=0; symmetryIndex < ROTATIONS_TIMES_RELECTIONS && isUniqueSoFar; symmetryIndex++) {
+			
+			int rotation = symmetryIndex % NUM_ROTATIONS;
+			boolean reflect = symmetryIndex >=  NUM_ROTATIONS;
+			
 
-		if(array.length != array[0].length) {
-			System.out.println("ERROR: dimensions have to be the same for MemManager To work.");
-		}
+			switchOnOffPaperUsedForArrayRotatedOrReflected(true, paperToDevelop, array, rotation, reflect);
+			
+			for(int i=0; i<paperToDevelop.length && isUniqueSoFar; i++) {
 
-		
-		//TODO: Eliminate this loop to make it faster, but that would mean changing index on paper 0...
-		//Tough choice! I'll do it much later!
-		for(int i2=0; i2<paperUsed.length; i2++) {
-			for(int j2=0; j2<paperUsed[0].length; j2++) {
-				indexCuboidOnPaper[i2][j2] = -1;
-			}
-		}
-		
-		SEARCH_UNREFLECTED:
-		for(int i=0; i<paperToDevelop.length; i++) {
-
-			if(! validSetup[i]) {
-				continue;
-			}
-
-			for(int rotation=0; rotation<NUM_ROTATIONS; rotation++) {
+				if(! validSetup[i]) {
+					continue;
+				}
 				
-			//Setup to run imitation algo:
+//Setup to run imitation algo:
 				
 				CuboidToFoldOn cuboid = new CuboidToFoldOn(orig);
 
-				int startI = getIAfterRotation(arrayRotated[rotation], paperToDevelop[i].i, paperToDevelop[i].j, rotation);
-				int startJ = getJAfterRotation(arrayRotated[rotation], paperToDevelop[i].i, paperToDevelop[i].j, rotation);
+				int startI = getIAfterRotation(array.length, paperToDevelop[i].i, paperToDevelop[i].j, rotation, reflect);
+				int startJ = getJAfterRotation(array.length, paperToDevelop[i].i, paperToDevelop[i].j, rotation, reflect);
 				
-				if( ! arrayRotated[rotation][startI][startJ]) {
-					printStateOfRotationBecauseOfError(false, paperToDevelop, array, arrayRotated, rotation, i, startI, startJ);
-				}
 
+				if(reflect) {
+					int tmp = startI;
+					startI = startJ;
+					startJ = tmp;
+				}
+				
+				if( ! array[startI][startJ]) {
+					System.out.println("DOH! Bad start location");
+					printArrayDebug(array);
+					System.exit(1);
+				}
+				
 				int numCellsUsedDepth = 0;
 
 				paperUsed[startI][startJ] = true;
@@ -134,7 +140,7 @@ public class MemorylessUniqueCheckSkipSymmetriesMemManage {
 				//	System.out.println("DEBUG");
 				//}
 
-				int tmp[] = doDepthFirstSearch(arrayRotated[rotation], newPaperToDevelop, indexCuboidOnPaper, paperUsed, cuboid, numCellsUsedDepth,
+				int tmp[] = doDepthFirstSearch(array, newPaperToDevelop, indexCuboidOnPaper, paperUsed, cuboid, numCellsUsedDepth,
 						regionsToHandleRevOrder, new int[cuboid.getNumCellsToFill()], quickestAnswerToCompareTo, isCurrentlyAloneInFirst);
 				
 				if(tmp != null) {
@@ -148,7 +154,7 @@ public class MemorylessUniqueCheckSkipSymmetriesMemManage {
 					//Print fold for debug:
 					//Utils.printFold(arrayRotated[rotation]);
 					
-					if(i == 0 && rotation == 0) {
+					if(i == 0 && rotation == DEFAULT_ROTATION && reflect == NO_REFLECTION) {
 						quickestAnswerToCompareTo = tmp;
 						isCurrentlyAloneInFirst = false;
 						
@@ -158,120 +164,44 @@ public class MemorylessUniqueCheckSkipSymmetriesMemManage {
 						//Debug:
 						//System.out.println("firstOrderingArray for current solution:");
 						//printOrderingSolution(tmp);
+						
 
 					} else {
 
 						isUniqueSoFar = false;
-						
-						
 						//System.out.println("FasterOrderingArray for current solution:");
 						//printOrderingSolution(tmp);
 						
-						
-						break SEARCH_UNREFLECTED;
 					}
 					
-				} else if(tmp == null && i == 0 && rotation == 0) {
-					System.out.println("ERROR: imitator algo rejected solution that was found!");
+				} else if(tmp == null && i == 0  && rotation == DEFAULT_ROTATION && reflect == NO_REFLECTION) {
+					System.out.println("ERROR: imitator algo rejected the solution that was found!");
 					System.exit(1);
 				}
 				
-				//TODO: Erase changes to paper used:
-				//System.out.println("Magic Eraser!");
+				//Erases changes to paper used, so we could reuse it:
 				eraseChangesToPaperUsedAndIndexCuboidOnPaper(
 						paperToDevelop,
 						paperUsed,
 						indexCuboidOnPaper, 
 						rotation,
-						false);
-				//End TODO
-			}
-		}
-		
-		
-		
-		// This sections checks for reflect solutions that are faster: 
-		if(isUniqueSoFar) {
-			
-			//Search reflected for solutions (getting the transpose reflects to array)
-			SEARCH_REFLECTED:
-			for(int i=0; i<paperToDevelop.length; i++) {
+						reflect);
 				
-				if(! validSetup[i]) {
-					continue;
-				}
-				
-				for(int rotation=0; rotation<NUM_ROTATIONS; rotation++) {
-					
-				//Setup to run imitation algo:
-					
-					CuboidToFoldOn cuboid = new CuboidToFoldOn(orig);
-
-					//Transpose it because this is the relection:
-					int startI = getIAfterRotation(arrayRotatedAndReflected[rotation], paperToDevelop[i].j, paperToDevelop[i].i, rotation);
-					int startJ = getJAfterRotation(arrayRotatedAndReflected[rotation], paperToDevelop[i].j, paperToDevelop[i].i, rotation);
-					//End transpose it.
-					
-					if( ! arrayRotatedAndReflected[rotation][startI][startJ]) {
-						printStateOfRotationBecauseOfError(false, paperToDevelop, array, arrayRotatedAndReflected, rotation,
-								i, startI, startJ);
-					}
-					
-					int numCellsUsedDepth = 0;
-
-					paperUsed[startI][startJ] = true;
-					newPaperToDevelop[numCellsUsedDepth] = new Coord2D(startI, startJ);
-					
-					cuboid.setCell(START_INDEX, 0);
-					indexCuboidOnPaper[startI][startJ] = START_INDEX;
-					numCellsUsedDepth += 1;
-					
-					//Don't do any of the region splitting/combining because it isn't needed:
-					Region regionsToHandleRevOrder[] = new Region[1];
-					
-					
-					regionsToHandleRevOrder[0] = new Region(cuboid);
-				//END Setup to run imitation algo.
-					
-					int tmp[] = doDepthFirstSearch(arrayRotatedAndReflected[rotation], newPaperToDevelop, indexCuboidOnPaper, paperUsed, cuboid, numCellsUsedDepth,
-							regionsToHandleRevOrder, new int[cuboid.getNumCellsToFill()], quickestAnswerToCompareTo, isCurrentlyAloneInFirst);
-					
-					if(tmp != null) {
-
-						//Sanity check:
-						//if(! validSetup[i]) {
-						//	System.out.println("Invalid setup got results! (reflected!)");
-						//	System.exit(1);
-						//}
-		
-						//Print fold for debug:
-						//Utils.printFold(arrayRotatedAndReflected[rotation]);
-						
-						isUniqueSoFar = false;
-						//System.out.println("FasterOrderingArray for current solution is a reflect solution:");
-						//printOrderingSolution(tmp);
-
-
-						break SEARCH_REFLECTED;
-						
-					}
-					
-					//TODO: Erase changes to paper used:
-					//System.out.println("Magic Eraser!");
-					eraseChangesToPaperUsedAndIndexCuboidOnPaper(
-							paperToDevelop,
-							paperUsed,
-							indexCuboidOnPaper, 
-							rotation,
-							true);
-					//End TODO
-				}
 			}
-		}
 		
-		//Can't do this because it breaks because of the fact we ignore regions in memoryless Algo:
-		//sanityCheckDupResult(isUniqueSoFar, array);
-		//
+
+			switchOnOffPaperUsedForArrayRotatedOrReflected(false, paperToDevelop, array, rotation, reflect);
+		}
+
+		//Get back orig array so calling function won't know I borrowed it:
+		switchOnOffPaperUsedForArrayRotatedOrReflected(true, paperToDevelop, array, DEFAULT_ROTATION, NO_REFLECTION);
+		
+		//Sanity test:
+		/*if(isUniqueSoFar && !MemorylessUniqueCheckSkipSymmetries.isUnique(orig, paperToDevelop, array)) {
+			System.out.println("DOH! 123");
+			Utils.printFold(array);
+			System.exit(1);
+		}*/
 		
 		return isUniqueSoFar;
 	}
@@ -288,38 +218,71 @@ public class MemorylessUniqueCheckSkipSymmetriesMemManage {
 		return transpose;
 	}
 	
-	public static int getIAfterRotation(boolean array[][], int i, int j, int rotation) {
+	public static int getIAfterRotation(int arrayLength, int i, int j, int rotation, boolean reflect) {
 		
-		if(rotation == 0) {
-			return i;
-		} else if(rotation == 1) {
-			return j;
-		} else if(rotation == 2) {
-			return array.length - 1 - i;
-		} else if(rotation == 3) {
-			return array[0].length - 1 - j;
+		if(! reflect) {
+			if(rotation == 0) {
+				return i;
+			} else if(rotation == 1) {
+				return j;
+			} else if(rotation == 2) {
+				return arrayLength - 1 - i;
+			} else if(rotation == 3) {
+				return arrayLength - 1 - j;
+			} else {
+				System.out.println("DOH!");
+				System.exit(1);
+				return -1;
+			}
 		} else {
-			System.out.println("DOH!");
-			System.exit(1);
-			return -1;
+			if(rotation == 0) {
+				return i;
+			} else if(rotation == 3) {
+				return j;
+			} else if(rotation == 2) {
+				return arrayLength - 1 - i;
+			} else if(rotation == 1) {
+				return arrayLength - 1 - j;
+			} else {
+				System.out.println("DOH!");
+				System.exit(1);
+				return -1;
+			}
 		}
 		
 	}
 	
-	public static int getJAfterRotation(boolean array[][], int i, int j, int rotation) {
-		
-		if(rotation == 0) {
-			return j;
-		} else if(rotation == 1) {
-			return array.length - 1 - i;
-		} else if(rotation == 2) {
-			return array[0].length - 1 - j;
-		} else if(rotation == 3) {
-			return i;
+	public static int getJAfterRotation(int arrayLength, int i, int j, int rotation, boolean reflect) {
+		if(! reflect) {
+			if(rotation == 0) {
+				return j;
+			} else if(rotation == 1) {
+				return arrayLength - 1 - i;
+			} else if(rotation == 2) {
+				return arrayLength - 1 - j;
+			} else if(rotation == 3) {
+				return i;
+			} else {
+				System.out.println("DOH!");
+				System.exit(1);
+				return -1;
+			}
 		} else {
-			System.out.println("DOH!");
-			System.exit(1);
-			return -1;
+			//TODO: maybe rotation of reflect should be counter-clockwise, so we can get rid of if condition?
+			//i.e: switch rotation 1 and 3 everywhere, so this else block can be removed
+			if(rotation == 0) {
+				return j;
+			} else if(rotation == 1) {
+				return i;
+			} else if(rotation == 2) {
+				return arrayLength - 1 - j;
+			} else if(rotation == 3) {
+				return arrayLength - 1 - i;
+			} else {
+				System.out.println("DOH!");
+				System.exit(1);
+				return -1;
+			}
 		}
 		
 	}
@@ -387,105 +350,61 @@ public class MemorylessUniqueCheckSkipSymmetriesMemManage {
 	
 	}
 	
-	public static boolean[][] getArrayRotated2(boolean array[][], Coord2D paperToDevelop[], int rotation, boolean transpose) {
-		
-		boolean ret[][] = null;
+	public static void switchOnOffPaperUsedForArrayRotatedOrReflected(
+			boolean isTurnOn,
+			Coord2D paperToDevelop[],
+			boolean paperUsed[][],
+			int rotation,
+			boolean transpose) {
 		
 		if(!transpose) {
 			if(rotation == 0) {
-				ret = new boolean[array.length][array[0].length];
 				
 				for(int k=0; k<paperToDevelop.length; k++) {
-					ret[paperToDevelop[k].i][paperToDevelop[k].j] = true;
+					paperUsed[paperToDevelop[k].i][paperToDevelop[k].j] = isTurnOn;
 				}
 			} else if(rotation == 1) {
-				ret = new boolean[array[0].length][array.length];
 				
 				for(int k=0; k<paperToDevelop.length; k++) {
-					ret[paperToDevelop[k].j][ret.length - 1 - paperToDevelop[k].i] = true;
+					paperUsed[paperToDevelop[k].j][paperUsed.length - 1 - paperToDevelop[k].i] = isTurnOn;
 				}
 			} else if(rotation == 2) {
-				ret = new boolean[array.length][array[0].length];
 				
 				for(int k=0; k<paperToDevelop.length; k++) {
-					ret[ret.length - 1 - paperToDevelop[k].i][ret[0].length - 1 - paperToDevelop[k].j] = true;
+					paperUsed[paperUsed.length - 1 - paperToDevelop[k].i][paperUsed.length - 1 - paperToDevelop[k].j] = isTurnOn;
 				}
 			} else if(rotation == 3) {
-				ret = new boolean[array[0].length][array.length];
 				
 				for(int k=0; k<paperToDevelop.length; k++) {
-					ret[ret[0].length - 1 - paperToDevelop[k].j][paperToDevelop[k].i] = true;
+					paperUsed[paperUsed.length - 1 - paperToDevelop[k].j][paperToDevelop[k].i] = isTurnOn;
 				}
 			}
 		} else {
 			if(rotation == 0) {
-				ret = new boolean[array[0].length][array.length];
 				
 				for(int k=0; k<paperToDevelop.length; k++) {
-					ret[paperToDevelop[k].j][paperToDevelop[k].i] = true;
+					paperUsed[paperToDevelop[k].j][paperToDevelop[k].i] = isTurnOn;
 				}
 			} else if(rotation == 1) {
-				ret = new boolean[array.length][array[0].length];
 				
 				for(int k=0; k<paperToDevelop.length; k++) {
-					ret[paperToDevelop[k].i][ret.length - 1 - paperToDevelop[k].j] = true;
+					paperUsed[paperToDevelop[k].i][paperUsed.length - 1 - paperToDevelop[k].j] = isTurnOn;
 				}
 			} else if(rotation == 2) {
-				ret = new boolean[array[0].length][array.length];
 				
 				for(int k=0; k<paperToDevelop.length; k++) {
-					ret[ret.length - 1 - paperToDevelop[k].j][ret[0].length - 1 - paperToDevelop[k].i] = true;
+					paperUsed[paperUsed.length - 1 - paperToDevelop[k].j][paperUsed.length - 1 - paperToDevelop[k].i] = isTurnOn;
 				}
 			} else if(rotation == 3) {
-				ret = new boolean[array.length][array[0].length];
 				
 				for(int k=0; k<paperToDevelop.length; k++) {
-					ret[ret[0].length - 1 - paperToDevelop[k].i][paperToDevelop[k].j] = true;
+					paperUsed[paperUsed.length - 1 - paperToDevelop[k].i][paperToDevelop[k].j] = isTurnOn;
 				}
 			}
 		}
-		
-		return ret;
+	
 	}
 	
-	public static boolean[][] getArrayRotated(boolean array[][], int rotation) {
-		
-		boolean ret[][] = null;
-		
-		if(rotation == 0) {
-			return array;
-
-		} else if(rotation == 1) {
-			ret = new boolean[array[0].length][array.length];
-			
-			for(int i=0; i<ret.length; i++) {
-				for(int j=0; j<ret[0].length; j++) {
-					ret[i][j] = array[ret[0].length - 1- j][i];
-				}
-			}
-
-		} else if(rotation == 2) {
-			ret = new boolean[array.length][array[0].length];
-			
-			for(int i=0; i<ret.length; i++) {
-				for(int j=0; j<ret[0].length; j++) {
-					ret[i][j] = array[ret.length - 1- i][ret[0].length - 1- j];
-				}
-			}
-
-		} else if(rotation == 3) {
-			ret = new boolean[array[0].length][array.length];
-			
-			for(int i=0; i<ret.length; i++) {
-				for(int j=0; j<ret[0].length; j++) {
-					ret[i][j] = array[j][ret.length - 1- i];
-				}
-			}
-		}
-		
-		return ret;
-	}
-
 	public static final int NUM_ROTATIONS = 4;
 	public static final int NUM_NEIGHBOURS = NUM_ROTATIONS;
 	public static final int nugdeBasedOnRotation[][] = {{-1, 0, 1, 0}, {0, 1, 0 , -1}};
