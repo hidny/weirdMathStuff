@@ -17,6 +17,8 @@ public class MemorylessUniqueCheckSkipSymmetriesMemManage {
 	public static long debugNumOnlyTopValid = 0;
 	public static long debugNumMoreThanTopValid = 0;
 	
+	public static final int DEFAULT_ROTATION = 0;
+	
 	public static boolean isUnique(CuboidToFoldOn orig, Coord2D paperToDevelop[], boolean array[][]) {
 		
 		int quickestAnswerToCompareTo[] = null;
@@ -25,21 +27,37 @@ public class MemorylessUniqueCheckSkipSymmetriesMemManage {
 		
 		int START_INDEX = 0;
 
+		//Variables to recycle/reuse for each iteration: 
+		boolean paperUsed[][] = new boolean[array.length][array.length];
+		int indexCuboidOnPaper[][] = new int[array.length][array.length];
+		Coord2D newPaperToDevelop[] = new Coord2D[paperToDevelop.length];
+		// End variables to recycle/reuse for each iteration
+				
+				
 		//TODO: reduce copy/paste code.
 		//TODO: maybe make arrays based on paperToDevelop?
 		
 		boolean validSetup[] = new boolean[paperToDevelop.length];
 		validSetup[0] = true;
 		
+		
+		
 		int debugNumOtherValid = 0;
 		for(int index=1; index<validSetup.length; index++) {
 			validSetup[index] = isValidSetup(orig,
 						paperToDevelop,
 						array,
-						index);
+						index,
+						paperUsed,
+						indexCuboidOnPaper,
+						newPaperToDevelop);
+			
 			if(validSetup[index]) {
 				debugNumOtherValid++;
 			}
+			
+			
+			eraseChangesToPaperUsedAndIndexCuboidOnPaper(paperToDevelop, paperUsed, indexCuboidOnPaper, DEFAULT_ROTATION, false);
 		}
 		if(debugNumOtherValid == 1) {
 			debugNumOnlyTopValid++;
@@ -69,11 +87,6 @@ public class MemorylessUniqueCheckSkipSymmetriesMemManage {
 			System.out.println("ERROR: dimensions have to be the same for MemManager To work.");
 		}
 
-		//Variables to recycle/reuse for each iteration: 
-		boolean paperUsed[][] = new boolean[array.length][array.length];
-		int indexCuboidOnPaper[][] = new int[array.length][array.length];
-		Coord2D newPaperToDevelop[] = new Coord2D[paperToDevelop.length];
-		// End variables to recycle/reuse for each iteration
 		
 		//TODO: Eliminate this loop to make it faster, but that would mean changing index on paper 0...
 		//Tough choice! I'll do it much later!
@@ -95,8 +108,6 @@ public class MemorylessUniqueCheckSkipSymmetriesMemManage {
 			//Setup to run imitation algo:
 				
 				CuboidToFoldOn cuboid = new CuboidToFoldOn(orig);
-
-				
 
 				int startI = getIAfterRotation(arrayRotated[rotation], paperToDevelop[i].i, paperToDevelop[i].j, rotation);
 				int startJ = getJAfterRotation(arrayRotated[rotation], paperToDevelop[i].i, paperToDevelop[i].j, rotation);
@@ -649,17 +660,15 @@ public class MemorylessUniqueCheckSkipSymmetriesMemManage {
 	public static boolean isValidSetup(CuboidToFoldOn origCuboidNeighboursAndDim,
 			Coord2D paperToDevelop[],
 			boolean netToReplicate[][],
-			int indexCellInList) {
+			int indexCellInList,
+			boolean paperUsed[][],
+			int indexCuboidOnPaper[][],
+			Coord2D newPaperToDevelop[]) {
 		
 
 		int START_INDEX = 0;
-
-		boolean paperUsed[][] = new boolean[netToReplicate.length][netToReplicate[0].length];
-		int indexCuboidOnPaper[][] = new int[netToReplicate.length][netToReplicate[0].length];
 		
 		CuboidToFoldOn newCuboid = new CuboidToFoldOn(origCuboidNeighboursAndDim);
-
-		Coord2D newPaperToDevelop[] = new Coord2D[paperToDevelop.length];
 
 		int startI = paperToDevelop[indexCellInList].i;
 		int startJ = paperToDevelop[indexCellInList].j;
@@ -701,7 +710,7 @@ public class MemorylessUniqueCheckSkipSymmetriesMemManage {
 		while(numCellsUsedDepth < cuboid.getNumCellsToFill()) {
 			
 			//DEPTH-FIRST START:
-			for(int i=defaultRegion[regionIndex].getMinOrderedCellCouldUsePerRegion(); i<paperToDevelop.length && paperToDevelop[i] != null; i++) {
+			for(int i=defaultRegion[regionIndex].getMinOrderedCellCouldUsePerRegion(); i<numCellsUsedDepth; i++) {
 				
 				int indexToUse = indexCuboidOnPaper[paperToDevelop[i].i][paperToDevelop[i].j];
 				

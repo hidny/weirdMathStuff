@@ -5,6 +5,7 @@ import OneNet3Cuboids.Utils;
 import OneNet3Cuboids.Coord.Coord2D;
 import OneNet3Cuboids.DupRemover.BasicUniqueCheckImproved;
 import OneNet3Cuboids.DupRemover.MemorylessUniqueCheckSkipSymmetries;
+import OneNet3Cuboids.DupRemover.MemorylessUniqueCheckSkipSymmetriesMemManage;
 import OneNet3Cuboids.FoldingAlgoStartAnywhere.FoldResolveOrderedRegionsSkipSymmetries;
 
 public class StandardResolverForSmallSolutions implements SolutionResolverInterface {
@@ -24,7 +25,7 @@ public class StandardResolverForSmallSolutions implements SolutionResolverInterf
 		//Utils.printFoldWithIndex(indexCuboidonPaper);
 
 		//if(BasicUniqueCheckImproved.isUnique(paperToDevelop, paperUsed)) {
-		if(MemorylessUniqueCheckSkipSymmetries.isUnique(cuboidDimensionsAndNeighbours, paperToDevelop, paperUsed)) {
+		if(MemorylessUniqueCheckSkipSymmetriesMemManage.isUnique(cuboidDimensionsAndNeighbours, paperToDevelop, paperUsed)) {
 			FoldResolveOrderedRegionsSkipSymmetries.numUniqueFound++;
 
 			Utils.printFold(paperUsed);
