@@ -22,6 +22,23 @@ public class Region {
 	//Rename variable
 	private int numCellsInRegion;
 	
+
+	public void resetStateWithStartIndexOnly(int startCellIndex) {
+
+		minOrderedCellCouldUsePerRegion = 0;
+		minCellRotationOfMinCellToDevPerRegion = 0;
+		
+		CellIndexToOrderOfDev.clear();
+		CellIndexToOrderOfDev.put(startCellIndex, 0);
+		//CellIndexToOrderOfDev = new HashMap <Integer, Integer>();
+		
+		for(int i=0; i<CellRegionsToHandleInRevOrder.length; i++) {
+			CellRegionsToHandleInRevOrder[i] = true;
+		}
+		
+		numCellsInRegion = CellRegionsToHandleInRevOrder.length - 1;
+	}
+	
 	public HashMap<Integer, Integer> getCellIndexToOrderOfDev() {
 		return CellIndexToOrderOfDev;
 	}

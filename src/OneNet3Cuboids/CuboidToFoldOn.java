@@ -13,6 +13,7 @@ public class CuboidToFoldOn {
 	
 
 	
+	
 	private CoordWithRotationAndIndex[][] neighbours;
 	
 	private int dimensions[] = new int[3];
@@ -107,6 +108,12 @@ public class CuboidToFoldOn {
 
 	public static int indexPaperLeft(int cellIndex) {
 		return -1;
+	}
+	
+	public void resetState() {
+		for(int i=0; i<cellsUsed.length; i++) {
+			cellsUsed[i] = false;
+		}
 	}
 
 	public static void main(String args[]) {
