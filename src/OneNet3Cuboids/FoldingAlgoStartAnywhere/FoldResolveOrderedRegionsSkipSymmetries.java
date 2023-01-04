@@ -31,11 +31,11 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 		if(areaCuboid < 12) {
 			solutionResolver = new StandardResolverForSmallSolutions(new CuboidToFoldOn(a, b, c));
 		} else if(areaCuboid < 20) {
-			solutionResolver = new StandardResolverForMediumSolutions();
+			solutionResolver = new StandardResolverForMediumSolutions(new CuboidToFoldOn(a, b, c));
 		} else if(areaCuboid < 27) {
-			solutionResolver = new StandardResolverForLargeSolutions();
+			solutionResolver = new StandardResolverForLargeSolutions(new CuboidToFoldOn(a, b, c));
 		} else {
-			solutionResolver = new StandardResolverForXLSolutions();
+			solutionResolver = new StandardResolverForXLSolutions(new CuboidToFoldOn(a, b, c));
 		}
 		
 		
@@ -716,7 +716,7 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 
 	public static void main(String args[]) {
 		System.out.println("Fold Resolver Ordered Regions start anywhere:");
-		solveFoldsForSingleCuboid(1, 1, 1);
+		solveFoldsForSingleCuboid(5, 1, 1);
 
 		//Best 5,1,1: 3 minute 45 seconds (3014430 solutions) (December 27th)
 		
