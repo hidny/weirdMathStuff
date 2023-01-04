@@ -71,7 +71,7 @@ public class MemorylessUniqueCheckSkipSymmetriesMemManage2 {
 	
 	public boolean isUnique(Coord2D paperToDevelop[], boolean array[][]) {
 		
-		boolean isGettingOrderingOfOriginalSolution = true;
+		boolean isCurrentlyAloneInFirst = true;
 		boolean isUniqueSoFar = true;
 		
 		int START_INDEX = 0;
@@ -192,10 +192,10 @@ public class MemorylessUniqueCheckSkipSymmetriesMemManage2 {
 
 					
 					originalQuickness = doDepthFirstSearch(array, newPaperToDevelop, indexCuboidOnPaper, paperUsed, cuboidToUse, numCellsUsedDepth,
-						regionsToHandleRevOrder, originalQuickness, null, isGettingOrderingOfOriginalSolution,
+						regionsToHandleRevOrder, originalQuickness, null, isCurrentlyAloneInFirst,
 						coord2DTable);
 				
-					isGettingOrderingOfOriginalSolution = false;
+					isCurrentlyAloneInFirst = false;
 
 					if(originalQuickness == null) {
 						System.out.println("DOH! Orig quickness is null");
@@ -205,7 +205,7 @@ public class MemorylessUniqueCheckSkipSymmetriesMemManage2 {
 				} else {
 
 					int tmp[] = doDepthFirstSearch(array, newPaperToDevelop, indexCuboidOnPaper, paperUsed, cuboidToUse, numCellsUsedDepth,
-							regionsToHandleRevOrder, tmpQuickness, originalQuickness, isGettingOrderingOfOriginalSolution,
+							regionsToHandleRevOrder, tmpQuickness, originalQuickness, isCurrentlyAloneInFirst,
 							coord2DTable);
 					
 					if(tmp != null) {
@@ -439,7 +439,7 @@ public class MemorylessUniqueCheckSkipSymmetriesMemManage2 {
 
 
 	public static int[] doDepthFirstSearch(boolean netToReplicate[][], Coord2D paperToDevelop[], int indexCuboidonPaper[][], boolean paperUsed[][], CuboidToFoldOn cuboid, int numCellsUsedDepth,
-			Region regions[], int curAnswer[], int quickestAnswerToCompareTo[], boolean isGettingOrderingOfOriginalSolution,
+			Region regions[], int curAnswer[], int quickestAnswerToCompareTo[], boolean isCurrentlyAloneInFirst,
 			Coord2D coord2DTable[][]) {
 
 
@@ -554,11 +554,11 @@ public class MemorylessUniqueCheckSkipSymmetriesMemManage2 {
 						
 						curAnswer[numCellsUsedDepth] = numRotationIterationsSkipped;
 	
-						if(isGettingOrderingOfOriginalSolution) {
+						if(isCurrentlyAloneInFirst) {
 							//pass
 		
 						} else if(curAnswer[numCellsUsedDepth] < quickestAnswerToCompareTo[numCellsUsedDepth]) {
-							return curAnswer;
+							isCurrentlyAloneInFirst = true;
 							
 						} else if(curAnswer[numCellsUsedDepth] > quickestAnswerToCompareTo[numCellsUsedDepth]) {
 							return null;
@@ -585,11 +585,11 @@ public class MemorylessUniqueCheckSkipSymmetriesMemManage2 {
 		//End of loop:
 		if(numCellsUsedDepth == cuboid.getNumCellsToFill()) {
 			
-			if(isGettingOrderingOfOriginalSolution) {
+			if(isCurrentlyAloneInFirst) {
+				//If you're tied for 1st, you're not faster than current fastest
 				return curAnswer;
 
 			} else {
-				//If you're tied for 1st, you're not faster than current fastest
 				return null;
 			}
 		} else {
