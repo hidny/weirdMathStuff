@@ -32,7 +32,7 @@ public class StandardResolverForSmallSolutions implements SolutionResolverInterf
 		//Utils.printFoldWithIndex(indexCuboidonPaper);
 
 		//if(BasicUniqueCheckImproved.isUnique(paperToDevelop, paperUsed)) {
-		if(memorylessUniqueCheckSkipSymmetriesMemManage2.isUnique(paperToDevelop, paperUsed, indexCuboidonPaper)) {
+		if(memorylessUniqueCheckSkipSymmetriesMemManage2.isUnique(paperToDevelop, paperUsed)) {
 			FoldResolveOrderedRegionsSkipSymmetries.numUniqueFound++;
 
 			Utils.printFold(paperUsed);

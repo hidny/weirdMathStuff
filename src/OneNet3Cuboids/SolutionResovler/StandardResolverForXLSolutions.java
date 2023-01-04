@@ -34,7 +34,7 @@ public class StandardResolverForXLSolutions implements SolutionResolverInterface
 		}
 
 		//if(BasicUniqueCheckImproved.isUnique(paperToDevelop, paperUsed)) {
-		if(memorylessUniqueCheckSkipSymmetriesMemManage2.isUnique(paperToDevelop, paperUsed, indexCuboidonPaper)) {
+		if(memorylessUniqueCheckSkipSymmetriesMemManage2.isUnique(paperToDevelop, paperUsed)) {
 			FoldResolveOrderedRegionsSkipSymmetries.numUniqueFound++;
 
 			if(FoldResolveOrderedRegionsSkipSymmetries.numUniqueFound % 1000000L == 0) {

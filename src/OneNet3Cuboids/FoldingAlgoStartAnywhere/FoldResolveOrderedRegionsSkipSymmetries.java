@@ -616,7 +616,6 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 		}
 	}
 	
-	//TODO: move to another class:
 	public static int getNumUsedNeighbourCellonPaper(
 			int indexCuboidonPaper[][],
 			Coord2D cellLocation) {

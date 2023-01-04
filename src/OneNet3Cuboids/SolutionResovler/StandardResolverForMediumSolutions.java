@@ -29,7 +29,7 @@ public class StandardResolverForMediumSolutions implements SolutionResolverInter
 		}
 
 		//if(BasicUniqueCheckImproved.isUnique(paperToDevelop, paperUsed)) {
-		if(memorylessUniqueCheckSkipSymmetriesMemManage2.isUnique(paperToDevelop, paperUsed, indexCuboidonPaper)) {
+		if(memorylessUniqueCheckSkipSymmetriesMemManage2.isUnique(paperToDevelop, paperUsed)) {
 			FoldResolveOrderedRegionsSkipSymmetries.numUniqueFound++;
 
 			if(FoldResolveOrderedRegionsSkipSymmetries.numUniqueFound % 2000 == 0) {
