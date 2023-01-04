@@ -18,7 +18,7 @@ public class MemorylessUniqueCheckSkipSymmetriesMemManage2 {
 	// (i.e.: Anything that the algo would be found first)
 	//Warning: This will only work if we model the algo correctly.
 	
-	public static long debugNumOnlyTopValid = 0;
+	public static long debugNumIsUniqueCalls = 0;
 	public static long debugNumMoreThanTopValid = 0;
 	
 	public static final int DEFAULT_ROTATION = 0;
@@ -51,6 +51,12 @@ public class MemorylessUniqueCheckSkipSymmetriesMemManage2 {
 		regionsToHandleRevOrder[0] = new Region(orig);
 		
 		validSetup = new boolean[totalArea];
+		isSimilarCellToStart = new boolean[totalArea];
+		
+		//TODO: put this in symmetry resolver and handle more cases than Nx1x1:
+		if(orig.getDimensions()[1] == 1 && orig.getDimensions()[2] == 1) {
+			isSimilarCellToStart[totalArea - 1] = true;
+		}
 		
 		originalQuickness = new int[totalArea];
 		tmpQuickness = new int[totalArea];
@@ -63,13 +69,14 @@ public class MemorylessUniqueCheckSkipSymmetriesMemManage2 {
 	private CuboidToFoldOn cuboidToUse;
 	
 	private boolean validSetup[];
+	private boolean isSimilarCellToStart[];
 	
 	private Coord2D coord2DTable[][];
 	
 	public int originalQuickness[];
 	public int tmpQuickness[];
 	
-	public boolean isUnique(Coord2D paperToDevelop[], boolean array[][]) {
+	public boolean isUnique(Coord2D paperToDevelop[], boolean array[][], int origIndexCuboidOnPaper[][]) {
 		
 		boolean isCurrentlyAloneInFirst = true;
 		boolean isUniqueSoFar = true;
@@ -84,43 +91,58 @@ public class MemorylessUniqueCheckSkipSymmetriesMemManage2 {
 		
 
 		validSetup[0] = true;
+		
+		int minNeighbours = FoldResolveOrderedRegionsSkipSymmetries.getNumUsedNeighbourCellonPaper(
+				origIndexCuboidOnPaper, paperToDevelop[0]);
 
 		for(int index=1; index<validSetup.length; index++) {
 			validSetup[index] = false;
 		}
 		
 		int debugNumOtherValid = 0;
+
 		for(int index=1; index<validSetup.length; index++) {
 			
-			switchOnOffPaperUsedForArrayRotatedOrReflected(true, paperToDevelop, array, DEFAULT_ROTATION, NO_REFLECTION);
-			
-			validSetup[index] = isValidSetup(paperToDevelop, array, index);
-			
-			if(validSetup[index]) {
-				debugNumOtherValid++;
+			if(FoldResolveOrderedRegionsSkipSymmetries.getNumUsedNeighbourCellonPaper(
+					origIndexCuboidOnPaper, paperToDevelop[index]) < minNeighbours) {
+				
+				validSetup[index] = false;
+
+			} else if(isSimilarCellToStart[origIndexCuboidOnPaper[paperToDevelop[index].i][paperToDevelop[index].j]]) {
+				
+				validSetup[index] = true;
+				
+				
+			} else {
+				
+				switchOnOffPaperUsedForArrayRotatedOrReflected(true, paperToDevelop, array, DEFAULT_ROTATION, NO_REFLECTION);
+				
+				validSetup[index] = isValidSetup(paperToDevelop, array, index);
+				
+				if(validSetup[index]) {
+					debugNumOtherValid++;
+				}
+				
+				switchOnOffPaperUsedForArrayRotatedOrReflected(false, paperToDevelop, array, DEFAULT_ROTATION, NO_REFLECTION);
+				eraseChangesToPaperUsedAndIndexCuboidOnPaper(
+						paperToDevelop,
+						paperUsed,
+						indexCuboidOnPaper,
+						DEFAULT_ROTATION,
+						NO_REFLECTION);
 			}
-			
-			switchOnOffPaperUsedForArrayRotatedOrReflected(false, paperToDevelop, array, DEFAULT_ROTATION, NO_REFLECTION);
-			eraseChangesToPaperUsedAndIndexCuboidOnPaper(
-					paperToDevelop,
-					paperUsed,
-					indexCuboidOnPaper, 
-					DEFAULT_ROTATION,
-					NO_REFLECTION);
 		}
 
-		if(debugNumOtherValid == 1) {
-			debugNumOnlyTopValid++;
-		} else if(debugNumOtherValid >= 2){
+		debugNumIsUniqueCalls++;
+		if(debugNumOtherValid > 0){
 			debugNumMoreThanTopValid++;
-		} else {
-			System.out.println("Top one should be valid.");
-			System.exit(1);
 		}
-		if(debugNumOnlyTopValid > 0 && debugNumOnlyTopValid % 100000 == 0) {
+
+		//TODO: put this in the final summary...
+		if(debugNumIsUniqueCalls > 0 && (debugNumIsUniqueCalls % 1000000 == 0 )) {
 			System.out.println("--");
-			System.out.println("debugNumOnlyTopValid: " + debugNumOnlyTopValid);
-			System.out.println("debugNumMoreThanTopValid: " + debugNumMoreThanTopValid);
+			System.out.println("debugNumIsUniqueCalls: " + debugNumIsUniqueCalls);
+			System.out.println("debugNumMoreThanTopStartValid: " + debugNumMoreThanTopValid);
 		}
 		
 		//Check to see if current solution is the 1st of every valid reflection/rotation:
