@@ -115,7 +115,6 @@ public class MemorylessUniqueCheckSkipSymmetriesMemManage2 {
 				
 			} else {
 				
-				switchOnOffPaperUsedForArrayRotatedOrReflected(true, paperToDevelop, array, DEFAULT_ROTATION, NO_REFLECTION);
 				
 				validSetup[index] = isValidSetup(paperToDevelop, array, index);
 				
@@ -123,7 +122,6 @@ public class MemorylessUniqueCheckSkipSymmetriesMemManage2 {
 					debugNumOtherValid++;
 				}
 				
-				switchOnOffPaperUsedForArrayRotatedOrReflected(false, paperToDevelop, array, DEFAULT_ROTATION, NO_REFLECTION);
 				eraseChangesToPaperUsedAndIndexCuboidOnPaper(
 						paperToDevelop,
 						paperUsed,
@@ -144,6 +142,9 @@ public class MemorylessUniqueCheckSkipSymmetriesMemManage2 {
 			System.out.println("debugNumIsUniqueCalls: " + debugNumIsUniqueCalls);
 			System.out.println("debugNumMoreThanTopStartValid: " + debugNumMoreThanTopValid);
 		}
+		
+		//Not needed because the 1st iteration reverses this completely:
+		//switchOnOffPaperUsedForArrayRotatedOrReflected(false, paperToDevelop, array, DEFAULT_ROTATION, NO_REFLECTION);
 		
 		//Check to see if current solution is the 1st of every valid reflection/rotation:
 		
