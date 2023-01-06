@@ -9,7 +9,7 @@ import OneNet3Cuboids.FoldingAlgoStartAnywhere.FoldResolveOrderedRegionsSkipSymm
 import OneNet3Cuboids.Region.Region;
 import number.IsNumber;
 
-public class MemorylessUniqueCheckSkipSymmetriesMemManage2 {
+public class MemorylessUniqueCheckSkipSymmetriesMMNx1x1 {
 	
 	//I tried to make it faster by only declaring memory at initialization of object,
 	// and never again.
@@ -26,7 +26,7 @@ public class MemorylessUniqueCheckSkipSymmetriesMemManage2 {
 	
 	public static final int ROTATIONS_TIMES_RELECTIONS = 8;
 	
-	public MemorylessUniqueCheckSkipSymmetriesMemManage2(CuboidToFoldOn orig) {
+	public MemorylessUniqueCheckSkipSymmetriesMMNx1x1(CuboidToFoldOn orig) {
 
 		//TODO: get these dims from a utils location (don't just hope it matches what's set somewhere else)
 		int totalArea = orig.getNumCellsToFill();
@@ -77,7 +77,7 @@ public class MemorylessUniqueCheckSkipSymmetriesMemManage2 {
 	public int originalQuickness[];
 	public int tmpQuickness[];
 	
-	public boolean isUnique(Coord2D paperToDevelop[], boolean array[][], int origIndexCuboidOnPaper[][]) {
+	public boolean isUniqueNx1x1(Coord2D paperToDevelop[], boolean array[][], int origIndexCuboidOnPaper[][]) {
 		
 		boolean isCurrentlyAloneInFirst = true;
 		boolean isUniqueSoFar = true;

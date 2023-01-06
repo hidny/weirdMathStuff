@@ -1,5 +1,8 @@
 package OneNet3Cuboids.SolutionResovler;
 
+import java.math.BigInteger;
+import java.util.ArrayList;
+
 import OneNet3Cuboids.CuboidToFoldOn;
 import OneNet3Cuboids.Utils;
 import OneNet3Cuboids.Coord.Coord2D;
@@ -32,6 +35,7 @@ public class BadIntersectResolverForSmallSolutions implements SolutionResolverIn
 			return 0L;
 		} else {
 
+			answersBadIntersect.add(BasicUniqueCheckImproved.debugLastScore);
 			
 			FoldResolveOrderedRegionsSkipSymmetries.numUniqueFound++;
 
@@ -44,5 +48,6 @@ public class BadIntersectResolverForSmallSolutions implements SolutionResolverIn
 		}
 	}
 
+	public static ArrayList<BigInteger> answersBadIntersect = new ArrayList<BigInteger>();
 	
 }
