@@ -3,13 +3,13 @@ package OneNet3Cuboids.FoldingAlgoMultipleCuboids;
 import OneNet3Cuboids.FoldingAlgoStartAnywhere.FoldResolveOrderedRegionsSkipSymmetries;
 import OneNet3Cuboids.SolutionResovler.BadIntersectResolverForSmallSolutions;
 import OneNet3Cuboids.SolutionResovler.SolutionResolverInterface;
-import OneNet3Cuboids.SolutionResovler.StandardResolverUsingMemoryForLargeSolutions;
+import OneNet3Cuboids.SolutionResovler.StandardResolverUsingMemory;
 
 public class BasicMultCuboidAlgoThatIsBad {
 
 	public static void main(String args[]) {
 		
-		StandardResolverUsingMemoryForLargeSolutions getAnswersShapeA = new StandardResolverUsingMemoryForLargeSolutions();
+		StandardResolverUsingMemory getAnswersShapeA = new StandardResolverUsingMemory();
 		System.out.println("Fold Resolver Ordered Regions start anywhere:");
 		FoldResolveOrderedRegionsSkipSymmetries.solveFoldsForSingleCuboid(5, 1, 1, true, getAnswersShapeA);
 		//FoldResolveOrderedRegionsSkipSymmetries.solveFoldsForSingleCuboid(1, 1, 1);

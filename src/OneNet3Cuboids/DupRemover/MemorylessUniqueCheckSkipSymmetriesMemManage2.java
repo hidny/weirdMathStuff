@@ -681,45 +681,6 @@ public class MemorylessUniqueCheckSkipSymmetriesMemManage2 {
 				coord2DTable);
 	}
 	
-	public boolean isValidSetupAtIndexedStartLocationInitialRotation(Coord2D paperToDevelop[], boolean netToReplicate[][], int indexCellInList, int rotationStart) {
-		
-
-		int START_INDEX = 0;
-		
-		cuboidToUse.resetState();
-
-		int startI = paperToDevelop[indexCellInList].i;
-		int startJ = paperToDevelop[indexCellInList].j;
-		
-		int numCellsUsedDepth = 0;
-
-		paperUsed[startI][startJ] = true;
-		
-		//Delete loop? Answer: No! It's used by symmetry resolver!
-		for(int k=0; k<newPaperToDevelop.length; k++) {
-			newPaperToDevelop[k] = null;
-		}
-		newPaperToDevelop[numCellsUsedDepth] = coord2DTable[startI][startJ];
-		
-		cuboidToUse.setCell(START_INDEX, rotationStart);
-		indexCuboidOnPaper[startI][startJ] = START_INDEX;
-		numCellsUsedDepth += 1;
-		
-		regionsToHandleRevOrder[0].resetStateWithStartIndexOnly(0);
-	//END Setup to run imitation algo.
-		
-		
-
-		return isValid(netToReplicate,
-				newPaperToDevelop,
-				indexCuboidOnPaper,
-				paperUsed,
-				cuboidToUse, 
-				numCellsUsedDepth,
-				regionsToHandleRevOrder,
-				coord2DTable);
-	}
-	
 	public static boolean isValid(boolean netToReplicate[][],
 			Coord2D paperToDevelop[],
 			int indexCuboidOnPaper[][],

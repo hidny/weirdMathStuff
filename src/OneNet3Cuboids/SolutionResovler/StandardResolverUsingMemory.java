@@ -9,7 +9,7 @@ import OneNet3Cuboids.DupRemover.MemorylessUniqueCheckSkipSymmetriesMemManage;
 import OneNet3Cuboids.DupRemover.MemorylessUniqueCheckSkipSymmetriesMemManage2;
 import OneNet3Cuboids.FoldingAlgoStartAnywhere.FoldResolveOrderedRegionsSkipSymmetries;
 
-public class StandardResolverUsingMemoryForLargeSolutions implements SolutionResolverInterface {
+public class StandardResolverUsingMemory implements SolutionResolverInterface {
 	
 	
 
