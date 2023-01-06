@@ -53,9 +53,12 @@ public class MemorylessUniqueCheckSkipSymmetriesMemManage2 {
 		validSetup = new boolean[totalArea];
 		isSimilarCellToStart = new boolean[totalArea];
 		
-		//TODO: put this in symmetry resolver and handle more cases than Nx1x1:
+		//TODO: this is a hack for Nx1x1 that will be improved later:
 		if(orig.getDimensions()[1] == 1 && orig.getDimensions()[2] == 1) {
 			isSimilarCellToStart[totalArea - 1] = true;
+			
+			//For now, NxNx1 is a special case where only 1 rotation is needed:
+			numRotationsToCheck = 1;
 		}
 		
 
@@ -76,6 +79,8 @@ public class MemorylessUniqueCheckSkipSymmetriesMemManage2 {
 	
 	public int originalQuickness[];
 	public int tmpQuickness[];
+	
+	private int numRotationsToCheck = NUM_ROTATIONS;
 	
 	public boolean isUnique(Coord2D paperToDevelop[], boolean array[][], int origIndexCuboidOnPaper[][]) {
 		
@@ -102,41 +107,39 @@ public class MemorylessUniqueCheckSkipSymmetriesMemManage2 {
 		
 		int debugNumOtherValid = 0;
 
-		/*if(cuboidToUse.getDimensions()[1] == 1 && cuboidToUse.getDimensions()[2] == 1) {
-
-			//TODO: if cuboid is not Nx1x1, you will also need a rotation when checking valid:
-			System.out.println("ERROR: I only covered the Nx1x1 case...");
-			System.exit(1);
-		}*/
-
-		//TODO: I'll have to try each rotation for anything that's not Nx1x1
+		
+		//This algo is ineffient, but it works.
+		// It basically brute forces matches every possible start pos and rotation with cell 0 of the cuboid
+		//looking for a match. There are better ways to do this.
 		for(int index=1; index<validSetup.length; index++) {
 			
-			if(FoldResolveOrderedRegionsSkipSymmetries.getNumUsedNeighbourCellonPaper(
-					origIndexCuboidOnPaper, paperToDevelop[index]) < minNeighbours) {
-				
-				validSetup[index] = false;
-
-			} else if(isSimilarCellToStart[origIndexCuboidOnPaper[paperToDevelop[index].i][paperToDevelop[index].j]]) {
-				
-				validSetup[index] = true;
-				
-				
-			} else {
-				
-				
-				validSetup[index] = isValidSetupAtIndexedStartLocation(paperToDevelop, array, index);
-				
-				if(validSetup[index]) {
-					debugNumOtherValid++;
+			for(int rot=0; rot<numRotationsToCheck; rot++) {
+				if(FoldResolveOrderedRegionsSkipSymmetries.getNumUsedNeighbourCellonPaper(
+						origIndexCuboidOnPaper, paperToDevelop[index]) < minNeighbours) {
+					
+					validSetup[index] = false;
+	
+				} else if(isSimilarCellToStart[origIndexCuboidOnPaper[paperToDevelop[index].i][paperToDevelop[index].j]]) {
+					
+					validSetup[index] = true;
+					
+					
+				} else {
+					
+					
+					validSetup[index] = isValidSetupAtIndexedStartLocationWithRotation(paperToDevelop, array, index, rot);
+					
+					if(validSetup[index]) {
+						debugNumOtherValid++;
+					}
+					
+					eraseChangesToPaperUsedAndIndexCuboidOnPaper(
+							paperToDevelop,
+							paperUsed,
+							indexCuboidOnPaper,
+							DEFAULT_ROTATION,
+							NO_REFLECTION);
 				}
-				
-				eraseChangesToPaperUsedAndIndexCuboidOnPaper(
-						paperToDevelop,
-						paperUsed,
-						indexCuboidOnPaper,
-						DEFAULT_ROTATION,
-						NO_REFLECTION);
 			}
 		}
 		
@@ -642,7 +645,7 @@ public class MemorylessUniqueCheckSkipSymmetriesMemManage2 {
 		
 	}
 	
-	public boolean isValidSetupAtIndexedStartLocation(Coord2D paperToDevelop[], boolean netToReplicate[][], int indexCellInList) {
+	public boolean isValidSetupAtIndexedStartLocationWithRotation(Coord2D paperToDevelop[], boolean netToReplicate[][], int indexCellInList, int rotation) {
 		
 
 		int START_INDEX = 0;
@@ -662,7 +665,7 @@ public class MemorylessUniqueCheckSkipSymmetriesMemManage2 {
 		}
 		newPaperToDevelop[numCellsUsedDepth] = coord2DTable[startI][startJ];
 		
-		cuboidToUse.setCell(START_INDEX, 0);
+		cuboidToUse.setCell(START_INDEX, rotation);
 		indexCuboidOnPaper[startI][startJ] = START_INDEX;
 		numCellsUsedDepth += 1;
 		
