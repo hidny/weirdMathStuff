@@ -51,7 +51,7 @@ public class ShapeIntersectionCheckerAtSolutionTime implements SolutionResolverI
 			
 			for(int rotation=0; rotation<4; rotation++) {
 
-				if(memorylessUniqueCheckSkipSymmetriesMemManage2.isValidSetupAtIndexedStartLocationInitialRotation(paperToDevelop, OrigPaperUsed, index, rotation)) {
+				if(memorylessUniqueCheckSkipSymmetriesMemManage2.isValidSetupAtIndexedStartLocationWithRotation(paperToDevelop, OrigPaperUsed, index, rotation)) {
 					
 					if(BasicUniqueCheck.isUnique(OrigPaperUsed)) {
 						

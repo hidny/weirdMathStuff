@@ -52,14 +52,8 @@ public class MemorylessUniqueCheckSkipSymmetriesMemManage2 {
 		
 		validSetup = new boolean[totalArea];
 		isSimilarCellToStart = new boolean[totalArea];
+		//TODO: forgot to say top is similar... oops. It just means that the algo will be slighly slower.
 		
-		//TODO: this is a hack for Nx1x1 that will be improved later:
-		if(orig.getDimensions()[1] == 1 && orig.getDimensions()[2] == 1) {
-			isSimilarCellToStart[totalArea - 1] = true;
-			
-			//For now, NxNx1 is a special case where only 1 rotation is needed:
-			numRotationsToCheck = 1;
-		}
 		
 
 		originalQuickness = new int[totalArea];
@@ -80,7 +74,6 @@ public class MemorylessUniqueCheckSkipSymmetriesMemManage2 {
 	public int originalQuickness[];
 	public int tmpQuickness[];
 	
-	private int numRotationsToCheck = NUM_ROTATIONS;
 	
 	public boolean isUnique(Coord2D paperToDevelop[], boolean array[][], int origIndexCuboidOnPaper[][]) {
 		
@@ -96,6 +89,12 @@ public class MemorylessUniqueCheckSkipSymmetriesMemManage2 {
 		//}
 		
 
+		//TODO: this is a hack for Nx1x1 that will be improved later:
+		if(cuboidToUse.getDimensions()[1] != 1 || cuboidToUse.getDimensions()[2] != 1) {
+			System.out.println("ERROR: MemorylessUniqueCheckSkipSymmetriesMemManage2 only handles Nx1x1 cuboids!");
+			System.exit(1);
+		}
+		
 		validSetup[0] = true;
 		
 		int minNeighbours = FoldResolveOrderedRegionsSkipSymmetries.getNumUsedNeighbourCellonPaper(
@@ -109,38 +108,37 @@ public class MemorylessUniqueCheckSkipSymmetriesMemManage2 {
 
 		
 		//This algo is ineffient, but it works.
-		// It basically brute forces matches every possible start pos and rotation with cell 0 of the cuboid
-		//looking for a match. There are better ways to do this.
+		// It basically brute forces matches every possible start pos with cell 0 of the cuboid
+		//looking for a match. There is a better ways to do this.
 		for(int index=1; index<validSetup.length; index++) {
 			
-			for(int rot=0; rot<numRotationsToCheck; rot++) {
-				if(FoldResolveOrderedRegionsSkipSymmetries.getNumUsedNeighbourCellonPaper(
-						origIndexCuboidOnPaper, paperToDevelop[index]) < minNeighbours) {
-					
-					validSetup[index] = false;
-	
-				} else if(isSimilarCellToStart[origIndexCuboidOnPaper[paperToDevelop[index].i][paperToDevelop[index].j]]) {
-					
-					validSetup[index] = true;
-					
-					
-				} else {
-					
-					
-					validSetup[index] = isValidSetupAtIndexedStartLocationWithRotation(paperToDevelop, array, index, rot);
-					
-					if(validSetup[index]) {
-						debugNumOtherValid++;
-					}
-					
-					eraseChangesToPaperUsedAndIndexCuboidOnPaper(
-							paperToDevelop,
-							paperUsed,
-							indexCuboidOnPaper,
-							DEFAULT_ROTATION,
-							NO_REFLECTION);
+			if(FoldResolveOrderedRegionsSkipSymmetries.getNumUsedNeighbourCellonPaper(
+					origIndexCuboidOnPaper, paperToDevelop[index]) < minNeighbours) {
+				
+				validSetup[index] = false;
+
+			} else if(isSimilarCellToStart[origIndexCuboidOnPaper[paperToDevelop[index].i][paperToDevelop[index].j]]) {
+				
+				validSetup[index] = true;
+				
+				
+			} else {
+				
+				
+				validSetup[index] = isValidSetupAtIndexedStartLocationWithRotation(paperToDevelop, array, index, DEFAULT_ROTATION);
+				
+				if(validSetup[index]) {
+					debugNumOtherValid++;
 				}
+				
+				eraseChangesToPaperUsedAndIndexCuboidOnPaper(
+						paperToDevelop,
+						paperUsed,
+						indexCuboidOnPaper,
+						DEFAULT_ROTATION,
+						NO_REFLECTION);
 			}
+			
 		}
 		
 		
