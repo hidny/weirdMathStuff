@@ -45,13 +45,15 @@ public class ShapeIntersectionCheckerAtSolutionTime implements SolutionResolverI
 			Utils.printFold(OrigPaperUsed);
 			Utils.printFoldWithIndex(indexCuboidonPaper);
 		}
-		
+
+		int START_INDEX = 0;
+
 		FIND_SOLUTION_LOOP:
 		for(int index=0; index<paperToDevelop.length; index++) {
 			
 			for(int rotation=0; rotation<4; rotation++) {
 
-				if(memorylessUniqueCheckSkipSymmetriesMemManage2.isValidSetupAtIndexedStartLocationWithRotation(paperToDevelop, OrigPaperUsed, index, rotation)) {
+				if(memorylessUniqueCheckSkipSymmetriesMemManage2.isValidSetupAtIndexedStartLocationWithRotation(paperToDevelop, OrigPaperUsed, index, rotation, START_INDEX)) {
 					
 					if(BasicUniqueCheck.isUnique(OrigPaperUsed)) {
 						

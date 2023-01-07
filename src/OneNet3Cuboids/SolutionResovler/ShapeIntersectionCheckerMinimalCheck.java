@@ -54,6 +54,7 @@ public class ShapeIntersectionCheckerMinimalCheck implements SolutionResolverInt
 			Utils.printFoldWithIndex(indexCuboidonPaper);
 		}
 		
+		int PAPER_TO_DEVELOP_INDEX_TO_USE = 0;
 
 		for(int i=0; i<startingPointsAndRotationsToCheck.size(); i++) {
 			
@@ -61,7 +62,7 @@ public class ShapeIntersectionCheckerMinimalCheck implements SolutionResolverInt
 			int rotation = startingPointsAndRotationsToCheck.get(i).getRotationRelativeToCuboidMap();
 		
 
-			if(memorylessUniqueCheckSkipSymmetriesMemManage2.isValidSetupAtIndexedStartLocationWithRotation(paperToDevelop, OrigPaperUsed, index, rotation)) {
+			if(memorylessUniqueCheckSkipSymmetriesMemManage2.isValidSetupAtIndexedStartLocationWithRotation(paperToDevelop, OrigPaperUsed, PAPER_TO_DEVELOP_INDEX_TO_USE, rotation, index)) {
 				
 				if(BasicUniqueCheck.isUnique(OrigPaperUsed)) {
 					
@@ -106,7 +107,12 @@ public class ShapeIntersectionCheckerMinimalCheck implements SolutionResolverInt
 					memorylessUniqueCheckSkipSymmetriesMemManage2.getIndexCuboidOnPaper(),
 					MemorylessUniqueCheckSkipSymmetriesMemManage2.DEFAULT_ROTATION,
 					MemorylessUniqueCheckSkipSymmetriesMemManage2.NO_REFLECTION);
-		
+			
+			//TODO: delete
+			//System.out.println("Print fold:");
+			//Utils.printFoldWithIndex(memorylessUniqueCheckSkipSymmetriesMemManage2.getIndexCuboidOnPaper());
+			//END TODO
+			
 		} //End loop for each start position
 		
 

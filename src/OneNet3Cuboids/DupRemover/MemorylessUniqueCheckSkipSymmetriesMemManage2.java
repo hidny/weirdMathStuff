@@ -125,7 +125,7 @@ public class MemorylessUniqueCheckSkipSymmetriesMemManage2 {
 			} else {
 				
 				
-				validSetup[index] = isValidSetupAtIndexedStartLocationWithRotation(paperToDevelop, array, index, DEFAULT_ROTATION);
+				validSetup[index] = isValidSetupAtIndexedStartLocationWithRotation(paperToDevelop, array, index, DEFAULT_ROTATION, START_INDEX);
 				
 				if(validSetup[index]) {
 					debugNumOtherValid++;
@@ -643,15 +643,14 @@ public class MemorylessUniqueCheckSkipSymmetriesMemManage2 {
 		
 	}
 	
-	public boolean isValidSetupAtIndexedStartLocationWithRotation(Coord2D paperToDevelop[], boolean netToReplicate[][], int indexCellInList, int rotation) {
+	public boolean isValidSetupAtIndexedStartLocationWithRotation(Coord2D paperToDevelop[], boolean netToReplicate[][], int indexCellSolutionCellList, int rotation, int cuboidStartIndex) {
 		
 
-		int START_INDEX = 0;
 		
 		cuboidToUse.resetState();
 
-		int startI = paperToDevelop[indexCellInList].i;
-		int startJ = paperToDevelop[indexCellInList].j;
+		int startI = paperToDevelop[indexCellSolutionCellList].i;
+		int startJ = paperToDevelop[indexCellSolutionCellList].j;
 		
 		int numCellsUsedDepth = 0;
 
@@ -663,11 +662,11 @@ public class MemorylessUniqueCheckSkipSymmetriesMemManage2 {
 		}
 		newPaperToDevelop[numCellsUsedDepth] = coord2DTable[startI][startJ];
 		
-		cuboidToUse.setCell(START_INDEX, rotation);
-		indexCuboidOnPaper[startI][startJ] = START_INDEX;
+		cuboidToUse.setCell(cuboidStartIndex, rotation);
+		indexCuboidOnPaper[startI][startJ] = cuboidStartIndex;
 		numCellsUsedDepth += 1;
 		
-		regionsToHandleRevOrder[0].resetStateWithStartIndexOnly(0);
+		regionsToHandleRevOrder[0].resetStateWithStartIndexOnly(cuboidStartIndex);
 	//END Setup to run imitation algo.
 		
 		
