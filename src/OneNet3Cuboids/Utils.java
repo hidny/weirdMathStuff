@@ -6,6 +6,10 @@ import OneNet3Cuboids.Coord.Coord2D;
 public class Utils {
 
 	public static final int SIDES_CUBOID = 6;
+	
+	public static int[][][] getFlatNumberingOfCuboid(int array[]) {
+		return getFlatNumberingOfCuboid(array[0], array[1], array[2]);
+	}
 
 	public static int[][][] getFlatNumberingOfCuboid(int a, int b, int c) {
 
@@ -35,7 +39,11 @@ public class Utils {
 		
 		return temp_numbering;
 	}
-	
+
+	public static Coord[] getFlatInverseNumberingOfCuboid(int temp_numbering[][][], int array[]) {
+		return getFlatInverseNumberingOfCuboid(temp_numbering, array[0], array[1], array[2]);
+	}
+
 	public static Coord[] getFlatInverseNumberingOfCuboid(int temp_numbering[][][], int a, int b, int c) {
 		
 		Coord numberingInv[] = new Coord[getTotalArea(a, b, c)];
@@ -54,6 +62,22 @@ public class Utils {
 	}
 	
 
+	public static int getSideCell(CuboidToFoldOn inputCuboid, int cellIndex) {
+		
+		int answer = getFlatInverseNumberingOfCuboid(
+				getFlatNumberingOfCuboid(inputCuboid.getDimensions()), 
+				inputCuboid.getDimensions())[cellIndex].a;
+		
+		return answer;
+	}
+	
+	public static int getTotalArea(int array[]) {
+		if(array.length != 3) {
+			System.out.println("ERROR in getTotalArea: there isn't 3 dimensions!");
+			System.exit(1);
+		}
+		return getTotalArea(array[0], array[1], array[2]);
+	}
 	public static int getTotalArea(int a, int b, int c) {
 		return 2*(a*b + a*c + b*c);
 	}

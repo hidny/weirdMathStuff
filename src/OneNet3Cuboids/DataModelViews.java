@@ -5,6 +5,9 @@ public class DataModelViews {
 	//Goal:
 	// Functions to display relevant view to the console
 
+	public static String getFlatNumberingView(int array[]) {
+		return getFlatNumberingView(array[0], array[1], array[2]);
+	}	
 	
 	public static String getFlatNumberingView(int a, int b, int c) {
 		boolean emptyBool[] = new boolean[Utils.getTotalArea(a, b, c)];
