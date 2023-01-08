@@ -120,5 +120,11 @@ public class ShapeIntersectionCheckerMinimalCheck implements SolutionResolverInt
 		return ret;
 	}
 
+	@Override
+	public long getNumUniqueFound() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 	
 }

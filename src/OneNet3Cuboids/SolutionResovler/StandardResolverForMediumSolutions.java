@@ -46,4 +46,10 @@ public class StandardResolverForMediumSolutions implements SolutionResolverInter
 			return 0L;
 		}
 	}
+
+	@Override
+	public long getNumUniqueFound() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

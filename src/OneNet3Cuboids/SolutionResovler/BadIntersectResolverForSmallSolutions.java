@@ -49,5 +49,11 @@ public class BadIntersectResolverForSmallSolutions implements SolutionResolverIn
 	}
 
 	public static ArrayList<BigInteger> answersBadIntersect = new ArrayList<BigInteger>();
+
+	@Override
+	public long getNumUniqueFound() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 	
 }

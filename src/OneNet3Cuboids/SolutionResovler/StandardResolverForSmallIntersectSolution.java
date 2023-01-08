@@ -10,7 +10,7 @@ import OneNet3Cuboids.OldReferenceDupRemovers.MemorylessUniqueCheckSkipSymmetrie
 import OneNet3Cuboids.OldReferenceDupRemovers.MemorylessUniqueCheckSkipSymmetriesForNx1x1MemManageOrig;
 import OneNet3Cuboids.OldReferenceDupRemovers.MemorylessUniqueCheckSkipSymmetriesMemManage3ForNx1x1WithFancyValidTrick;
 
-public class StandardResolverForSmallSolutions implements SolutionResolverInterface {
+public class StandardResolverForSmallIntersectSolution implements SolutionResolverIntersectInterface {
 
 	//private MemorylessUniqueCheckSkipSymmetriesMemManage2ForNx1x1 memorylessUniqueCheckSkipSymmetriesMemManage;
 	
@@ -18,13 +18,13 @@ public class StandardResolverForSmallSolutions implements SolutionResolverInterf
 	
 	private long numUniqueFound = 0;
 	
-	public StandardResolverForSmallSolutions(CuboidToFoldOn exampleCuboid) {
+	public StandardResolverForSmallIntersectSolution(CuboidToFoldOn exampleCuboid) {
 		
 		uniqChecker = new BasicUniqueCheckImproved();
 	}
 	
 	@Override
-	public long resolveSolution(CuboidToFoldOn cuboidDimensionsAndNeighbours, Coord2D paperToDevelop[], int[][] indexCuboidonPaper, boolean[][] paperUsed) {
+	public long resolveSolution(CuboidToFoldOn cuboidDimensionsAndNeighbours, Coord2D paperToDevelop[], int[][][] indexCuboidonPaper, boolean[][] paperUsed) {
 		
 
 		System.out.println(FoldResolveOrderedRegionsSkipSymmetries.numFound +
@@ -41,7 +41,10 @@ public class StandardResolverForSmallSolutions implements SolutionResolverInterf
 			FoldResolveOrderedRegionsSkipSymmetries.numUniqueFound++;
 
 			Utils.printFold(paperUsed);
-			Utils.printFoldWithIndex(indexCuboidonPaper);
+			for(int i=0; i<indexCuboidonPaper.length; i++) {
+				Utils.printFoldWithIndex(indexCuboidonPaper[i]);
+			}
+			
 			System.out.println("Num unique solutions found: " + 
 					FoldResolveOrderedRegionsSkipSymmetries.numUniqueFound);
 			

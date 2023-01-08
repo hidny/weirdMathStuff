@@ -48,4 +48,11 @@ public class StandardResolverForLargeSolutions implements SolutionResolverInterf
 			return 0L;
 		}
 	}
+
+
+	@Override
+	public long getNumUniqueFound() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

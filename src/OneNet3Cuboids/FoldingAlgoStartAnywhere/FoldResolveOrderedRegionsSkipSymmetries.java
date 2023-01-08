@@ -188,7 +188,7 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 							regions,
 							indexToUse, j, prevNewMinOrderedCellCouldUse, prevMinCellRotationOfMinCellToDev,
 							new_i, new_j, indexNewCell, rotationNeighbourPaperRelativeToMap,
-							skipSymmetries, solutionResolver);
+							skipSymmetries);
 					
 					if(regions == null) {
 						cantAddCellBecauseOfOtherPaperNeighbours = true;
@@ -259,13 +259,13 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 	
 	public static boolean depthFirstAlgoWillFindAsolutionInRegionIndex(Coord2D paperToDevelop[], int indexCuboidonPaper[][],
 			boolean paperUsed[][], CuboidToFoldOn cuboid, int numCellsUsedDepth,
-			Region regions[], int regionIndex, boolean skipSymmetries, SolutionResolverInterface solutionResolver) {
+			Region regions[], int regionIndex, boolean skipSymmetries) {
 		
 		
 		Region regionArgToUse[] = new Region[1];
 		regionArgToUse[0] = regions[regionIndex];
 		
-		if(doDepthFirstSearch(paperToDevelop, indexCuboidonPaper, paperUsed, cuboid, numCellsUsedDepth, regionArgToUse, 0L, skipSymmetries, solutionResolver)
+		if(doDepthFirstSearch(paperToDevelop, indexCuboidonPaper, paperUsed, cuboid, numCellsUsedDepth, regionArgToUse, 0L, skipSymmetries, null)
 				> 0L) {
 			return true;
 		} else {
@@ -276,13 +276,13 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
  
 	public static boolean depthFirstAlgoWillFindOnly1solutionInRegionIndex(Coord2D paperToDevelop[], int indexCuboidonPaper[][],
 			boolean paperUsed[][], CuboidToFoldOn cuboid, int numCellsUsedDepth,
-			Region regions[], int regionIndex, boolean skipSymmetries, SolutionResolverInterface solutionResolver) {
+			Region regions[], int regionIndex, boolean skipSymmetries) {
 		
 		
 		Region regionArgToUse[] = new Region[1];
 		regionArgToUse[0] = regions[regionIndex];
 		
-		if(doDepthFirstSearch(paperToDevelop, indexCuboidonPaper, paperUsed, cuboid, numCellsUsedDepth, regionArgToUse, 1L, skipSymmetries, solutionResolver)
+		if(doDepthFirstSearch(paperToDevelop, indexCuboidonPaper, paperUsed, cuboid, numCellsUsedDepth, regionArgToUse, 1L, skipSymmetries, null)
 				== 1L) {
 			return true;
 		} else {
@@ -397,7 +397,7 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 			Region regions[],
 			int indexToUse, int newMinRotationToUse, int prevNewMinOrderedCellCouldUse, int prevMinCellRotationOfMinCellToDev,
 			int new_i, int new_j, int indexNewCell, int rotationNeighbourPaperRelativeToMap,
-			boolean skipSymmetries, SolutionResolverInterface solutionResolver) {
+			boolean skipSymmetries) {
 		
 		boolean cantAddCellBecauseOfOtherPaperNeighbours = false;
 		
@@ -500,7 +500,7 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 							
 							if(depthFirstAlgoWillFindAsolutionInRegionIndex(paperToDevelop, indexCuboidonPaper,
 									paperUsed, cuboid, numCellsUsedDepth,
-									regionsSplit, indexToAdd, skipSymmetries, solutionResolver)
+									regionsSplit, indexToAdd, skipSymmetries)
 								== false) {
 								
 								
@@ -558,7 +558,7 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 							
 							regionHasOneSolution[i2] = depthFirstAlgoWillFindOnly1solutionInRegionIndex(paperToDevelop, indexCuboidonPaper,
 									paperUsed, cuboid, numCellsUsedDepth,
-									regionsSplit, i2, skipSymmetries, solutionResolver);
+									regionsSplit, i2, skipSymmetries);
 
 							numCellsUsedDepth -= 1;
 							
@@ -717,7 +717,7 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 
 	public static void main(String args[]) {
 		System.out.println("Fold Resolver Ordered Regions skip symmetries Nx1x1:");
-		solveFoldsForSingleCuboid(6, 1, 1);
+		solveFoldsForSingleCuboid(4, 1, 1);
 
 		//Best 5,1,1: 3 minute 45 seconds (3014430 solutions) (December 27th)
 		

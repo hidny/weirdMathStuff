@@ -48,7 +48,7 @@ public class MemorylessUniqueCheckSkipSymmetriesMemManage2ForNx1x1 {
 		cuboidToUse = new CuboidToFoldOn(orig);
 		//End copy dims and neighbours
 		
-		regionsToHandleRevOrder[0] = new Region(orig);
+		regionsToHandleRevOrder[0] = new Region(cuboidToUse);
 		
 		validSetup = new boolean[totalArea];
 		isSimilarCellToStart = new boolean[totalArea];

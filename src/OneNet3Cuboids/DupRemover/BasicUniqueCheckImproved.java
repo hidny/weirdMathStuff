@@ -15,6 +15,7 @@ public class BasicUniqueCheckImproved {
 
 	public static int BIG_ENOUGH_NUMBER = 256;
 	
+	//TODO: make dynamic?
 	public static HashSet<BigInteger> uniqList = new HashSet<BigInteger>();
 	public static BigInteger debugLastScore = null;
 	

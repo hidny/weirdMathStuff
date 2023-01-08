@@ -107,5 +107,11 @@ public class ShapeIntersectionCheckerAtSolutionTime implements SolutionResolverI
 		return ret;
 	}
 
+	@Override
+	public long getNumUniqueFound() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 	
 }
