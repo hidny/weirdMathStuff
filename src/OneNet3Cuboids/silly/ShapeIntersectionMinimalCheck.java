@@ -1,4 +1,4 @@
-package OneNet3Cuboids.FoldingAlgoMultipleCuboids;
+package OneNet3Cuboids.silly;
 
 import OneNet3Cuboids.CuboidToFoldOn;
 import OneNet3Cuboids.FoldingAlgoStartAnywhere.FoldResolveOrderedRegionsSkipSymmetries;
@@ -6,6 +6,7 @@ import OneNet3Cuboids.SolutionResovler.BadIntersectResolverForSmallSolutions;
 import OneNet3Cuboids.SolutionResovler.ShapeIntersectionCheckerAtSolutionTime;
 import OneNet3Cuboids.SolutionResovler.ShapeIntersectionCheckerMinimalCheck;
 import OneNet3Cuboids.SolutionResovler.SolutionResolverInterface;
+import OneNet3Cuboids.silly.ShapeIntersectionCheckerMinimalCheckRevEng;
 
 public class ShapeIntersectionMinimalCheck {
 
@@ -19,15 +20,9 @@ public class ShapeIntersectionMinimalCheck {
 		FoldResolveOrderedRegionsSkipSymmetries.solveFoldsForSingleCuboid(5, 1, 1, true, intersectionCheckerAtSolutionTime);
 		*/
 
-		/*
-		SolutionResolverInterface intersectionCheckerAtSolutionTime = new ShapeIntersectionCheckerMinimalCheck(new CuboidToFoldOn(3, 3, 1));
+		SolutionResolverInterface intersectionCheckerAtSolutionTime = new ShapeIntersectionCheckerMinimalCheckRevEng(new CuboidToFoldOn(3, 3, 1));
 		
 		FoldResolveOrderedRegionsSkipSymmetries.solveFoldsForSingleCuboid(7, 1, 1, true, intersectionCheckerAtSolutionTime);
-		*/
-		SolutionResolverInterface intersectionCheckerAtSolutionTime = new ShapeIntersectionCheckerMinimalCheck(new CuboidToFoldOn(5, 2, 1));
-		
-		FoldResolveOrderedRegionsSkipSymmetries.solveFoldsForSingleCuboid(8, 1, 1, true, intersectionCheckerAtSolutionTime);
-		
 		
 		//TODO: print dimensions cuboids
 		System.out.println("Final number of nets that fit both cuboids: " + FoldResolveOrderedRegionsSkipSymmetries.numUniqueFound);

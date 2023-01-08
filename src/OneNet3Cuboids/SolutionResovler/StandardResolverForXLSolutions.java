@@ -7,14 +7,15 @@ import OneNet3Cuboids.DupRemover.BasicUniqueCheckImproved;
 import OneNet3Cuboids.DupRemover.MemorylessUniqueCheckSkipSymmetries;
 import OneNet3Cuboids.DupRemover.MemorylessUniqueCheckSkipSymmetriesMemManage;
 import OneNet3Cuboids.DupRemover.MemorylessUniqueCheckSkipSymmetriesMemManage2;
+import OneNet3Cuboids.DupRemover.MemorylessUniqueCheckSkipSymmetriesMemManage3;
 import OneNet3Cuboids.FoldingAlgoStartAnywhere.FoldResolveOrderedRegionsSkipSymmetries;
 
 public class StandardResolverForXLSolutions implements SolutionResolverInterface {
 	
-	private MemorylessUniqueCheckSkipSymmetriesMemManage2 memorylessUniqueCheckSkipSymmetriesMemManage2;
+	private MemorylessUniqueCheckSkipSymmetriesMemManage3 memorylessUniqueCheckSkipSymmetriesMemManage3;
 	public StandardResolverForXLSolutions(CuboidToFoldOn exampleCuboid) {
 		
-		memorylessUniqueCheckSkipSymmetriesMemManage2 = new MemorylessUniqueCheckSkipSymmetriesMemManage2(exampleCuboid);
+		memorylessUniqueCheckSkipSymmetriesMemManage3 = new MemorylessUniqueCheckSkipSymmetriesMemManage3(exampleCuboid);
 	}
 	
 	
@@ -34,7 +35,7 @@ public class StandardResolverForXLSolutions implements SolutionResolverInterface
 		}
 
 		//if(BasicUniqueCheckImproved.isUnique(paperToDevelop, paperUsed)) {
-		if(memorylessUniqueCheckSkipSymmetriesMemManage2.isUnique(paperToDevelop, paperUsed, indexCuboidonPaper)) {
+		if(memorylessUniqueCheckSkipSymmetriesMemManage3.isUnique(paperToDevelop, paperUsed, indexCuboidonPaper)) {
 			FoldResolveOrderedRegionsSkipSymmetries.numUniqueFound++;
 
 			if(FoldResolveOrderedRegionsSkipSymmetries.numUniqueFound % 1000000L == 0) {
