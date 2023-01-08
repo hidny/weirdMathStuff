@@ -107,6 +107,7 @@ public class BasicDFSIntersectFinder {
 
 			cuboidToBringAlongStartRot.setCell(startIndex2ndCuboid, startRotation2ndCuboid);
 			indexCuboidOnPaper2ndCuboid[START_I][START_J] = startIndex2ndCuboid;
+			
 		
 			doDepthFirstSearch(paperToDevelop, indexCuboidOnPaper, paperUsed, cuboid, numCellsUsedDepth, regionsToHandleRevOrder, -1L, skipSymmetries, solutionResolver, cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid);
 			
@@ -137,6 +138,7 @@ public class BasicDFSIntersectFinder {
 		if(regions == null) {
 			return 1L;
 		}
+		
 		
 		int regionIndex = regions.length - 1;
 		long retDuplicateSolutions = 0L;
@@ -177,7 +179,7 @@ public class BasicDFSIntersectFinder {
 				}
 
 				//TODO: is this right?
-				int neighbourIndexCuboid2 = (j + curRotationCuboid2 - curRotation+ NUM_ROTATIONS) % NUM_ROTATIONS;
+				int neighbourIndexCuboid2 = (j - curRotationCuboid2 + curRotation+ NUM_ROTATIONS) % NUM_ROTATIONS;
 				//TODO: maybe it's this:
 				//(j + curRotation - curRotationCuboid2  + NUM_ROTATIONS) % NUM_ROTATIONS
 				
@@ -202,8 +204,9 @@ public class BasicDFSIntersectFinder {
 					continue;
 				}
 				
+				
 				int rotationNeighbourPaperRelativeToMap = (curRotation - neighbours[j].getRot() + NUM_ROTATIONS) % NUM_ROTATIONS;
-				int rotationNeighbourPaperRelativeToMap2 = (curRotationCuboid2 - neighbours[neighbourIndexCuboid2].getRot())  % NUM_ROTATIONS;
+				int rotationNeighbourPaperRelativeToMap2 = (curRotationCuboid2 - cuboidToBringAlongStartRot.getNeighbours(indexToUse2)[neighbourIndexCuboid2].getRot() + NUM_ROTATIONS)  % NUM_ROTATIONS;
 				
 				if(SymmetryResolver.skipSearchBecauseOfASymmetryArg
 						(cuboid, paperToDevelop, i, indexCuboidonPaper, rotationToAddCellOn, curRotation, paperUsed, indexToUse, indexNewCell)
@@ -315,9 +318,13 @@ public class BasicDFSIntersectFinder {
 
 	public static void main(String args[]) {
 		System.out.println("Fold Resolver Ordered Regions skip symmetries Nx1x1:");
-		//solveFoldsForSingleCuboid(new CuboidToFoldOn(5, 1, 1), new CuboidToFoldOn(3, 2, 1));
+		
+		solveCuboidIntersections(new CuboidToFoldOn(7, 1, 1), new CuboidToFoldOn(3, 3, 1));
+		
+		//solveCuboidIntersections(new CuboidToFoldOn(5, 1, 1), new CuboidToFoldOn(3, 2, 1));
+		//It got 2263!
 
-		solveCuboidIntersections(new CuboidToFoldOn(1, 1, 1), new CuboidToFoldOn(1, 1, 1));
+		//solveCuboidIntersections(new CuboidToFoldOn(2, 1, 1), new CuboidToFoldOn(1, 2, 1));
 		
 		//Best 5,1,1: 3 minute 45 seconds (3014430 solutions) (December 27th)
 		
