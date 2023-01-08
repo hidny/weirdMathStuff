@@ -1,4 +1,4 @@
-package OneNet3Cuboids.DupRemover;
+package OneNet3Cuboids.OldReferenceDupRemovers;
 
 import OneNet3Cuboids.CuboidToFoldOn;
 import OneNet3Cuboids.Utils;
@@ -9,16 +9,13 @@ import OneNet3Cuboids.FoldingAlgoStartAnywhere.FoldResolveOrderedRegionsSkipSymm
 import OneNet3Cuboids.Region.Region;
 import number.IsNumber;
 
-public class MemorylessUniqueCheckSkipSymmetriesMemManage2 {
-	
-	//I tried to make it faster by only declaring memory at initialization of object,
-	// and never again.
+public class MemorylessUniqueCheckSkipSymmetriesForNx1x1MemManageOrig {
 
 	//Loop other start locations and rotations to see if there's anything faster.
 	// (i.e.: Anything that the algo would be found first)
 	//Warning: This will only work if we model the algo correctly.
 	
-	public static long debugNumIsUniqueCalls = 0;
+	public static long debugNumOnlyTopValid = 0;
 	public static long debugNumMoreThanTopValid = 0;
 	
 	public static final int DEFAULT_ROTATION = 0;
@@ -26,137 +23,68 @@ public class MemorylessUniqueCheckSkipSymmetriesMemManage2 {
 	
 	public static final int ROTATIONS_TIMES_RELECTIONS = 8;
 	
-	public MemorylessUniqueCheckSkipSymmetriesMemManage2(CuboidToFoldOn orig) {
-
-		//TODO: get these dims from a utils location (don't just hope it matches what's set somewhere else)
-		int totalArea = orig.getNumCellsToFill();
+	public static boolean isUnique(CuboidToFoldOn orig, Coord2D paperToDevelop[], boolean array[][]) {
 		
-		//Variables to recycle/reuse for each iteration: 
-		paperUsed = new boolean[2 * totalArea][2 * totalArea];
-		indexCuboidOnPaper = new int[2 * totalArea][2 * totalArea];
-		coord2DTable = new Coord2D[2 * totalArea][2 * totalArea];
-		newPaperToDevelop = new Coord2D[totalArea];
-		
-		for(int i2=0; i2<paperUsed.length; i2++) {
-			for(int j2=0; j2<paperUsed[0].length; j2++) {
-				indexCuboidOnPaper[i2][j2] = -1;
-				coord2DTable[i2][j2] = new Coord2D(i2, j2);
-			}
-		}
-		
-		//Copy dimensions and neighbours for cuboid to use:
-		cuboidToUse = new CuboidToFoldOn(orig);
-		//End copy dims and neighbours
-		
-		regionsToHandleRevOrder[0] = new Region(orig);
-		
-		validSetup = new boolean[totalArea];
-		isSimilarCellToStart = new boolean[totalArea];
-		//TODO: forgot to say top is similar... oops. It just means that the algo will be slighly slower.
-		
-		
-
-		originalQuickness = new int[totalArea];
-		tmpQuickness = new int[totalArea];
-	}
-	
-	private boolean paperUsed[][];
-	private int indexCuboidOnPaper[][];
-	private Coord2D newPaperToDevelop[];
-	private Region regionsToHandleRevOrder[] = new Region[1];
-	private CuboidToFoldOn cuboidToUse;
-	
-	private boolean validSetup[];
-	private boolean isSimilarCellToStart[];
-	
-	private Coord2D coord2DTable[][];
-	
-	public int originalQuickness[];
-	public int tmpQuickness[];
-	
-	
-	public boolean isUnique(Coord2D paperToDevelop[], boolean array[][], int origIndexCuboidOnPaper[][]) {
-		
+		int quickestAnswerToCompareTo[] = null;
 		boolean isCurrentlyAloneInFirst = true;
 		boolean isUniqueSoFar = true;
 		
 		int START_INDEX = 0;
 
+		//Variables to recycle/reuse for each iteration: 
+		boolean paperUsed[][] = new boolean[array.length][array.length];
+		int indexCuboidOnPaper[][] = new int[array.length][array.length];
+		Coord2D newPaperToDevelop[] = new Coord2D[paperToDevelop.length];
+		
 		//Note that I'm also borrowing the boolean array[][] param... I'll put it back to the way it was.
-	
+		
+		//TODO: Eliminate this loop to make it faster, but that would mean changing index on paper 0...
+		//Tough choice! I'll do it much later!
+		for(int i2=0; i2<paperUsed.length; i2++) {
+			for(int j2=0; j2<paperUsed[0].length; j2++) {
+				indexCuboidOnPaper[i2][j2] = -1;
+			}
+		}
+		
 		//if(array.length != array[0].length) {
 		//	System.out.println("ERROR: dimensions have to be the same for MemManager To work.");
 		//}
 		
-
-		//TODO: this is a hack for Nx1x1 that will be improved later:
-		if(cuboidToUse.getDimensions()[1] != 1 || cuboidToUse.getDimensions()[2] != 1) {
-			System.out.println("ERROR: MemorylessUniqueCheckSkipSymmetriesMemManage2 only handles Nx1x1 cuboids!");
-			System.exit(1);
-		}
-		
+		// End variables to recycle/reuse for each iteration
+				
+	
+		boolean validSetup[] = new boolean[paperToDevelop.length];
 		validSetup[0] = true;
 		
-		int minNeighbours = FoldResolveOrderedRegionsSkipSymmetries.getNumUsedNeighbourCellonPaper(
-				origIndexCuboidOnPaper, paperToDevelop[0]);
-
-		for(int index=1; index<validSetup.length; index++) {
-			validSetup[index] = false;
-		}
-		
 		int debugNumOtherValid = 0;
-
-		
-		//This algo is ineffient, but it works.
-		// It basically brute forces matches every possible start pos with cell 0 of the cuboid
-		//looking for a match. There is a better ways to do this.
 		for(int index=1; index<validSetup.length; index++) {
-			
-			if(FoldResolveOrderedRegionsSkipSymmetries.getNumUsedNeighbourCellonPaper(
-					origIndexCuboidOnPaper, paperToDevelop[index]) < minNeighbours) {
-				
-				validSetup[index] = false;
-
-			} else if(isSimilarCellToStart[origIndexCuboidOnPaper[paperToDevelop[index].i][paperToDevelop[index].j]]) {
-				
-				validSetup[index] = true;
-				
-				
-			} else {
-				
-				
-				validSetup[index] = isValidSetupAtIndexedStartLocationWithRotation(paperToDevelop, array, index, DEFAULT_ROTATION, START_INDEX);
-				
-				if(validSetup[index]) {
-					debugNumOtherValid++;
-				}
-				
-				eraseChangesToPaperUsedAndIndexCuboidOnPaper(
+			validSetup[index] = isValidSetup(orig,
 						paperToDevelop,
+						array,
+						index,
 						paperUsed,
 						indexCuboidOnPaper,
-						DEFAULT_ROTATION,
-						NO_REFLECTION);
+						newPaperToDevelop);
+			
+			if(validSetup[index]) {
+				debugNumOtherValid++;
 			}
 			
+			eraseChangesToPaperUsedAndIndexCuboidOnPaper(paperToDevelop, paperUsed, indexCuboidOnPaper, DEFAULT_ROTATION, false);
 		}
-		
-		
-
-		debugNumIsUniqueCalls++;
-		if(debugNumOtherValid > 0){
+		if(debugNumOtherValid == 1) {
+			debugNumOnlyTopValid++;
+		} else if(debugNumOtherValid >= 2){
 			debugNumMoreThanTopValid++;
+		} else {
+			System.out.println("Top one should be valid.");
+			System.exit(1);
 		}
-
-		//TODO: put this in the final summary...
-		if(debugNumIsUniqueCalls > 0 && (debugNumIsUniqueCalls % 1000000 == 0 )) {
+		if(debugNumOnlyTopValid > 0 && debugNumOnlyTopValid % 100000 == 0) {
 			System.out.println("--");
-			System.out.println("debugNumIsUniqueCalls: " + debugNumIsUniqueCalls);
-			System.out.println("debugNumMoreThanTopStartValid: " + debugNumMoreThanTopValid);
+			System.out.println("debugNumOnlyTopValid: " + debugNumOnlyTopValid);
+			System.out.println("debugNumMoreThanTopValid: " + debugNumMoreThanTopValid);
 		}
-		
-		//Not needed because the 1st iteration reverses this completely:
-		//switchOnOffPaperUsedForArrayRotatedOrReflected(false, paperToDevelop, array, DEFAULT_ROTATION, NO_REFLECTION);
 		
 		//Check to see if current solution is the 1st of every valid reflection/rotation:
 		
@@ -176,7 +104,7 @@ public class MemorylessUniqueCheckSkipSymmetriesMemManage2 {
 				
 //Setup to run imitation algo:
 				
-				cuboidToUse.resetState();
+				CuboidToFoldOn cuboid = new CuboidToFoldOn(orig);
 
 				int startI = getIAfterRotation(array.length, paperToDevelop[i].i, paperToDevelop[i].j, rotation);
 				int startJ = getJAfterRotation(array.length, paperToDevelop[i].i, paperToDevelop[i].j, rotation);
@@ -197,21 +125,14 @@ public class MemorylessUniqueCheckSkipSymmetriesMemManage2 {
 				int numCellsUsedDepth = 0;
 
 				paperUsed[startI][startJ] = true;
-
-				//Delete loop? Answer: No! It's used by symmetry resolver!
-				for(int k=0; k<newPaperToDevelop.length; k++) {
-					newPaperToDevelop[k] = null;
-				}
+				newPaperToDevelop[numCellsUsedDepth] = new Coord2D(startI, startJ);
 				
-				newPaperToDevelop[numCellsUsedDepth] = coord2DTable[startI][startJ];
-				
-				cuboidToUse.setCell(START_INDEX, 0);
+				cuboid.setCell(START_INDEX, 0);
 				indexCuboidOnPaper[startI][startJ] = START_INDEX;
 				numCellsUsedDepth += 1;
 				
-				
-				regionsToHandleRevOrder[0].resetStateWithStartIndexOnly(0);
-				
+				Region regionsToHandleRevOrder[] = new Region[1];
+				regionsToHandleRevOrder[0] = new Region(cuboid);
 			//END Setup to run imitation algo.
 				
 				//How to debug:
@@ -219,49 +140,44 @@ public class MemorylessUniqueCheckSkipSymmetriesMemManage2 {
 				//	System.out.println("DEBUG");
 				//}
 
-				if(i == 0 && rotation == DEFAULT_ROTATION && reflect == NO_REFLECTION) {
-					if(originalQuickness == null) {
-						System.out.println("DOH2! Orig quickness is null");
-						System.exit(1);
-					}
-
-					
-					originalQuickness = doDepthFirstSearch(array, newPaperToDevelop, indexCuboidOnPaper, paperUsed, cuboidToUse, numCellsUsedDepth,
-						regionsToHandleRevOrder, originalQuickness, null, isCurrentlyAloneInFirst,
-						coord2DTable);
+				int tmp[] = doDepthFirstSearch(array, newPaperToDevelop, indexCuboidOnPaper, paperUsed, cuboid, numCellsUsedDepth,
+						regionsToHandleRevOrder, new int[cuboid.getNumCellsToFill()], quickestAnswerToCompareTo, isCurrentlyAloneInFirst);
 				
-					isCurrentlyAloneInFirst = false;
+				if(tmp != null) {
 
-					if(originalQuickness == null) {
-						System.out.println("DOH! Orig quickness is null");
-						Utils.printFold(paperUsed);
-						System.exit(1);
-					}
-				} else {
-
-					int tmp[] = doDepthFirstSearch(array, newPaperToDevelop, indexCuboidOnPaper, paperUsed, cuboidToUse, numCellsUsedDepth,
-							regionsToHandleRevOrder, tmpQuickness, originalQuickness, isCurrentlyAloneInFirst,
-							coord2DTable);
+					//Sanity check:
+					//if(! validSetup[i]) {
+					//	System.out.println("Invalid setup got results! (unreflected!)");
+					//	System.exit(1);
+					//}
 					
-					if(tmp != null) {
+					//Print fold for debug:
+					//Utils.printFold(arrayRotated[rotation]);
+					
+					if(i == 0 && rotation == DEFAULT_ROTATION && reflect == NO_REFLECTION) {
+						quickestAnswerToCompareTo = tmp;
+						isCurrentlyAloneInFirst = false;
+						
+						//Can't do this because it breaks because of the fact we ignore regions in memoryless Algo:
+						//sanityCheckOrderingComparedToPrevOrdering(tmp);
 
-						//Sanity check:
-						//if(! validSetup[i]) {
-						//	System.out.println("Invalid setup got results! (unreflected!)");
-						//	System.exit(1);
-						//}
+						//Debug:
+						//System.out.println("firstOrderingArray for current solution:");
+						//printOrderingSolution(tmp);
 						
-						//Print fold for debug:
-						//Utils.printFold(arrayRotated[rotation]);
-						
+
+					} else {
+
 						isUniqueSoFar = false;
 						//System.out.println("FasterOrderingArray for current solution:");
 						//printOrderingSolution(tmp);
 						
 					}
-						
+					
+				} else if(tmp == null && i == 0  && rotation == DEFAULT_ROTATION && reflect == NO_REFLECTION) {
+					System.out.println("ERROR: imitator algo rejected the solution that was found!");
+					System.exit(1);
 				}
-				
 				
 				//Erases changes to paper used, so we could reuse it:
 				eraseChangesToPaperUsedAndIndexCuboidOnPaper(
@@ -275,7 +191,6 @@ public class MemorylessUniqueCheckSkipSymmetriesMemManage2 {
 		
 
 			switchOnOffPaperUsedForArrayRotatedOrReflected(false, paperToDevelop, array, rotation, reflect);
-			switchOnOffPaperUsedForArrayRotatedOrReflected(false, paperToDevelop, paperUsed, rotation, reflect);
 		}
 
 		//Get back orig array so calling function won't know I borrowed it:
@@ -291,14 +206,6 @@ public class MemorylessUniqueCheckSkipSymmetriesMemManage2 {
 		return isUniqueSoFar;
 	}
 	
-	public boolean[][] getPaperUsed() {
-		return paperUsed;
-	}
-
-	public int[][] getIndexCuboidOnPaper() {
-		return indexCuboidOnPaper;
-	}
-
 	public static boolean[][] getTranspose(boolean array[][]) {
 		boolean transpose[][] = new boolean[array[0].length][array.length];
 		
@@ -482,8 +389,7 @@ public class MemorylessUniqueCheckSkipSymmetriesMemManage2 {
 
 
 	public static int[] doDepthFirstSearch(boolean netToReplicate[][], Coord2D paperToDevelop[], int indexCuboidonPaper[][], boolean paperUsed[][], CuboidToFoldOn cuboid, int numCellsUsedDepth,
-			Region regions[], int curAnswer[], int quickestAnswerToCompareTo[], boolean isCurrentlyAloneInFirst,
-			Coord2D coord2DTable[][]) {
+			Region regions[], int curAnswer[], int quickestAnswerToCompareTo[], boolean isCurrentlyAloneInFirst) {
 
 
 		ADD_NEXT_CELL:
@@ -588,8 +494,7 @@ public class MemorylessUniqueCheckSkipSymmetriesMemManage2 {
 						
 						paperUsed[new_i][new_j] = true;
 						indexCuboidonPaper[new_i][new_j] = indexNewCell;
-						
-						paperToDevelop[numCellsUsedDepth] = coord2DTable[new_i][new_j];
+						paperToDevelop[numCellsUsedDepth] = new Coord2D(new_i, new_j);
 	
 						//Add cell to new region(s):
 						
@@ -643,42 +548,43 @@ public class MemorylessUniqueCheckSkipSymmetriesMemManage2 {
 		
 	}
 	
-	public boolean isValidSetupAtIndexedStartLocationWithRotation(Coord2D paperToDevelop[], boolean netToReplicate[][], int indexCellSolutionCellList, int rotation, int cuboidStartIndex) {
+	public static boolean isValidSetup(CuboidToFoldOn origCuboidNeighboursAndDim,
+			Coord2D paperToDevelop[],
+			boolean netToReplicate[][],
+			int indexCellInList,
+			boolean paperUsed[][],
+			int indexCuboidOnPaper[][],
+			Coord2D newPaperToDevelop[]) {
 		
 
+		int START_INDEX = 0;
 		
-		cuboidToUse.resetState();
+		CuboidToFoldOn newCuboid = new CuboidToFoldOn(origCuboidNeighboursAndDim);
 
-		int startI = paperToDevelop[indexCellSolutionCellList].i;
-		int startJ = paperToDevelop[indexCellSolutionCellList].j;
+		int startI = paperToDevelop[indexCellInList].i;
+		int startJ = paperToDevelop[indexCellInList].j;
 		
 		int numCellsUsedDepth = 0;
 
 		paperUsed[startI][startJ] = true;
+		newPaperToDevelop[numCellsUsedDepth] = new Coord2D(startI, startJ);
 		
-		//Delete loop? Answer: No! It's used by symmetry resolver!
-		for(int k=0; k<newPaperToDevelop.length; k++) {
-			newPaperToDevelop[k] = null;
-		}
-		newPaperToDevelop[numCellsUsedDepth] = coord2DTable[startI][startJ];
-		
-		cuboidToUse.setCell(cuboidStartIndex, rotation);
-		indexCuboidOnPaper[startI][startJ] = cuboidStartIndex;
+		newCuboid.setCell(START_INDEX, 0);
+		indexCuboidOnPaper[startI][startJ] = START_INDEX;
 		numCellsUsedDepth += 1;
 		
-		regionsToHandleRevOrder[0].resetStateWithStartIndexOnly(cuboidStartIndex);
+		Region defaultRegion[] = new Region[1];
+		defaultRegion[0] = new Region(newCuboid);
 	//END Setup to run imitation algo.
-		
 		
 
 		return isValid(netToReplicate,
 				newPaperToDevelop,
 				indexCuboidOnPaper,
 				paperUsed,
-				cuboidToUse, 
+				newCuboid, 
 				numCellsUsedDepth,
-				regionsToHandleRevOrder,
-				coord2DTable);
+				defaultRegion);
 	}
 	
 	public static boolean isValid(boolean netToReplicate[][],
@@ -687,8 +593,7 @@ public class MemorylessUniqueCheckSkipSymmetriesMemManage2 {
 			boolean paperUsed[][],
 			CuboidToFoldOn cuboid, 
 			int numCellsUsedDepth,
-			Region defaultRegion[],
-			Coord2D coord2DTable[][]) {
+			Region defaultRegion[]) {
 
 		int regionIndex = 0;
 		
@@ -736,7 +641,7 @@ public class MemorylessUniqueCheckSkipSymmetriesMemManage2 {
 					
 					paperUsed[new_i][new_j] = true;
 					indexCuboidOnPaper[new_i][new_j] = indexNewCell;
-					paperToDevelop[numCellsUsedDepth] = coord2DTable[new_i][new_j];
+					paperToDevelop[numCellsUsedDepth] = new Coord2D(new_i, new_j);
 
 					//Add cell to new region::
 					defaultRegion[regionIndex].addCellToRegion(indexNewCell, numCellsUsedDepth, indexToUse, j);

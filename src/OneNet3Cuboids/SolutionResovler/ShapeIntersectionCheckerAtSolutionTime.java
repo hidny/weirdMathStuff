@@ -5,7 +5,7 @@ import OneNet3Cuboids.Utils;
 import OneNet3Cuboids.Coord.Coord2D;
 import OneNet3Cuboids.DupRemover.BasicUniqueCheck;
 import OneNet3Cuboids.DupRemover.BasicUniqueCheckImproved;
-import OneNet3Cuboids.DupRemover.MemorylessUniqueCheckSkipSymmetriesMemManage2;
+import OneNet3Cuboids.DupRemover.MemorylessUniqueCheckSkipSymmetriesMemManage2ForNx1x1;
 import OneNet3Cuboids.FoldingAlgoStartAnywhere.FoldResolveOrderedRegionsSkipSymmetries;
 import OneNet3Cuboids.Region.Region;
 
@@ -21,10 +21,10 @@ public class ShapeIntersectionCheckerAtSolutionTime implements SolutionResolverI
 	// I think this could only work for cuboids of dimensions (5x1x1 and 3x2x1), (7x1x1 and 1x3x3), and if I'm willing to wait over a week, it will work for
 	// (8x1x1 and 5x2x1).
 
-	private MemorylessUniqueCheckSkipSymmetriesMemManage2 memorylessUniqueCheckSkipSymmetriesMemManage2;
+	private MemorylessUniqueCheckSkipSymmetriesMemManage2ForNx1x1 memorylessUniqueCheckSkipSymmetriesMemManage2;
 	public ShapeIntersectionCheckerAtSolutionTime(CuboidToFoldOn otherShape) {
 		
-		memorylessUniqueCheckSkipSymmetriesMemManage2 = new MemorylessUniqueCheckSkipSymmetriesMemManage2(otherShape);
+		memorylessUniqueCheckSkipSymmetriesMemManage2 = new MemorylessUniqueCheckSkipSymmetriesMemManage2ForNx1x1(otherShape);
 
 		//Clear number of uniq solution because this program will be using it
 		// uniqList should be empty though...
@@ -77,12 +77,12 @@ public class ShapeIntersectionCheckerAtSolutionTime implements SolutionResolverI
 						ret = 1L;
 						
 						//Undo the changes, so we could reuse memManager2's paper used array and indexCuboidOnPaper array:
-						MemorylessUniqueCheckSkipSymmetriesMemManage2.eraseChangesToPaperUsedAndIndexCuboidOnPaper(
+						MemorylessUniqueCheckSkipSymmetriesMemManage2ForNx1x1.eraseChangesToPaperUsedAndIndexCuboidOnPaper(
 								paperToDevelop,
 								memorylessUniqueCheckSkipSymmetriesMemManage2.getPaperUsed(),
 								memorylessUniqueCheckSkipSymmetriesMemManage2.getIndexCuboidOnPaper(),
-								MemorylessUniqueCheckSkipSymmetriesMemManage2.DEFAULT_ROTATION,
-								MemorylessUniqueCheckSkipSymmetriesMemManage2.NO_REFLECTION);
+								MemorylessUniqueCheckSkipSymmetriesMemManage2ForNx1x1.DEFAULT_ROTATION,
+								MemorylessUniqueCheckSkipSymmetriesMemManage2ForNx1x1.NO_REFLECTION);
 						
 						break FIND_SOLUTION_LOOP;
 					}
@@ -92,12 +92,12 @@ public class ShapeIntersectionCheckerAtSolutionTime implements SolutionResolverI
 				
 
 				//Undo the changes, so we could reuse memManager2's paper used array and indexCuboidOnPaper array:
-				MemorylessUniqueCheckSkipSymmetriesMemManage2.eraseChangesToPaperUsedAndIndexCuboidOnPaper(
+				MemorylessUniqueCheckSkipSymmetriesMemManage2ForNx1x1.eraseChangesToPaperUsedAndIndexCuboidOnPaper(
 						paperToDevelop,
 						memorylessUniqueCheckSkipSymmetriesMemManage2.getPaperUsed(),
 						memorylessUniqueCheckSkipSymmetriesMemManage2.getIndexCuboidOnPaper(),
-						MemorylessUniqueCheckSkipSymmetriesMemManage2.DEFAULT_ROTATION,
-						MemorylessUniqueCheckSkipSymmetriesMemManage2.NO_REFLECTION);
+						MemorylessUniqueCheckSkipSymmetriesMemManage2ForNx1x1.DEFAULT_ROTATION,
+						MemorylessUniqueCheckSkipSymmetriesMemManage2ForNx1x1.NO_REFLECTION);
 			} //End loop for each rotation
 			
 		} //End loop for each start position

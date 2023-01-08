@@ -1,4 +1,4 @@
-package OneNet3Cuboids.DupRemover;
+package OneNet3Cuboids.OldReferenceDupRemovers;
 
 import java.util.ArrayList;
 
@@ -12,7 +12,7 @@ import OneNet3Cuboids.GraphUtils.PivotCellDescription;
 import OneNet3Cuboids.Region.Region;
 import number.IsNumber;
 
-public class MemorylessUniqueCheckSkipSymmetriesMemManage3 {
+public class MemorylessUniqueCheckSkipSymmetriesMemManage3ForNx1x1WithFancyValidTrick {
 	
 	//I tried to make it faster by only declaring memory at initialization of object,
 	// and never again.
@@ -31,7 +31,7 @@ public class MemorylessUniqueCheckSkipSymmetriesMemManage3 {
 	
 	//For Nx1x1:
 	
-	public MemorylessUniqueCheckSkipSymmetriesMemManage3(CuboidToFoldOn orig) {
+	public MemorylessUniqueCheckSkipSymmetriesMemManage3ForNx1x1WithFancyValidTrick(CuboidToFoldOn orig) {
 
 		System.out.println("Mem manage 3");
 		

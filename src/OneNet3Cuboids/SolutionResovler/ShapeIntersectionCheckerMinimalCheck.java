@@ -7,7 +7,7 @@ import OneNet3Cuboids.Utils;
 import OneNet3Cuboids.Coord.Coord2D;
 import OneNet3Cuboids.DupRemover.BasicUniqueCheck;
 import OneNet3Cuboids.DupRemover.BasicUniqueCheckImproved;
-import OneNet3Cuboids.DupRemover.MemorylessUniqueCheckSkipSymmetriesMemManage2;
+import OneNet3Cuboids.DupRemover.MemorylessUniqueCheckSkipSymmetriesMemManage2ForNx1x1;
 import OneNet3Cuboids.FoldingAlgoStartAnywhere.FoldResolveOrderedRegionsSkipSymmetries;
 import OneNet3Cuboids.GraphUtils.PivotCellDescription;
 import OneNet3Cuboids.Region.Region;
@@ -22,11 +22,11 @@ public class ShapeIntersectionCheckerMinimalCheck implements SolutionResolverInt
 	// As mentioned in ShapeIntersectionCheckerAtSolutionTime, this isn't the best way to do the intersection search.
 	// See ShapeIntersectionCheckerAtSolutionTime for more details.
 
-	private MemorylessUniqueCheckSkipSymmetriesMemManage2 memorylessUniqueCheckSkipSymmetriesMemManage2;
+	private MemorylessUniqueCheckSkipSymmetriesMemManage2ForNx1x1 memorylessUniqueCheckSkipSymmetriesMemManage2;
 
 	public ShapeIntersectionCheckerMinimalCheck(CuboidToFoldOn otherShape) {
 		
-		memorylessUniqueCheckSkipSymmetriesMemManage2 = new MemorylessUniqueCheckSkipSymmetriesMemManage2(otherShape);
+		memorylessUniqueCheckSkipSymmetriesMemManage2 = new MemorylessUniqueCheckSkipSymmetriesMemManage2ForNx1x1(otherShape);
 
 		startingPointsAndRotationsToCheck = PivotCellDescription.getUniqueRotationListsWithCellInfo(otherShape);
 		
@@ -86,12 +86,12 @@ public class ShapeIntersectionCheckerMinimalCheck implements SolutionResolverInt
 					ret = 1L;
 					
 					//Undo the changes, so we could reuse memManager2's paper used array and indexCuboidOnPaper array:
-					MemorylessUniqueCheckSkipSymmetriesMemManage2.eraseChangesToPaperUsedAndIndexCuboidOnPaper(
+					MemorylessUniqueCheckSkipSymmetriesMemManage2ForNx1x1.eraseChangesToPaperUsedAndIndexCuboidOnPaper(
 							paperToDevelop,
 							memorylessUniqueCheckSkipSymmetriesMemManage2.getPaperUsed(),
 							memorylessUniqueCheckSkipSymmetriesMemManage2.getIndexCuboidOnPaper(),
-							MemorylessUniqueCheckSkipSymmetriesMemManage2.DEFAULT_ROTATION,
-							MemorylessUniqueCheckSkipSymmetriesMemManage2.NO_REFLECTION);
+							MemorylessUniqueCheckSkipSymmetriesMemManage2ForNx1x1.DEFAULT_ROTATION,
+							MemorylessUniqueCheckSkipSymmetriesMemManage2ForNx1x1.NO_REFLECTION);
 					
 					break;
 				}
@@ -101,12 +101,12 @@ public class ShapeIntersectionCheckerMinimalCheck implements SolutionResolverInt
 			
 
 			//Undo the changes, so we could reuse memManager2's paper used array and indexCuboidOnPaper array:
-			MemorylessUniqueCheckSkipSymmetriesMemManage2.eraseChangesToPaperUsedAndIndexCuboidOnPaper(
+			MemorylessUniqueCheckSkipSymmetriesMemManage2ForNx1x1.eraseChangesToPaperUsedAndIndexCuboidOnPaper(
 					paperToDevelop,
 					memorylessUniqueCheckSkipSymmetriesMemManage2.getPaperUsed(),
 					memorylessUniqueCheckSkipSymmetriesMemManage2.getIndexCuboidOnPaper(),
-					MemorylessUniqueCheckSkipSymmetriesMemManage2.DEFAULT_ROTATION,
-					MemorylessUniqueCheckSkipSymmetriesMemManage2.NO_REFLECTION);
+					MemorylessUniqueCheckSkipSymmetriesMemManage2ForNx1x1.DEFAULT_ROTATION,
+					MemorylessUniqueCheckSkipSymmetriesMemManage2ForNx1x1.NO_REFLECTION);
 			
 			//TODO: delete
 			//System.out.println("Print fold:");
