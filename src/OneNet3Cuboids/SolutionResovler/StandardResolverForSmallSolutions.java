@@ -12,10 +12,10 @@ import OneNet3Cuboids.OldReferenceDupRemovers.MemorylessUniqueCheckSkipSymmetrie
 
 public class StandardResolverForSmallSolutions implements SolutionResolverInterface {
 
-	private MemorylessUniqueCheckSkipSymmetriesMemManage3ForNx1x1WithFancyValidTrick memorylessUniqueCheckSkipSymmetriesMemManage3;
+	private MemorylessUniqueCheckSkipSymmetriesMemManage2ForNx1x1 memorylessUniqueCheckSkipSymmetriesMemManage;
 	public StandardResolverForSmallSolutions(CuboidToFoldOn exampleCuboid) {
 		
-		memorylessUniqueCheckSkipSymmetriesMemManage3 = new MemorylessUniqueCheckSkipSymmetriesMemManage3ForNx1x1WithFancyValidTrick(exampleCuboid);
+		memorylessUniqueCheckSkipSymmetriesMemManage = new MemorylessUniqueCheckSkipSymmetriesMemManage2ForNx1x1(exampleCuboid);
 	}
 	
 	@Override
@@ -33,7 +33,7 @@ public class StandardResolverForSmallSolutions implements SolutionResolverInterf
 		//Utils.printFoldWithIndex(indexCuboidonPaper);
 
 		//if(BasicUniqueCheckImproved.isUnique(paperToDevelop, paperUsed)) {
-		if(memorylessUniqueCheckSkipSymmetriesMemManage3.isUnique(paperToDevelop, paperUsed, indexCuboidonPaper)) {
+		if(memorylessUniqueCheckSkipSymmetriesMemManage.isUnique(paperToDevelop, paperUsed, indexCuboidonPaper)) {
 			FoldResolveOrderedRegionsSkipSymmetries.numUniqueFound++;
 
 			Utils.printFold(paperUsed);
