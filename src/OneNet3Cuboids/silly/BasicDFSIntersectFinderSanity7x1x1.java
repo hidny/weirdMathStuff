@@ -1,4 +1,4 @@
-package OneNet3Cuboids.DFSIntersectionNet;
+package OneNet3Cuboids.silly;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,7 +15,7 @@ import OneNet3Cuboids.GraphUtils.PivotCellDescription;
 import OneNet3Cuboids.Region.Region;
 import OneNet3Cuboids.SolutionResovler.*;
 
-public class BasicDFSIntersectFinder {
+public class BasicDFSIntersectFinderSanity7x1x1 {
 
 	
 	public static final int NUM_ROTATIONS = 4;
@@ -95,21 +95,25 @@ public class BasicDFSIntersectFinder {
 		// and maybe it's faster?
 
 		//TODO: 2nd one
-		ArrayList<PivotCellDescription> startingPointsAndRotationsToCheck = PivotCellDescription.getUniqueRotationListsWithCellInfo(cuboidToBringAlong);
+		//ArrayList<PivotCellDescription> startingPointsAndRotationsToCheck = PivotCellDescription.getUniqueRotationListsWithCellInfo(cuboidToBringAlong);
 		
-		System.out.println("Num starting points and rotations to check: " + startingPointsAndRotationsToCheck.size());
-		for(int i=0; i<startingPointsAndRotationsToCheck.size(); i++) {
-			
-			int startIndex2ndCuboid =startingPointsAndRotationsToCheck.get(i).getCellIndex();
-			int startRotation2ndCuboid = startingPointsAndRotationsToCheck.get(i).getRotationRelativeToCuboidMap();
-			
-			CuboidToFoldOn cuboidToBringAlongStartRot = new CuboidToFoldOn(cuboidToBringAlong);
+		//Try to get their answer for 7x1x1 and 3x3x1 by not using startingPointsAndRotationsToCheck.
+		//System.out.println("Num starting points and rotations to check: " + startingPointsAndRotationsToCheck.size());
+		//for(int i=0; i<startingPointsAndRotationsToCheck.size(); i++) {
+		for(int index=0; index<Utils.getTotalArea(cuboidToBuild.getDimensions()); index++) {
+			for(int rot=0; rot<NUM_ROTATIONS; rot++) {
+				int startIndex2ndCuboid = index;
+				int startRotation2ndCuboid = rot;
+				
+				CuboidToFoldOn cuboidToBringAlongStartRot = new CuboidToFoldOn(cuboidToBringAlong);
 
-			cuboidToBringAlongStartRot.setCell(startIndex2ndCuboid, startRotation2ndCuboid);
-			indexCuboidOnPaper2ndCuboid[START_I][START_J] = startIndex2ndCuboid;
+				cuboidToBringAlongStartRot.setCell(startIndex2ndCuboid, startRotation2ndCuboid);
+				indexCuboidOnPaper2ndCuboid[START_I][START_J] = startIndex2ndCuboid;
+				
 			
-		
-			doDepthFirstSearch(paperToDevelop, indexCuboidOnPaper, paperUsed, cuboid, numCellsUsedDepth, regionsToHandleRevOrder, -1L, skipSymmetries, solutionResolver, cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid);
+				doDepthFirstSearch(paperToDevelop, indexCuboidOnPaper, paperUsed, cuboid, numCellsUsedDepth, regionsToHandleRevOrder, -1L, skipSymmetries, solutionResolver, cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid);
+				
+			}
 			
 		}
 		
@@ -319,7 +323,6 @@ public class BasicDFSIntersectFinder {
 	public static void main(String args[]) {
 		System.out.println("Fold Resolver Ordered Regions skip symmetries Nx1x1:");
 		
-
 		solveCuboidIntersections(new CuboidToFoldOn(8, 1, 1), new CuboidToFoldOn(5, 2, 1));
 		
 		//solveCuboidIntersections(new CuboidToFoldOn(7, 1, 1), new CuboidToFoldOn(3, 3, 1));
