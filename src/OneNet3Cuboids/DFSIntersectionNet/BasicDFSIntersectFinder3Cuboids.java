@@ -1,4 +1,4 @@
-package OneNet3Cuboids.silly;
+package OneNet3Cuboids.DFSIntersectionNet;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,33 +15,37 @@ import OneNet3Cuboids.GraphUtils.PivotCellDescription;
 import OneNet3Cuboids.Region.Region;
 import OneNet3Cuboids.SolutionResovler.*;
 
-public class BasicDFSIntersectFinderSanity7x1x1 {
+public class BasicDFSIntersectFinder3Cuboids {
 
 	
 	public static final int NUM_ROTATIONS = 4;
 	public static final int NUM_NEIGHBOURS = NUM_ROTATIONS;
 	
 	
-	public static void solveCuboidIntersections(CuboidToFoldOn cuboidToWrap, CuboidToFoldOn cuboidToBringAlong) {
-		solveCuboidIntersections(cuboidToWrap, cuboidToBringAlong, true);
+	public static void solveCuboidIntersections(CuboidToFoldOn cuboidToWrap, CuboidToFoldOn cuboidsToBringAlong[]) {
+		solveCuboidIntersections(cuboidToWrap, cuboidsToBringAlong, true);
 	}
 	
-	public static void solveCuboidIntersections(CuboidToFoldOn cuboidToBuild, CuboidToFoldOn cuboidToBringAlong, boolean skipSymmetries) {
+	public static void solveCuboidIntersections(CuboidToFoldOn cuboidToBuild, CuboidToFoldOn cuboidsToBringAlong[], boolean skipSymmetries) {
 		SolutionResolverIntersectInterface solutionResolver = null;
 		
 		
-		if(Utils.getTotalArea(cuboidToBuild.getDimensions()) != Utils.getTotalArea(cuboidToBringAlong.getDimensions())) {
-			System.out.println("ERROR: The two cuboid to intersect don't have the same area.");
-			System.exit(1);
+		for(int i=0; i<cuboidsToBringAlong.length; i++) {
+			if(Utils.getTotalArea(cuboidToBuild.getDimensions()) != Utils.getTotalArea(cuboidsToBringAlong[i].getDimensions())) {
+				System.out.println("ERROR: The two cuboid to intersect don't have the same area. (index = " + i + ")");
+				System.exit(1);
+			}
 		}
 		
 		// Set the solution resolver to different things depending on the size of the cuboid:
 		solutionResolver = new StandardResolverForSmallIntersectSolution(cuboidToBuild);
 		
-		solveCuboidIntersections(cuboidToBuild, cuboidToBringAlong, skipSymmetries, solutionResolver);
+		solveCuboidIntersections(cuboidToBuild, cuboidsToBringAlong, skipSymmetries, solutionResolver);
 	}
+	
+	public static long numIterations = 0L;
 
-	public static void solveCuboidIntersections(CuboidToFoldOn cuboidToBuild, CuboidToFoldOn cuboidToBringAlong, boolean skipSymmetries, SolutionResolverIntersectInterface solutionResolver) {
+	public static void solveCuboidIntersections(CuboidToFoldOn cuboidToBuild, CuboidToFoldOn cuboidsToBringAlong[], boolean skipSymmetries, SolutionResolverIntersectInterface solutionResolver) {
 		
 		
 		//cube.set start location 0 and rotation 0
@@ -58,13 +62,15 @@ public class BasicDFSIntersectFinderSanity7x1x1 {
 		boolean paperUsed[][] = new boolean[GRID_SIZE][GRID_SIZE];
 		int indexCuboidOnPaper[][] = new int[GRID_SIZE][GRID_SIZE];
 
-		int indexCuboidOnPaper2ndCuboid[][] = new int[GRID_SIZE][GRID_SIZE];
+		int indexCuboidOnPaperOtherCuboids[][][] = new int[cuboidsToBringAlong.length][GRID_SIZE][GRID_SIZE];
 		
 		for(int i=0; i<paperUsed.length; i++) {
 			for(int j=0; j<paperUsed[0].length; j++) {
 				paperUsed[i][j] = false;
 				indexCuboidOnPaper[i][j] = -1;
-				indexCuboidOnPaper2ndCuboid[i][j] = -1;
+				for(int k=0; k<cuboidsToBringAlong.length; k++) {
+					indexCuboidOnPaperOtherCuboids[k][i][j] = -1;
+				}
 			}
 		}
 
@@ -95,26 +101,57 @@ public class BasicDFSIntersectFinderSanity7x1x1 {
 		// and maybe it's faster?
 
 		//TODO: 2nd one
-		//ArrayList<PivotCellDescription> startingPointsAndRotationsToCheck = PivotCellDescription.getUniqueRotationListsWithCellInfo(cuboidToBringAlong);
+		ArrayList<PivotCellDescription> startingPointsAndRotationsToCheck[] = new ArrayList[cuboidsToBringAlong.length];
+				
+		//PivotCellDescription.getUniqueRotationListsWithCellInfo(cuboidToBringAlong);
+				
+		//indexCuboidOnPaperOtherCuboids
 		
-		//Try to get their answer for 7x1x1 and 3x3x1 by not using startingPointsAndRotationsToCheck.
-		//System.out.println("Num starting points and rotations to check: " + startingPointsAndRotationsToCheck.size());
-		//for(int i=0; i<startingPointsAndRotationsToCheck.size(); i++) {
-		for(int index=0; index<Utils.getTotalArea(cuboidToBuild.getDimensions()); index++) {
-			for(int rot=0; rot<NUM_ROTATIONS; rot++) {
-				int startIndex2ndCuboid = index;
-				int startRotation2ndCuboid = rot;
-				
-				CuboidToFoldOn cuboidToBringAlongStartRot = new CuboidToFoldOn(cuboidToBringAlong);
+		//TODO: don't avoid recursion in future:
+		if(cuboidsToBringAlong.length != 2) {
+			System.out.println("ERROR: this currently only accepts 2 cuboids to bring along");
+			System.exit(1);
+		}
+		
+		startingPointsAndRotationsToCheck[0] = PivotCellDescription.getUniqueRotationListsWithCellInfo(cuboidsToBringAlong[0]);
+		startingPointsAndRotationsToCheck[1] = PivotCellDescription.getUniqueRotationListsWithCellInfo(cuboidsToBringAlong[1]);
+		
+		int numStartingToCheck = startingPointsAndRotationsToCheck[0].size() * startingPointsAndRotationsToCheck[1].size();
+		
+		System.out.println("Num starting points and rotations to check: " + numStartingToCheck);
+		System.out.println("It's " + startingPointsAndRotationsToCheck[0].size() + " by " + startingPointsAndRotationsToCheck[1].size());
+		
+		CuboidToFoldOn cuboidsToBringAlongStartRot[] = new CuboidToFoldOn[2];
+		
+		for(int i=0; i<startingPointsAndRotationsToCheck[0].size(); i++) {
+			
+			int startIndex2ndCuboid = startingPointsAndRotationsToCheck[0].get(i).getCellIndex();
+			int startRotation2ndCuboid = startingPointsAndRotationsToCheck[0].get(i).getRotationRelativeToCuboidMap();
+			
+			cuboidsToBringAlongStartRot[0] = new CuboidToFoldOn(cuboidsToBringAlong[0]);
 
-				cuboidToBringAlongStartRot.setCell(startIndex2ndCuboid, startRotation2ndCuboid);
-				indexCuboidOnPaper2ndCuboid[START_I][START_J] = startIndex2ndCuboid;
-				
+			cuboidsToBringAlongStartRot[0].setCell(startIndex2ndCuboid, startRotation2ndCuboid);
+			indexCuboidOnPaperOtherCuboids[0][START_I][START_J] = startIndex2ndCuboid;
 			
-				doDepthFirstSearch(paperToDevelop, indexCuboidOnPaper, paperUsed, cuboid, numCellsUsedDepth, regionsToHandleRevOrder, -1L, skipSymmetries, solutionResolver, cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid);
+			for(int j=0; j<startingPointsAndRotationsToCheck[1].size(); j++) {
 				
+
+				int startIndex3rdCuboid = startingPointsAndRotationsToCheck[1].get(j).getCellIndex();
+				int startRotation3rdCuboid = startingPointsAndRotationsToCheck[1].get(j).getRotationRelativeToCuboidMap();
+				
+				cuboidsToBringAlongStartRot[1] = new CuboidToFoldOn(cuboidsToBringAlong[1]);
+
+				cuboidsToBringAlongStartRot[1].setCell(startIndex3rdCuboid, startRotation3rdCuboid);
+				indexCuboidOnPaperOtherCuboids[1][START_I][START_J] = startIndex3rdCuboid;
+				
+				doDepthFirstSearch(paperToDevelop, indexCuboidOnPaper, paperUsed, cuboid, numCellsUsedDepth, regionsToHandleRevOrder, -1L, skipSymmetries, solutionResolver, cuboidsToBringAlongStartRot, indexCuboidOnPaperOtherCuboids);
+				
+				
+				System.out.println("Done with trying to intersect 2nd cuboid that has a start index of " + startIndex2ndCuboid + " and a rotation index of " + startRotation2ndCuboid +".");
+				System.out.println("                          and 3rd cuboid that has a start index of " + startIndex3rdCuboid + " and a rotation index of " + startRotation3rdCuboid +".");
+				
+				System.out.println("Current UTC timestamp in milliseconds: " + System.currentTimeMillis());
 			}
-			
 		}
 		
 		//TODO: end todo 2nd one
@@ -128,12 +165,27 @@ public class BasicDFSIntersectFinderSanity7x1x1 {
 	
 	
 	public static long doDepthFirstSearch(Coord2D paperToDevelop[], int indexCuboidonPaper[][], boolean paperUsed[][], CuboidToFoldOn cuboid, int numCellsUsedDepth,
-			Region regions[], long limitDupSolutions, boolean skipSymmetries, SolutionResolverIntersectInterface solutionResolver, CuboidToFoldOn cuboidToBringAlongStartRot, int indexCuboidOnPaper2ndCuboid[][]) {
+			Region regions[], long limitDupSolutions, boolean skipSymmetries, SolutionResolverIntersectInterface solutionResolver, CuboidToFoldOn cuboidsToBringAlongStartRot[], int indexOtherCuboidsOnPaper[][][]) {
 
+		numIterations++;
+		
+		if(numIterations % 1000000L == 0) {
+			
+			System.out.println("Num iterations: " + numIterations);
+			Utils.printFold(paperUsed);
+			Utils.printFoldWithIndex(indexCuboidonPaper);
+			Utils.printFoldWithIndex( indexOtherCuboidsOnPaper[0]);
+			Utils.printFoldWithIndex(indexOtherCuboidsOnPaper[1]);
+			System.out.println("Solutions: " + solutionResolver.getNumUniqueFound());
+			System.out.println();
+		}
+		
+		
 		if(numCellsUsedDepth == cuboid.getNumCellsToFill()) {
-			int indexes[][][] = new int[2][][];
+			int indexes[][][] = new int[3][][];
 			indexes[0] = indexCuboidonPaper;
-			indexes[1] = indexCuboidOnPaper2ndCuboid;
+			indexes[1] = indexOtherCuboidsOnPaper[0];
+			indexes[2] = indexOtherCuboidsOnPaper[1];
 			return solutionResolver.resolveSolution(cuboid, paperToDevelop, indexes, paperUsed);
 		}
 
@@ -162,8 +214,12 @@ public class BasicDFSIntersectFinderSanity7x1x1 {
 			
 			int curRotation = cuboid.getRotationPaperRelativeToMap(indexToUse);
 			
-			int indexToUse2 = indexCuboidOnPaper2ndCuboid[paperToDevelop[i].i][paperToDevelop[i].j];
-			int curRotationCuboid2 = cuboidToBringAlongStartRot.getRotationPaperRelativeToMap(indexToUse2);
+			int indexToUse2 = indexOtherCuboidsOnPaper[0][paperToDevelop[i].i][paperToDevelop[i].j];
+			int curRotationCuboid2 = cuboidsToBringAlongStartRot[0].getRotationPaperRelativeToMap(indexToUse2);
+			
+
+			int indexToUse3 = indexOtherCuboidsOnPaper[1][paperToDevelop[i].i][paperToDevelop[i].j];
+			int curRotationCuboid3 = cuboidsToBringAlongStartRot[1].getRotationPaperRelativeToMap(indexToUse3);
 			
 			//Try to attach a cell onto indexToUse using all 4 rotations:
 			for(int j=0; j<neighbours.length; j++) {
@@ -182,18 +238,22 @@ public class BasicDFSIntersectFinderSanity7x1x1 {
 					continue;
 				}
 
-				//TODO: is this right?
 				int neighbourIndexCuboid2 = (j - curRotationCuboid2 + curRotation+ NUM_ROTATIONS) % NUM_ROTATIONS;
-				//TODO: maybe it's this:
-				//(j + curRotation - curRotationCuboid2  + NUM_ROTATIONS) % NUM_ROTATIONS
 				
-				int indexNewCell2 = cuboidToBringAlongStartRot.getNeighbours(indexToUse2)[neighbourIndexCuboid2].getIndex();
+				int indexNewCell2 = cuboidsToBringAlongStartRot[0].getNeighbours(indexToUse2)[neighbourIndexCuboid2].getIndex();
 				
-				if(cuboidToBringAlongStartRot.isCellIndexUsed(indexNewCell2)) {
+				if(cuboidsToBringAlongStartRot[0].isCellIndexUsed(indexNewCell2)) {
 					//no good!
 					continue;
 				}
-				//END TODO is this right?
+
+				int neighbourIndexCuboid3 = (j - curRotationCuboid3 + curRotation+ NUM_ROTATIONS) % NUM_ROTATIONS;
+				int indexNewCell3 = cuboidsToBringAlongStartRot[1].getNeighbours(indexToUse3)[neighbourIndexCuboid3].getIndex();
+				
+				if(cuboidsToBringAlongStartRot[1].isCellIndexUsed(indexNewCell3)) {
+					//no good!
+					continue;
+				}
 				
 				int rotationToAddCellOn = (j + curRotation) % NUM_ROTATIONS;
 				
@@ -210,7 +270,8 @@ public class BasicDFSIntersectFinderSanity7x1x1 {
 				
 				
 				int rotationNeighbourPaperRelativeToMap = (curRotation - neighbours[j].getRot() + NUM_ROTATIONS) % NUM_ROTATIONS;
-				int rotationNeighbourPaperRelativeToMap2 = (curRotationCuboid2 - cuboidToBringAlongStartRot.getNeighbours(indexToUse2)[neighbourIndexCuboid2].getRot() + NUM_ROTATIONS)  % NUM_ROTATIONS;
+				int rotationNeighbourPaperRelativeToMap2 = (curRotationCuboid2 - cuboidsToBringAlongStartRot[0].getNeighbours(indexToUse2)[neighbourIndexCuboid2].getRot() + NUM_ROTATIONS)  % NUM_ROTATIONS;
+				int rotationNeighbourPaperRelativeToMap3 = (curRotationCuboid3 - cuboidsToBringAlongStartRot[1].getNeighbours(indexToUse3)[neighbourIndexCuboid3].getRot() + NUM_ROTATIONS)  % NUM_ROTATIONS;
 				
 				if(SymmetryResolver.skipSearchBecauseOfASymmetryArg
 						(cuboid, paperToDevelop, i, indexCuboidonPaper, rotationToAddCellOn, curRotation, paperUsed, indexToUse, indexNewCell)
@@ -248,17 +309,21 @@ public class BasicDFSIntersectFinderSanity7x1x1 {
 					
 					//Setup for adding new cell:
 					cuboid.setCell(indexNewCell, rotationNeighbourPaperRelativeToMap);
-					cuboidToBringAlongStartRot.setCell(indexNewCell2, rotationNeighbourPaperRelativeToMap2);
+					cuboidsToBringAlongStartRot[0].setCell(indexNewCell2, rotationNeighbourPaperRelativeToMap2);
+					cuboidsToBringAlongStartRot[1].setCell(indexNewCell3, rotationNeighbourPaperRelativeToMap3);
 					
 					paperUsed[new_i][new_j] = true;
 					indexCuboidonPaper[new_i][new_j] = indexNewCell;
 					paperToDevelop[numCellsUsedDepth] = new Coord2D(new_i, new_j);
 
-					indexCuboidOnPaper2ndCuboid[new_i][new_j] = indexNewCell2;
+					
+					indexOtherCuboidsOnPaper[0][new_i][new_j] = indexNewCell2;
+					indexOtherCuboidsOnPaper[1][new_i][new_j] = indexNewCell3;
+					
 
 					//Add cell to new region(s):
 					for(int r=regionsBeforePotentailRegionSplit.length - 1; r<regions.length; r++) {
-						regions[r].addCellToRegion(indexNewCell, numCellsUsedDepth, indexToUse, j);						
+						regions[r].addCellToRegion(indexNewCell, numCellsUsedDepth, indexToUse, j);			
 					}
 
 					numCellsUsedDepth += 1;
@@ -269,7 +334,7 @@ public class BasicDFSIntersectFinderSanity7x1x1 {
 						newLimitDupSolutions -= retDuplicateSolutions;
 					}
 					
-					retDuplicateSolutions += doDepthFirstSearch(paperToDevelop, indexCuboidonPaper, paperUsed, cuboid, numCellsUsedDepth, regions, newLimitDupSolutions, skipSymmetries, solutionResolver, cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid);
+					retDuplicateSolutions += doDepthFirstSearch(paperToDevelop, indexCuboidonPaper, paperUsed, cuboid, numCellsUsedDepth, regions, newLimitDupSolutions, skipSymmetries, solutionResolver, cuboidsToBringAlongStartRot, indexOtherCuboidsOnPaper);
 
 					if(numCellsUsedDepth < regions[0].getCellIndexToOrderOfDev().size()) {
 						System.out.println("WHAT???");
@@ -281,17 +346,19 @@ public class BasicDFSIntersectFinderSanity7x1x1 {
 
 					regions = regionsBeforePotentailRegionSplit;
 					
-					//Remove cell from last region(s):
+					//Remove cell from last region:
 					regions[regions.length - 1].removeCellFromRegion(indexNewCell, numCellsUsedDepth, prevNewMinOrderedCellCouldUse, prevMinCellRotationOfMinCellToDev);
 	
 					paperUsed[new_i][new_j] = false;
 					indexCuboidonPaper[new_i][new_j] = -1;
 					paperToDevelop[numCellsUsedDepth] = null;
 
-					indexCuboidOnPaper2ndCuboid[new_i][new_j] = -1;
+					indexOtherCuboidsOnPaper[0][new_i][new_j] = -1;
+					indexOtherCuboidsOnPaper[1][new_i][new_j] = -1;
 					
 					cuboid.removeCell(indexNewCell);
-					cuboidToBringAlongStartRot.removeCell(indexNewCell2);
+					cuboidsToBringAlongStartRot[0].removeCell(indexNewCell2);
+					cuboidsToBringAlongStartRot[1].removeCell(indexNewCell3);
 					//End tear down
 
 
@@ -322,11 +389,18 @@ public class BasicDFSIntersectFinderSanity7x1x1 {
 
 	public static void main(String args[]) {
 		System.out.println("Fold Resolver Ordered Regions skip symmetries Nx1x1:");
+
+		CuboidToFoldOn main = new CuboidToFoldOn(11, 1, 1);
+		CuboidToFoldOn others[] = new CuboidToFoldOn[] { new CuboidToFoldOn(7, 2, 1), new CuboidToFoldOn(5, 3, 1)};
+		/*
+		CuboidToFoldOn main = new CuboidToFoldOn(2, 1, 1);
+		CuboidToFoldOn others[] = new CuboidToFoldOn[] { new CuboidToFoldOn(2, 1, 1), new CuboidToFoldOn(1, 1, 2)};
+		*/
 		
-		solveCuboidIntersections(new CuboidToFoldOn(8, 1, 1), new CuboidToFoldOn(5, 2, 1));
+		//solveCuboidIntersections(new CuboidToFoldOn(8, 1, 1), new CuboidToFoldOn(5, 2, 1));
 		
 		//solveCuboidIntersections(new CuboidToFoldOn(7, 1, 1), new CuboidToFoldOn(3, 3, 1));
-		//After testing without a few features that might have bugs, it got 1070 again. (They got 1080, but I think they were wrong)
+		//It got 1070 (again) (They got 1080, but I think they were wrong)
 		
 		//solveCuboidIntersections(new CuboidToFoldOn(5, 1, 1), new CuboidToFoldOn(3, 2, 1));
 		//It got 2263!
@@ -335,7 +409,7 @@ public class BasicDFSIntersectFinderSanity7x1x1 {
 		
 		//Best 5,1,1: 3 minute 45 seconds (3014430 solutions) (December 27th)
 		
-		
+		solveCuboidIntersections(main, others);
 		System.out.println("Current UTC timestamp in milliseconds: " + System.currentTimeMillis());
 		
 		

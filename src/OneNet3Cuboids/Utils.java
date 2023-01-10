@@ -209,6 +209,7 @@ public class Utils {
 			System.out.println();
 		}
 		
+		
 
 		//TODO: remove empty border (reuse code)
 		//TODO: improve and make it return a string
@@ -254,5 +255,23 @@ public class Utils {
 				System.out.println("|");
 			}
 			System.out.println();
+		}
+		
+		public static boolean debugBadFold(int array[][], boolean used[]) {
+			
+			int borders[] = getBorders(array);
+			
+			for(int i=borders[0]; i<borders[1] + 1; i++) {
+				for(int j=borders[2]; j<borders[3] + 1; j++) {
+					if(array[i][j] >= 0) {
+						
+						if(used[array[i][j]] == false) {
+							return true;
+						}
+						
+					}
+				}
+			}
+			return false;
 		}
 }

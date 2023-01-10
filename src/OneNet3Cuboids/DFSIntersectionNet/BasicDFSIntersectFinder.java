@@ -111,6 +111,10 @@ public class BasicDFSIntersectFinder {
 		
 			doDepthFirstSearch(paperToDevelop, indexCuboidOnPaper, paperUsed, cuboid, numCellsUsedDepth, regionsToHandleRevOrder, -1L, skipSymmetries, solutionResolver, cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid);
 			
+			
+			System.out.println("Done with trying to intersect 2nd cuboid that has a start index of " + startIndex2ndCuboid + " and a rotation index of " + startRotation2ndCuboid +".");
+			System.out.println("Current UTC timestamp in milliseconds: " + System.currentTimeMillis());
+			
 		}
 		
 		//TODO: end todo 2nd one

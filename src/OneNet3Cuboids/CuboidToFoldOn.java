@@ -36,6 +36,11 @@ public class CuboidToFoldOn {
 		dimensions[2] = c;
 	}
 
+	//For debug:
+	public boolean[] getCellsUsed() {
+		return cellsUsed;
+	}
+
 	//Create same cuboid, but remove state info:
 	public CuboidToFoldOn(CuboidToFoldOn orig) {
 
