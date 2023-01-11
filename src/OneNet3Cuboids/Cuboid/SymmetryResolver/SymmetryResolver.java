@@ -82,17 +82,17 @@ public class SymmetryResolver {
 			int cellIndexToUse,
 			Region region) {
 		
-		//Hack to enforce order where bottom of cuboid has just as many or more than top of cuboid.
-		//this is for Nx1x1
-		//for Nxkxk, you could do the same thing with corners.
 		
-		//TODO: this assumes the index cuboid.getNumCellsToFill() -1 is at a corner on the other side of the cuboid...
-		//TODO: if bottom isn't just 1 cell, apply this rules to all 4 or corner cells
 		
 		if(cuboid.getDimensions()[1] == 1 && cuboid.getDimensions()[2] == 1) {
+
+			//This assumes we're dealing with a Nx1x1 and
+			// top is the last cell index and bottom is cell index 0...
 			
 			int topCell = cuboid.getNumCellsToFill() -1;
-			if(! cuboid.isCellIndexUsed(topCell)) {
+			if(! cuboid.isCellIndexUsed(topCell) && 
+					//Make sure the top cell is currently in the region:
+					region.getCellRegionsToHandleInRevOrder()[topCell]) {
 				
 				
 				int minCellOrderAllowed = region.getCellIndexToOrderOfDev().get(cellIndexToUse);
@@ -115,7 +115,6 @@ public class SymmetryResolver {
 	public static int NUM_ROTATIONS = 4;
 	
 	//pre: Nx1x1
-	//TODO: copy/paste code:
 	public static boolean isTopCellNx1x1ReachableFromAppropriateCell(Region region, CuboidToFoldOn cuboid, int minCellOrderAllowed,
 			Coord2D paperToDevelop[], int indexCuboidonPaper[][], int cellIndexToUseDebug) {
 		
@@ -133,7 +132,6 @@ public class SymmetryResolver {
 
 		boolean couldGetToTopSoFar = false;
 		
-		//System.out.println("START LOOP");
 		BFS_LOOP:
 		while(queueCells.isEmpty() == false) {
 			
@@ -161,22 +159,16 @@ public class SymmetryResolver {
 							
 		
 						} else {
-							//Check appropriate
 	
-							//if(neighbour == 14 && indexCuboidonPaper[cuboid.getCellsUsed().length - 4][cuboid.getCellsUsed().length + 1] == 14) {
-							//	System.out.println("DEBUG123");
-							//}
-							
 							if( ! region.getCellIndexToOrderOfDev().containsKey(neighbour)) {
-								//Wrong region:
-								couldGetToTopSoFar = true;
-								break BFS_LOOP;
+								//Wrong region, so just assume everything is ok, and the other region will reach the top.
+								System.out.println("ERROR: neighbour found is in the wrong region. This shouldn't be possible.");
+								System.exit(1);
 							}
 							
-						
-							
+
+							//Check if cell has valid path to bottom cell:
 							if(couldReachTopNx1x1WithoutGoingThruBottom(region, cuboid, neighbour, minCellOrderAllowed, paperToDevelop, indexCuboidonPaper)) {
-								
 								
 								couldGetToTopSoFar = true;
 								
@@ -191,24 +183,7 @@ public class SymmetryResolver {
 			}
 			
 		}
-		//System.out.println("...");
-		/*if(couldGetToTopSoFar == false) {
-			System.out.println("Test true");
-			System.out.println(minCellOrderAllowed);
-			System.out.println("Cell to use: " + cellIndexToUseDebug);
-			
-			Utils.printFoldWithIndex(indexCuboidonPaper);
-
-			for(int i=0; i< cuboid.getNumCellsToFill(); i++) {
-				if(cuboid.isCellIndexUsed(i)) {
-					System.out.println(i + " -> " + region.getCellIndexToOrderOfDev().get(i));
-				}
-			}
-			
-			System.out.println("What");
-			//System.exit(1);
-			
-		}*/
+		
 		return couldGetToTopSoFar;
 		
 		
@@ -219,19 +194,13 @@ public class SymmetryResolver {
 	
 	public static final int BOTTOM_Nx1x1 = 0;
 	
-	//TODO: cache/memorise this info later...
-	//TODO: It's very wasteful to check each time.
+	//TODO: cache/memorise this info later... It's very wasteful to check each time.
 	public static boolean couldReachTopNx1x1WithoutGoingThruBottom(Region region, CuboidToFoldOn cuboid, int startIndex, int minCellOrderAllowed,
 			Coord2D paperToDevelop[], int indexCuboidonPaper[][]) {
 
 		if(minCellOrderAllowed == 0) {
 			return true;
 		}
-		
-		/*if(startIndex == 16) {
-			Utils.printFoldWithIndex(indexCuboidonPaper);
-			System.out.println("Debug TODO");
-		}*/
 		
 		
 		boolean couldTopCouldBeOnRightOfBottom = FoldResolveOrderedRegionsNby1by1.getNumUsedNeighbourCellonPaper(indexCuboidonPaper,paperToDevelop[0])
@@ -249,7 +218,6 @@ public class SymmetryResolver {
 		
 		//Shortcut: if the first cell is below bottom on paper, and it's not the 3 neighbours of bottom case,
 		// we know it's a no-go:
-		//TODO: cache/let algo memorise the answer to this function.
 		//Remember: higher i goes down!
 		if(startI > bottomI && !couldTopCouldBeOnRightOfBottom) {
 			return false;
@@ -270,7 +238,7 @@ public class SymmetryResolver {
 			int curI=paperToDevelop[region.getCellIndexToOrderOfDev().get(curCellIndex)].i;
 			int curJ=paperToDevelop[region.getCellIndexToOrderOfDev().get(curCellIndex)].j;
 			
-			//Sanity check to be deleted:
+			//Sanity check to be deleted: (or hidden in the function)
 			if(indexCuboidonPaper[curI][curJ] != curCellIndex) {
 				System.out.println("oops geting curI curJ didn't work!");
 				System.exit(1);
@@ -284,15 +252,7 @@ public class SymmetryResolver {
 					&& couldTopCouldBeOnRightOfBottom
 					&& cellsAreNeighbours(curI, curJ, bottomI, bottomJ)) {
 				
-				/*
-				System.out.println(minCellOrderAllowed);
-				Utils.printFoldWithIndex(indexCuboidonPaper);
-
-				for(int i=0; i< cuboid.getNumCellsToFill(); i++) {
-					if(cuboid.isCellIndexUsed(i)) {
-						System.out.println(i + " -> " + region.getCellIndexToOrderOfDev().get(i));
-					}
-				}*/
+				
 				return true;
 			} else {
 				
@@ -333,14 +293,14 @@ public class SymmetryResolver {
 		}
 		
 		if(queueCells.isEmpty() ) {
-			System.out.println("DOH!");
+			System.out.println("DOH! The queue for this BFS shouldn't be empty!");
 			System.exit(1);
 		}
 		
 		return false;
 	}
 	
-	//TODO: maybe make this 2D coords
+	//TODO: maybe make this 2D coords (clean this up)
 	private static boolean cellsAreNeighbours(int curi, int curj, int curi2, int curj2) {
 		
 		if(Math.abs(curi - curi2) + Math.abs(curj - curj2) == 1) {
