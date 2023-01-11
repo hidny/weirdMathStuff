@@ -109,7 +109,7 @@ public class DFSIntersectFinderCheckTop {
 			indexCuboidOnPaper2ndCuboid[START_I][START_J] = startIndex2ndCuboid;
 			
 		
-			doDepthFirstSearch(paperToDevelop, indexCuboidOnPaper, paperUsed, cuboid, numCellsUsedDepth, regionsToHandleRevOrder, -1L, skipSymmetries, solutionResolver, cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid, false);
+			doDepthFirstSearch(paperToDevelop, indexCuboidOnPaper, paperUsed, cuboid, numCellsUsedDepth, regionsToHandleRevOrder, -1L, skipSymmetries, solutionResolver, cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid);
 			
 			
 			System.out.println("Done with trying to intersect 2nd cuboid that has a start index of " + startIndex2ndCuboid + " and a rotation index of " + startRotation2ndCuboid +".");
@@ -126,18 +126,12 @@ public class DFSIntersectFinderCheckTop {
 	
 	public static final int nugdeBasedOnRotation[][] = {{-1, 0, 1, 0}, {0, 1, 0 , -1}};
 	
-	public static int debugNum = 0;
-	
 	
 	public static long doDepthFirstSearch(Coord2D paperToDevelop[], int indexCuboidonPaper[][], boolean paperUsed[][], CuboidToFoldOn cuboid, int numCellsUsedDepth,
-			Region regions[], long limitDupSolutions, boolean skipSymmetries, SolutionResolverIntersectInterface solutionResolver, CuboidToFoldOn cuboidToBringAlongStartRot, int indexCuboidOnPaper2ndCuboid[][], boolean shouldFailDebug) {
+			Region regions[], long limitDupSolutions, boolean skipSymmetries, SolutionResolverIntersectInterface solutionResolver, CuboidToFoldOn cuboidToBringAlongStartRot, int indexCuboidOnPaper2ndCuboid[][]) {
 
 		if(numCellsUsedDepth == cuboid.getNumCellsToFill()) {
-			if(shouldFailDebug) {
-				Utils.printFoldWithIndex(indexCuboidonPaper);
-				System.out.println("Test debug 2");
-			}
-
+			
 			int indexes[][][] = new int[2][][];
 			indexes[0] = indexCuboidonPaper;
 			indexes[1] = indexCuboidOnPaper2ndCuboid;
@@ -147,9 +141,7 @@ public class DFSIntersectFinderCheckTop {
 		regions = FoldResolveOrderedRegionsSkipSymmetries.handleCompletedRegionIfApplicable(regions, limitDupSolutions, indexCuboidonPaper, paperUsed);
 		
 		if(regions == null) {
-			if(shouldFailDebug) {
-				System.out.println("Test debug 1");
-			}
+			
 			return 1L;
 		}
 		
@@ -171,25 +163,8 @@ public class DFSIntersectFinderCheckTop {
 
 			} else	if( SymmetryResolver.skipSearchBecauseCuboidCouldProvablyNotBeBuiltThisWay
 					(cuboid, paperToDevelop, indexCuboidonPaper, i,indexToUse, regions[regionIndex]) && skipSymmetries) {
-				//TODO: Do some tricks...
-				//System.out.println("BREAK");
 				
-				//TODO:
-				if(! shouldFailDebug) {
-					shouldFailDebug = true;
-					debugNum++;
-					
-					System.out.println("Debug number: " + debugNum);
-					
-					if(debugNum == 3543) {
-						System.out.println("Debug:dfadf");
-						Utils.printFoldWithIndex(indexCuboidonPaper);
-						
-						SymmetryResolver.skipSearchBecauseCuboidCouldProvablyNotBeBuiltThisWay
-						(cuboid, paperToDevelop, indexCuboidonPaper, i,indexToUse, regions[regionIndex]);
-					}
-				}
-				//break;
+				break;
 			}
 			//TODO
 			
@@ -304,7 +279,7 @@ public class DFSIntersectFinderCheckTop {
 						newLimitDupSolutions -= retDuplicateSolutions;
 					}
 					
-					retDuplicateSolutions += doDepthFirstSearch(paperToDevelop, indexCuboidonPaper, paperUsed, cuboid, numCellsUsedDepth, regions, newLimitDupSolutions, skipSymmetries, solutionResolver, cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid, shouldFailDebug);
+					retDuplicateSolutions += doDepthFirstSearch(paperToDevelop, indexCuboidonPaper, paperUsed, cuboid, numCellsUsedDepth, regions, newLimitDupSolutions, skipSymmetries, solutionResolver, cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid);
 
 					if(numCellsUsedDepth < regions[0].getCellIndexToOrderOfDev().size()) {
 						System.out.println("WHAT???");
