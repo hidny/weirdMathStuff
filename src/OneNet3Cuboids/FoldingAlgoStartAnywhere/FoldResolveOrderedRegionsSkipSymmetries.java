@@ -18,6 +18,9 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 	public static final int NUM_ROTATIONS = 4;
 	public static final int NUM_NEIGHBOURS = NUM_ROTATIONS;
 	
+	//TODO: Only check at begining of iteration: regions[regionIndex].getCellIndexToOrderOfDev().containsKey(indexToUse)
+	// and never again!
+	
 	
 	public static void solveFoldsForSingleCuboid(int a, int b, int c) {
 		solveFoldsForSingleCuboid(a, b, c, true);

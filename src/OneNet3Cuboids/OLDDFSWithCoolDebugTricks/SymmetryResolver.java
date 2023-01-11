@@ -1,4 +1,4 @@
-package OneNet3Cuboids.Cuboid.SymmetryResolver;
+package OneNet3Cuboids.OLDDFSWithCoolDebugTricks;
 
 import java.util.LinkedList;
 
