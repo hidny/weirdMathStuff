@@ -81,9 +81,7 @@ public class SymmetryResolver {
 			int indexCuboidonPaper[][], int cuboidOnPaperIndex,
 			int cellIndexToUse,
 			Region region) {
-		
-		
-		
+
 		if(cuboid.getDimensions()[1] == 1 && cuboid.getDimensions()[2] == 1) {
 
 			//This assumes we're dealing with a Nx1x1 and
@@ -114,8 +112,9 @@ public class SymmetryResolver {
 	
 	public static int NUM_ROTATIONS = 4;
 	
+	//TODO: make sure I implemented BFS properly (i.e. get First, gets the first one...)
 	//pre: Nx1x1
-	public static boolean isTopCellNx1x1ReachableFromAppropriateCell(Region region, CuboidToFoldOn cuboid, int minCellOrderAllowed,
+	private static boolean isTopCellNx1x1ReachableFromAppropriateCell(Region region, CuboidToFoldOn cuboid, int minCellOrderAllowed,
 			Coord2D paperToDevelop[], int indexCuboidonPaper[][], int cellIndexToUseDebug) {
 		
 		if(minCellOrderAllowed == 0) {
@@ -195,7 +194,7 @@ public class SymmetryResolver {
 	public static final int BOTTOM_Nx1x1 = 0;
 	
 	//TODO: cache/memorise this info later... It's very wasteful to check each time.
-	public static boolean couldReachTopNx1x1WithoutGoingThruBottom(Region region, CuboidToFoldOn cuboid, int startIndex, int minCellOrderAllowed,
+	private static boolean couldReachTopNx1x1WithoutGoingThruBottom(Region region, CuboidToFoldOn cuboid, int startIndex, int minCellOrderAllowed,
 			Coord2D paperToDevelop[], int indexCuboidonPaper[][]) {
 
 		if(minCellOrderAllowed == 0) {
