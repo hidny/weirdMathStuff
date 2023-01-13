@@ -170,7 +170,7 @@ public class DFSIntersectFinderCheckTop {
 				continue;
 
 			} else	if( SymmetryResolver.skipSearchBecauseCuboidCouldProvablyNotBeBuiltThisWay
-					(cuboid, paperToDevelop, indexCuboidonPaper, i,indexToUse, regions[regionIndex]) && skipSymmetries) {
+					(cuboid, paperToDevelop, indexCuboidonPaper, i,indexToUse, regions[regionIndex], null) && skipSymmetries) {
 				//TODO: Do some tricks...
 				//System.out.println("BREAK");
 				
@@ -184,7 +184,7 @@ public class DFSIntersectFinderCheckTop {
 						Utils.printFoldWithIndex(indexCuboidonPaper);
 						
 						SymmetryResolver.skipSearchBecauseCuboidCouldProvablyNotBeBuiltThisWay
-						(cuboid, paperToDevelop, indexCuboidonPaper, i,indexToUse, regions[regionIndex]);
+						(cuboid, paperToDevelop, indexCuboidonPaper, i,indexToUse, regions[regionIndex], null);
 					}
 				}
 				//break;

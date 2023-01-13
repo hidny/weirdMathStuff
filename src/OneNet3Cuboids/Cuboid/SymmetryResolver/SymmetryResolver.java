@@ -80,7 +80,8 @@ public class SymmetryResolver {
 			Coord2D paperToDevelop[],
 			int indexCuboidonPaper[][], int cuboidOnPaperIndex,
 			int cellIndexToUse,
-			Region region) {
+			Region region,
+			int topBottombridgeUsedNx1x1[]) {
 
 		if(cuboid.getDimensions()[1] == 1 && cuboid.getDimensions()[2] == 1) {
 
@@ -97,7 +98,7 @@ public class SymmetryResolver {
 				
 				if(minCellOrderAllowed > 0
 						&& ! isTopCellNx1x1ReachableFromAppropriateCell(region, cuboid, minCellOrderAllowed,
-								paperToDevelop, indexCuboidonPaper, cellIndexToUse)) {
+								paperToDevelop, indexCuboidonPaper, cellIndexToUse, topBottombridgeUsedNx1x1)) {
 					return true;
 				}
 				
@@ -115,7 +116,8 @@ public class SymmetryResolver {
 	//TODO: make sure I implemented BFS properly (i.e. get First, gets the first one...)
 	//pre: Nx1x1
 	private static boolean isTopCellNx1x1ReachableFromAppropriateCell(Region region, CuboidToFoldOn cuboid, int minCellOrderAllowed,
-			Coord2D paperToDevelop[], int indexCuboidonPaper[][], int cellIndexToUseDebug) {
+			Coord2D paperToDevelop[], int indexCuboidonPaper[][], int cellIndexToUseDebug,
+			int topBottombridgeUsedNx1x1[]) {
 		
 		if(minCellOrderAllowed == 0) {
 			return true;
@@ -128,6 +130,8 @@ public class SymmetryResolver {
 		explored[topCellIndex] = true;
 		queueCells.add(topCellIndex);
 		
+		boolean couldTopCouldBeOnRightOfBottom = FoldResolveOrderedRegionsNby1by1.getNumUsedNeighbourCellonPaper(indexCuboidonPaper,paperToDevelop[0])
+				== 3;
 
 		boolean couldGetToTopSoFar = false;
 		
@@ -167,11 +171,36 @@ public class SymmetryResolver {
 							
 
 							//Check if cell has valid path to bottom cell:
-							if(couldReachTopNx1x1WithoutGoingThruBottom(region, cuboid, neighbour, minCellOrderAllowed, paperToDevelop, indexCuboidonPaper)) {
-								
-								couldGetToTopSoFar = true;
-								
-								break BFS_LOOP;
+							
+							if(topBottombridgeUsedNx1x1 != null) {
+								if(topBottombridgeUsedNx1x1[neighbour] == 0
+										|| (topBottombridgeUsedNx1x1[neighbour] == 1 && couldTopCouldBeOnRightOfBottom)) {
+									
+
+									//TODO: maybe check that it has a empty cell that's allowed to be taken beside it
+									//at least
+									
+									//TODO: why require regions and region index?
+									/*
+									boolean cantAddCellBecauseOfOtherPaperNeighbours = FoldResolveOrderedRegionsSkipSymmetries.cantAddCellBecauseOfOtherPaperNeighbours(paperToDevelop, indexCuboidonPaper,
+											paperUsed, cuboid, numCellsUsedDepth,
+											regions, regionIndex, indexToUse,
+											indexNewCell, new_i, new_j, i
+										);
+									*/
+									couldGetToTopSoFar = true;
+									
+									
+									break BFS_LOOP;
+								}
+							} else {
+								//Old way TODELETE
+								if(couldReachTopNx1x1WithoutGoingThruBottom(region, cuboid, neighbour, minCellOrderAllowed, paperToDevelop, indexCuboidonPaper)) {
+									
+									couldGetToTopSoFar = true;
+									
+									break BFS_LOOP;
+								}
 							}
 						}
 						

@@ -15,7 +15,7 @@ import OneNet3Cuboids.GraphUtils.PivotCellDescription;
 import OneNet3Cuboids.Region.Region;
 import OneNet3Cuboids.SolutionResovler.*;
 
-public class DFSIntersectFinderCheckTop {
+public class DFSIntersectFinderRegionsTODO {
 
 	
 	public static final int NUM_ROTATIONS = 4;
@@ -108,8 +108,9 @@ public class DFSIntersectFinderCheckTop {
 			cuboidToBringAlongStartRot.setCell(startIndex2ndCuboid, startRotation2ndCuboid);
 			indexCuboidOnPaper2ndCuboid[START_I][START_J] = startIndex2ndCuboid;
 			
+			int topBottombridgeUsedNx1x1[] = new int[Utils.getTotalArea(cuboidToBuild.getDimensions())];
 		
-			doDepthFirstSearch(paperToDevelop, indexCuboidOnPaper, paperUsed, cuboid, numCellsUsedDepth, regionsToHandleRevOrder, -1L, skipSymmetries, solutionResolver, cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid);
+			doDepthFirstSearch(paperToDevelop, indexCuboidOnPaper, paperUsed, cuboid, numCellsUsedDepth, regionsToHandleRevOrder, -1L, skipSymmetries, solutionResolver, cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid, topBottombridgeUsedNx1x1);
 			
 			
 			System.out.println("Done with trying to intersect 2nd cuboid that has a start index of " + startIndex2ndCuboid + " and a rotation index of " + startRotation2ndCuboid +".");
@@ -128,7 +129,8 @@ public class DFSIntersectFinderCheckTop {
 	
 	
 	public static long doDepthFirstSearch(Coord2D paperToDevelop[], int indexCuboidonPaper[][], boolean paperUsed[][], CuboidToFoldOn cuboid, int numCellsUsedDepth,
-			Region regions[], long limitDupSolutions, boolean skipSymmetries, SolutionResolverIntersectInterface solutionResolver, CuboidToFoldOn cuboidToBringAlongStartRot, int indexCuboidOnPaper2ndCuboid[][]) {
+			Region regions[], long limitDupSolutions, boolean skipSymmetries, SolutionResolverIntersectInterface solutionResolver, CuboidToFoldOn cuboidToBringAlongStartRot, int indexCuboidOnPaper2ndCuboid[][],
+			int topBottombridgeUsedNx1x1[]) {
 
 		if(numCellsUsedDepth == cuboid.getNumCellsToFill()) {
 			
@@ -161,8 +163,9 @@ public class DFSIntersectFinderCheckTop {
 				&& skipSymmetries) {
 				continue;
 
-			} else	if( SymmetryResolver.skipSearchBecauseCuboidCouldProvablyNotBeBuiltThisWay
-					(cuboid, paperToDevelop, indexCuboidonPaper, i,indexToUse, regions[regionIndex], null) && skipSymmetries) {
+			} else	if( 2*numCellsUsedDepth < paperToDevelop.length && 
+					SymmetryResolver.skipSearchBecauseCuboidCouldProvablyNotBeBuiltThisWay
+					(cuboid, paperToDevelop, indexCuboidonPaper, i,indexToUse, regions[regionIndex], topBottombridgeUsedNx1x1) && skipSymmetries) {
 				
 				break;
 			}
@@ -264,6 +267,14 @@ public class DFSIntersectFinderCheckTop {
 					indexCuboidonPaper[new_i][new_j] = indexNewCell;
 					paperToDevelop[numCellsUsedDepth] = new Coord2D(new_i, new_j);
 
+					if(indexToUse == 0) {
+						topBottombridgeUsedNx1x1[indexNewCell] = j;
+					} else if(indexToUse == cuboid.getCellsUsed().length - 1) {
+						topBottombridgeUsedNx1x1[indexNewCell] = NUM_ROTATIONS + j;
+					} else {
+						topBottombridgeUsedNx1x1[indexNewCell] = topBottombridgeUsedNx1x1[indexToUse];
+					}
+
 					indexCuboidOnPaper2ndCuboid[new_i][new_j] = indexNewCell2;
 
 					//Add cell to new region(s):
@@ -279,7 +290,7 @@ public class DFSIntersectFinderCheckTop {
 						newLimitDupSolutions -= retDuplicateSolutions;
 					}
 					
-					retDuplicateSolutions += doDepthFirstSearch(paperToDevelop, indexCuboidonPaper, paperUsed, cuboid, numCellsUsedDepth, regions, newLimitDupSolutions, skipSymmetries, solutionResolver, cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid);
+					retDuplicateSolutions += doDepthFirstSearch(paperToDevelop, indexCuboidonPaper, paperUsed, cuboid, numCellsUsedDepth, regions, newLimitDupSolutions, skipSymmetries, solutionResolver, cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid, topBottombridgeUsedNx1x1);
 
 					if(numCellsUsedDepth < regions[0].getCellIndexToOrderOfDev().size()) {
 						System.out.println("WHAT???");
@@ -320,6 +331,278 @@ public class DFSIntersectFinderCheckTop {
 		return retDuplicateSolutions;
 	}
 	
+
+
+	public static boolean depthFirstAlgoWillFindAsolutionInRegionIndex(Coord2D paperToDevelop[], int indexCuboidonPaper[][],
+			boolean paperUsed[][], CuboidToFoldOn cuboid, int numCellsUsedDepth,
+			Region regions[], int regionIndex, boolean skipSymmetries,
+			CuboidToFoldOn cuboidToBringAlongStartRot, int indexCuboidOnPaper2ndCuboid[][],
+			int topBottombridgeUsedNx1x1[]) {
+		
+		
+		Region regionArgToUse[] = new Region[1];
+		regionArgToUse[0] = regions[regionIndex];
+		
+		if(doDepthFirstSearch(paperToDevelop, indexCuboidonPaper, paperUsed, cuboid, numCellsUsedDepth, regionArgToUse, 0L, skipSymmetries, null, cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid, topBottombridgeUsedNx1x1)
+				> 0L) {
+			return true;
+		} else {
+		
+			return false;
+		}
+	}
+ 
+	public static boolean depthFirstAlgoWillFindOnly1solutionInRegionIndex(Coord2D paperToDevelop[], int indexCuboidonPaper[][],
+			boolean paperUsed[][], CuboidToFoldOn cuboid, int numCellsUsedDepth,
+			Region regions[], int regionIndex, boolean skipSymmetries,
+			CuboidToFoldOn cuboidToBringAlongStartRot, int indexCuboidOnPaper2ndCuboid[][],
+			int topBottombridgeUsedNx1x1[]) {
+		
+		
+		Region regionArgToUse[] = new Region[1];
+		regionArgToUse[0] = regions[regionIndex];
+		
+		if(doDepthFirstSearch(paperToDevelop, indexCuboidonPaper, paperUsed, cuboid, numCellsUsedDepth, regionArgToUse, 1L, skipSymmetries, null, cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid, topBottombridgeUsedNx1x1)
+				== 1L) {
+			return true;
+		} else {
+		
+			return false;
+		}
+	}
+	
+	
+
+	//j = rotation relativeCuboidMap
+	public static Region[] splitRegionsIfNewCellSplitsRegions(Coord2D paperToDevelop[], int indexCuboidonPaper[][],
+			boolean paperUsed[][], CuboidToFoldOn cuboid, int numCellsUsedDepth,
+			Region regions[],
+			int indexToUse, int newMinRotationToUse, int prevNewMinOrderedCellCouldUse, int prevMinCellRotationOfMinCellToDev,
+			int new_i, int new_j, int indexNewCell, int rotationNeighbourPaperRelativeToMap,
+			boolean skipSymmetries,
+			CuboidToFoldOn cuboidToBringAlongStartRot, int indexCuboidOnPaper2ndCuboid[][],
+			int topBottombridgeUsedNx1x1[]) {
+		
+		boolean cantAddCellBecauseOfOtherPaperNeighbours = false;
+		
+		//Trying to divide and conquer here:
+		
+		CoordWithRotationAndIndex neighboursOfNewCell[] = cuboid.getNeighbours(indexNewCell);
+		
+		int regionIndex = regions.length - 1;
+		
+		//areCellsSepartedCuboid(CuboidToFoldOn cuboid, int startIndex, int goalIndex)
+		
+		//flag is redundant, but expressive!
+		boolean foundABlankNeighbour = false;
+		int firstIndex = -1;
+
+		//Add potentially new cell just for test:
+		cuboid.setCell(indexNewCell, rotationNeighbourPaperRelativeToMap);
+				
+		
+		TRY_TO_DIVDE_REGIONS:
+		for(int rotIndexToFill=0; rotIndexToFill<NUM_ROTATIONS; rotIndexToFill++) {
+			
+			
+
+			int indexNeighbourOfNewCell = neighboursOfNewCell[rotIndexToFill].getIndex();
+			
+			if( ! cuboid.isCellIndexUsed(indexNeighbourOfNewCell)) {
+				
+				if( ! foundABlankNeighbour) {
+					firstIndex = indexNeighbourOfNewCell;
+					foundABlankNeighbour = true;
+				} else {
+					
+					if(FoldResolveOrderedRegionsSkipSymmetries.areCellsSepartedCuboid(cuboid, firstIndex, indexNeighbourOfNewCell)) {
+						
+						//START DIVIDING THE REGION:
+						
+						//Look for a 3-three way:
+						
+						boolean found3Way = false;
+						int indexNeighbourThirdWay = -1;
+						for(int thirdRot=rotIndexToFill+1; thirdRot<NUM_ROTATIONS; thirdRot++) {
+							
+							int curThirdNeighbour = neighboursOfNewCell[thirdRot].getIndex();
+							
+							
+							if(! cuboid.isCellIndexUsed(curThirdNeighbour)
+									&& FoldResolveOrderedRegionsSkipSymmetries.areCellsSepartedCuboid(cuboid, curThirdNeighbour, firstIndex)
+									&& FoldResolveOrderedRegionsSkipSymmetries.areCellsSepartedCuboid(cuboid, curThirdNeighbour, indexNeighbourOfNewCell)) {
+								found3Way = true;
+								indexNeighbourThirdWay = curThirdNeighbour;
+							}
+						}
+						//End look for 3-three (cuboid separated into 3 regions)
+
+						int numNewWays = 1;
+						if(found3Way) {
+							numNewWays = 2;
+						}
+							
+						Region regionsSplit[] = new Region[regions.length + numNewWays];
+						
+						for(int k=0; k<regions.length - 1; k++) {
+							regionsSplit[k] = regions[k];
+						}
+						
+						for(int k=0; k<numNewWays + 1; k++) {
+								
+							int indexToAdd = regions.length - 1 + k;
+							
+							if(k==0) {
+								regionsSplit[indexToAdd] = new Region(cuboid, regions[regionIndex], firstIndex, newMinRotationToUse);
+							} else if(k == 1) {
+								regionsSplit[indexToAdd] = new Region(cuboid, regions[regionIndex], indexNeighbourOfNewCell, newMinRotationToUse);	
+							} else if(k == 2) {
+								regionsSplit[indexToAdd] = new Region(cuboid, regions[regionIndex], indexNeighbourThirdWay, newMinRotationToUse);
+								
+							} else {
+								System.out.println("ERROR: k is too high. k= " + k);
+								System.exit(1);
+							}
+							
+							
+							//Quick check if each region has at least 1 solution:
+							//TODO: put this quick check in function
+							//Mini setup for checking a single solution:
+							
+							//Don't set it! (It's supposed to be set for now)
+							//cuboid.setCell(indexNewCell, rotationNeighbourPaperRelativeToMap);
+							
+							paperUsed[new_i][new_j] = true;
+							indexCuboidonPaper[new_i][new_j] = indexNewCell;
+							paperToDevelop[numCellsUsedDepth] = new Coord2D(new_i, new_j);
+
+							
+							regionsSplit[indexToAdd].addCellToRegion(indexNewCell, numCellsUsedDepth, indexToUse, newMinRotationToUse);
+							
+
+							numCellsUsedDepth += 1;
+							
+							if(depthFirstAlgoWillFindAsolutionInRegionIndex(paperToDevelop, indexCuboidonPaper,
+									paperUsed, cuboid, numCellsUsedDepth,
+									regionsSplit, indexToAdd, skipSymmetries,
+									cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid,
+									topBottombridgeUsedNx1x1)
+								== false) {
+								
+								
+								//System.out.println("Region impossible!");
+								
+								cantAddCellBecauseOfOtherPaperNeighbours = true;
+							}
+							
+							numCellsUsedDepth -= 1;
+							
+							
+							//Mini tear down
+							regionsSplit[indexToAdd].removeCellFromRegion(indexNewCell, numCellsUsedDepth, prevNewMinOrderedCellCouldUse, prevMinCellRotationOfMinCellToDev);
+
+
+							paperUsed[new_i][new_j] = false;
+							indexCuboidonPaper[new_i][new_j] = -1;
+							paperToDevelop[numCellsUsedDepth] = null;
+							
+							//Don't remove this: (It's supposed to be set for now)
+							//cuboid.removeCell(indexNewCell);
+							
+							//End mini-tear down
+							//END TODO:  put quick check in function
+							
+							if(cantAddCellBecauseOfOtherPaperNeighbours) {
+								//System.out.println("quick cut off");
+								break TRY_TO_DIVDE_REGIONS;
+							}
+							
+						}
+						
+						regionIndex = regions.length - 1;
+						
+						//Later:
+						//TODO: check if region is the same as a hole in the net to go faster (Also useful for the 3Cuboid 1 net check)
+
+						//reordering regions by whether or not they have a single solution and then by size:
+						//TODO: afterwards, try incorporating algo that checks if there's less than or equal to N solutions? Probably bad...
+						
+						regions = regionsSplit;
+
+						boolean regionHasOneSolution[] = new boolean[regions.length];
+						for(int i2=regions.length - 1 - numNewWays; i2< regions.length; i2++) {
+							
+							paperUsed[new_i][new_j] = true;
+							indexCuboidonPaper[new_i][new_j] = indexNewCell;
+							paperToDevelop[numCellsUsedDepth] = new Coord2D(new_i, new_j);
+
+							
+							regionsSplit[i2].addCellToRegion(indexNewCell, numCellsUsedDepth, indexToUse, newMinRotationToUse);
+							
+
+							numCellsUsedDepth += 1;
+							
+							regionHasOneSolution[i2] = depthFirstAlgoWillFindOnly1solutionInRegionIndex(paperToDevelop, indexCuboidonPaper,
+									paperUsed, cuboid, numCellsUsedDepth,
+									regionsSplit, i2, skipSymmetries,
+									cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid,
+									topBottombridgeUsedNx1x1);
+
+							numCellsUsedDepth -= 1;
+							
+							
+							regionsSplit[i2].removeCellFromRegion(indexNewCell, numCellsUsedDepth, prevNewMinOrderedCellCouldUse, prevMinCellRotationOfMinCellToDev);
+
+
+							paperUsed[new_i][new_j] = false;
+							indexCuboidonPaper[new_i][new_j] = -1;
+							paperToDevelop[numCellsUsedDepth] = null;
+							
+							
+							
+						}
+						
+						//Sort new regions by whether it has only 1 solution, and then by size:
+						for(int i2=regions.length - 1 - numNewWays; i2< regions.length; i2++) {
+							
+							int curBestIndex = i2;
+							
+							for(int j2=i2+1; j2<regions.length; j2++) {
+								
+								if(regionHasOneSolution[i2] && ! regionHasOneSolution[j2]) {
+									curBestIndex = j2;
+
+								} else if(regions[i2].getNumCellsInRegion() < regions[j2].getNumCellsInRegion()) {
+									curBestIndex = j2;
+								}
+							}
+							
+							Region tmp = regions[i2];
+							regions[i2] = regions[curBestIndex];
+							regions[curBestIndex] = tmp;
+						}
+						//END sort
+						
+						 
+						
+						//End sort regions by size and if the region only has 1 solution
+						
+						break TRY_TO_DIVDE_REGIONS;
+					}
+				}
+			}
+		}//END LOOP
+
+		
+		//Remove potential new cell once test is done:
+		cuboid.removeCell(indexNewCell);
+		
+		if(! cantAddCellBecauseOfOtherPaperNeighbours) {
+			return regions;
+		} else {
+			return null;
+		}
+	}
 
 	/*https://www.sciencedirect.com/science/article/pii/S0925772117300160
 	 * 
