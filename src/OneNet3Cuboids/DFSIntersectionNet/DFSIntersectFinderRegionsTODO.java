@@ -244,12 +244,14 @@ public class DFSIntersectFinderRegionsTODO {
 				if( !cantAddCellBecauseOfOtherPaperNeighbours) {
 					
 					//Split the regions if possible:
-					regions = FoldResolveOrderedRegionsSkipSymmetries.splitRegionsIfNewCellSplitsRegions(paperToDevelop, indexCuboidonPaper,
+					regions = splitRegionsIfNewCellSplitsRegions(paperToDevelop, indexCuboidonPaper,
 							paperUsed, cuboid, numCellsUsedDepth,
 							regions,
 							indexToUse, j, prevNewMinOrderedCellCouldUse, prevMinCellRotationOfMinCellToDev,
 							new_i, new_j, indexNewCell, rotationNeighbourPaperRelativeToMap,
-							skipSymmetries);
+							skipSymmetries,
+							cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid, indexNewCell2, rotationNeighbourPaperRelativeToMap2,
+							topBottombridgeUsedNx1x1);
 					
 					if(regions == null) {
 						cantAddCellBecauseOfOtherPaperNeighbours = true;
@@ -380,7 +382,7 @@ public class DFSIntersectFinderRegionsTODO {
 			int indexToUse, int newMinRotationToUse, int prevNewMinOrderedCellCouldUse, int prevMinCellRotationOfMinCellToDev,
 			int new_i, int new_j, int indexNewCell, int rotationNeighbourPaperRelativeToMap,
 			boolean skipSymmetries,
-			CuboidToFoldOn cuboidToBringAlongStartRot, int indexCuboidOnPaper2ndCuboid[][],
+			CuboidToFoldOn cuboidToBringAlongStartRot, int indexCuboidOnPaper2ndCuboid[][], int indexNewCell2, int rotationNeighbourPaperRelativeToMap2,
 			int topBottombridgeUsedNx1x1[]) {
 		
 		boolean cantAddCellBecauseOfOtherPaperNeighbours = false;
@@ -471,14 +473,24 @@ public class DFSIntersectFinderRegionsTODO {
 							
 							//Don't set it! (It's supposed to be set for now)
 							//cuboid.setCell(indexNewCell, rotationNeighbourPaperRelativeToMap);
-							
+
+							cuboidToBringAlongStartRot.setCell(indexNewCell2, rotationNeighbourPaperRelativeToMap2);
+		
 							paperUsed[new_i][new_j] = true;
 							indexCuboidonPaper[new_i][new_j] = indexNewCell;
 							paperToDevelop[numCellsUsedDepth] = new Coord2D(new_i, new_j);
 
+							indexCuboidOnPaper2ndCuboid[new_i][new_j] = indexNewCell2;
 							
 							regionsSplit[indexToAdd].addCellToRegion(indexNewCell, numCellsUsedDepth, indexToUse, newMinRotationToUse);
 							
+							if(indexToUse == 0) {
+								topBottombridgeUsedNx1x1[indexNewCell] = newMinRotationToUse;
+							} else if(indexToUse == cuboid.getCellsUsed().length - 1) {
+								topBottombridgeUsedNx1x1[indexNewCell] = NUM_ROTATIONS + newMinRotationToUse;
+							} else {
+								topBottombridgeUsedNx1x1[indexNewCell] = topBottombridgeUsedNx1x1[indexToUse];
+							}
 
 							numCellsUsedDepth += 1;
 							
@@ -505,9 +517,13 @@ public class DFSIntersectFinderRegionsTODO {
 							paperUsed[new_i][new_j] = false;
 							indexCuboidonPaper[new_i][new_j] = -1;
 							paperToDevelop[numCellsUsedDepth] = null;
-							
+
+							indexCuboidOnPaper2ndCuboid[new_i][new_j] = -1;
+
 							//Don't remove this: (It's supposed to be set for now)
 							//cuboid.removeCell(indexNewCell);
+
+							cuboidToBringAlongStartRot.removeCell(indexNewCell2);
 							
 							//End mini-tear down
 							//END TODO:  put quick check in function
@@ -536,9 +552,19 @@ public class DFSIntersectFinderRegionsTODO {
 							indexCuboidonPaper[new_i][new_j] = indexNewCell;
 							paperToDevelop[numCellsUsedDepth] = new Coord2D(new_i, new_j);
 
-							
+							indexCuboidOnPaper2ndCuboid[new_i][new_j] = indexNewCell2;
+
+							cuboidToBringAlongStartRot.setCell(indexNewCell2, rotationNeighbourPaperRelativeToMap2);
+	
 							regionsSplit[i2].addCellToRegion(indexNewCell, numCellsUsedDepth, indexToUse, newMinRotationToUse);
 							
+							if(indexToUse == 0) {
+								topBottombridgeUsedNx1x1[indexNewCell] = newMinRotationToUse;
+							} else if(indexToUse == cuboid.getCellsUsed().length - 1) {
+								topBottombridgeUsedNx1x1[indexNewCell] = NUM_ROTATIONS + newMinRotationToUse;
+							} else {
+								topBottombridgeUsedNx1x1[indexNewCell] = topBottombridgeUsedNx1x1[indexToUse];
+							}
 
 							numCellsUsedDepth += 1;
 							
@@ -553,12 +579,14 @@ public class DFSIntersectFinderRegionsTODO {
 							
 							regionsSplit[i2].removeCellFromRegion(indexNewCell, numCellsUsedDepth, prevNewMinOrderedCellCouldUse, prevMinCellRotationOfMinCellToDev);
 
+							cuboidToBringAlongStartRot.removeCell(indexNewCell2);
 
 							paperUsed[new_i][new_j] = false;
 							indexCuboidonPaper[new_i][new_j] = -1;
 							paperToDevelop[numCellsUsedDepth] = null;
 							
-							
+
+							indexCuboidOnPaper2ndCuboid[new_i][new_j] = -1;
 							
 						}
 						
@@ -614,12 +642,14 @@ public class DFSIntersectFinderRegionsTODO {
 	 */
 
 	public static void main(String args[]) {
-		System.out.println("Fold Resolver Ordered Regions skip symmetries Nx1x1:");
-		
+		System.out.println("Fold Resolver Ordered Regions intersection skip symmetries Nx1x1:");
+
+		solveCuboidIntersections(new CuboidToFoldOn(9, 1, 1), new CuboidToFoldOn(4, 3, 1));
 
 		//solveCuboidIntersections(new CuboidToFoldOn(8, 1, 1), new CuboidToFoldOn(5, 2, 1));
+		//It got 35675 again, but this time it only took 3 hours! It took almost 2 days last time!
 		
-		solveCuboidIntersections(new CuboidToFoldOn(7, 1, 1), new CuboidToFoldOn(3, 3, 1));
+		//solveCuboidIntersections(new CuboidToFoldOn(7, 1, 1), new CuboidToFoldOn(3, 3, 1));
 		//It got 1070 (again) (They got 1080, but I think they were wrong)
 		
 		//solveCuboidIntersections(new CuboidToFoldOn(5, 1, 1), new CuboidToFoldOn(3, 2, 1));

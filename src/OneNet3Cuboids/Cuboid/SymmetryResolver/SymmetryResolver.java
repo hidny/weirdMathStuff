@@ -113,6 +113,7 @@ public class SymmetryResolver {
 	
 	public static int NUM_ROTATIONS = 4;
 	
+	public static int debugNum = 0;
 	//TODO: make sure I implemented BFS properly (i.e. get First, gets the first one...)
 	//pre: Nx1x1
 	private static boolean isTopCellNx1x1ReachableFromAppropriateCell(Region region, CuboidToFoldOn cuboid, int minCellOrderAllowed,
@@ -121,6 +122,14 @@ public class SymmetryResolver {
 		
 		if(minCellOrderAllowed == 0) {
 			return true;
+		}
+		
+		debugNum++;
+		
+		if(debugNum == 174) {
+			Utils.printFoldWithIndex(indexCuboidonPaper);
+			
+			System.out.println("Debug");
 		}
 		
 		LinkedList<Integer> queueCells = new LinkedList<Integer>();
@@ -134,6 +143,8 @@ public class SymmetryResolver {
 				== 3;
 
 		boolean couldGetToTopSoFar = false;
+		
+		boolean debugDenied = false;
 		
 		BFS_LOOP:
 		while(queueCells.isEmpty() == false) {
@@ -177,21 +188,49 @@ public class SymmetryResolver {
 										|| (topBottombridgeUsedNx1x1[neighbour] == 1 && couldTopCouldBeOnRightOfBottom)) {
 									
 
-									//TODO: maybe check that it has a empty cell that's allowed to be taken beside it
-									//at least
+									//Check that cell found has cell that's allowed to be taken beside it:
+									//This is the bare minimum...
+									//TODO: maybe work your way up to top with a BFS?
 									
-									//TODO: why require regions and region index?
-									/*
-									boolean cantAddCellBecauseOfOtherPaperNeighbours = FoldResolveOrderedRegionsSkipSymmetries.cantAddCellBecauseOfOtherPaperNeighbours(paperToDevelop, indexCuboidonPaper,
-											paperUsed, cuboid, numCellsUsedDepth,
-											regions, regionIndex, indexToUse,
-											indexNewCell, new_i, new_j, i
-										);
-									*/
-									couldGetToTopSoFar = true;
+									//TODO: maybe double check with 2nd cuboid...
 									
+									int curI=paperToDevelop[region.getCellIndexToOrderOfDev().get(neighbour)].i;
+									int curJ=paperToDevelop[region.getCellIndexToOrderOfDev().get(neighbour)].j;
+									//System.out.println(curI + ", " + curJ);
 									
-									break BFS_LOOP;
+									boolean couldBeFree = false;
+									
+									for(int r=0; r<NUM_ROTATIONS; r++) {
+
+										int new_i = curI + nugdeBasedOnRotation[0][r];
+										int new_j = curJ + nugdeBasedOnRotation[1][r];
+										//System.out.println(new_i + ", " + new_j);
+										
+										//TODO: is rotation good?
+										int rotationToUse = ( r - cuboid.getRotationPaperRelativeToMap(neighbour) + NUM_ROTATIONS) % NUM_ROTATIONS;
+										//END TODO: is rotation good?
+										
+										int neighbour2 = cuboid.getNeighbours(neighbour)[rotationToUse].getIndex();
+										
+										if( cuboid.isCellIndexUsed(neighbour2) == false
+												&& ! cantAddCellBecauseOfOtherPaperNeighbours(indexCuboidonPaper, cuboid,
+												region, neighbour,
+												neighbour2, new_i, new_j
+											) ) {
+
+											couldBeFree = true;
+											break;
+										}
+									}
+									
+									if(couldBeFree == false) {
+										debugDenied = true;
+									}
+									
+									if(couldBeFree) {
+										couldGetToTopSoFar = true;
+										break BFS_LOOP;
+									}
 								}
 							} else {
 								//Old way TODELETE
@@ -212,11 +251,62 @@ public class SymmetryResolver {
 			
 		}
 		
+		if(debugDenied && couldGetToTopSoFar == false) {
+			//Utils.printFoldWithIndex(indexCuboidonPaper);
+			//System.out.println("DENIED " + debugNum);
+		}
 		return couldGetToTopSoFar;
 		
 		
 	}
 	
+
+	public static final int ONE_EIGHTY_ROTATION = 2;
+
+	public static boolean cantAddCellBecauseOfOtherPaperNeighbours( int indexCuboidonPaper[][], CuboidToFoldOn cuboid,
+			Region region, int indexToUse,
+			int indexNewCell, int new_i, int new_j
+		) {	
+	boolean cantAddCellBecauseOfOtherPaperNeighbours = false;
+	
+	int neighboursBasedOnRotation[][] = {{new_i-1, new_j}, {new_i, new_j+1},{new_i+1, new_j},{new_i, new_j - 1}};
+
+	
+	for(int rotReq=0; rotReq<neighboursBasedOnRotation.length; rotReq++) {
+		
+		int i1 = neighboursBasedOnRotation[rotReq][0];
+		int j1 = neighboursBasedOnRotation[rotReq][1];
+	
+		if(indexCuboidonPaper[i1][j1] == indexToUse) {
+			continue;
+		}
+		
+		//System.out.println("Paper neighbour:" + i1 + ", " + j1);
+		
+		if(indexCuboidonPaper[i1][j1] >= 0) {
+			//System.out.println("Connected to another paper");
+			
+			int indexOtherCell = indexCuboidonPaper[i1][j1];
+			int rotationOtherCell = cuboid.getRotationPaperRelativeToMap(indexOtherCell);
+
+			if(region.getCellIndexToOrderOfDev().containsKey(indexOtherCell)
+					&& region.getCellIndexToOrderOfDev().get(indexOtherCell) < region.getCellIndexToOrderOfDev().get(indexToUse) ) {
+				cantAddCellBecauseOfOtherPaperNeighbours = true;
+				break;
+			}
+			
+			//There's a 180 rotation because the neighbour is attaching to the new cell (so it's flipped!)
+			int neighbourIndexNeeded = (rotReq + ONE_EIGHTY_ROTATION - rotationOtherCell+ NUM_ROTATIONS) % NUM_ROTATIONS;
+
+
+			if(cuboid.getNeighbours(indexOtherCell)[neighbourIndexNeeded].getIndex() != indexNewCell) {
+				cantAddCellBecauseOfOtherPaperNeighbours = true;
+				break;
+			}
+		}
+	}
+	return cantAddCellBecauseOfOtherPaperNeighbours;
+}
 
 	public static final int nugdeBasedOnRotation[][] = {{-1, 0, 1, 0}, {0, 1, 0 , -1}};
 	
