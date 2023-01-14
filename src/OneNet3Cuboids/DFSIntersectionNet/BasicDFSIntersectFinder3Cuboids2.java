@@ -144,7 +144,9 @@ public class BasicDFSIntersectFinder3Cuboids2 {
 				cuboidsToBringAlongStartRot[1].setCell(startIndex3rdCuboid, startRotation3rdCuboid);
 				indexCuboidOnPaperOtherCuboids[1][START_I][START_J] = startIndex3rdCuboid;
 				
-				doDepthFirstSearch(paperToDevelop, indexCuboidOnPaper, paperUsed, cuboid, numCellsUsedDepth, regionsToHandleRevOrder, -1L, skipSymmetries, solutionResolver, cuboidsToBringAlongStartRot, indexCuboidOnPaperOtherCuboids);
+				int topBottombridgeUsedNx1x1[] = new int[Utils.getTotalArea(cuboidToBuild.getDimensions())];
+				
+				doDepthFirstSearch(paperToDevelop, indexCuboidOnPaper, paperUsed, cuboid, numCellsUsedDepth, regionsToHandleRevOrder, -1L, skipSymmetries, solutionResolver, cuboidsToBringAlongStartRot, indexCuboidOnPaperOtherCuboids, topBottombridgeUsedNx1x1);
 				
 				
 				System.out.println("Done with trying to intersect 2nd cuboid that has a start index of " + startIndex2ndCuboid + " and a rotation index of " + startRotation2ndCuboid +".");
@@ -165,7 +167,8 @@ public class BasicDFSIntersectFinder3Cuboids2 {
 	
 	
 	public static long doDepthFirstSearch(Coord2D paperToDevelop[], int indexCuboidonPaper[][], boolean paperUsed[][], CuboidToFoldOn cuboid, int numCellsUsedDepth,
-			Region regions[], long limitDupSolutions, boolean skipSymmetries, SolutionResolverIntersectInterface solutionResolver, CuboidToFoldOn cuboidsToBringAlongStartRot[], int indexOtherCuboidsOnPaper[][][]) {
+			Region regions[], long limitDupSolutions, boolean skipSymmetries, SolutionResolverIntersectInterface solutionResolver, CuboidToFoldOn cuboidsToBringAlongStartRot[], int indexOtherCuboidsOnPaper[][][],
+			int topBottombridgeUsedNx1x1[]) {
 
 		numIterations++;
 		
@@ -204,10 +207,18 @@ public class BasicDFSIntersectFinder3Cuboids2 {
 			
 			int indexToUse = indexCuboidonPaper[paperToDevelop[i].i][paperToDevelop[i].j];
 			
-			if(SymmetryResolver.skipSearchBecauseOfASymmetryArgDontCareAboutRotation
+			if( ! regions[regionIndex].getCellIndexToOrderOfDev().containsKey(indexToUse)) {
+				continue;
+			} else if(SymmetryResolver.skipSearchBecauseOfASymmetryArgDontCareAboutRotation
 					(cuboid, paperToDevelop, indexCuboidonPaper, i,indexToUse)
 				&& skipSymmetries) {
 				continue;
+
+			} else	if( 2*numCellsUsedDepth < paperToDevelop.length && 
+					SymmetryResolver.skipSearchBecauseCuboidCouldProvablyNotBeBuiltThisWay
+					(cuboid, paperToDevelop, indexCuboidonPaper, i,indexToUse, regions[regionIndex], topBottombridgeUsedNx1x1) && skipSymmetries) {
+				
+				break;
 			}
 			
 			CoordWithRotationAndIndex neighbours[] = cuboid.getNeighbours(indexToUse);
@@ -229,12 +240,11 @@ public class BasicDFSIntersectFinder3Cuboids2 {
 					//Don't reuse a used cell:
 					continue;
 					
-				} else if(regions[regionIndex].getCellIndexToOrderOfDev().containsKey(indexToUse)
-						&& regions[regionIndex].getCellIndexToOrderOfDev().get(indexToUse) == regions[regionIndex].getMinOrderedCellCouldUsePerRegion() 
-						&& j <  regions[regionIndex].getMinCellRotationOfMinCellToDevPerRegion()) {
-					continue;
-
 				} else if(regions[regionIndex].getCellRegionsToHandleInRevOrder()[neighbours[j].getIndex()] == false) {
+					continue;
+	
+				} else if(regions[regionIndex].getCellIndexToOrderOfDev().get(indexToUse) == regions[regionIndex].getMinOrderedCellCouldUsePerRegion() 
+						&& j <  regions[regionIndex].getMinCellRotationOfMinCellToDevPerRegion()) {
 					continue;
 				}
 
@@ -316,6 +326,13 @@ public class BasicDFSIntersectFinder3Cuboids2 {
 					indexCuboidonPaper[new_i][new_j] = indexNewCell;
 					paperToDevelop[numCellsUsedDepth] = new Coord2D(new_i, new_j);
 
+					if(indexToUse == 0) {
+						topBottombridgeUsedNx1x1[indexNewCell] = j;
+					} else if(indexToUse == cuboid.getCellsUsed().length - 1) {
+						topBottombridgeUsedNx1x1[indexNewCell] = NUM_ROTATIONS + j;
+					} else {
+						topBottombridgeUsedNx1x1[indexNewCell] = topBottombridgeUsedNx1x1[indexToUse];
+					}
 					
 					indexOtherCuboidsOnPaper[0][new_i][new_j] = indexNewCell2;
 					indexOtherCuboidsOnPaper[1][new_i][new_j] = indexNewCell3;
@@ -334,7 +351,7 @@ public class BasicDFSIntersectFinder3Cuboids2 {
 						newLimitDupSolutions -= retDuplicateSolutions;
 					}
 					
-					retDuplicateSolutions += doDepthFirstSearch(paperToDevelop, indexCuboidonPaper, paperUsed, cuboid, numCellsUsedDepth, regions, newLimitDupSolutions, skipSymmetries, solutionResolver, cuboidsToBringAlongStartRot, indexOtherCuboidsOnPaper);
+					retDuplicateSolutions += doDepthFirstSearch(paperToDevelop, indexCuboidonPaper, paperUsed, cuboid, numCellsUsedDepth, regions, newLimitDupSolutions, skipSymmetries, solutionResolver, cuboidsToBringAlongStartRot, indexOtherCuboidsOnPaper, topBottombridgeUsedNx1x1);
 
 					if(numCellsUsedDepth < regions[0].getCellIndexToOrderOfDev().size()) {
 						System.out.println("WHAT???");
@@ -390,12 +407,12 @@ public class BasicDFSIntersectFinder3Cuboids2 {
 	public static void main(String args[]) {
 		System.out.println("Fold Resolver Ordered Regions skip symmetries Nx1x1:");
 
-		CuboidToFoldOn main = new CuboidToFoldOn(11, 1, 1);
-		CuboidToFoldOn others[] = new CuboidToFoldOn[] { new CuboidToFoldOn(7, 2, 1), new CuboidToFoldOn(5, 3, 1)};
-		/*
+		//CuboidToFoldOn main = new CuboidToFoldOn(11, 1, 1);
+		//CuboidToFoldOn others[] = new CuboidToFoldOn[] { new CuboidToFoldOn(7, 2, 1), new CuboidToFoldOn(5, 3, 1)};
+		
 		CuboidToFoldOn main = new CuboidToFoldOn(2, 1, 1);
 		CuboidToFoldOn others[] = new CuboidToFoldOn[] { new CuboidToFoldOn(2, 1, 1), new CuboidToFoldOn(1, 1, 2)};
-		*/
+		
 		
 		//solveCuboidIntersections(new CuboidToFoldOn(8, 1, 1), new CuboidToFoldOn(5, 2, 1));
 		
