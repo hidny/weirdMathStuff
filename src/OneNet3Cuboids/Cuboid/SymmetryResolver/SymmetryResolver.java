@@ -116,7 +116,7 @@ public class SymmetryResolver {
 	
 	public static int NUM_ROTATIONS = 4;
 	
-	public static int debugNum = 0;
+
 	//TODO: make sure I implemented BFS properly (i.e. get First, gets the first one...)
 	//pre: Nx1x1
 	private static boolean isTopCellNx1x1ReachableFromAppropriateCell(Region region, CuboidToFoldOn cuboid, int minCellOrderAllowed,
@@ -127,13 +127,6 @@ public class SymmetryResolver {
 			return true;
 		}
 		
-		debugNum++;
-		
-		if(debugNum == 174) {
-			Utils.printFoldWithIndex(indexCuboidonPaper);
-			
-			System.out.println("Debug");
-		}
 		
 		LinkedList<Integer> queueCells = new LinkedList<Integer>();
 		boolean explored[] = new boolean[cuboid.getCellsUsed().length];
@@ -147,7 +140,6 @@ public class SymmetryResolver {
 
 		boolean couldGetToTopSoFar = false;
 		
-		boolean debugDenied = false;
 		
 		BFS_LOOP:
 		while(queueCells.isEmpty() == false) {
@@ -209,9 +201,7 @@ public class SymmetryResolver {
 										int new_j = curJ + nugdeBasedOnRotation[1][r];
 										//System.out.println(new_i + ", " + new_j);
 										
-										//TODO: is rotation good?
 										int rotationToUse = ( r - cuboid.getRotationPaperRelativeToMap(neighbour) + NUM_ROTATIONS) % NUM_ROTATIONS;
-										//END TODO: is rotation good?
 										
 										int neighbour2 = cuboid.getNeighbours(neighbour)[rotationToUse].getIndex();
 										
@@ -226,17 +216,13 @@ public class SymmetryResolver {
 										}
 									}
 									
-									if(couldBeFree == false) {
-										debugDenied = true;
-									}
-									
 									if(couldBeFree) {
 										couldGetToTopSoFar = true;
 										break BFS_LOOP;
 									}
 								}
 							} else {
-								//Old way TODELETE
+								//Old way: delete after you prove that it's slower...
 								if(OldUtils.couldReachTopNx1x1WithoutGoingThruBottom(region, cuboid, neighbour, minCellOrderAllowed, paperToDevelop, indexCuboidonPaper)) {
 									
 									couldGetToTopSoFar = true;
@@ -254,12 +240,7 @@ public class SymmetryResolver {
 			
 		}
 		
-		if(debugDenied && couldGetToTopSoFar == false) {
-			//Utils.printFoldWithIndex(indexCuboidonPaper);
-			//System.out.println("DENIED " + debugNum);
-		}
 		return couldGetToTopSoFar;
-		
 		
 	}
 

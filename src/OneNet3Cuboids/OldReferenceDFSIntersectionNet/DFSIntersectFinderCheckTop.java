@@ -1,4 +1,4 @@
-package OneNet3Cuboids.DFSIntersectionNet;
+package OneNet3Cuboids.OldReferenceDFSIntersectionNet;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,13 +15,12 @@ import OneNet3Cuboids.GraphUtils.PivotCellDescription;
 import OneNet3Cuboids.Region.Region;
 import OneNet3Cuboids.SolutionResovler.*;
 
-public class DFSIntersectFinderWithSeveredLogic {
+public class DFSIntersectFinderCheckTop {
 
 	
 	public static final int NUM_ROTATIONS = 4;
 	public static final int NUM_NEIGHBOURS = NUM_ROTATIONS;
 	
-	public static int debugNumUnreachable = 0;
 	
 	public static void solveCuboidIntersections(CuboidToFoldOn cuboidToWrap, CuboidToFoldOn cuboidToBringAlong) {
 		solveCuboidIntersections(cuboidToWrap, cuboidToBringAlong, true);
@@ -38,7 +37,6 @@ public class DFSIntersectFinderWithSeveredLogic {
 		
 		// Set the solution resolver to different things depending on the size of the cuboid:
 		solutionResolver = new StandardResolverForSmallIntersectSolution(cuboidToBuild);
-		
 		
 		solveCuboidIntersections(cuboidToBuild, cuboidToBringAlong, skipSymmetries, solutionResolver);
 	}
@@ -110,10 +108,12 @@ public class DFSIntersectFinderWithSeveredLogic {
 			cuboidToBringAlongStartRot.setCell(startIndex2ndCuboid, startRotation2ndCuboid);
 			indexCuboidOnPaper2ndCuboid[START_I][START_J] = startIndex2ndCuboid;
 			
-
-			boolean isSevered[][] = new boolean[paperToDevelop.length][paperToDevelop.length];
 		
-			doDepthFirstSearch(paperToDevelop, indexCuboidOnPaper, paperUsed, cuboid, numCellsUsedDepth, regionsToHandleRevOrder, -1L, skipSymmetries, solutionResolver, cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid, isSevered);
+			doDepthFirstSearch(paperToDevelop, indexCuboidOnPaper, paperUsed, cuboid, numCellsUsedDepth, regionsToHandleRevOrder, -1L, skipSymmetries, solutionResolver, cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid);
+			
+			
+			System.out.println("Done with trying to intersect 2nd cuboid that has a start index of " + startIndex2ndCuboid + " and a rotation index of " + startRotation2ndCuboid +".");
+			System.out.println("Current UTC timestamp in milliseconds: " + System.currentTimeMillis());
 			
 		}
 		
@@ -128,10 +128,10 @@ public class DFSIntersectFinderWithSeveredLogic {
 	
 	
 	public static long doDepthFirstSearch(Coord2D paperToDevelop[], int indexCuboidonPaper[][], boolean paperUsed[][], CuboidToFoldOn cuboid, int numCellsUsedDepth,
-			Region regions[], long limitDupSolutions, boolean skipSymmetries, SolutionResolverIntersectInterface solutionResolver, CuboidToFoldOn cuboidToBringAlongStartRot, int indexCuboidOnPaper2ndCuboid[][],
-			boolean isSevered[][]) {
+			Region regions[], long limitDupSolutions, boolean skipSymmetries, SolutionResolverIntersectInterface solutionResolver, CuboidToFoldOn cuboidToBringAlongStartRot, int indexCuboidOnPaper2ndCuboid[][]) {
 
 		if(numCellsUsedDepth == cuboid.getNumCellsToFill()) {
+			
 			int indexes[][][] = new int[2][][];
 			indexes[0] = indexCuboidonPaper;
 			indexes[1] = indexCuboidOnPaper2ndCuboid;
@@ -141,58 +141,32 @@ public class DFSIntersectFinderWithSeveredLogic {
 		regions = FoldResolveOrderedRegionsSkipSymmetries.handleCompletedRegionIfApplicable(regions, limitDupSolutions, indexCuboidonPaper, paperUsed);
 		
 		if(regions == null) {
+			
 			return 1L;
 		}
 		
-		//TODO: only create coord2Ds once...
-		ArrayList<Coord2D> newlySeveredCells2ndCuboid = new ArrayList<Coord2D>();
 		
 		int regionIndex = regions.length - 1;
 		long retDuplicateSolutions = 0L;
 		
-		
 		//DEPTH-FIRST START:
-		MAIN_LOOP:
 		for(int i=regions[regionIndex].getMinOrderedCellCouldUsePerRegion(); i<paperToDevelop.length && paperToDevelop[i] != null; i++) {
-			
-
-
-			//Add previous index to severed:
-			if(i > 0) {
-				int indexToUse2 = indexCuboidOnPaper2ndCuboid[paperToDevelop[i-1].i][paperToDevelop[i-1].j];
-				for(int n=0; n<cuboidToBringAlongStartRot.getNeighbours(indexToUse2).length; n++) {
-					
-					int neighbourIndex = cuboidToBringAlongStartRot.getNeighbours(indexToUse2)[n].getIndex();
-					
-					if(cuboidToBringAlongStartRot.isCellIndexUsed(neighbourIndex)
-							&& ! isSevered[indexToUse2][neighbourIndex]) {
-						if((indexToUse2 == 10 || neighbourIndex == 10)
-								&& (indexToUse2 == 21 || neighbourIndex == 21)) {
-							/*Utils.printFold(paperUsed);
-							System.out.println("1st cuboid:");
-							Utils.printFoldWithIndex(indexCuboidonPaper);
-							System.out.println("2nd cuboid:");
-							Utils.printFoldWithIndex(indexCuboidOnPaper2ndCuboid);
-							System.out.println("What");
-							System.out.println("Debug3");*/
-						}
-						newlySeveredCells2ndCuboid.add(
-								new Coord2D(indexToUse2, neighbourIndex)
-							);
-					}
-						
-				}
-			}
-			//End to severed
 			
 			int indexToUse = indexCuboidonPaper[paperToDevelop[i].i][paperToDevelop[i].j];
 			
-			if(SymmetryResolver.skipSearchBecauseOfASymmetryArgDontCareAboutRotation
+			if( ! regions[regionIndex].getCellIndexToOrderOfDev().containsKey(indexToUse)) {
+				continue;
+			} else if(SymmetryResolver.skipSearchBecauseOfASymmetryArgDontCareAboutRotation
 					(cuboid, paperToDevelop, indexCuboidonPaper, i,indexToUse)
 				&& skipSymmetries) {
-				
 				continue;
+
+			} else	if( SymmetryResolver.skipSearchBecauseCuboidCouldProvablyNotBeBuiltThisWay
+					(cuboid, paperToDevelop, indexCuboidonPaper, i,indexToUse, regions[regionIndex], null) && skipSymmetries) {
+				
+				break;
 			}
+			//TODO
 			
 			CoordWithRotationAndIndex neighbours[] = cuboid.getNeighbours(indexToUse);
 			
@@ -209,16 +183,18 @@ public class DFSIntersectFinderWithSeveredLogic {
 					//Don't reuse a used cell:
 					continue;
 					
-				} else if(regions[regionIndex].getCellIndexToOrderOfDev().containsKey(indexToUse)
-						&& regions[regionIndex].getCellIndexToOrderOfDev().get(indexToUse) == regions[regionIndex].getMinOrderedCellCouldUsePerRegion() 
-						&& j <  regions[regionIndex].getMinCellRotationOfMinCellToDevPerRegion()) {
-					continue;
-
 				} else if(regions[regionIndex].getCellRegionsToHandleInRevOrder()[neighbours[j].getIndex()] == false) {
+					continue;
+	
+				} else if(regions[regionIndex].getCellIndexToOrderOfDev().get(indexToUse) == regions[regionIndex].getMinOrderedCellCouldUsePerRegion() 
+						&& j <  regions[regionIndex].getMinCellRotationOfMinCellToDevPerRegion()) {
 					continue;
 				}
 
+				//TODO: is this right?
 				int neighbourIndexCuboid2 = (j - curRotationCuboid2 + curRotation+ NUM_ROTATIONS) % NUM_ROTATIONS;
+				//TODO: maybe it's this:
+				//(j + curRotation - curRotationCuboid2  + NUM_ROTATIONS) % NUM_ROTATIONS
 				
 				int indexNewCell2 = cuboidToBringAlongStartRot.getNeighbours(indexToUse2)[neighbourIndexCuboid2].getIndex();
 				
@@ -226,38 +202,6 @@ public class DFSIntersectFinderWithSeveredLogic {
 					//no good!
 					continue;
 				}
-				
-				//Add to severed:
-				if(j > 0) {
-					for(int n=0; n<j; n++) {
-						
-						int neighbourIndexCuboid2tmp = (n - curRotationCuboid2 + curRotation+ NUM_ROTATIONS) % NUM_ROTATIONS;
-						
-						int neighbourIndex = cuboidToBringAlongStartRot.getNeighbours(indexToUse2)[neighbourIndexCuboid2tmp].getIndex();
-						
-						if(cuboidToBringAlongStartRot.isCellIndexUsed(neighbourIndex)
-								&& ! isSevered[indexToUse2][neighbourIndex]) {
-							newlySeveredCells2ndCuboid.add(
-									new Coord2D(indexToUse2, neighbourIndex)
-								);
-							
-							if((indexToUse2 == 10 || neighbourIndex == 10)
-									&& (indexToUse2 == 21 || neighbourIndex == 21)) {
-								
-								/*Utils.printFold(paperUsed);
-								System.out.println("1st cuboid:");
-								Utils.printFoldWithIndex(indexCuboidonPaper);
-								System.out.println("2nd cuboid:");
-								Utils.printFoldWithIndex(indexCuboidOnPaper2ndCuboid);
-								System.out.println("What");
-								System.out.println("Debug2");*/
-							}
-						}
-							
-					}
-				}
-				//End add to severed
-				
 				//END TODO is this right?
 				
 				int rotationToAddCellOn = (j + curRotation) % NUM_ROTATIONS;
@@ -289,6 +233,7 @@ public class DFSIntersectFinderWithSeveredLogic {
 						indexNewCell, new_i, new_j, i
 					);
 				
+				
 				Region regionsBeforePotentailRegionSplit[] = regions;
 				int prevNewMinOrderedCellCouldUse = regions[regionIndex].getMinOrderedCellCouldUsePerRegion();
 				int prevMinCellRotationOfMinCellToDev = regions[regionIndex].getMinCellRotationOfMinCellToDevPerRegion();
@@ -309,60 +254,12 @@ public class DFSIntersectFinderWithSeveredLogic {
 					}
 				}
 				
-				//TODO:
-				//Check severed 1:
-				
-				//TODO: bookmark how far along you got:
-				for(int indexSev=0; indexSev<newlySeveredCells2ndCuboid.size(); indexSev++) {
-					
-					isSevered[newlySeveredCells2ndCuboid.get(indexSev).i][newlySeveredCells2ndCuboid.get(indexSev).j] = true;
-					isSevered[newlySeveredCells2ndCuboid.get(indexSev).j][newlySeveredCells2ndCuboid.get(indexSev).i] = true;
-					
-				}
-				
-				
-				for(int s=0; s<isSevered.length; s++) {
-					//cuboidToBringAlongStartRot.getNeighbours(indexToUse2)[n].getIndex();
-					if( ! cuboidToBringAlongStartRot.isCellIndexUsed(s)) {
-						
-						//TODO: make this path to an active cell later.
-						/*for(int n=0; n<NUM_ROTATIONS; n++) {
-							if(isSevered[s][cuboidToBringAlongStartRot.getNeighbours(s)[n].getIndex()] == false) {
-								severedFromCuboidSoFar = false;
-								break;
-							}
-						}*/
-						boolean cellReachable = isCellReachable(isSevered, s, cuboidToBringAlongStartRot);
-						
-						if( ! cellReachable) {
-							cantAddCellBecauseOfOtherPaperNeighbours = true;
-							//TODO:
-							System.out.println("Index " + s + " is unreachable. (good)");
-							Utils.printFold(paperUsed);
-							System.out.println("1st cuboid:");
-							Utils.printFoldWithIndex(indexCuboidonPaper);
-							System.out.println("2nd cuboid:");
-							Utils.printFoldWithIndex(indexCuboidOnPaper2ndCuboid);
-							//System.out.println("What");
-							//System.exit(1);
-							
-							debugNumUnreachable++;
-							break MAIN_LOOP;
-						}
-					}
-				}
-				
-				//END TODO
-				
 				if( ! cantAddCellBecauseOfOtherPaperNeighbours) {
 					
 					//Setup for adding new cell:
 					cuboid.setCell(indexNewCell, rotationNeighbourPaperRelativeToMap);
 					cuboidToBringAlongStartRot.setCell(indexNewCell2, rotationNeighbourPaperRelativeToMap2);
 					
-					ArrayList<Coord2D> severedAfterAddingCell = new ArrayList<Coord2D>();
-					
-				
 					paperUsed[new_i][new_j] = true;
 					indexCuboidonPaper[new_i][new_j] = indexNewCell;
 					paperToDevelop[numCellsUsedDepth] = new Coord2D(new_i, new_j);
@@ -374,75 +271,15 @@ public class DFSIntersectFinderWithSeveredLogic {
 						regions[r].addCellToRegion(indexNewCell, numCellsUsedDepth, indexToUse, j);						
 					}
 
-					boolean sanityTestGoodLoop = false;
-					
-					
-					//Add severed if the first cuboid won't connect to neighbour
-					for(int n=0; n<NUM_ROTATIONS; n++) {
-						
-						int tmpNeighbourNewIndexCuboid2 = (n - rotationNeighbourPaperRelativeToMap2 + rotationNeighbourPaperRelativeToMap + NUM_ROTATIONS) % NUM_ROTATIONS;
-						
-						/*System.out.println("...");
-						System.out.println(cuboid.getNeighbours(indexNewCell)[n].getIndex());
-						System.out.println(cuboidToBringAlongStartRot.getNeighbours(indexNewCell2)[tmpNeighbourNewIndexCuboid2].getIndex());
-						System.out.println("...");
-						*/
-						
-						if(cuboid.getNeighbours(indexNewCell)[n].getIndex() == indexToUse
-								&& cuboidToBringAlongStartRot.getNeighbours(indexNewCell2)[tmpNeighbourNewIndexCuboid2].getIndex() == indexToUse2) {
-							sanityTestGoodLoop = true;
-						}
-						
-						if(cuboid.isCellIndexUsed(cuboid.getNeighbours(indexNewCell)[n].getIndex())
-							&& ! cuboidToBringAlongStartRot
-									.isCellIndexUsed(cuboidToBringAlongStartRot.getNeighbours(indexNewCell2)[tmpNeighbourNewIndexCuboid2].getIndex())) {
-							
-							if( ! isSevered[indexNewCell2][tmpNeighbourNewIndexCuboid2]) {
-								isSevered[indexNewCell2][tmpNeighbourNewIndexCuboid2] = true;
-								isSevered[tmpNeighbourNewIndexCuboid2][indexNewCell2] = true;
-								
-								severedAfterAddingCell.add(new Coord2D(indexNewCell2, tmpNeighbourNewIndexCuboid2));
-								
-								/*System.out.println("Test Add severed after adding cell");
-								Utils.printFold(paperUsed);
-								System.out.println("1st cuboid:");
-								Utils.printFoldWithIndex(indexCuboidonPaper);
-								System.out.println("2nd cuboid:");
-								Utils.printFoldWithIndex(indexCuboidOnPaper2ndCuboid);
-								System.out.println("What");
-								*/
-								//System.exit(1);
-								
-								
-							}
-								//TODO: undo this!
-
-						}
-					}
-					if( ! sanityTestGoodLoop) {
-
-						Utils.printFold(paperUsed);
-						Utils.printFoldWithIndex(indexCuboidonPaper);
-						Utils.printFoldWithIndex(indexCuboidOnPaper2ndCuboid);
-						System.out.println("DOH! Bad rotation");
-						System.exit(1);
-					} else {
-						//System.out.println("Good rotation");
-					}
-					
-					
 					numCellsUsedDepth += 1;
 					//End setup
 
-					
 					long newLimitDupSolutions = limitDupSolutions;
 					if(limitDupSolutions >= 0) {
 						newLimitDupSolutions -= retDuplicateSolutions;
 					}
 					
-					
-					
-					retDuplicateSolutions += doDepthFirstSearch(paperToDevelop, indexCuboidonPaper, paperUsed, cuboid, numCellsUsedDepth, regions, newLimitDupSolutions, skipSymmetries, solutionResolver, cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid, isSevered);
+					retDuplicateSolutions += doDepthFirstSearch(paperToDevelop, indexCuboidonPaper, paperUsed, cuboid, numCellsUsedDepth, regions, newLimitDupSolutions, skipSymmetries, solutionResolver, cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid);
 
 					if(numCellsUsedDepth < regions[0].getCellIndexToOrderOfDev().size()) {
 						System.out.println("WHAT???");
@@ -465,14 +302,6 @@ public class DFSIntersectFinderWithSeveredLogic {
 					
 					cuboid.removeCell(indexNewCell);
 					cuboidToBringAlongStartRot.removeCell(indexNewCell2);
-					
-					//Undo severed links because of the cell that was added:
-					for(int indexSev=0; indexSev<severedAfterAddingCell.size(); indexSev++) {
-						isSevered[severedAfterAddingCell.get(indexSev).i][severedAfterAddingCell.get(indexSev).j] = false;
-						isSevered[severedAfterAddingCell.get(indexSev).j][severedAfterAddingCell.get(indexSev).i] = false;
-					}
-					//End undo severed links
-					
 					//End tear down
 
 
@@ -485,19 +314,8 @@ public class DFSIntersectFinderWithSeveredLogic {
 					regionIndex = regions.length - 1;
 					
 				} // End recursive if cond
-				
-				
-				
-
 			} // End loop rotation
 		} //End loop index
-
-		for(int indexSev=0; indexSev<newlySeveredCells2ndCuboid.size(); indexSev++) {
-			
-			isSevered[newlySeveredCells2ndCuboid.get(indexSev).i][newlySeveredCells2ndCuboid.get(indexSev).j] = false;
-			isSevered[newlySeveredCells2ndCuboid.get(indexSev).j][newlySeveredCells2ndCuboid.get(indexSev).i] = false;
-				
-		}
 
 		return retDuplicateSolutions;
 	}
@@ -528,7 +346,7 @@ public class DFSIntersectFinderWithSeveredLogic {
 		
 		//Best 5,1,1: 3 minute 45 seconds (3014430 solutions) (December 27th)
 		
-		System.out.println("Debug num unreachable: " + debugNumUnreachable);
+		
 		System.out.println("Current UTC timestamp in milliseconds: " + System.currentTimeMillis());
 		
 		
@@ -538,42 +356,6 @@ public class DFSIntersectFinderWithSeveredLogic {
 		//It took 6.5 hours.
 		// Try to get it under 1 hour.
 		 */
-		
-	}
-	
-	
-	public static boolean isCellReachable(boolean isSevered[][], int startIndex, CuboidToFoldOn cuboidToBringAlongStartRot) {
-		
-		LinkedList<Integer> queueCells = new LinkedList<Integer>();
-		boolean explored[] = new boolean[isSevered.length];
-		
-		explored[startIndex] = true;
-		queueCells.add(startIndex);
-		
-		
-		while(queueCells.isEmpty() == false) {
-			
-			int curCell = queueCells.getFirst();
-			queueCells.remove();
-			
-			for(int n=0; n<NUM_ROTATIONS; n++) {
-				
-				int neighbour = cuboidToBringAlongStartRot.getNeighbours(curCell)[n].getIndex();
-				
-				if( ! isSevered[curCell][neighbour] ){
-					if(cuboidToBringAlongStartRot.isCellIndexUsed(neighbour)) {
-						return true;
-					} else if(! explored[neighbour]) {
-						explored[neighbour] = true;
-						queueCells.add(neighbour);
-					}
-				}
-				
-			}
-		
-		}
-		
-		return false;
 		
 	}
 	

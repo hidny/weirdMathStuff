@@ -1,4 +1,4 @@
-package OneNet3Cuboids.DFSIntersectionNet;
+package OneNet3Cuboids.OldReferenceDFSIntersectionNet;
 
 import java.util.ArrayList;
 import java.util.HashMap;
