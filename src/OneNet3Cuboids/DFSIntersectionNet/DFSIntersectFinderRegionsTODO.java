@@ -126,7 +126,7 @@ public class DFSIntersectFinderRegionsTODO {
 	
 	
 	public static final int nugdeBasedOnRotation[][] = {{-1, 0, 1, 0}, {0, 1, 0 , -1}};
-	
+	public static int numIterations = 0;
 	
 	public static long doDepthFirstSearch(Coord2D paperToDevelop[], int indexCuboidonPaper[][], boolean paperUsed[][], CuboidToFoldOn cuboid, int numCellsUsedDepth,
 			Region regions[], long limitDupSolutions, boolean skipSymmetries, SolutionResolverIntersectInterface solutionResolver, CuboidToFoldOn cuboidToBringAlongStartRot, int indexCuboidOnPaper2ndCuboid[][],
@@ -147,6 +147,16 @@ public class DFSIntersectFinderRegionsTODO {
 			return 1L;
 		}
 		
+		numIterations++;
+		
+		if(numIterations % 10000000L == 0) {
+			
+			System.out.println("Num iterations: " + numIterations);
+			Utils.printFold(paperUsed);
+			Utils.printFoldWithIndex(indexCuboidonPaper);
+			Utils.printFoldWithIndex( indexCuboidOnPaper2ndCuboid);
+			System.out.println();
+		}
 		
 		int regionIndex = regions.length - 1;
 		long retDuplicateSolutions = 0L;
@@ -169,7 +179,6 @@ public class DFSIntersectFinderRegionsTODO {
 				
 				break;
 			}
-			//TODO
 			
 			CoordWithRotationAndIndex neighbours[] = cuboid.getNeighbours(indexToUse);
 			
@@ -194,10 +203,7 @@ public class DFSIntersectFinderRegionsTODO {
 					continue;
 				}
 
-				//TODO: is this right?
 				int neighbourIndexCuboid2 = (j - curRotationCuboid2 + curRotation+ NUM_ROTATIONS) % NUM_ROTATIONS;
-				//TODO: maybe it's this:
-				//(j + curRotation - curRotationCuboid2  + NUM_ROTATIONS) % NUM_ROTATIONS
 				
 				int indexNewCell2 = cuboidToBringAlongStartRot.getNeighbours(indexToUse2)[neighbourIndexCuboid2].getIndex();
 				
@@ -205,7 +211,6 @@ public class DFSIntersectFinderRegionsTODO {
 					//no good!
 					continue;
 				}
-				//END TODO is this right?
 				
 				int rotationToAddCellOn = (j + curRotation) % NUM_ROTATIONS;
 				
@@ -474,6 +479,8 @@ public class DFSIntersectFinderRegionsTODO {
 							//Don't set it! (It's supposed to be set for now)
 							//cuboid.setCell(indexNewCell, rotationNeighbourPaperRelativeToMap);
 
+							//TODO: should I sort the regions before doing the quick check?
+							// I remember it not being faster before.
 							cuboidToBringAlongStartRot.setCell(indexNewCell2, rotationNeighbourPaperRelativeToMap2);
 		
 							paperUsed[new_i][new_j] = true;
@@ -671,5 +678,14 @@ public class DFSIntersectFinderRegionsTODO {
 		 */
 		
 	}
+	/*//TODO:
+	46	1 × 1 × 11, 1 × 2 × 7, 1 × 3 × 5
+54	1 × 1 × 13, 1 × 3 × 6, 3 × 3 × 3
+58	1 × 1 × 14, 1 × 2 × 9, 1 × 4 × 5
+62	1 × 1 × 15, 1 × 3 × 7, 2 × 3 × 5
+64	1 × 2 × 10, 2 × 2 × 7, 2 × 4 × 4
+70	1 × 1 × 17, 1 × 2 × 11, 1 × 3 × 8, 1 × 5 × 5
+88	1 × 2 × 14, 1 × 4 × 8, 2 × 2 × 10, 2 × 4 × 6
+*/
 	
 }
