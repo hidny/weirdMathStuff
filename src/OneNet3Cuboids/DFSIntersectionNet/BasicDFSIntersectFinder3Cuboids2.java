@@ -172,7 +172,7 @@ public class BasicDFSIntersectFinder3Cuboids2 {
 
 		numIterations++;
 		
-		if(numIterations % 1000000L == 0) {
+		if(numIterations % 10000000L == 0) {
 			
 			System.out.println("Num iterations: " + numIterations);
 			Utils.printFold(paperUsed);
@@ -728,14 +728,14 @@ public class BasicDFSIntersectFinder3Cuboids2 {
 	public static void main(String args[]) {
 		System.out.println("Fold Resolver Ordered Regions skip symmetries Nx1x1:");
 
-		//CuboidToFoldOn main = new CuboidToFoldOn(11, 1, 1);
-		//CuboidToFoldOn others[] = new CuboidToFoldOn[] { new CuboidToFoldOn(7, 2, 1), new CuboidToFoldOn(5, 3, 1)};
+		CuboidToFoldOn main = new CuboidToFoldOn(11, 1, 1);
+		CuboidToFoldOn others[] = new CuboidToFoldOn[] { new CuboidToFoldOn(7, 2, 1), new CuboidToFoldOn(5, 3, 1)};
 		
 		//CuboidToFoldOn main = new CuboidToFoldOn(1, 2, 1);
 		//CuboidToFoldOn others[] = new CuboidToFoldOn[] { new CuboidToFoldOn(1, 2, 1), new CuboidToFoldOn(1, 1, 2)};
 
-		CuboidToFoldOn main = new CuboidToFoldOn(5, 1, 1);
-		CuboidToFoldOn others[] = new CuboidToFoldOn[] { new CuboidToFoldOn(1, 5, 1), new CuboidToFoldOn(1, 3, 2)};
+		//CuboidToFoldOn main = new CuboidToFoldOn(5, 1, 1);
+		//CuboidToFoldOn others[] = new CuboidToFoldOn[] { new CuboidToFoldOn(1, 5, 1), new CuboidToFoldOn(1, 3, 2)};
 		
 		
 		//solveCuboidIntersections(new CuboidToFoldOn(8, 1, 1), new CuboidToFoldOn(5, 2, 1));
