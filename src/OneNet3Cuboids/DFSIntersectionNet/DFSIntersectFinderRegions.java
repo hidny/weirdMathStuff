@@ -474,7 +474,7 @@ public class DFSIntersectFinderRegions {
 						
 
 						//Move region with top to the last region of the list
-						// because the other regions are more dubious
+						// because the other regions are more dubious and I think we should check the other regions first.
 						// (This is Nx1x1 specific code that won't break other cuboids, but might not help.)
 						
 						for(int k=0; k<numNewWays; k++) {
@@ -566,6 +566,21 @@ public class DFSIntersectFinderRegions {
 						
 						regionIndex = regions.length - 1;
 						
+						//Move region with top to the first region of the list
+						// because the other regions are more dubious and I think we should check the other regions first.
+						// (This is Nx1x1 specific code that won't break other cuboids, but might not help.)
+						
+						int indexToUseBasedOnPrevLogic = regionsSplit.length - 1;
+						
+						if(regionsSplit[indexToUseBasedOnPrevLogic].getCellRegionsToHandleInRevOrder()[paperToDevelop.length - 1] == true
+								&& indexNewCell != paperToDevelop.length - 1) {
+							//Swap:
+							Region tmp = regionsSplit[indexToUseBasedOnPrevLogic];
+							regionsSplit[indexToUseBasedOnPrevLogic] = regionsSplit[regions.length - 1];
+							regionsSplit[regions.length - 1] = tmp;
+						}
+						//End move region with top to the first region of the list
+						
 						//Later:
 						//TODO: check if region is the same as a hole in the net to go faster (Also useful for the 3Cuboid 1 net check)
 
@@ -582,7 +597,7 @@ public class DFSIntersectFinderRegions {
 								//Don't bother checking if region with top only has 1 solution.
 								//It probably has many.
 								//Sanity check:
-								if(i2 !=  regions.length - 1) {
+								if(i2 != regions.length - 1 - numNewWays) {
 									System.out.println("DOH! The swaping didn't work!");
 									if(regionsSplit[ regions.length - 1].getCellRegionsToHandleInRevOrder()[paperToDevelop.length - 1] == true) {
 										System.out.println("Both?");
@@ -590,7 +605,7 @@ public class DFSIntersectFinderRegions {
 									System.exit(1);
 								}
 								//End sanity
-								break;
+								continue;
 							}
 							paperUsed[new_i][new_j] = true;
 							indexCuboidonPaper[new_i][new_j] = indexNewCell;
