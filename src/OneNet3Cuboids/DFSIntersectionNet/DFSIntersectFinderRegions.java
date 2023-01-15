@@ -470,29 +470,7 @@ public class DFSIntersectFinderRegions {
 								System.out.println("ERROR: k is too high. k= " + k);
 								System.exit(1);
 							}
-						}
-						
-
-						//Move region with top to the last region of the list
-						// because the other regions are more dubious and I think we should check the other regions first.
-						// (This is Nx1x1 specific code that won't break other cuboids, but might not help.)
-						
-						for(int k=0; k<numNewWays; k++) {
-							int curRegionIndex = regions.length - 1 + k;
 							
-							if(regionsSplit[curRegionIndex].getCellRegionsToHandleInRevOrder()[paperToDevelop.length - 1] == true
-									&& indexNewCell != paperToDevelop.length - 1) {
-								//Swap:
-								Region tmp = regionsSplit[curRegionIndex];
-								regionsSplit[curRegionIndex] = regionsSplit[regionsSplit.length - 1];
-								regionsSplit[regionsSplit.length - 1] = tmp;
-							}
-						}
-						//End move region with top to the last region of the list
-						
-						for(int k=0; k<numNewWays + 1; k++) {
-
-							int curRegionIndex = regions.length - 1 + k;
 							
 							//Quick check if each region has at least 1 solution:
 							//TODO: put this quick check in function
@@ -511,7 +489,7 @@ public class DFSIntersectFinderRegions {
 
 							indexCuboidOnPaper2ndCuboid[new_i][new_j] = indexNewCell2;
 							
-							regionsSplit[curRegionIndex].addCellToRegion(indexNewCell, numCellsUsedDepth, indexToUse, newMinRotationToUse);
+							regionsSplit[indexToAdd].addCellToRegion(indexNewCell, numCellsUsedDepth, indexToUse, newMinRotationToUse);
 							
 							if(indexToUse == 0) {
 								topBottombridgeUsedNx1x1[indexNewCell] = newMinRotationToUse;
@@ -525,7 +503,7 @@ public class DFSIntersectFinderRegions {
 							
 							if(depthFirstAlgoWillFindAsolutionInRegionIndex(paperToDevelop, indexCuboidonPaper,
 									paperUsed, cuboid, numCellsUsedDepth,
-									regionsSplit, curRegionIndex, skipSymmetries,
+									regionsSplit, indexToAdd, skipSymmetries,
 									cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid,
 									topBottombridgeUsedNx1x1)
 								== false) {
@@ -540,7 +518,7 @@ public class DFSIntersectFinderRegions {
 							
 							
 							//Mini tear down
-							regionsSplit[curRegionIndex].removeCellFromRegion(indexNewCell, numCellsUsedDepth, prevNewMinOrderedCellCouldUse, prevMinCellRotationOfMinCellToDev);
+							regionsSplit[indexToAdd].removeCellFromRegion(indexNewCell, numCellsUsedDepth, prevNewMinOrderedCellCouldUse, prevMinCellRotationOfMinCellToDev);
 
 
 							paperUsed[new_i][new_j] = false;
@@ -566,21 +544,6 @@ public class DFSIntersectFinderRegions {
 						
 						regionIndex = regions.length - 1;
 						
-						//Move region with top to the first region of the list
-						// because the other regions are more dubious and I think we should check the other regions first.
-						// (This is Nx1x1 specific code that won't break other cuboids, but might not help.)
-						
-						int indexToUseBasedOnPrevLogic = regionsSplit.length - 1;
-						
-						if(regionsSplit[indexToUseBasedOnPrevLogic].getCellRegionsToHandleInRevOrder()[paperToDevelop.length - 1] == true
-								&& indexNewCell != paperToDevelop.length - 1) {
-							//Swap:
-							Region tmp = regionsSplit[indexToUseBasedOnPrevLogic];
-							regionsSplit[indexToUseBasedOnPrevLogic] = regionsSplit[regions.length - 1];
-							regionsSplit[regions.length - 1] = tmp;
-						}
-						//End move region with top to the first region of the list
-						
 						//Later:
 						//TODO: check if region is the same as a hole in the net to go faster (Also useful for the 3Cuboid 1 net check)
 
@@ -592,21 +555,6 @@ public class DFSIntersectFinderRegions {
 						boolean regionHasOneSolution[] = new boolean[regions.length];
 						for(int i2=regions.length - 1 - numNewWays; i2< regions.length; i2++) {
 							
-							if(regionsSplit[i2].getCellRegionsToHandleInRevOrder()[paperToDevelop.length - 1] == true
-									&& indexNewCell != paperToDevelop.length - 1) {
-								//Don't bother checking if region with top only has 1 solution.
-								//It probably has many.
-								//Sanity check:
-								if(i2 != regions.length - 1 - numNewWays) {
-									System.out.println("DOH! The swaping didn't work!");
-									if(regionsSplit[ regions.length - 1].getCellRegionsToHandleInRevOrder()[paperToDevelop.length - 1] == true) {
-										System.out.println("Both?");
-									}
-									System.exit(1);
-								}
-								//End sanity
-								continue;
-							}
 							paperUsed[new_i][new_j] = true;
 							indexCuboidonPaper[new_i][new_j] = indexNewCell;
 							paperToDevelop[numCellsUsedDepth] = new Coord2D(new_i, new_j);
