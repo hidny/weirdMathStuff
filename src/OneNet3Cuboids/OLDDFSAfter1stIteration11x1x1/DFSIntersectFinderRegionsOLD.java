@@ -15,7 +15,7 @@ import OneNet3Cuboids.GraphUtils.PivotCellDescription;
 import OneNet3Cuboids.Region.Region;
 import OneNet3Cuboids.SolutionResovler.*;
 
-public class DFSIntersectFinderRegions {
+public class DFSIntersectFinderRegionsOLD {
 
 	
 	public static final int NUM_ROTATIONS = 4;
