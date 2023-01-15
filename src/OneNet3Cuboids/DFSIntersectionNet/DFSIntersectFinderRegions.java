@@ -140,6 +140,10 @@ public class DFSIntersectFinderRegions {
 			return solutionResolver.resolveSolution(cuboid, paperToDevelop, indexes, paperUsed);
 		}
 
+		if(regions.length == 1 && regions[0].getNumCellsInRegion() < cuboid.getNumCellsToFill() - numCellsUsedDepth && limitDupSolutions < 0) {
+			System.out.println("What?? This should not be possible");
+			System.exit(1);
+		}
 		regions = FoldResolveOrderedRegionsSkipSymmetries.handleCompletedRegionIfApplicable(regions, limitDupSolutions, indexCuboidonPaper, paperUsed);
 		
 		if(regions == null) {
@@ -247,7 +251,7 @@ public class DFSIntersectFinderRegions {
 				int prevMinCellRotationOfMinCellToDev = regions[regionIndex].getMinCellRotationOfMinCellToDevPerRegion();
 				
 				if( !cantAddCellBecauseOfOtherPaperNeighbours) {
-					
+
 					//Split the regions if possible:
 					regions = splitRegionsIfNewCellSplitsRegions(paperToDevelop, indexCuboidonPaper,
 							paperUsed, cuboid, numCellsUsedDepth,
@@ -262,6 +266,7 @@ public class DFSIntersectFinderRegions {
 						cantAddCellBecauseOfOtherPaperNeighbours = true;
 						regions = regionsBeforePotentailRegionSplit;
 					}
+
 				}
 				
 				if( ! cantAddCellBecauseOfOtherPaperNeighbours) {
@@ -390,7 +395,7 @@ public class DFSIntersectFinderRegions {
 			CuboidToFoldOn cuboidToBringAlongStartRot, int indexCuboidOnPaper2ndCuboid[][], int indexNewCell2, int rotationNeighbourPaperRelativeToMap2,
 			int topBottombridgeUsedNx1x1[]) {
 		
-		boolean cantAddCellBecauseOfOtherPaperNeighbours = false;
+		boolean cantAddCellBecauseARegionDoesntHaveSolution = false;
 		
 		//Trying to divide and conquer here:
 		
@@ -407,7 +412,6 @@ public class DFSIntersectFinderRegions {
 		//Add potentially new cell just for test:
 		cuboid.setCell(indexNewCell, rotationNeighbourPaperRelativeToMap);
 				
-		
 		TRY_TO_DIVDE_REGIONS:
 		for(int rotIndexToFill=0; rotIndexToFill<NUM_ROTATIONS; rotIndexToFill++) {
 			
@@ -472,140 +476,43 @@ public class DFSIntersectFinderRegions {
 								System.exit(1);
 							}
 							
-							if(regionsSplit[indexToAdd].getNumCellsInRegion() <= (cuboid.getNumCellsToFill() - (numCellsUsedDepth+1))/2) {
+							//If the new region is small enough, check if it's viable:
+							if( ! isBigRegionAfterSplit(regions[regions.length - 1], regionsSplit[indexToAdd])
+								&& ! regionHasAtLeastOneSolution(paperToDevelop, indexCuboidonPaper,
+					                       paperUsed, cuboid, numCellsUsedDepth,
+					                       indexToUse, newMinRotationToUse, prevNewMinOrderedCellCouldUse, prevMinCellRotationOfMinCellToDev,
+					                       new_i, new_j, indexNewCell, rotationNeighbourPaperRelativeToMap,
+					                       skipSymmetries,
+					                       cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid, indexNewCell2, rotationNeighbourPaperRelativeToMap2,
+					                       topBottombridgeUsedNx1x1,
+					                       regionsSplit, indexToAdd)) {
+
+								cantAddCellBecauseARegionDoesntHaveSolution = true;
 								
-								//Quick check if each region has at least 1 solution:
-								//TODO: put this quick check in function
-								//Mini setup for checking a single solution:
-								
-								//Don't set it! (It's supposed to be set for now)
-								//cuboid.setCell(indexNewCell, rotationNeighbourPaperRelativeToMap);
-	
-								//TODO: should I sort the regions before doing the quick check?
-								// I remember it not being faster before.
-								cuboidToBringAlongStartRot.setCell(indexNewCell2, rotationNeighbourPaperRelativeToMap2);
-			
-								paperUsed[new_i][new_j] = true;
-								indexCuboidonPaper[new_i][new_j] = indexNewCell;
-								paperToDevelop[numCellsUsedDepth] = new Coord2D(new_i, new_j);
-	
-								indexCuboidOnPaper2ndCuboid[new_i][new_j] = indexNewCell2;
-								
-								regionsSplit[indexToAdd].addCellToRegion(indexNewCell, numCellsUsedDepth, indexToUse, newMinRotationToUse);
-								
-								if(indexToUse == 0) {
-									topBottombridgeUsedNx1x1[indexNewCell] = newMinRotationToUse;
-								} else if(indexToUse == cuboid.getCellsUsed().length - 1) {
-									topBottombridgeUsedNx1x1[indexNewCell] = NUM_ROTATIONS + newMinRotationToUse;
-								} else {
-									topBottombridgeUsedNx1x1[indexNewCell] = topBottombridgeUsedNx1x1[indexToUse];
-								}
-	
-								numCellsUsedDepth += 1;
-								
-								if(depthFirstAlgoWillFindAsolutionInRegionIndex(paperToDevelop, indexCuboidonPaper,
-										paperUsed, cuboid, numCellsUsedDepth,
-										regionsSplit, indexToAdd, skipSymmetries,
-										cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid,
-										topBottombridgeUsedNx1x1)
-									== false) {
-									
-									
-									//System.out.println("Region impossible!");
-									
-									cantAddCellBecauseOfOtherPaperNeighbours = true;
-								}
-								
-								numCellsUsedDepth -= 1;
-								
-								
-								//Mini tear down
-								regionsSplit[indexToAdd].removeCellFromRegion(indexNewCell, numCellsUsedDepth, prevNewMinOrderedCellCouldUse, prevMinCellRotationOfMinCellToDev);
-	
-	
-								paperUsed[new_i][new_j] = false;
-								indexCuboidonPaper[new_i][new_j] = -1;
-								paperToDevelop[numCellsUsedDepth] = null;
-	
-								indexCuboidOnPaper2ndCuboid[new_i][new_j] = -1;
-	
-								//Don't remove this: (It's supposed to be set for now)
-								//cuboid.removeCell(indexNewCell);
-	
-								cuboidToBringAlongStartRot.removeCell(indexNewCell2);
-								
-								//End mini-tear down
-								//END TODO:  put quick check in function
-								
-								if(cantAddCellBecauseOfOtherPaperNeighbours) {
-									//System.out.println("quick cut off");
-									break TRY_TO_DIVDE_REGIONS;
-								}
+								break TRY_TO_DIVDE_REGIONS;
+							
 							}
 							
 						}
 						
+						//Check if the bigger regions are viable (try the regions skipped over earlier)
 						for(int k=0; k<numNewWays + 1; k++) {
-							int indexToAdd = regions.length - 1 + k;
-							if(regionsSplit[indexToAdd].getNumCellsInRegion() > (cuboid.getNumCellsToFill() - (numCellsUsedDepth+1))/2) {
-								cuboidToBringAlongStartRot.setCell(indexNewCell2, rotationNeighbourPaperRelativeToMap2);
-								
-								paperUsed[new_i][new_j] = true;
-								indexCuboidonPaper[new_i][new_j] = indexNewCell;
-								paperToDevelop[numCellsUsedDepth] = new Coord2D(new_i, new_j);
-	
-								indexCuboidOnPaper2ndCuboid[new_i][new_j] = indexNewCell2;
-								
-								regionsSplit[indexToAdd].addCellToRegion(indexNewCell, numCellsUsedDepth, indexToUse, newMinRotationToUse);
-								
-								if(indexToUse == 0) {
-									topBottombridgeUsedNx1x1[indexNewCell] = newMinRotationToUse;
-								} else if(indexToUse == cuboid.getCellsUsed().length - 1) {
-									topBottombridgeUsedNx1x1[indexNewCell] = NUM_ROTATIONS + newMinRotationToUse;
-								} else {
-									topBottombridgeUsedNx1x1[indexNewCell] = topBottombridgeUsedNx1x1[indexToUse];
-								}
-	
-								numCellsUsedDepth += 1;
-								
-								if(depthFirstAlgoWillFindAsolutionInRegionIndex(paperToDevelop, indexCuboidonPaper,
-										paperUsed, cuboid, numCellsUsedDepth,
-										regionsSplit, indexToAdd, skipSymmetries,
-										cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid,
-										topBottombridgeUsedNx1x1)
-									== false) {
+							int indexToTry = regions.length - 1 + k;
+
+							if( isBigRegionAfterSplit(regions[regions.length - 1], regionsSplit[indexToTry])
+									&& ! regionHasAtLeastOneSolution(paperToDevelop, indexCuboidonPaper,
+					                       paperUsed, cuboid, numCellsUsedDepth,
+					                       indexToUse, newMinRotationToUse, prevNewMinOrderedCellCouldUse, prevMinCellRotationOfMinCellToDev,
+					                       new_i, new_j, indexNewCell, rotationNeighbourPaperRelativeToMap,
+					                       skipSymmetries,
+					                       cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid, indexNewCell2, rotationNeighbourPaperRelativeToMap2,
+					                       topBottombridgeUsedNx1x1,
+					                       regionsSplit, indexToTry)) {
 									
-									
-									//System.out.println("Region impossible!");
-									
-									cantAddCellBecauseOfOtherPaperNeighbours = true;
-								}
+								cantAddCellBecauseARegionDoesntHaveSolution = true;
 								
-								numCellsUsedDepth -= 1;
+								break TRY_TO_DIVDE_REGIONS;
 								
-								
-								//Mini tear down
-								regionsSplit[indexToAdd].removeCellFromRegion(indexNewCell, numCellsUsedDepth, prevNewMinOrderedCellCouldUse, prevMinCellRotationOfMinCellToDev);
-	
-	
-								paperUsed[new_i][new_j] = false;
-								indexCuboidonPaper[new_i][new_j] = -1;
-								paperToDevelop[numCellsUsedDepth] = null;
-	
-								indexCuboidOnPaper2ndCuboid[new_i][new_j] = -1;
-	
-								//Don't remove this: (It's supposed to be set for now)
-								//cuboid.removeCell(indexNewCell);
-	
-								cuboidToBringAlongStartRot.removeCell(indexNewCell2);
-								
-								//End mini-tear down
-								//END TODO:  put quick check in function
-								
-								if(cantAddCellBecauseOfOtherPaperNeighbours) {
-									//System.out.println("quick cut off");
-									break TRY_TO_DIVDE_REGIONS;
-								}
 							}
 						}
 						
@@ -694,18 +601,89 @@ public class DFSIntersectFinderRegions {
 				}
 			}
 		}//END LOOP
-
+	
 		
 		//Remove potential new cell once test is done:
 		cuboid.removeCell(indexNewCell);
 		
-		if(! cantAddCellBecauseOfOtherPaperNeighbours) {
+		if(! cantAddCellBecauseARegionDoesntHaveSolution) {
 			return regions;
 		} else {
 			return null;
 		}
 	}
 
+	 public static boolean isBigRegionAfterSplit(Region origRegion, Region curRegion) {
+          return curRegion.getNumCellsInRegion() > (origRegion.getNumCellsInRegion() - 1)/2;
+     }
+	 
+	 public static boolean regionHasAtLeastOneSolution(Coord2D paperToDevelop[], int indexCuboidonPaper[][],
+                       boolean paperUsed[][], CuboidToFoldOn cuboid, int numCellsUsedDepth,
+                       int indexToUse, int newMinRotationToUse, int prevNewMinOrderedCellCouldUse, int prevMinCellRotationOfMinCellToDev,
+                       int new_i, int new_j, int indexNewCell, int rotationNeighbourPaperRelativeToMap,
+                       boolean skipSymmetries,
+                       CuboidToFoldOn cuboidToBringAlongStartRot, int indexCuboidOnPaper2ndCuboid[][], int indexNewCell2, int rotationNeighbourPaperRelativeToMap2,
+                       int topBottombridgeUsedNx1x1[],
+                      Region regionsSplit[], int regionIndexToCheck) {
+
+		 	boolean hasSolution = false;
+
+		 	cuboidToBringAlongStartRot.setCell(indexNewCell2, rotationNeighbourPaperRelativeToMap2);
+			
+			paperUsed[new_i][new_j] = true;
+			indexCuboidonPaper[new_i][new_j] = indexNewCell;
+			paperToDevelop[numCellsUsedDepth] = new Coord2D(new_i, new_j);
+
+			indexCuboidOnPaper2ndCuboid[new_i][new_j] = indexNewCell2;
+			
+			regionsSplit[regionIndexToCheck].addCellToRegion(indexNewCell, numCellsUsedDepth, indexToUse, newMinRotationToUse);
+			
+			if(indexToUse == 0) {
+				topBottombridgeUsedNx1x1[indexNewCell] = newMinRotationToUse;
+			} else if(indexToUse == cuboid.getCellsUsed().length - 1) {
+				topBottombridgeUsedNx1x1[indexNewCell] = NUM_ROTATIONS + newMinRotationToUse;
+			} else {
+				topBottombridgeUsedNx1x1[indexNewCell] = topBottombridgeUsedNx1x1[indexToUse];
+			}
+
+			numCellsUsedDepth += 1;
+			
+			if(depthFirstAlgoWillFindAsolutionInRegionIndex(paperToDevelop, indexCuboidonPaper,
+					paperUsed, cuboid, numCellsUsedDepth,
+					regionsSplit, regionIndexToCheck, skipSymmetries,
+					cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid,
+					topBottombridgeUsedNx1x1)
+				) {
+				
+				
+				//System.out.println("Region impossible!");
+				
+				hasSolution = true;
+			}
+			
+			numCellsUsedDepth -= 1;
+			
+			
+			//Mini tear down
+			regionsSplit[regionIndexToCheck].removeCellFromRegion(indexNewCell, numCellsUsedDepth, prevNewMinOrderedCellCouldUse, prevMinCellRotationOfMinCellToDev);
+
+
+			paperUsed[new_i][new_j] = false;
+			indexCuboidonPaper[new_i][new_j] = -1;
+			paperToDevelop[numCellsUsedDepth] = null;
+
+			indexCuboidOnPaper2ndCuboid[new_i][new_j] = -1;
+
+			//Don't remove this: (It's supposed to be set for now)
+			//cuboid.removeCell(indexNewCell);
+
+			cuboidToBringAlongStartRot.removeCell(indexNewCell2);
+			
+			//End mini-tear down
+			//END TODO:  put quick check in function
+			
+			return hasSolution;
+	 }
 	/*https://www.sciencedirect.com/science/article/pii/S0925772117300160
 	 * 
 	 *  "From the necessary condition, the smallest possible surface area that can fold into two boxes is 22,

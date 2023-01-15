@@ -315,7 +315,7 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 				if(limitDupSolutions >=0) {
 					return null;
 				} else {
-					System.out.println("ERROR: ran out of regions because completing the cuboid. This should not be possible!");
+					System.out.println("ERROR: ran out of regions before completing the cuboid. This should not be possible!");
 					System.exit(1);
 				}
 			}
