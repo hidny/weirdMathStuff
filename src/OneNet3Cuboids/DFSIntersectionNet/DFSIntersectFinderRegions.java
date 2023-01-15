@@ -592,21 +592,6 @@ public class DFSIntersectFinderRegions {
 						boolean regionHasOneSolution[] = new boolean[regions.length];
 						for(int i2=regions.length - 1 - numNewWays; i2< regions.length; i2++) {
 							
-							if(regionsSplit[i2].getCellRegionsToHandleInRevOrder()[paperToDevelop.length - 1] == true
-									&& indexNewCell != paperToDevelop.length - 1) {
-								//Don't bother checking if region with top only has 1 solution.
-								//It probably has many.
-								//Sanity check:
-								if(i2 != regions.length - 1 - numNewWays) {
-									System.out.println("DOH! The swaping didn't work!");
-									if(regionsSplit[ regions.length - 1].getCellRegionsToHandleInRevOrder()[paperToDevelop.length - 1] == true) {
-										System.out.println("Both?");
-									}
-									System.exit(1);
-								}
-								//End sanity
-								continue;
-							}
 							paperUsed[new_i][new_j] = true;
 							indexCuboidonPaper[new_i][new_j] = indexNewCell;
 							paperToDevelop[numCellsUsedDepth] = new Coord2D(new_i, new_j);
@@ -651,6 +636,12 @@ public class DFSIntersectFinderRegions {
 						
 						//Sort new regions by whether it has only 1 solution, and then by size:
 						for(int i2=regions.length - 1 - numNewWays; i2< regions.length; i2++) {
+							
+							if(regions[i2].getCellRegionsToHandleInRevOrder()[paperToDevelop.length - 1] == true
+									&& indexNewCell != paperToDevelop.length - 1
+									&& ! regionHasOneSolution[i2]) {
+								continue;
+							}
 							
 							int curBestIndex = i2;
 							

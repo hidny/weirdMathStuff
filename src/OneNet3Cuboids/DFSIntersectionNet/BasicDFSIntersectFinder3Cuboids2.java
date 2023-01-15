@@ -46,6 +46,7 @@ public class BasicDFSIntersectFinder3Cuboids2 {
 	public static long numIterations = 0L;
 	
 	public static final int TARGET_AREA_FOR_11X1X1 = 46;
+	
 
 	public static void solveCuboidIntersections(CuboidToFoldOn cuboidToBuild, CuboidToFoldOn cuboidsToBringAlong[], boolean skipSymmetries, SolutionResolverIntersectInterface solutionResolver) {
 		
@@ -205,6 +206,11 @@ public class BasicDFSIntersectFinder3Cuboids2 {
 				System.out.println("Solutions in region hack: " + BasicUniqueCheckImproved.uniqList.size());
 				System.out.println();
 			}
+
+			System.out.println("debugNoSolTop: " + debugNoSolTop);
+			System.out.println("debugNumThreeWay: " + debugNumThreeWay);
+			System.out.println("debugNoSolNonTop: " + debugNoSolNonTop);
+			System.out.println("numPasses: " + numPasses);
 		}
 		
 		
@@ -460,7 +466,11 @@ public class BasicDFSIntersectFinder3Cuboids2 {
 		}
 	}
 	
-	
+
+	public static long numPasses =0L;
+	public static long debugNoSolTop = 0L;
+	public static long debugNumThreeWay = 0L;
+	public static long debugNoSolNonTop = 0L;
 
 	//j = rotation relativeCuboidMap
 	public static Region[] splitRegionsIfNewCellSplitsRegions(Coord2D paperToDevelop[], int indexCuboidonPaper[][],
@@ -490,7 +500,9 @@ public class BasicDFSIntersectFinder3Cuboids2 {
 
 		//Add potentially new cell just for test:
 		cuboid.setCell(indexNewCell, rotationNeighbourPaperRelativeToMap);
-				
+		
+		boolean hadTopDebug = false;
+		boolean hadNonTopWithNoSolDebug = false;
 		
 		TRY_TO_DIVDE_REGIONS:
 		for(int rotIndexToFill=0; rotIndexToFill<NUM_ROTATIONS; rotIndexToFill++) {
@@ -524,6 +536,7 @@ public class BasicDFSIntersectFinder3Cuboids2 {
 									&& FoldResolveOrderedRegionsSkipSymmetries.areCellsSepartedCuboid(cuboid, curThirdNeighbour, indexNeighbourOfNewCell)) {
 								found3Way = true;
 								indexNeighbourThirdWay = curThirdNeighbour;
+								debugNumThreeWay++;
 							}
 						}
 						//End look for 3-three (cuboid separated into 3 regions)
@@ -587,6 +600,11 @@ public class BasicDFSIntersectFinder3Cuboids2 {
 
 							numCellsUsedDepth += 1;
 							
+							if(regionsSplit[indexToAdd].getCellRegionsToHandleInRevOrder()[paperToDevelop.length - 1] == true
+									&& indexNewCell != paperToDevelop.length - 1) {
+								hadTopDebug = true;
+							}
+							
 							if(depthFirstAlgoWillFindAsolutionInRegionIndex(paperToDevelop, indexCuboidonPaper,
 									paperUsed, cuboid, numCellsUsedDepth,
 									regionsSplit, indexToAdd, skipSymmetries,
@@ -596,6 +614,13 @@ public class BasicDFSIntersectFinder3Cuboids2 {
 								
 								
 								//System.out.println("Region impossible!");
+								
+								if(regionsSplit[indexToAdd].getCellRegionsToHandleInRevOrder()[paperToDevelop.length - 1] == true
+										&& indexNewCell != paperToDevelop.length - 1) {
+									debugNoSolTop++;
+								} else {
+									hadNonTopWithNoSolDebug = true;
+								}
 								
 								cantAddCellBecauseOfOtherPaperNeighbours = true;
 							}
@@ -624,12 +649,19 @@ public class BasicDFSIntersectFinder3Cuboids2 {
 							//End mini-tear down
 							//END TODO:  put quick check in function
 							
-							if(cantAddCellBecauseOfOtherPaperNeighbours) {
-								//System.out.println("quick cut off");
-								break TRY_TO_DIVDE_REGIONS;
-							}
 							
 						}
+						
+						if(hadTopDebug && hadNonTopWithNoSolDebug) {
+
+							debugNoSolNonTop++;
+						}
+
+						if(cantAddCellBecauseOfOtherPaperNeighbours) {
+							//System.out.println("quick cut off");
+							break TRY_TO_DIVDE_REGIONS;
+						}
+						numPasses++;
 						
 						regionIndex = regions.length - 1;
 						
