@@ -112,6 +112,10 @@ public class DFSIntersectFinderRegions {
 		
 			doDepthFirstSearch(paperToDevelop, indexCuboidOnPaper, paperUsed, cuboid, numCellsUsedDepth, regionsToHandleRevOrder, -1L, skipSymmetries, solutionResolver, cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid, topBottombridgeUsedNx1x1);
 			
+
+			System.out.println("Num break 1: " + numBreak1);
+			System.out.println("Num break 2: " + numBreak2);
+			System.out.println("Num pass: " + numPass);
 			
 			System.out.println("Done with trying to intersect 2nd cuboid that has a start index of " + startIndex2ndCuboid + " and a rotation index of " + startRotation2ndCuboid +".");
 			System.out.println("Current UTC timestamp in milliseconds: " + System.currentTimeMillis());
@@ -167,14 +171,21 @@ public class DFSIntersectFinderRegions {
 				//TODO: unhack it by passing along solution resolver to regions...
 				System.out.println("Solutions in region hack: " + BasicUniqueCheckImproved.uniqList.size());
 				System.out.println();
+				
+				for(int i=0; i<cuboid.getNumCellsToFill(); i++) {
+					if(regions[regions.length - 1].getCellRegionsToHandleInRevOrder()[i]) {
+						System.out.println("cell of current region: " + i);
+					}
+				}
 			}
+			
+
+			System.out.println("Last cell inserted: " + indexCuboidonPaper[paperToDevelop[numCellsUsedDepth - 1].i][paperToDevelop[numCellsUsedDepth - 1].j]);
+			
 			System.out.println(numBreak1);
 			System.out.println(numBreak2);
 			System.out.println(numPass);
 			
-			if(numIterations == 120000000L) {
-				System.exit(0);
-			}
 		}
 		//End display debug/what's-going-on update
 		
@@ -399,9 +410,9 @@ public class DFSIntersectFinderRegions {
 		}
 	}
 	
-	public static int numBreak1 = 0;
-	public static int numBreak2 = 0;
-	public static int numPass = 0;
+	public static long numBreak1 = 0;
+	public static long numBreak2 = 0;
+	public static long numPass = 0;
 
 
 	//j = rotation relativeCuboidMap
@@ -478,68 +489,6 @@ public class DFSIntersectFinderRegions {
 							regionsSplit[k] = regions[k];
 						}
 						
-						//Get answer to question (hasOnly1ActiveSection), so the algo will better pick which region to investigate 1st...
-						// Maybe it will go slighly faster...
-						boolean hasOnly1ActiveSection = true;
-						int firstSectionFound = -2;
-						
-						//Utils.printFoldWithIndex(indexCuboidonPaper);
-						//System.out.println("Trying something");
-						
-						for(int m=regions[regionIndex].getCellIndexToOrderOfDev().get(indexToUse); m<paperToDevelop.length && paperToDevelop[m] != null; m++) {
-							
-							int curIndex = indexCuboidonPaper[paperToDevelop[m].i][paperToDevelop[m].j];
-							
-							boolean cellIsFree = false;
-							//TODO: copy/paste code:
-							//TODO: check if cell is surrounded?
-							for(int r=0; r<NUM_ROTATIONS; r++) {
-
-								int new_i_2 = paperToDevelop[m].i + nugdeBasedOnRotation[0][r];
-								int new_j_2 = paperToDevelop[m].j + nugdeBasedOnRotation[1][r];
-								//System.out.println(new_i + ", " + new_j);
-								
-								int rotationToUse = ( r - cuboid.getRotationPaperRelativeToMap(curIndex) + NUM_ROTATIONS) % NUM_ROTATIONS;
-								
-								int neighbour2 = cuboid.getNeighbours(curIndex)[rotationToUse].getIndex();
-								
-								if( cuboid.isCellIndexUsed(neighbour2) == false
-										&& ! SymmetryResolver.cantAddCellBecauseOfOtherPaperNeighbours(indexCuboidonPaper, cuboid,
-										regions[regionIndex], curIndex,
-										neighbour2, new_i_2, new_j_2
-									) ) {
-
-									cellIsFree = true;
-									break;
-								}
-							}
-							//END TODO: copy paste code
-							
-							if(cellIsFree) {
-								
-								int curActiveSectionFound = topBottombridgeUsedNx1x1[curIndex];
-								//System.out.println(curActiveSectionFound);
-								if(firstSectionFound == curActiveSectionFound) {
-									//pass
-								} else if(firstSectionFound == -2) {
-									firstSectionFound = curActiveSectionFound;
-								} else {
-									hasOnly1ActiveSection = false;
-									break;
-								}
-							}
-						}
-						//END Get answer to question (hasOnly1ActiveSection), so the algo will better pick which region to investigate 1st...
-						
-						/*if(hasOnly1ActiveSection) {
-							//System.out.println("Only 1");
-						} else {
-							System.out.println("Cell to use: " + indexToUse);
-							System.out.println("Cell to add: " + indexNewCell);
-							Utils.printFoldWithIndex(indexCuboidonPaper);
-							System.out.println("Not only 1");
-							//System.exit(1);
-						}*/
 
 						for(int k=0; k<numNewWays + 1; k++) {
 								
@@ -558,7 +507,7 @@ public class DFSIntersectFinderRegions {
 							}
 							
 							//If the new region is small enough, check if it's viable:
-							if( isDubiousOrSmallRegionAfterSplit(cuboid, regions[regions.length - 1], regionsSplit[indexToAdd], indexNewCell, hasOnly1ActiveSection, numNewWays)
+							if( isDubiousOrSmallRegionAfterSplit(cuboid, regions[regions.length - 1], regionsSplit[indexToAdd], indexNewCell)
 								&& ! regionHasAtLeastOneSolution(paperToDevelop, indexCuboidonPaper,
 					                       paperUsed, cuboid, numCellsUsedDepth,
 					                       indexToUse, newMinRotationToUse, prevNewMinOrderedCellCouldUse, prevMinCellRotationOfMinCellToDev,
@@ -581,7 +530,7 @@ public class DFSIntersectFinderRegions {
 						for(int k=0; k<numNewWays + 1; k++) {
 							int indexToTry = regions.length - 1 + k;
 
-							if( ! isDubiousOrSmallRegionAfterSplit(cuboid, regions[regions.length - 1], regionsSplit[indexToTry], indexNewCell, hasOnly1ActiveSection, numNewWays)
+							if( ! isDubiousOrSmallRegionAfterSplit(cuboid, regions[regions.length - 1], regionsSplit[indexToTry], indexNewCell)
 									&& ! regionHasAtLeastOneSolution(paperToDevelop, indexCuboidonPaper,
 					                       paperUsed, cuboid, numCellsUsedDepth,
 					                       indexToUse, newMinRotationToUse, prevNewMinOrderedCellCouldUse, prevMinCellRotationOfMinCellToDev,
@@ -696,12 +645,11 @@ public class DFSIntersectFinderRegions {
 		}
 	}
 
-	 public static boolean isDubiousOrSmallRegionAfterSplit(CuboidToFoldOn cuboid, Region origRegion, Region curRegion, int indexNewCell, boolean hasOnly1ActiveSection, int numNewWays) {
+	 public static boolean isDubiousOrSmallRegionAfterSplit(CuboidToFoldOn cuboid, Region origRegion, Region curRegion, int indexNewCell) {
 		 
 		 //If region doesn't have top, and top is unclaimed by parent region, it's dubious:
 		 if(origRegion.getCellRegionsToHandleInRevOrder()[cuboid.getNumCellsToFill() - 1]
-				 && indexNewCell != cuboid.getNumCellsToFill() - 1
-				 && hasOnly1ActiveSection) {
+				 && indexNewCell != cuboid.getNumCellsToFill() - 1) {
 			 if(! curRegion.getCellRegionsToHandleInRevOrder()[cuboid.getNumCellsToFill() - 1]) {
 				 return true;
 			 } else {
@@ -709,7 +657,7 @@ public class DFSIntersectFinderRegions {
 			 }
 		 } else {
 		 
-			 return curRegion.getNumCellsInRegion() < (origRegion.getNumCellsInRegion() - 1)/(2/*1 + numNewWays*/);
+			 return curRegion.getNumCellsInRegion() < (origRegion.getNumCellsInRegion() - 1)/(2);
 		 }
      }
 	 
@@ -807,6 +755,8 @@ public class DFSIntersectFinderRegions {
 		
 		//Best 5,1,1: 3 minute 45 seconds (3014430 solutions) (December 27th)
 		
+		
+
 		
 		System.out.println("Current UTC timestamp in milliseconds: " + System.currentTimeMillis());
 		

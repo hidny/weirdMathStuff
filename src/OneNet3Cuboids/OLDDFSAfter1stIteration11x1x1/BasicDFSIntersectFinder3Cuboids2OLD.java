@@ -126,7 +126,7 @@ public class BasicDFSIntersectFinder3Cuboids2OLD {
 		CuboidToFoldOn cuboidsToBringAlongStartRot[] = new CuboidToFoldOn[2];
 		
 		int startIArea46 = 0;
-		int startJArea46 = 1;
+		int startJArea46 = 2;
 		
 		for(int i=0; i<startingPointsAndRotationsToCheck[0].size(); i++) {
 			
