@@ -511,7 +511,7 @@ public class DFSIntersectFinderRegions {
 					}
 					
 					if(numIterations >= 349510 && debugFlagNope) {
-						System.out.println("Debug");
+						System.out.println("Debug WITH DEPTH " + numCellsUsedDepth);
 					}
 					
 					retDuplicateSolutions += doDepthFirstSearch(paperToDevelop, indexCuboidonPaper, paperUsed, cuboid, numCellsUsedDepth, regions, newLimitDupSolutions, skipSymmetries, solutionResolver, cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid, topBottombridgeUsedNx1x1, debugFlagNope);
