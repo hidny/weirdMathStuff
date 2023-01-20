@@ -1,4 +1,4 @@
-package OneNet3Cuboids.DFSIntersectionNet;
+package OneNet3Cuboids.DFSIntersectionNetBeforeOtherCuboidRegions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -293,81 +293,6 @@ public class DFSIntersectFinderRegions {
 						cantAddCellBecauseOfOtherPaperNeighbours = true;
 						regions = regionsBeforePotentailRegionSplit;
 					}
-
-				}
-				
-				if(regions.length == 1) {
-					//experiment with splits on the other cuboid:
-					
-					//TODO: check if could split region.
-					CoordWithRotationAndIndex neighboursOfNewCell[] = cuboidToBringAlongStartRot.getNeighbours(indexNewCell2);
-					
-					//areCellsSepartedCuboid(CuboidToFoldOn cuboid, int startIndex, int goalIndex)
-					
-					//TODO: put into function 1
-					//flag is redundant, but expressive!
-					boolean foundABlankNeighbour = false;
-					int firstIndex = -1;
-
-					//Add potentially new cell just for test:
-					cuboidToBringAlongStartRot.setCell(indexNewCell2, rotationNeighbourPaperRelativeToMap2);
-							
-					TRY_TO_DIVDE_REGIONS:
-					for(int rotIndexToFill=0; rotIndexToFill<NUM_ROTATIONS; rotIndexToFill++) {
-						
-						int indexNeighbourOfNewCell = neighboursOfNewCell[rotIndexToFill].getIndex();
-						
-						if( ! cuboidToBringAlongStartRot.isCellIndexUsed(indexNeighbourOfNewCell)) {
-							
-							if( ! foundABlankNeighbour) {
-								firstIndex = indexNeighbourOfNewCell;
-								foundABlankNeighbour = true;
-							} else {
-								
-								if(FoldResolveOrderedRegionsSkipSymmetries.areCellsSepartedCuboid(cuboidToBringAlongStartRot, firstIndex, indexNeighbourOfNewCell)) {
-									
-									//START DIVIDING THE REGION:
-									
-									//Look for a 3-three way:
-									
-									boolean found3Way = false;
-									int indexNeighbourThirdWay = -1;
-									for(int thirdRot=rotIndexToFill+1; thirdRot<NUM_ROTATIONS; thirdRot++) {
-										
-										int curThirdNeighbour = neighboursOfNewCell[thirdRot].getIndex();
-										
-										
-										if(! cuboidToBringAlongStartRot.isCellIndexUsed(curThirdNeighbour)
-												&& FoldResolveOrderedRegionsSkipSymmetries.areCellsSepartedCuboid(cuboidToBringAlongStartRot, curThirdNeighbour, firstIndex)
-												&& FoldResolveOrderedRegionsSkipSymmetries.areCellsSepartedCuboid(cuboidToBringAlongStartRot, curThirdNeighbour, indexNeighbourOfNewCell)) {
-											found3Way = true;
-											indexNeighbourThirdWay = curThirdNeighbour;
-										}
-									}
-									//End look for 3-three (cuboid separated into 3 regions)
-
-									int numNewWays = 1;
-									if(found3Way) {
-										numNewWays = 2;
-										
-
-										System.out.println("Found other cuboid split 3 ways!");
-									} else {
-
-										System.out.println("Found other cuboid split!");
-									}
-									
-									//Utils.printFoldWithIndex(indexCuboidOnPaper2ndCuboid);
-									//System.out.println(indexNewCell2);
-									//System.exit(1);
-								}
-							}
-						}
-					}
-
-					cuboidToBringAlongStartRot.removeCell(indexNewCell2);
-
-					//END TODO: put into function 1
 
 				}
 				
@@ -815,7 +740,7 @@ public class DFSIntersectFinderRegions {
 	public static void main(String args[]) {
 		System.out.println("Fold Resolver Ordered Regions intersection skip symmetries Nx1x1:");
 
-		//solveCuboidIntersections(new CuboidToFoldOn(11, 1, 1), new CuboidToFoldOn(7, 2, 1));
+		solveCuboidIntersections(new CuboidToFoldOn(11, 1, 1), new CuboidToFoldOn(7, 2, 1));
 		
 		//solveCuboidIntersections(new CuboidToFoldOn(9, 1, 1), new CuboidToFoldOn(4, 3, 1));
 		//It got 4469 solutions and it took about 41.5 hours
@@ -826,7 +751,7 @@ public class DFSIntersectFinderRegions {
 		//solveCuboidIntersections(new CuboidToFoldOn(7, 1, 1), new CuboidToFoldOn(3, 3, 1));
 		//It got 1070 (again) (They got 1080, but I think they were wrong)
 		
-		solveCuboidIntersections(new CuboidToFoldOn(5, 1, 1), new CuboidToFoldOn(3, 2, 1));
+		//solveCuboidIntersections(new CuboidToFoldOn(5, 1, 1), new CuboidToFoldOn(3, 2, 1));
 		//It got 2263!
 
 		//solveCuboidIntersections(new CuboidToFoldOn(2, 1, 1), new CuboidToFoldOn(1, 2, 1));
