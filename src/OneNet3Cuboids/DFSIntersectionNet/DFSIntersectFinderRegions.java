@@ -298,7 +298,10 @@ public class DFSIntersectFinderRegions {
 
 				}
 				
-				if(regions.length == 1) {
+				if(regions.length == 1 
+						//Play it safe for now:
+						&& numCellsUsedDepth + regions[regions.length - 1].getNumCellsInRegion() == Utils.getTotalArea(cuboid.getDimensions())
+					) {
 					//experiment with splits on the other cuboid:
 					//TODO: check if could split region.
 					CoordWithRotationAndIndex neighboursOfNewCell[] = cuboidToBringAlongStartRot.getNeighbours(indexNewCell2);
@@ -405,7 +408,7 @@ public class DFSIntersectFinderRegions {
 										int fakeTopBottomBridgeUsedNx1x1[] = new int[cuboid.getNumCellsToFill()];
 										
 										if( isDubiousOrSmallRegionAfterSplitOtherCuboid(cuboidToBringAlongStartRot, regionForOtherCuboid, regionTmp[k], indexNewCell)
-											/*&& ! regionHasAtLeastOneSolution(paperToDevelop, indexCuboidOnPaper2ndCuboid,
+											&& ! regionHasAtLeastOneSolution(paperToDevelop, indexCuboidOnPaper2ndCuboid,
 								                       paperUsed, cuboidToBringAlongStartRot, numCellsUsedDepth,
 								                       //Be safe and set min rotation to use to 0:(//TODO: don't be safe once it works)
 								                       indexToUse2, 0, prevNewMinOrderedCellCouldUse, prevMinCellRotationOfMinCellToDev,
@@ -414,7 +417,7 @@ public class DFSIntersectFinderRegions {
 								                       false,
 								                       cuboid, indexCuboidonPaper, indexNewCell, rotationNeighbourPaperRelativeToMap,
 								                       fakeTopBottomBridgeUsedNx1x1,
-								                       regionTmp, k)*/) {
+								                       regionTmp, k)) {
 	
 											//TODO: rename variable:
 											numBreak3++;
