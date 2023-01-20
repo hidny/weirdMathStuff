@@ -332,7 +332,15 @@ public class DFSIntersectFinderRegions {
 
 				}
 				
-				if(regions.length == 1 
+				if(numIterations >= 349513 && !debugFlagNope && numIterations < 349533) {
+					System.out.println("Debug WITH DEPTH (serious) " + numCellsUsedDepth);
+					Utils.printFoldWithIndex(indexCuboidonPaper);
+					Utils.printFoldWithIndex(indexCuboidOnPaper2ndCuboid);
+				}
+				
+				
+				if(! cantAddCellBecauseOfOtherPaperNeighbours
+						&& regions.length == 1 
 						//Play it safe for now:
 						&& numCellsUsedDepth + regions[regions.length - 1].getNumCellsInRegion() == Utils.getTotalArea(cuboid.getDimensions())
 					) {
@@ -403,15 +411,31 @@ public class DFSIntersectFinderRegions {
 									
 									for(int p=0; paperToDevelop[p] != null && p<paperToDevelop.length; p++) {
 										
-										if(regions[regionIndex].getCellIndexToOrderOfDev().containsKey(indexCuboidonPaper[paperToDevelop[p].i][paperToDevelop[i].j])) {
+										if(regions[regionIndex].getCellIndexToOrderOfDev().containsKey(indexCuboidonPaper[paperToDevelop[p].i][paperToDevelop[p].j])) {
 											CellIndexToOrderOfDevOther.put(
-												indexCuboidOnPaper2ndCuboid[paperToDevelop[p].i][paperToDevelop[i].j],
-												regions[regionIndex].getCellIndexToOrderOfDev().get(indexCuboidonPaper[paperToDevelop[p].i][paperToDevelop[i].j])
+												indexCuboidOnPaper2ndCuboid[paperToDevelop[p].i][paperToDevelop[p].j],
+												regions[regionIndex].getCellIndexToOrderOfDev().get(indexCuboidonPaper[paperToDevelop[p].i][paperToDevelop[p].j])
 											);
+											//System.out.println("Contains " + indexCuboidonPaper[paperToDevelop[p].i][paperToDevelop[p].j]);
+										} else {
+											//System.out.println("Does not Contain " + indexCuboidonPaper[paperToDevelop[p].i][paperToDevelop[p].j]);
 										}
 									}
-									//End get order of dev for other cuboid
+									/*
+									for(int i2=0; i2<indexCuboidonPaper.length; i2++) {
+										for(int j2=0; j2<indexCuboidonPaper[0].length; j2++) {
+											if(indexCuboidonPaper[i2][j2] >= 0) {
+												System.out.println("Actual coord: " + i2 + " ," + j2);
+											}
+										}
+									}
 									
+									Utils.printFoldWithIndex(indexCuboidonPaper);
+									Utils.printFoldWithIndex(indexCuboidOnPaper2ndCuboid);
+									
+									System.out.println("Debug");
+									//End get order of dev for other cuboid
+									*/
 									Region regionForOtherCuboid = Region.getRegionOutOfSecondaryCuboid(cuboidToBringAlongStartRot, CellIndexToOrderOfDevOther, indexToUse2);
 									
 									
@@ -437,7 +461,6 @@ public class DFSIntersectFinderRegions {
 											System.out.println("ERROR: k is too high. k= " + k);
 											System.exit(1);
 										}
-										numBreak3++;
 										//TODO: only create once
 										int fakeTopBottomBridgeUsedNx1x1[] = new int[cuboid.getNumCellsToFill()];
 										
@@ -457,7 +480,7 @@ public class DFSIntersectFinderRegions {
 											numBreak3++;
 											//System.out.println("break3");
 											debugFlagNope = true;
-											//cantAddCellBecauseOfOtherPaperNeighbours = true;
+											cantAddCellBecauseOfOtherPaperNeighbours = true;
 											
 											break TRY_TO_DIVDE_REGIONS;
 										}
@@ -510,7 +533,7 @@ public class DFSIntersectFinderRegions {
 						newLimitDupSolutions -= retDuplicateSolutions;
 					}
 					
-					if(numIterations >= 349510 && debugFlagNope) {
+					if(numIterations >= 349510 && debugFlagNope && numIterations < 349533) {
 						System.out.println("Debug WITH DEPTH " + numCellsUsedDepth);
 					}
 					
@@ -944,10 +967,10 @@ public class DFSIntersectFinderRegions {
 		//solveCuboidIntersections(new CuboidToFoldOn(8, 1, 1), new CuboidToFoldOn(5, 2, 1));
 		//It got 35675 again, but this time it only took 3 hours! It took almost 2 days last time!
 		
-		//solveCuboidIntersections(new CuboidToFoldOn(7, 1, 1), new CuboidToFoldOn(3, 3, 1));
+		solveCuboidIntersections(new CuboidToFoldOn(7, 1, 1), new CuboidToFoldOn(3, 3, 1));
 		//It got 1070 (again) (They got 1080, but I think they were wrong)
 		
-		solveCuboidIntersections(new CuboidToFoldOn(5, 1, 1), new CuboidToFoldOn(3, 2, 1));
+		//solveCuboidIntersections(new CuboidToFoldOn(5, 1, 1), new CuboidToFoldOn(3, 2, 1));
 		//It got 2263!
 
 		//solveCuboidIntersections(new CuboidToFoldOn(2, 1, 1), new CuboidToFoldOn(1, 2, 1));
