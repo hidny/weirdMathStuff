@@ -423,7 +423,7 @@ public class DFSIntersectFinderRegions {
 											numBreak3++;
 											//System.out.println("break3");
 											
-											//cantAddCellBecauseOfOtherPaperNeighbours = true;
+											cantAddCellBecauseOfOtherPaperNeighbours = true;
 											
 											break TRY_TO_DIVDE_REGIONS;
 										}
