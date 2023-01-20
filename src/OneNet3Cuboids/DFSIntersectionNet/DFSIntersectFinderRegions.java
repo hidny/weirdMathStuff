@@ -110,7 +110,7 @@ public class DFSIntersectFinderRegions {
 			
 			int topBottombridgeUsedNx1x1[] = new int[Utils.getTotalArea(cuboidToBuild.getDimensions())];
 		
-			doDepthFirstSearch(paperToDevelop, indexCuboidOnPaper, paperUsed, cuboid, numCellsUsedDepth, regionsToHandleRevOrder, -1L, skipSymmetries, solutionResolver, cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid, topBottombridgeUsedNx1x1);
+			doDepthFirstSearch(paperToDevelop, indexCuboidOnPaper, paperUsed, cuboid, numCellsUsedDepth, regionsToHandleRevOrder, -1L, skipSymmetries, solutionResolver, cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid, topBottombridgeUsedNx1x1, false);
 			
 
 			System.out.println("Num break 1: " + numBreak1);
@@ -135,14 +135,48 @@ public class DFSIntersectFinderRegions {
 	
 	public static long doDepthFirstSearch(Coord2D paperToDevelop[], int indexCuboidonPaper[][], boolean paperUsed[][], CuboidToFoldOn cuboid, int numCellsUsedDepth,
 			Region regions[], long limitDupSolutions, boolean skipSymmetries, SolutionResolverIntersectInterface solutionResolver, CuboidToFoldOn cuboidToBringAlongStartRot, int indexCuboidOnPaper2ndCuboid[][],
-			int topBottombridgeUsedNx1x1[]) {
+			int topBottombridgeUsedNx1x1[], boolean debugFlagNope) {
 
 		if(numCellsUsedDepth == cuboid.getNumCellsToFill()) {
 			
 			int indexes[][][] = new int[2][][];
 			indexes[0] = indexCuboidonPaper;
 			indexes[1] = indexCuboidOnPaper2ndCuboid;
-			return solutionResolver.resolveSolution(cuboid, paperToDevelop, indexes, paperUsed);
+			long tmp = solutionResolver.resolveSolution(cuboid, paperToDevelop, indexes, paperUsed);
+			
+			if(debugFlagNope) {
+				System.out.println("AH!!");
+				System.out.println("Num iterations: " + numIterations);
+				Utils.printFold(paperUsed);
+				Utils.printFoldWithIndex(indexCuboidonPaper);
+				Utils.printFoldWithIndex(indexCuboidOnPaper2ndCuboid);
+				if(numCellsUsedDepth + regions[regions.length - 1].getNumCellsInRegion() == Utils.getTotalArea(cuboid.getDimensions())) {
+					System.out.println("Solutions: " + solutionResolver.getNumUniqueFound());
+					System.out.println();
+				} else {
+					//TODO: unhack it by passing along solution resolver to regions...
+					System.out.println("Solutions in region hack: " + BasicUniqueCheckImproved.uniqList.size());
+					System.out.println();
+					
+					for(int i=0; i<cuboid.getNumCellsToFill(); i++) {
+						if(regions[regions.length - 1].getCellRegionsToHandleInRevOrder()[i]) {
+							System.out.println("cell of current region: " + i);
+						}
+					}
+				}
+				
+
+				System.out.println("Last cell inserted: " + indexCuboidonPaper[paperToDevelop[numCellsUsedDepth - 1].i][paperToDevelop[numCellsUsedDepth - 1].j]);
+
+				System.out.println("Num break 1: " + numBreak1);
+				System.out.println("Num break 2: " + numBreak2);
+				System.out.println("Num break 3: " + numBreak3);
+				System.out.println("Num pass: " + numPass);
+				System.out.println("AH!!");
+				
+				System.exit(1);
+			}
+			return tmp;
 		}
 
 		if(regions.length == 1 && regions[0].getNumCellsInRegion() < cuboid.getNumCellsToFill() - numCellsUsedDepth && limitDupSolutions < 0) {
@@ -422,8 +456,8 @@ public class DFSIntersectFinderRegions {
 											//TODO: rename variable:
 											numBreak3++;
 											//System.out.println("break3");
-											
-											cantAddCellBecauseOfOtherPaperNeighbours = true;
+											debugFlagNope = true;
+											//cantAddCellBecauseOfOtherPaperNeighbours = true;
 											
 											break TRY_TO_DIVDE_REGIONS;
 										}
@@ -476,7 +510,11 @@ public class DFSIntersectFinderRegions {
 						newLimitDupSolutions -= retDuplicateSolutions;
 					}
 					
-					retDuplicateSolutions += doDepthFirstSearch(paperToDevelop, indexCuboidonPaper, paperUsed, cuboid, numCellsUsedDepth, regions, newLimitDupSolutions, skipSymmetries, solutionResolver, cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid, topBottombridgeUsedNx1x1);
+					if(numIterations >= 349510 && debugFlagNope) {
+						System.out.println("Debug");
+					}
+					
+					retDuplicateSolutions += doDepthFirstSearch(paperToDevelop, indexCuboidonPaper, paperUsed, cuboid, numCellsUsedDepth, regions, newLimitDupSolutions, skipSymmetries, solutionResolver, cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid, topBottombridgeUsedNx1x1, debugFlagNope);
 
 					if(numCellsUsedDepth < regions[0].getCellIndexToOrderOfDev().size()) {
 						System.out.println("WHAT???");
@@ -511,6 +549,8 @@ public class DFSIntersectFinderRegions {
 					regionIndex = regions.length - 1;
 					
 				} // End recursive if cond
+				
+				debugFlagNope = false;
 			} // End loop rotation
 		} //End loop index
 
@@ -529,7 +569,7 @@ public class DFSIntersectFinderRegions {
 		Region regionArgToUse[] = new Region[1];
 		regionArgToUse[0] = regions[regionIndex];
 		
-		if(doDepthFirstSearch(paperToDevelop, indexCuboidonPaper, paperUsed, cuboid, numCellsUsedDepth, regionArgToUse, 0L, skipSymmetries, null, cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid, topBottombridgeUsedNx1x1)
+		if(doDepthFirstSearch(paperToDevelop, indexCuboidonPaper, paperUsed, cuboid, numCellsUsedDepth, regionArgToUse, 0L, skipSymmetries, null, cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid, topBottombridgeUsedNx1x1, false)
 				> 0L) {
 			return true;
 		} else {
@@ -548,7 +588,7 @@ public class DFSIntersectFinderRegions {
 		Region regionArgToUse[] = new Region[1];
 		regionArgToUse[0] = regions[regionIndex];
 		
-		if(doDepthFirstSearch(paperToDevelop, indexCuboidonPaper, paperUsed, cuboid, numCellsUsedDepth, regionArgToUse, 1L, skipSymmetries, null, cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid, topBottombridgeUsedNx1x1)
+		if(doDepthFirstSearch(paperToDevelop, indexCuboidonPaper, paperUsed, cuboid, numCellsUsedDepth, regionArgToUse, 1L, skipSymmetries, null, cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid, topBottombridgeUsedNx1x1, false)
 				== 1L) {
 			return true;
 		} else {
