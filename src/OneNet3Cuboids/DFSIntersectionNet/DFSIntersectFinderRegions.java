@@ -188,42 +188,6 @@ public class DFSIntersectFinderRegions {
 			System.exit(1);
 		}
 		
-		if(regions.length == 1 
-				&& limitDupSolutions >= 0
-				&& regions[0].getNumCellsInRegion() == 0
-				&& debugFlagNope) {
-			System.out.println("AH222!!");
-			System.out.println("Num iterations: " + numIterations);
-			Utils.printFold(paperUsed);
-			Utils.printFoldWithIndex(indexCuboidonPaper);
-			Utils.printFoldWithIndex(indexCuboidOnPaper2ndCuboid);
-			if(numCellsUsedDepth + regions[regions.length - 1].getNumCellsInRegion() == Utils.getTotalArea(cuboid.getDimensions())) {
-				System.out.println("Solutions: " + solutionResolver.getNumUniqueFound());
-				System.out.println();
-			} else {
-				//TODO: unhack it by passing along solution resolver to regions...
-				System.out.println("Solutions in region hack: " + BasicUniqueCheckImproved.uniqList.size());
-				System.out.println();
-				
-				for(int i=0; i<cuboid.getNumCellsToFill(); i++) {
-					if(regions[regions.length - 1].getCellRegionsToHandleInRevOrder()[i]) {
-						System.out.println("cell of current region: " + i);
-					}
-				}
-			}
-			
-
-			System.out.println("Last cell inserted: " + indexCuboidonPaper[paperToDevelop[numCellsUsedDepth - 1].i][paperToDevelop[numCellsUsedDepth - 1].j]);
-
-			System.out.println("Num break 1: " + numBreak1);
-			System.out.println("Num break 2: " + numBreak2);
-			System.out.println("Num break 3: " + numBreak3);
-			System.out.println("Num pass: " + numPass);
-			System.out.println("AH22!!");
-			
-			System.exit(1);
-		}
-
 		regions = FoldResolveOrderedRegionsSkipSymmetries.handleCompletedRegionIfApplicable(regions, limitDupSolutions, indexCuboidonPaper, paperUsed);
 		
 		if(regions == null) {
