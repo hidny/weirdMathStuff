@@ -137,6 +137,8 @@ public class DFSIntersectFinderRegions {
 	public static final int nugdeBasedOnRotation[][] = {{-1, 0, 1, 0}, {0, 1, 0 , -1}};
 	public static long numIterations = 0;
 	
+	public static boolean tmpDebugFlagNope = false;
+	
 	public static long doDepthFirstSearch(Coord2D paperToDevelop[], int indexCuboidonPaper[][], boolean paperUsed[][], CuboidToFoldOn cuboid, int numCellsUsedDepth,
 			Region regions[], long limitDupSolutions, boolean skipSymmetries, SolutionResolverIntersectInterface solutionResolver, CuboidToFoldOn cuboidToBringAlongStartRot, int indexCuboidOnPaper2ndCuboid[][],
 			int topBottombridgeUsedNx1x1[], boolean debugFlagNope) {
@@ -148,9 +150,10 @@ public class DFSIntersectFinderRegions {
 			indexes[1] = indexCuboidOnPaper2ndCuboid;
 			long tmp = solutionResolver.resolveSolution(cuboid, paperToDevelop, indexes, paperUsed);
 			
-			if(debugFlagNope) {
+			if(debugFlagNope || tmpDebugFlagNope) {
 				System.out.println("AH!!");
 				System.out.println("Num iterations: " + numIterations);
+				System.out.println("debugFlagNope» " + debugFlagNope);
 				Utils.printFold(paperUsed);
 				Utils.printFoldWithIndex(indexCuboidonPaper);
 				Utils.printFoldWithIndex(indexCuboidOnPaper2ndCuboid);
@@ -178,7 +181,7 @@ public class DFSIntersectFinderRegions {
 				System.out.println("Num pass: " + numPass);
 				System.out.println("AH!!");
 				
-				System.exit(1);
+				//System.exit(1);
 			}
 			return tmp;
 		}
@@ -506,6 +509,7 @@ public class DFSIntersectFinderRegions {
 												if(BasicUniqueCheckImproved.uniqList.size() == 16) {
 													System.out.println("TEST " + numIterations + "(depth = " + numCellsUsedDepth + ")");
 												}
+												tmpDebugFlagNope = true;
 												//TODO: this breaks it for some reason:
 												//cantAddCellBecauseOfOtherPaperNeighbours = true;
 											} else {
@@ -604,6 +608,7 @@ public class DFSIntersectFinderRegions {
 				} // End recursive if cond
 				
 				debugFlagNope = false;
+				tmpDebugFlagNope = false;
 			} // End loop rotation
 		} //End loop index
 
