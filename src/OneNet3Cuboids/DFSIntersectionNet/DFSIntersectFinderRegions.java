@@ -110,12 +110,11 @@ public class DFSIntersectFinderRegions {
 			
 			int topBottombridgeUsedNx1x1[] = new int[Utils.getTotalArea(cuboidToBuild.getDimensions())];
 		
-			doDepthFirstSearch(paperToDevelop, indexCuboidOnPaper, paperUsed, cuboid, numCellsUsedDepth, regionsToHandleRevOrder, -1L, skipSymmetries, solutionResolver, cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid, topBottombridgeUsedNx1x1, false);
+			doDepthFirstSearch(paperToDevelop, indexCuboidOnPaper, paperUsed, cuboid, numCellsUsedDepth, regionsToHandleRevOrder, -1L, skipSymmetries, solutionResolver, cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid, topBottombridgeUsedNx1x1);
 			
 
 			System.out.println("Num break 1: " + numBreak1);
 			System.out.println("Num break 2: " + numBreak2);
-			System.out.println("Num break 3: " + numBreak3);
 			System.out.println("Num pass: " + numPass);
 			
 			System.out.println("Done with trying to intersect 2nd cuboid that has a start index of " + startIndex2ndCuboid + " and a rotation index of " + startRotation2ndCuboid +".");
@@ -135,48 +134,14 @@ public class DFSIntersectFinderRegions {
 	
 	public static long doDepthFirstSearch(Coord2D paperToDevelop[], int indexCuboidonPaper[][], boolean paperUsed[][], CuboidToFoldOn cuboid, int numCellsUsedDepth,
 			Region regions[], long limitDupSolutions, boolean skipSymmetries, SolutionResolverIntersectInterface solutionResolver, CuboidToFoldOn cuboidToBringAlongStartRot, int indexCuboidOnPaper2ndCuboid[][],
-			int topBottombridgeUsedNx1x1[], boolean debugFlagNope) {
+			int topBottombridgeUsedNx1x1[]) {
 
 		if(numCellsUsedDepth == cuboid.getNumCellsToFill()) {
 			
 			int indexes[][][] = new int[2][][];
 			indexes[0] = indexCuboidonPaper;
 			indexes[1] = indexCuboidOnPaper2ndCuboid;
-			long tmp = solutionResolver.resolveSolution(cuboid, paperToDevelop, indexes, paperUsed);
-			
-			if(debugFlagNope) {
-				System.out.println("AH!!");
-				System.out.println("Num iterations: " + numIterations);
-				Utils.printFold(paperUsed);
-				Utils.printFoldWithIndex(indexCuboidonPaper);
-				Utils.printFoldWithIndex(indexCuboidOnPaper2ndCuboid);
-				if(numCellsUsedDepth + regions[regions.length - 1].getNumCellsInRegion() == Utils.getTotalArea(cuboid.getDimensions())) {
-					System.out.println("Solutions: " + solutionResolver.getNumUniqueFound());
-					System.out.println();
-				} else {
-					//TODO: unhack it by passing along solution resolver to regions...
-					System.out.println("Solutions in region hack: " + BasicUniqueCheckImproved.uniqList.size());
-					System.out.println();
-					
-					for(int i=0; i<cuboid.getNumCellsToFill(); i++) {
-						if(regions[regions.length - 1].getCellRegionsToHandleInRevOrder()[i]) {
-							System.out.println("cell of current region: " + i);
-						}
-					}
-				}
-				
-
-				System.out.println("Last cell inserted: " + indexCuboidonPaper[paperToDevelop[numCellsUsedDepth - 1].i][paperToDevelop[numCellsUsedDepth - 1].j]);
-
-				System.out.println("Num break 1: " + numBreak1);
-				System.out.println("Num break 2: " + numBreak2);
-				System.out.println("Num break 3: " + numBreak3);
-				System.out.println("Num pass: " + numPass);
-				System.out.println("AH!!");
-				
-				System.exit(1);
-			}
-			return tmp;
+			return solutionResolver.resolveSolution(cuboid, paperToDevelop, indexes, paperUsed);
 		}
 
 		if(regions.length == 1 && regions[0].getNumCellsInRegion() < cuboid.getNumCellsToFill() - numCellsUsedDepth && limitDupSolutions < 0) {
@@ -216,11 +181,10 @@ public class DFSIntersectFinderRegions {
 			
 
 			System.out.println("Last cell inserted: " + indexCuboidonPaper[paperToDevelop[numCellsUsedDepth - 1].i][paperToDevelop[numCellsUsedDepth - 1].j]);
-
-			System.out.println("Num break 1: " + numBreak1);
-			System.out.println("Num break 2: " + numBreak2);
-			System.out.println("Num break 3: " + numBreak3);
-			System.out.println("Num pass: " + numPass);
+			
+			System.out.println(numBreak1);
+			System.out.println(numBreak2);
+			System.out.println(numPass);
 			
 		}
 		//End display debug/what's-going-on update
@@ -332,174 +296,6 @@ public class DFSIntersectFinderRegions {
 
 				}
 				
-				if(numIterations >= 349513 && !debugFlagNope && numIterations < 349533) {
-					System.out.println("Debug WITH DEPTH (serious) " + numCellsUsedDepth);
-					Utils.printFoldWithIndex(indexCuboidonPaper);
-					Utils.printFoldWithIndex(indexCuboidOnPaper2ndCuboid);
-				}
-				
-				
-				if(! cantAddCellBecauseOfOtherPaperNeighbours
-						&& regions.length == 1 
-						//Play it safe for now:
-						&& numCellsUsedDepth + regions[regions.length - 1].getNumCellsInRegion() == Utils.getTotalArea(cuboid.getDimensions())
-					) {
-					//experiment with splits on the other cuboid:
-					//TODO: check if could split region.
-					CoordWithRotationAndIndex neighboursOfNewCell[] = cuboidToBringAlongStartRot.getNeighbours(indexNewCell2);
-					
-					
-					//TODO: put into function 1
-					//flag is redundant, but expressive!
-					boolean foundABlankNeighbour = false;
-					int firstIndex = -1;
-
-					//Add potentially new cell just for test:
-					cuboidToBringAlongStartRot.setCell(indexNewCell2, rotationNeighbourPaperRelativeToMap2);
-					
-
-					TRY_TO_DIVDE_REGIONS:
-					for(int rotIndexToFill=0; rotIndexToFill<NUM_ROTATIONS; rotIndexToFill++) {
-						
-						int indexNeighbourOfNewCell = neighboursOfNewCell[rotIndexToFill].getIndex();
-						
-						if( ! cuboidToBringAlongStartRot.isCellIndexUsed(indexNeighbourOfNewCell)) {
-							
-							if( ! foundABlankNeighbour) {
-								firstIndex = indexNeighbourOfNewCell;
-								foundABlankNeighbour = true;
-							} else {
-								
-								if(FoldResolveOrderedRegionsSkipSymmetries.areCellsSepartedCuboid(cuboidToBringAlongStartRot, firstIndex, indexNeighbourOfNewCell)) {
-									
-									//START DIVIDING THE REGION:
-									
-									//Look for a 3-three way:
-									
-									boolean found3Way = false;
-									int indexNeighbourThirdWay = -1;
-									for(int thirdRot=rotIndexToFill+1; thirdRot<NUM_ROTATIONS; thirdRot++) {
-										
-										int curThirdNeighbour = neighboursOfNewCell[thirdRot].getIndex();
-										
-										
-										if(! cuboidToBringAlongStartRot.isCellIndexUsed(curThirdNeighbour)
-												&& FoldResolveOrderedRegionsSkipSymmetries.areCellsSepartedCuboid(cuboidToBringAlongStartRot, curThirdNeighbour, firstIndex)
-												&& FoldResolveOrderedRegionsSkipSymmetries.areCellsSepartedCuboid(cuboidToBringAlongStartRot, curThirdNeighbour, indexNeighbourOfNewCell)) {
-											found3Way = true;
-											indexNeighbourThirdWay = curThirdNeighbour;
-										}
-									}
-									//End look for 3-three (cuboid separated into 3 regions)
-
-									int numNewWays = 1;
-									if(found3Way) {
-										numNewWays = 2;
-										
-
-										//System.out.println("Found other cuboid split 3 ways!");
-									} else {
-
-										//System.out.println("Found other cuboid split!");
-									}
-									
-									//TODO: test it!
-									//TODO: if it works, maybe keep track of it later?
-									//Get new order of dev for other cuboid:
-									//TODO: hide in region class...
-									HashMap <Integer, Integer> CellIndexToOrderOfDevOther = new HashMap <Integer, Integer>();
-									
-									for(int p=0; paperToDevelop[p] != null && p<paperToDevelop.length; p++) {
-										
-										if(regions[regionIndex].getCellIndexToOrderOfDev().containsKey(indexCuboidonPaper[paperToDevelop[p].i][paperToDevelop[p].j])) {
-											CellIndexToOrderOfDevOther.put(
-												indexCuboidOnPaper2ndCuboid[paperToDevelop[p].i][paperToDevelop[p].j],
-												regions[regionIndex].getCellIndexToOrderOfDev().get(indexCuboidonPaper[paperToDevelop[p].i][paperToDevelop[p].j])
-											);
-											//System.out.println("Contains " + indexCuboidonPaper[paperToDevelop[p].i][paperToDevelop[p].j]);
-										} else {
-											//System.out.println("Does not Contain " + indexCuboidonPaper[paperToDevelop[p].i][paperToDevelop[p].j]);
-										}
-									}
-									/*
-									for(int i2=0; i2<indexCuboidonPaper.length; i2++) {
-										for(int j2=0; j2<indexCuboidonPaper[0].length; j2++) {
-											if(indexCuboidonPaper[i2][j2] >= 0) {
-												System.out.println("Actual coord: " + i2 + " ," + j2);
-											}
-										}
-									}
-									
-									Utils.printFoldWithIndex(indexCuboidonPaper);
-									Utils.printFoldWithIndex(indexCuboidOnPaper2ndCuboid);
-									
-									System.out.println("Debug");
-									//End get order of dev for other cuboid
-									*/
-									Region regionForOtherCuboid = Region.getRegionOutOfSecondaryCuboid(cuboidToBringAlongStartRot, CellIndexToOrderOfDevOther, indexToUse2);
-									
-									
-									//If the new region is small enough, check if it's viable:
-									
-									//TODO: make new root region..
-
-									Region regionTmp[] = new Region[numNewWays + 1];
-									
-									//TODO: make new regions out of 2nd cuboid...
-									for(int k=0; k<numNewWays + 1; k++) {
-										//TODO: this is wrong... Tell region it's 2 diff cuboids...
-										//TODO: don't be safe and set min rotation to (once it works)
-										if(k==0) {
-											regionTmp[k] = new Region(cuboidToBringAlongStartRot, regionForOtherCuboid, firstIndex, 0);
-										} else if(k == 1) {
-											regionTmp[k] = new Region(cuboidToBringAlongStartRot, regionForOtherCuboid, indexNeighbourOfNewCell, 0);	
-										} else if(k == 2) {
-											regionTmp[k] = new Region(cuboidToBringAlongStartRot, regionForOtherCuboid, indexNeighbourThirdWay, 0);
-										//END TODO: this is wrong...
-										
-										} else {
-											System.out.println("ERROR: k is too high. k= " + k);
-											System.exit(1);
-										}
-										//TODO: only create once
-										int fakeTopBottomBridgeUsedNx1x1[] = new int[cuboid.getNumCellsToFill()];
-										
-										if( isDubiousOrSmallRegionAfterSplitOtherCuboid(cuboidToBringAlongStartRot, regionForOtherCuboid, regionTmp[k], indexNewCell)
-											&& ! regionHasAtLeastOneSolution(paperToDevelop, indexCuboidOnPaper2ndCuboid,
-								                       paperUsed, cuboidToBringAlongStartRot, numCellsUsedDepth,
-								                       //Be safe and set min rotation to use to 0:(//TODO: don't be safe once it works)
-								                       indexToUse2, 0, prevNewMinOrderedCellCouldUse, prevMinCellRotationOfMinCellToDev,
-								                       new_i, new_j, indexNewCell2, rotationNeighbourPaperRelativeToMap2,
-								                       //Don't skip symmetries!
-								                       false,
-								                       cuboid, indexCuboidonPaper, indexNewCell, rotationNeighbourPaperRelativeToMap,
-								                       fakeTopBottomBridgeUsedNx1x1,
-								                       regionTmp, k)) {
-	
-											//TODO: rename variable:
-											numBreak3++;
-											//System.out.println("break3");
-											debugFlagNope = true;
-											cantAddCellBecauseOfOtherPaperNeighbours = true;
-											
-											break TRY_TO_DIVDE_REGIONS;
-										}
-										
-									}
-									
-									//Utils.printFoldWithIndex(indexCuboidOnPaper2ndCuboid);
-									//System.out.println(indexNewCell2);
-									//System.exit(1);
-								}
-							}
-						}
-					}
-					cuboidToBringAlongStartRot.removeCell(indexNewCell2);
-
-					//END TODO: put into function 1
-
-				}
-				
 				if( ! cantAddCellBecauseOfOtherPaperNeighbours) {
 					
 					//Setup for adding new cell:
@@ -533,11 +329,7 @@ public class DFSIntersectFinderRegions {
 						newLimitDupSolutions -= retDuplicateSolutions;
 					}
 					
-					if(numIterations >= 349510 && debugFlagNope && numIterations < 349533) {
-						System.out.println("Debug WITH DEPTH " + numCellsUsedDepth);
-					}
-					
-					retDuplicateSolutions += doDepthFirstSearch(paperToDevelop, indexCuboidonPaper, paperUsed, cuboid, numCellsUsedDepth, regions, newLimitDupSolutions, skipSymmetries, solutionResolver, cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid, topBottombridgeUsedNx1x1, debugFlagNope);
+					retDuplicateSolutions += doDepthFirstSearch(paperToDevelop, indexCuboidonPaper, paperUsed, cuboid, numCellsUsedDepth, regions, newLimitDupSolutions, skipSymmetries, solutionResolver, cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid, topBottombridgeUsedNx1x1);
 
 					if(numCellsUsedDepth < regions[0].getCellIndexToOrderOfDev().size()) {
 						System.out.println("WHAT???");
@@ -572,8 +364,6 @@ public class DFSIntersectFinderRegions {
 					regionIndex = regions.length - 1;
 					
 				} // End recursive if cond
-				
-				debugFlagNope = false;
 			} // End loop rotation
 		} //End loop index
 
@@ -592,7 +382,7 @@ public class DFSIntersectFinderRegions {
 		Region regionArgToUse[] = new Region[1];
 		regionArgToUse[0] = regions[regionIndex];
 		
-		if(doDepthFirstSearch(paperToDevelop, indexCuboidonPaper, paperUsed, cuboid, numCellsUsedDepth, regionArgToUse, 0L, skipSymmetries, null, cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid, topBottombridgeUsedNx1x1, false)
+		if(doDepthFirstSearch(paperToDevelop, indexCuboidonPaper, paperUsed, cuboid, numCellsUsedDepth, regionArgToUse, 0L, skipSymmetries, null, cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid, topBottombridgeUsedNx1x1)
 				> 0L) {
 			return true;
 		} else {
@@ -611,7 +401,7 @@ public class DFSIntersectFinderRegions {
 		Region regionArgToUse[] = new Region[1];
 		regionArgToUse[0] = regions[regionIndex];
 		
-		if(doDepthFirstSearch(paperToDevelop, indexCuboidonPaper, paperUsed, cuboid, numCellsUsedDepth, regionArgToUse, 1L, skipSymmetries, null, cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid, topBottombridgeUsedNx1x1, false)
+		if(doDepthFirstSearch(paperToDevelop, indexCuboidonPaper, paperUsed, cuboid, numCellsUsedDepth, regionArgToUse, 1L, skipSymmetries, null, cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid, topBottombridgeUsedNx1x1)
 				== 1L) {
 			return true;
 		} else {
@@ -622,7 +412,6 @@ public class DFSIntersectFinderRegions {
 	
 	public static long numBreak1 = 0;
 	public static long numBreak2 = 0;
-	public static long numBreak3 = 0;
 	public static long numPass = 0;
 
 
@@ -872,14 +661,6 @@ public class DFSIntersectFinderRegions {
 		 }
      }
 	 
-	 public static boolean isDubiousOrSmallRegionAfterSplitOtherCuboid(CuboidToFoldOn cuboid, Region origRegion, Region curRegion, int indexNewCell) {
-		
-		//TODO: maybe there's a way to improve on this?
-		return curRegion.getNumCellsInRegion() <= (origRegion.getNumCellsInRegion() - 1)/(2);
-		 
-     }
-	 
-	 //pre: cell is added in splitRegionsIfNewCellSplitsRegions
 	 public static boolean regionHasAtLeastOneSolution(Coord2D paperToDevelop[], int indexCuboidonPaper[][],
                        boolean paperUsed[][], CuboidToFoldOn cuboid, int numCellsUsedDepth,
                        int indexToUse, int newMinRotationToUse, int prevNewMinOrderedCellCouldUse, int prevMinCellRotationOfMinCellToDev,
@@ -959,7 +740,7 @@ public class DFSIntersectFinderRegions {
 	public static void main(String args[]) {
 		System.out.println("Fold Resolver Ordered Regions intersection skip symmetries Nx1x1:");
 
-		//solveCuboidIntersections(new CuboidToFoldOn(11, 1, 1), new CuboidToFoldOn(7, 2, 1));
+		solveCuboidIntersections(new CuboidToFoldOn(11, 1, 1), new CuboidToFoldOn(7, 2, 1));
 		
 		//solveCuboidIntersections(new CuboidToFoldOn(9, 1, 1), new CuboidToFoldOn(4, 3, 1));
 		//It got 4469 solutions and it took about 41.5 hours
@@ -967,7 +748,7 @@ public class DFSIntersectFinderRegions {
 		//solveCuboidIntersections(new CuboidToFoldOn(8, 1, 1), new CuboidToFoldOn(5, 2, 1));
 		//It got 35675 again, but this time it only took 3 hours! It took almost 2 days last time!
 		
-		solveCuboidIntersections(new CuboidToFoldOn(7, 1, 1), new CuboidToFoldOn(3, 3, 1));
+		//solveCuboidIntersections(new CuboidToFoldOn(7, 1, 1), new CuboidToFoldOn(3, 3, 1));
 		//It got 1070 (again) (They got 1080, but I think they were wrong)
 		
 		//solveCuboidIntersections(new CuboidToFoldOn(5, 1, 1), new CuboidToFoldOn(3, 2, 1));
