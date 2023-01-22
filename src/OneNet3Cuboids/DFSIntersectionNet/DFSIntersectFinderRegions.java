@@ -21,9 +21,6 @@ public class DFSIntersectFinderRegions {
 	public static final int NUM_ROTATIONS = 4;
 	public static final int NUM_NEIGHBOURS = NUM_ROTATIONS;
 	
-	public static int Nx1x1BottomCellI = -1;
-	public static int Nx1x1BottomCellJ = -1;
-	
 	
 	public static void solveCuboidIntersections(CuboidToFoldOn cuboidToWrap, CuboidToFoldOn cuboidToBringAlong) {
 		solveCuboidIntersections(cuboidToWrap, cuboidToBringAlong, true);
@@ -70,11 +67,10 @@ public class DFSIntersectFinderRegions {
 				indexCuboidOnPaper2ndCuboid[i][j] = -1;
 			}
 		}
+
 		//Default start location GRID_SIZE / 2, GRID_SIZE / 2
-		Nx1x1BottomCellI = GRID_SIZE/2;
-		Nx1x1BottomCellJ = GRID_SIZE/2;
-		int START_I = Nx1x1BottomCellI;
-		int START_J = Nx1x1BottomCellJ;
+		int START_I = GRID_SIZE/2;
+		int START_J = GRID_SIZE/2;
 		
 		CuboidToFoldOn cuboid = new CuboidToFoldOn(cuboidToBuild);
 		//Insert start cell:
@@ -137,8 +133,6 @@ public class DFSIntersectFinderRegions {
 	public static final int nugdeBasedOnRotation[][] = {{-1, 0, 1, 0}, {0, 1, 0 , -1}};
 	public static long numIterations = 0;
 	
-	public static boolean tmpDebugFlagNope = false;
-	
 	public static long doDepthFirstSearch(Coord2D paperToDevelop[], int indexCuboidonPaper[][], boolean paperUsed[][], CuboidToFoldOn cuboid, int numCellsUsedDepth,
 			Region regions[], long limitDupSolutions, boolean skipSymmetries, SolutionResolverIntersectInterface solutionResolver, CuboidToFoldOn cuboidToBringAlongStartRot, int indexCuboidOnPaper2ndCuboid[][],
 			int topBottombridgeUsedNx1x1[], boolean debugFlagNope) {
@@ -150,10 +144,9 @@ public class DFSIntersectFinderRegions {
 			indexes[1] = indexCuboidOnPaper2ndCuboid;
 			long tmp = solutionResolver.resolveSolution(cuboid, paperToDevelop, indexes, paperUsed);
 			
-			if(debugFlagNope || tmpDebugFlagNope) {
+			if(debugFlagNope) {
 				System.out.println("AH!!");
 				System.out.println("Num iterations: " + numIterations);
-				System.out.println("debugFlagNopeÈ " + debugFlagNope);
 				Utils.printFold(paperUsed);
 				Utils.printFoldWithIndex(indexCuboidonPaper);
 				Utils.printFoldWithIndex(indexCuboidOnPaper2ndCuboid);
@@ -181,7 +174,7 @@ public class DFSIntersectFinderRegions {
 				System.out.println("Num pass: " + numPass);
 				System.out.println("AH!!");
 				
-				//System.exit(1);
+				System.exit(1);
 			}
 			return tmp;
 		}
@@ -190,7 +183,6 @@ public class DFSIntersectFinderRegions {
 			System.out.println("What?? This should not be possible");
 			System.exit(1);
 		}
-		
 		regions = FoldResolveOrderedRegionsSkipSymmetries.handleCompletedRegionIfApplicable(regions, limitDupSolutions, indexCuboidonPaper, paperUsed);
 		
 		if(regions == null) {
@@ -349,11 +341,9 @@ public class DFSIntersectFinderRegions {
 				
 				if(! cantAddCellBecauseOfOtherPaperNeighbours
 						&& regions.length == 1 
-						//Play it safe for now: (nah)
-						/*&& numCellsUsedDepth + regions[regions.length - 1].getNumCellsInRegion() == Utils.getTotalArea(cuboid.getDimensions()*/
+						//Play it safe for now:
+						&& numCellsUsedDepth + regions[regions.length - 1].getNumCellsInRegion() == Utils.getTotalArea(cuboid.getDimensions())
 					) {
-					
-					
 					//experiment with splits on the other cuboid:
 					//TODO: check if could split region.
 					CoordWithRotationAndIndex neighboursOfNewCell[] = cuboidToBringAlongStartRot.getNeighbours(indexNewCell2);
@@ -453,16 +443,6 @@ public class DFSIntersectFinderRegions {
 									
 									//TODO: make new root region..
 
-									//TODO: only create once
-									int TopBottomBridgeOnlyUsedForNx1x1[] = new int[cuboid.getNumCellsToFill()];
-									
-									if(cuboidToBringAlongStartRot.getDimensions()[1] == 1 && cuboidToBringAlongStartRot.getDimensions()[2] == 1) {
-										//TODO: rebuild fakeTopBottomBridgeUsedNx1x1
-										
-										TopBottomBridgeOnlyUsedForNx1x1 = rebuildTopBottomBridge(indexCuboidOnPaper2ndCuboid, Nx1x1BottomCellI, Nx1x1BottomCellJ, cuboidToBringAlongStartRot);
-										
-									}
-									
 									Region regionTmp[] = new Region[numNewWays + 1];
 									
 									//TODO: make new regions out of 2nd cuboid...
@@ -481,7 +461,8 @@ public class DFSIntersectFinderRegions {
 											System.out.println("ERROR: k is too high. k= " + k);
 											System.exit(1);
 										}
-										
+										//TODO: only create once
+										int fakeTopBottomBridgeUsedNx1x1[] = new int[cuboid.getNumCellsToFill()];
 										
 										if( isDubiousOrSmallRegionAfterSplitOtherCuboid(cuboidToBringAlongStartRot, regionForOtherCuboid, regionTmp[k], indexNewCell)
 											&& ! regionHasAtLeastOneSolution(paperToDevelop, indexCuboidOnPaper2ndCuboid,
@@ -489,41 +470,22 @@ public class DFSIntersectFinderRegions {
 								                       //Be safe and set min rotation to use to 0:(//TODO: don't be safe once it works)
 								                       indexToUse2, 0, prevNewMinOrderedCellCouldUse, prevMinCellRotationOfMinCellToDev,
 								                       new_i, new_j, indexNewCell2, rotationNeighbourPaperRelativeToMap2,
-								                       //Don't skip symmetries! (TODO: skip if going back to main nx1x1)
+								                       //Don't skip symmetries!
 								                       false,
 								                       cuboid, indexCuboidonPaper, indexNewCell, rotationNeighbourPaperRelativeToMap,
-								                       TopBottomBridgeOnlyUsedForNx1x1,
+								                       fakeTopBottomBridgeUsedNx1x1,
 								                       regionTmp, k)) {
 	
-											/*if(cuboidToBringAlongStartRot.getDimensions()[1] == 1 && cuboidToBringAlongStartRot.getDimensions()[2] == 1) {
-												System.out.println("Double switch!");
-												System.exit(1);
-											} else {
-												System.out.println("Not Double switch!");
-											}*/
 											//TODO: rename variable:
-											
-											if(numCellsUsedDepth + regions[regions.length - 1].getNumCellsInRegion() != Utils.getTotalArea(cuboid.getDimensions())) {
-												//System.out.println("TEST " + numIterations + "(depth = );
-												
-												if(BasicUniqueCheckImproved.uniqList.size() == 16) {
-													System.out.println("TEST " + numIterations + "(depth = " + numCellsUsedDepth + ")");
-												}
-												tmpDebugFlagNope = true;
-												//TODO: this breaks it for some reason:
-												//cantAddCellBecauseOfOtherPaperNeighbours = true;
-											} else {
-												cantAddCellBecauseOfOtherPaperNeighbours = true;
-											}
 											numBreak3++;
 											//System.out.println("break3");
 											debugFlagNope = true;
+											cantAddCellBecauseOfOtherPaperNeighbours = true;
 											
 											break TRY_TO_DIVDE_REGIONS;
 										}
 										
 									}
-									//TODO: count the number of passes(times the filter let it go through) for debug.
 									
 									//Utils.printFoldWithIndex(indexCuboidOnPaper2ndCuboid);
 									//System.out.println(indexNewCell2);
@@ -571,6 +533,10 @@ public class DFSIntersectFinderRegions {
 						newLimitDupSolutions -= retDuplicateSolutions;
 					}
 					
+					if(numIterations >= 349510 && debugFlagNope && numIterations < 349533) {
+						System.out.println("Debug WITH DEPTH " + numCellsUsedDepth);
+					}
+					
 					retDuplicateSolutions += doDepthFirstSearch(paperToDevelop, indexCuboidonPaper, paperUsed, cuboid, numCellsUsedDepth, regions, newLimitDupSolutions, skipSymmetries, solutionResolver, cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid, topBottombridgeUsedNx1x1, debugFlagNope);
 
 					if(numCellsUsedDepth < regions[0].getCellIndexToOrderOfDev().size()) {
@@ -608,7 +574,6 @@ public class DFSIntersectFinderRegions {
 				} // End recursive if cond
 				
 				debugFlagNope = false;
-				tmpDebugFlagNope = false;
 			} // End loop rotation
 		} //End loop index
 
@@ -909,7 +874,6 @@ public class DFSIntersectFinderRegions {
 	 
 	 public static boolean isDubiousOrSmallRegionAfterSplitOtherCuboid(CuboidToFoldOn cuboid, Region origRegion, Region curRegion, int indexNewCell) {
 		
-		
 		//TODO: maybe there's a way to improve on this?
 		return curRegion.getNumCellsInRegion() <= (origRegion.getNumCellsInRegion() - 1)/(2);
 		 
@@ -983,63 +947,6 @@ public class DFSIntersectFinderRegions {
 			
 			return hasSolution;
 	 }
-	 
-	 
-	 public static int[] rebuildTopBottomBridge(int indexCuboidonPaper[][], int bottomCellI, int bottomCellJ, CuboidToFoldOn cuboidNx1x1) {
-		 
-		 if(indexCuboidonPaper[bottomCellI][bottomCellJ] != 0) {
-			 System.out.println("Doh");
-		 }
-		 
-		 int ret[] = new int[cuboidNx1x1.getNumCellsToFill()];
-		 
-		 LinkedList<Coord2D> queue = new LinkedList<Coord2D>();
-		 
-		 boolean explored[] = new boolean[cuboidNx1x1.getNumCellsToFill()];
-			
-		 
-		 queue.add(new Coord2D(bottomCellI, bottomCellJ));
-		 explored[0] = true;
-		 
-		 while( ! queue.isEmpty() ) {
-			 
-			 Coord2D cur = queue.removeFirst();
-			 
-			int curIndex = indexCuboidonPaper[cur.i][cur.j];
-
-			for(int j=0; j<NUM_ROTATIONS; j++) {
-				
-				int new_i = cur.i + nugdeBasedOnRotation[0][j];
-				int new_j = cur.j + nugdeBasedOnRotation[1][j];
-
-				int indexNewCell = indexCuboidonPaper[new_i][new_j];
-				
-				if(indexNewCell >= 0 && ! explored[indexNewCell]) {
-
-					explored[indexNewCell] = true;
-					
-					if(curIndex == 0) {
-						ret[indexNewCell] = j;
-					} else if(curIndex == cuboidNx1x1.getCellsUsed().length - 1) {
-						ret[indexNewCell] = NUM_ROTATIONS + j;
-					} else {
-						ret[indexNewCell] = ret[curIndex];
-					}
-					queue.add(new Coord2D(new_i, new_j));
-					
-					
-				}
-				
-
-			}
-			
-		 }
-		
-			
-		 return ret;
-		 
-	 }
-	 
 	/*https://www.sciencedirect.com/science/article/pii/S0925772117300160
 	 * 
 	 *  "From the necessary condition, the smallest possible surface area that can fold into two boxes is 22,
@@ -1059,13 +966,11 @@ public class DFSIntersectFinderRegions {
 		
 		//solveCuboidIntersections(new CuboidToFoldOn(8, 1, 1), new CuboidToFoldOn(5, 2, 1));
 		//It got 35675 again, but this time it only took 3 hours! It took almost 2 days last time!
-		//Split by other regions almost 4 hours :(
-		//Maybe I just need to go allin! and switch back and forth and switch whenever it reduces the depth.
 		
-		//solveCuboidIntersections(new CuboidToFoldOn(7, 1, 1), new CuboidToFoldOn(3, 3, 1));
+		solveCuboidIntersections(new CuboidToFoldOn(7, 1, 1), new CuboidToFoldOn(3, 3, 1));
 		//It got 1070 (again) (They got 1080, but I think they were wrong)
 		
-		solveCuboidIntersections(new CuboidToFoldOn(5, 1, 1), new CuboidToFoldOn(3, 2, 1));
+		//solveCuboidIntersections(new CuboidToFoldOn(5, 1, 1), new CuboidToFoldOn(3, 2, 1));
 		//It got 2263!
 
 		//solveCuboidIntersections(new CuboidToFoldOn(2, 1, 1), new CuboidToFoldOn(1, 2, 1));
