@@ -374,7 +374,7 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 			int indexOtherCell = indexCuboidonPaper[i1][j1];
 			int rotationOtherCell = cuboid.getRotationPaperRelativeToMap(indexOtherCell);
 
-			if(regions[regionIndex].getCellIndexToOrderOfDev().containsKey(indexOtherCell)
+			if(regions[regionIndex].getCellIndexToOrderOfDev().containsKey(indexOtherCell) && regions[regionIndex].getCellIndexToOrderOfDev().containsKey(indexToUse)
 					&& regions[regionIndex].getCellIndexToOrderOfDev().get(indexOtherCell) < regions[regionIndex].getCellIndexToOrderOfDev().get(indexToUse) ) {
 				cantAddCellBecauseOfOtherPaperNeighbours = true;
 				break;

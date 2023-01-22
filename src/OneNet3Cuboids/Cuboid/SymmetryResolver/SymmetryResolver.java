@@ -94,13 +94,14 @@ public class SymmetryResolver {
 					//Make sure the top cell is currently in the region:
 					region.getCellRegionsToHandleInRevOrder()[topCell]) {
 				
-				
-				int minCellOrderAllowed = region.getCellIndexToOrderOfDev().get(cellIndexToUse);
-				
-				if(minCellOrderAllowed > 0
-						&& ! isTopCellNx1x1ReachableFromAppropriateCell(region, cuboid, minCellOrderAllowed,
-								paperToDevelop, indexCuboidonPaper, cellIndexToUse, topBottombridgeUsedNx1x1)) {
-					return true;
+				if( region.getCellIndexToOrderOfDev().containsKey(cellIndexToUse)) {
+					int minCellOrderAllowed = region.getCellIndexToOrderOfDev().get(cellIndexToUse);
+					
+					if(minCellOrderAllowed > 0
+							&& ! isTopCellNx1x1ReachableFromAppropriateCell(region, cuboid, minCellOrderAllowed,
+									paperToDevelop, indexCuboidonPaper, cellIndexToUse, topBottombridgeUsedNx1x1)) {
+						return true;
+					}
 				}
 				
 			}	
@@ -169,12 +170,6 @@ public class SymmetryResolver {
 		
 						} else {
 	
-							if( ! region.getCellIndexToOrderOfDev().containsKey(neighbour)) {
-								//Wrong region, so just assume everything is ok, and the other region will reach the top.
-								System.out.println("ERROR: neighbour found is in the wrong region. This shouldn't be possible.");
-								System.exit(1);
-							}
-							
 
 							//Check if cell has valid path to bottom cell:
 							
@@ -188,32 +183,37 @@ public class SymmetryResolver {
 									//TODO: maybe work your way up to top with a BFS?
 									
 									//TODO: maybe double check with 2nd cuboid...
-									
-									int curI=paperToDevelop[region.getCellIndexToOrderOfDev().get(neighbour)].i;
-									int curJ=paperToDevelop[region.getCellIndexToOrderOfDev().get(neighbour)].j;
-									//System.out.println(curI + ", " + curJ);
-									
+
 									boolean couldBeFree = false;
 									
-									for(int r=0; r<NUM_ROTATIONS; r++) {
-
-										int new_i = curI + nugdeBasedOnRotation[0][r];
-										int new_j = curJ + nugdeBasedOnRotation[1][r];
-										//System.out.println(new_i + ", " + new_j);
+									if(region.getCellIndexToOrderOfDev().containsKey(neighbour)) {
+										int curI=paperToDevelop[region.getCellIndexToOrderOfDev().get(neighbour)].i;
+										int curJ=paperToDevelop[region.getCellIndexToOrderOfDev().get(neighbour)].j;
+										//System.out.println(curI + ", " + curJ);
 										
-										int rotationToUse = ( r - cuboid.getRotationPaperRelativeToMap(neighbour) + NUM_ROTATIONS) % NUM_ROTATIONS;
 										
-										int neighbour2 = cuboid.getNeighbours(neighbour)[rotationToUse].getIndex();
-										
-										if( cuboid.isCellIndexUsed(neighbour2) == false
-												&& ! cantAddCellBecauseOfOtherPaperNeighbours(indexCuboidonPaper, cuboid,
-												region, neighbour,
-												neighbour2, new_i, new_j
-											) ) {
-
-											couldBeFree = true;
-											break;
+										for(int r=0; r<NUM_ROTATIONS; r++) {
+	
+											int new_i = curI + nugdeBasedOnRotation[0][r];
+											int new_j = curJ + nugdeBasedOnRotation[1][r];
+											//System.out.println(new_i + ", " + new_j);
+											
+											int rotationToUse = ( r - cuboid.getRotationPaperRelativeToMap(neighbour) + NUM_ROTATIONS) % NUM_ROTATIONS;
+											
+											int neighbour2 = cuboid.getNeighbours(neighbour)[rotationToUse].getIndex();
+											
+											if( cuboid.isCellIndexUsed(neighbour2) == false
+													&& ! cantAddCellBecauseOfOtherPaperNeighbours(indexCuboidonPaper, cuboid,
+													region, neighbour,
+													neighbour2, new_i, new_j
+												) ) {
+	
+												couldBeFree = true;
+												break;
+											}
 										}
+									} else {
+										couldBeFree = true;
 									}
 									
 									if(couldBeFree) {

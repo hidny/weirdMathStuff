@@ -137,6 +137,9 @@ public class Region {
 			numCellsInRegion--;
 		}
 		
+		if(CellIndexToOrderOfDev.containsKey(indexCellNewCellAttachedTo) == false) {
+			CellIndexToOrderOfDev.put(indexCellNewCellAttachedTo, CellIndexToOrderOfDev.size());
+		}
 		minOrderedCellCouldUsePerRegion = CellIndexToOrderOfDev.get(indexCellNewCellAttachedTo);
 		minCellRotationOfMinCellToDevPerRegion = rotationCellNewCellIsAttachedTo;
 	}
