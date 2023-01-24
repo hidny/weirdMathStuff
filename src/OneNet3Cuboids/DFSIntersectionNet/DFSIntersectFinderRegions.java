@@ -219,22 +219,24 @@ public class DFSIntersectFinderRegions {
 			int curRotationCuboid2 = cuboidToBringAlongStartRot.getRotationPaperRelativeToMap(indexToUse2);
 			
 			//Try to attach a cell onto indexToUse using all 4 rotations:
-			for(int j=0; j<neighbours.length; j++) {
+			for(int dirNewCellAdd=0; dirNewCellAdd<NUM_ROTATIONS; dirNewCellAdd++) {
 				
-				if(cuboid.isCellIndexUsed(neighbours[j].getIndex())) {
+				int neighbourArrayIndex = (dirNewCellAdd - curRotation + NUM_ROTATIONS) % NUM_ROTATIONS;
+				
+				if(cuboid.isCellIndexUsed(neighbours[neighbourArrayIndex].getIndex())) {
 					
 					//Don't reuse a used cell:
 					continue;
 					
-				} else if(regions[regionIndex].getCellRegionsToHandleInRevOrder()[neighbours[j].getIndex()] == false) {
+				} else if(regions[regionIndex].getCellRegionsToHandleInRevOrder()[neighbours[neighbourArrayIndex].getIndex()] == false) {
 					continue;
 	
 				} else if(regions[regionIndex].getCellIndexToOrderOfDev().get(indexToUse) == regions[regionIndex].getMinOrderedCellCouldUsePerRegion() 
-						&& j <  regions[regionIndex].getMinCellRotationOfMinCellToDevPerRegion()) {
+						&& dirNewCellAdd <  regions[regionIndex].getMinCellRotationOfMinCellToDevPerRegion()) {
 					continue;
 				}
 
-				int neighbourIndexCuboid2 = (j - curRotationCuboid2 + curRotation+ NUM_ROTATIONS) % NUM_ROTATIONS;
+				int neighbourIndexCuboid2 = (dirNewCellAdd - curRotationCuboid2 + NUM_ROTATIONS) % NUM_ROTATIONS;
 				
 				int indexNewCell2 = cuboidToBringAlongStartRot.getNeighbours(indexToUse2)[neighbourIndexCuboid2].getIndex();
 				
@@ -243,12 +245,11 @@ public class DFSIntersectFinderRegions {
 					continue;
 				}
 				
-				int rotationToAddCellOn = (j + curRotation) % NUM_ROTATIONS;
 				
-				int new_i = paperToDevelop[i].i + nugdeBasedOnRotation[0][rotationToAddCellOn];
-				int new_j = paperToDevelop[i].j + nugdeBasedOnRotation[1][rotationToAddCellOn];
+				int new_i = paperToDevelop[i].i + nugdeBasedOnRotation[0][dirNewCellAdd];
+				int new_j = paperToDevelop[i].j + nugdeBasedOnRotation[1][dirNewCellAdd];
 
-				int indexNewCell = neighbours[j].getIndex();
+				int indexNewCell = neighbours[neighbourArrayIndex].getIndex();
 				
 				
 				if(paperUsed[new_i][new_j]) {
@@ -257,11 +258,11 @@ public class DFSIntersectFinderRegions {
 				}
 				
 				
-				int rotationNeighbourPaperRelativeToMap = (curRotation - neighbours[j].getRot() + NUM_ROTATIONS) % NUM_ROTATIONS;
+				int rotationNeighbourPaperRelativeToMap = (curRotation - neighbours[neighbourArrayIndex].getRot() + NUM_ROTATIONS) % NUM_ROTATIONS;
 				int rotationNeighbourPaperRelativeToMap2 = (curRotationCuboid2 - cuboidToBringAlongStartRot.getNeighbours(indexToUse2)[neighbourIndexCuboid2].getRot() + NUM_ROTATIONS)  % NUM_ROTATIONS;
 				
 				if(SymmetryResolver.skipSearchBecauseOfASymmetryArg
-						(cuboid, paperToDevelop, i, indexCuboidonPaper, rotationToAddCellOn, curRotation, paperUsed, indexToUse, indexNewCell)
+						(cuboid, paperToDevelop, i, indexCuboidonPaper, neighbourArrayIndex, curRotation, paperUsed, indexToUse, indexNewCell)
 					&& skipSymmetries == true) {
 					continue;
 				}
@@ -283,7 +284,7 @@ public class DFSIntersectFinderRegions {
 					regions = splitRegionsIfNewCellSplitsRegions(paperToDevelop, indexCuboidonPaper,
 							paperUsed, cuboid, numCellsUsedDepth,
 							regions,
-							indexToUse, j, prevNewMinOrderedCellCouldUse, prevMinCellRotationOfMinCellToDev,
+							indexToUse, dirNewCellAdd, prevNewMinOrderedCellCouldUse, prevMinCellRotationOfMinCellToDev,
 							new_i, new_j, indexNewCell, rotationNeighbourPaperRelativeToMap,
 							skipSymmetries,
 							cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid, indexNewCell2, rotationNeighbourPaperRelativeToMap2,
@@ -307,9 +308,9 @@ public class DFSIntersectFinderRegions {
 					paperToDevelop[numCellsUsedDepth] = new Coord2D(new_i, new_j);
 
 					if(indexToUse == 0) {
-						topBottombridgeUsedNx1x1[indexNewCell] = j;
+						topBottombridgeUsedNx1x1[indexNewCell] = dirNewCellAdd;
 					} else if(indexToUse == cuboid.getCellsUsed().length - 1) {
-						topBottombridgeUsedNx1x1[indexNewCell] = NUM_ROTATIONS + j;
+						topBottombridgeUsedNx1x1[indexNewCell] = NUM_ROTATIONS + dirNewCellAdd;
 					} else {
 						topBottombridgeUsedNx1x1[indexNewCell] = topBottombridgeUsedNx1x1[indexToUse];
 					}
@@ -318,7 +319,7 @@ public class DFSIntersectFinderRegions {
 
 					//Add cell to new region(s):
 					for(int r=regionsBeforePotentailRegionSplit.length - 1; r<regions.length; r++) {
-						regions[r].addCellToRegion(indexNewCell, numCellsUsedDepth, indexToUse, j);						
+						regions[r].addCellToRegion(indexNewCell, numCellsUsedDepth, indexToUse, dirNewCellAdd);						
 					}
 
 					numCellsUsedDepth += 1;
@@ -773,7 +774,7 @@ public class DFSIntersectFinderRegions {
 		
 	}
 	/*//TODO:
-	46	1 × 1 × 11, 1 × 2 × 7, 1 × 3 × 5
+46	1 × 1 × 11, 1 × 2 × 7, 1 × 3 × 5
 54	1 × 1 × 13, 1 × 3 × 6, 3 × 3 × 3
 58	1 × 1 × 14, 1 × 2 × 9, 1 × 4 × 5
 62	1 × 1 × 15, 1 × 3 × 7, 2 × 3 × 5
