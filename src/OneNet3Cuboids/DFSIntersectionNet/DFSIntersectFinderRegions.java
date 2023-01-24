@@ -740,7 +740,7 @@ public class DFSIntersectFinderRegions {
 	public static void main(String args[]) {
 		System.out.println("Fold Resolver Ordered Regions intersection skip symmetries Nx1x1:");
 
-		solveCuboidIntersections(new CuboidToFoldOn(11, 1, 1), new CuboidToFoldOn(7, 2, 1));
+		//solveCuboidIntersections(new CuboidToFoldOn(11, 1, 1), new CuboidToFoldOn(7, 2, 1));
 		
 		//solveCuboidIntersections(new CuboidToFoldOn(9, 1, 1), new CuboidToFoldOn(4, 3, 1));
 		//It got 4469 solutions and it took about 41.5 hours
@@ -748,7 +748,7 @@ public class DFSIntersectFinderRegions {
 		//solveCuboidIntersections(new CuboidToFoldOn(8, 1, 1), new CuboidToFoldOn(5, 2, 1));
 		//It got 35675 again, but this time it only took 3 hours! It took almost 2 days last time!
 		
-		//solveCuboidIntersections(new CuboidToFoldOn(7, 1, 1), new CuboidToFoldOn(3, 3, 1));
+		solveCuboidIntersections(new CuboidToFoldOn(7, 1, 1), new CuboidToFoldOn(3, 3, 1));
 		//It got 1070 (again) (They got 1080, but I think they were wrong)
 		
 		//solveCuboidIntersections(new CuboidToFoldOn(5, 1, 1), new CuboidToFoldOn(3, 2, 1));

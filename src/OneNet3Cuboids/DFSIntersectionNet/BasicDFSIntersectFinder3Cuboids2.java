@@ -126,7 +126,7 @@ public class BasicDFSIntersectFinder3Cuboids2 {
 		CuboidToFoldOn cuboidsToBringAlongStartRot[] = new CuboidToFoldOn[2];
 		
 		int startIArea46 = 0;
-		int startJArea46 = 10; //(3 above bottom 4)
+		int startJArea46 = 20; //(1 above bottom 9) I don't know the index...
 		
 		for(int i=0; i<startingPointsAndRotationsToCheck[0].size(); i++) {
 			
