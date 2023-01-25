@@ -262,7 +262,7 @@ public class DFSIntersectFinderRegions {
 				int rotationNeighbourPaperRelativeToMap2 = (curRotationCuboid2 - cuboidToBringAlongStartRot.getNeighbours(indexToUse2)[neighbourIndexCuboid2].getRot() + NUM_ROTATIONS)  % NUM_ROTATIONS;
 				
 				if(SymmetryResolver.skipSearchBecauseOfASymmetryArg
-						(cuboid, paperToDevelop, i, indexCuboidonPaper, neighbourArrayIndex, curRotation, paperUsed, indexToUse, indexNewCell)
+						(cuboid, paperToDevelop, i, indexCuboidonPaper, dirNewCellAdd/*neighbourArrayIndex*/, curRotation, paperUsed, indexToUse, indexNewCell)
 					&& skipSymmetries == true) {
 					continue;
 				}

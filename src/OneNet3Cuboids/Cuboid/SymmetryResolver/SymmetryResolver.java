@@ -293,8 +293,6 @@ public class SymmetryResolver {
 }
 
 	
-	
-	
 	//getDimensions()
 	private static boolean skipSearchBecauseOfASymmetryArgNby1by1(CuboidToFoldOn cuboid,
 			Coord2D paperToDevelop[],
@@ -306,30 +304,8 @@ public class SymmetryResolver {
 			int cellIndexToUse,
 			int cellIndexToAdd) {
 
-		//TODO: put in function
-		int new_i = -1;
-		int new_j = -1;
-		if(rotationToAddCellOnPaper == 0) {
-			new_i = paperToDevelop[cuboidOnPaperIndex].i-1;
-			new_j = paperToDevelop[cuboidOnPaperIndex].j;
-			
-		} else if(rotationToAddCellOnPaper == 1) {
-			new_i = paperToDevelop[cuboidOnPaperIndex].i;
-			new_j = paperToDevelop[cuboidOnPaperIndex].j+1;
-			
-		} else if(rotationToAddCellOnPaper == 2) {
-			new_i = paperToDevelop[cuboidOnPaperIndex].i+1;
-			new_j = paperToDevelop[cuboidOnPaperIndex].j;
-			
-		} else if(rotationToAddCellOnPaper == 3) {
-			new_i = paperToDevelop[cuboidOnPaperIndex].i;
-			new_j = paperToDevelop[cuboidOnPaperIndex].j-1;
-		} else {
-			System.out.println("Doh! 3");
-			System.out.println("Unknown rotation!");
-			System.exit(1);
-		}
-		//END TODO: put in function
+		
+		int new_j = paperToDevelop[cuboidOnPaperIndex].j + nugdeBasedOnRotation[1][rotationToAddCellOnPaper];
 		
 		//Special rules for the 1st/bottom node:
 		//These rules work because of the 4-way symmetry
