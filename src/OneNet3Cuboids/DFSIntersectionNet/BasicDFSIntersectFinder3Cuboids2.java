@@ -361,6 +361,7 @@ public class BasicDFSIntersectFinder3Cuboids2 {
 					}
 				}
 				
+				
 				if( ! cantAddCellBecauseOfOtherPaperNeighbours) {
 					
 					//Setup for adding new cell:

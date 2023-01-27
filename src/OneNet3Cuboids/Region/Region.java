@@ -98,6 +98,32 @@ public class Region {
 		
 		
 	}
+	
+   //TODO: currently assumes region contains whole cuboid:
+   public static Region getRegionOutOfSecondaryCuboid(CuboidToFoldOn cuboid, HashMap <Integer, Integer> CellIndexToOrderOfDevOther, int indexCellUsedOtherCuboid) {
+
+           Region ret = new Region(cuboid, 0);
+           ret.CellIndexToOrderOfDev = CellIndexToOrderOfDevOther;
+
+           int curNumCellsInRegion = 0;
+           for(int i=0; i<cuboid.getCellsUsed().length; i++) {
+                   if(! cuboid.isCellIndexUsed(i)) {
+                           ret.CellRegionsToHandleInRevOrder[i] = true;
+                          curNumCellsInRegion++;
+                   } else {
+                           ret.CellRegionsToHandleInRevOrder[i] = false;
+                   }
+           }
+           ret.numCellsInRegion = curNumCellsInRegion;
+
+           ret.minOrderedCellCouldUsePerRegion = indexCellUsedOtherCuboid;
+
+           //Lets be safe for now:
+           ret.minCellRotationOfMinCellToDevPerRegion = 0;
+
+           return ret;
+   }
+	
 
 	//TODO: add logic for this var:
 	public int getNumCellsInRegion() {
