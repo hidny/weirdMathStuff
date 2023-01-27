@@ -304,8 +304,8 @@ public class DFSIntersectFinderRegions {
 				 if(! cantAddCellBecauseOfOtherPaperNeighbours
 						 
 						 //TODO: figure out how to get rid of the safety precautions:
-						   && regions.length == 1
-						   && numCellsUsedDepth + regions[regions.length - 1].getNumCellsInRegion() == Utils.getTotalArea(cuboid.getDimensions())
+						   //&& regions.length == 1
+						   //&& numCellsUsedDepth + regions[regions.length - 1].getNumCellsInRegion() == Utils.getTotalArea(cuboid.getDimensions())
 						   
 						   //END TODO
 				   ) {
@@ -439,8 +439,7 @@ public class DFSIntersectFinderRegions {
 																  false,
 																  cuboid, indexCuboidonPaper, indexNewCell, rotationNeighbourPaperRelativeToMap,
 																  TopBottomBridgeOnlyUsedForNx1x1,
-																  regionTmp, k,
-																  0)) {
+																  regionTmp, k)) {
 
 
 																   break TRY_TO_DIVDE_REGIONS;
@@ -679,8 +678,7 @@ public class DFSIntersectFinderRegions {
 					                       skipSymmetries,
 					                       cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid, indexNewCell2, rotationNeighbourPaperRelativeToMap2,
 					                       topBottombridgeUsedNx1x1,
-					                       regionsSplit, indexToAdd,
-					                       0)) {
+					                       regionsSplit, indexToAdd)) {
 
 								cantAddCellBecauseARegionDoesntHaveSolution = true;
 								numBreak1++;
@@ -703,8 +701,7 @@ public class DFSIntersectFinderRegions {
 					                       skipSymmetries,
 					                       cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid, indexNewCell2, rotationNeighbourPaperRelativeToMap2,
 					                       topBottombridgeUsedNx1x1,
-					                       regionsSplit, indexToTry,
-					                       0)) {
+					                       regionsSplit, indexToTry)) {
 									
 								cantAddCellBecauseARegionDoesntHaveSolution = true;
 								numBreak2++;
@@ -834,8 +831,7 @@ public class DFSIntersectFinderRegions {
                        boolean skipSymmetries,
                        CuboidToFoldOn cuboidToBringAlongStartRot, int indexCuboidOnPaper2ndCuboid[][], int indexNewCell2, int rotationNeighbourPaperRelativeToMap2,
                        int topBottombridgeUsedNx1x1[],
-                      Region regionsSplit[], int regionIndexToCheck,
-                      int whatever) {
+                      Region regionsSplit[], int regionIndexToCheck) {
 
 		 	boolean hasSolution = false;
 
