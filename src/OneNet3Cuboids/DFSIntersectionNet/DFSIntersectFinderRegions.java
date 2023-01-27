@@ -304,8 +304,8 @@ public class DFSIntersectFinderRegions {
 				 if(! cantAddCellBecauseOfOtherPaperNeighbours
 						 
 						 //TODO: figure out how to get rid of the safety precautions:
-						   //&& regions.length == 1
-						   //&& numCellsUsedDepth + regions[regions.length - 1].getNumCellsInRegion() == Utils.getTotalArea(cuboid.getDimensions())
+						   && regions.length == 1
+						   && numCellsUsedDepth + regions[regions.length - 1].getNumCellsInRegion() == Utils.getTotalArea(cuboid.getDimensions())
 						   
 						   //END TODO
 				   ) {
@@ -370,24 +370,17 @@ public class DFSIntersectFinderRegions {
 														   //System.out.println("Found other cuboid split!");
 												   }
 
-												   //TODO: test it!
-												   //TODO: if it works, maybe keep track of it later?
-												   //Get new order of dev for other cuboid:
-												   //TODO: hide in region class...
-												   HashMap <Integer, Integer> CellIndexToOrderOfDevOther = new HashMap <Integer, Integer>();
-
-
-												   // Could only go as far as curGlobalMinOrderedCell... :(
-												   for(int p=0; paperToDevelop[p] != null && p<paperToDevelop.length; p++) {
-
-														   if(regions[regionIndex].getCellIndexToOrderOfDev().containsKey(indexCuboidonPaper[paperToDevelop[p].i][paperToDevelop[p].j])) {
-																   CellIndexToOrderOfDevOther.put(
-																		   indexCuboidOnPaper2ndCuboid[paperToDevelop[p].i][paperToDevelop[p].j],
-																		   regions[regionIndex].getCellIndexToOrderOfDev().get(indexCuboidonPaper[paperToDevelop[p].i][paperToDevelop[p].j])
-																   );
-														   }
+												   HashMap <Integer, Integer> CellIndexToOrderOfDevOther = rebuildOrdering(indexCuboidOnPaper2ndCuboid, Nx1x1BottomCellI, Nx1x1BottomCellJ, cuboidToBringAlongStartRot);
+												   //System.out.println("End rebuild");
+												   
+												   if(CellIndexToOrderOfDevOther.size() != numCellsUsedDepth) {
+													   Utils.printFoldWithIndex(indexCuboidonPaper);
+													   Utils.printFoldWithIndex(indexCuboidOnPaper2ndCuboid);
+													   Utils.printFold(paperUsed);
+													   System.out.println("Incorrect size???");
+													   
+													   System.exit(1);
 												   }
-
 
 												   //TODO: Add most recent cell used in case if it's not there...
 
@@ -952,6 +945,67 @@ public class DFSIntersectFinderRegions {
  
  
                  return ret;
+ 
+         }
+         
+
+         public static  HashMap <Integer, Integer> rebuildOrdering(int indexCuboidonPaper[][], int bottomCellI, int bottomCellJ, CuboidToFoldOn cuboidNx1x1) {
+ 
+        	 	HashMap <Integer, Integer> CellIndexToOrderOfDevOther = new HashMap <Integer, Integer>();
+        	 
+                 LinkedList<Coord2D> queue = new LinkedList<Coord2D>();
+ 
+                 boolean explored[] = new boolean[cuboidNx1x1.getNumCellsToFill()];
+ 
+                 int curOrderNum = 0;
+                 //Add root node:
+                 int indexRootCell = indexCuboidonPaper[bottomCellI][bottomCellJ];
+                 
+                 explored[indexRootCell] = true;
+                 
+                 CellIndexToOrderOfDevOther.put(
+                		 indexRootCell,
+                 		curOrderNum);
+
+                 curOrderNum++;
+                 
+                 queue.add(new Coord2D(bottomCellJ, bottomCellJ));
+                 //End add root node
+                 
+                 while( ! queue.isEmpty() ) {
+ 
+                        Coord2D cur = queue.removeFirst();
+ 
+ 
+                        for(int j=0; j<NUM_ROTATIONS; j++) {
+ 
+                                int new_i = cur.i + nugdeBasedOnRotation[0][j];
+                                int new_j = cur.j + nugdeBasedOnRotation[1][j];
+ 
+                                int indexNewCell = indexCuboidonPaper[new_i][new_j];
+ 
+                                if( indexNewCell >= 0 && ! explored[indexNewCell]) {
+ 
+                                        explored[indexNewCell] = true;
+ 
+                                        CellIndexToOrderOfDevOther.put(
+                                        		indexNewCell,
+                                        		curOrderNum);
+	
+                                        curOrderNum++;
+                                        
+                                        queue.add(new Coord2D(new_i, new_j));
+ 
+ 
+                                }
+ 
+ 
+                        }
+ 
+                 }
+ 
+ 
+                 return CellIndexToOrderOfDevOther;
  
          }
 	 
