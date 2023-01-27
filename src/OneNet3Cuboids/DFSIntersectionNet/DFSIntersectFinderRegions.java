@@ -729,6 +729,63 @@ public class DFSIntersectFinderRegions {
 			
 			return hasSolution;
 	 }
+	 
+ 
+         public static int[] rebuildTopBottomBridge(int indexCuboidonPaper[][], int bottomCellI, int bottomCellJ, CuboidToFoldOn cuboidNx1x1) {
+ 
+                 if(indexCuboidonPaper[bottomCellI][bottomCellJ] != 0) {
+                         System.out.println("Doh");
+                 }
+ 
+                 int ret[] = new int[cuboidNx1x1.getNumCellsToFill()];
+ 
+                 LinkedList<Coord2D> queue = new LinkedList<Coord2D>();
+ 
+                 boolean explored[] = new boolean[cuboidNx1x1.getNumCellsToFill()];
+ 
+ 
+                 queue.add(new Coord2D(bottomCellI, bottomCellJ));
+                 explored[0] = true;
+ 
+                 while( ! queue.isEmpty() ) {
+ 
+                         Coord2D cur = queue.removeFirst();
+ 
+                        int curIndex = indexCuboidonPaper[cur.i][cur.j];
+ 
+                        for(int j=0; j<NUM_ROTATIONS; j++) {
+ 
+                                int new_i = cur.i + nugdeBasedOnRotation[0][j];
+                                int new_j = cur.j + nugdeBasedOnRotation[1][j];
+ 
+                                int indexNewCell = indexCuboidonPaper[new_i][new_j];
+ 
+                                if(indexNewCell >= 0 && ! explored[indexNewCell]) {
+ 
+                                        explored[indexNewCell] = true;
+ 
+                                        if(curIndex == 0) {
+                                                ret[indexNewCell] = j;
+                                        } else if(curIndex == cuboidNx1x1.getCellsUsed().length - 1) {
+                                                ret[indexNewCell] = NUM_ROTATIONS + j;
+                                        } else {
+                                                ret[indexNewCell] = ret[curIndex];
+                                        }
+                                        queue.add(new Coord2D(new_i, new_j));
+ 
+ 
+                                }
+ 
+ 
+                        }
+ 
+                 }
+ 
+ 
+                 return ret;
+ 
+         }
+	 
 	/*https://www.sciencedirect.com/science/article/pii/S0925772117300160
 	 * 
 	 *  "From the necessary condition, the smallest possible surface area that can fold into two boxes is 22,
