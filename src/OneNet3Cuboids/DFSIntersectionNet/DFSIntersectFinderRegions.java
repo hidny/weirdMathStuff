@@ -209,12 +209,20 @@ public class DFSIntersectFinderRegions {
 		for(int i=regions[regionIndex].getMinOrderedCellCouldUsePerRegion(); i<paperToDevelop.length && paperToDevelop[i] != null; i++) {
 			
 			int indexToUse = indexCuboidonPaper[paperToDevelop[i].i][paperToDevelop[i].j];
+			int indexToUseForAlreadyConsidered = indexCuboidonPaperForAlreadyConsidered[paperToDevelop[i].i][paperToDevelop[i].j];
 			
 			if( ! regions[regionIndex].getCellIndexToOrderOfDev().containsKey(indexToUse)) {
+				
+				
+				tmpSkippedBecauseRegion[indexToUseForAlreadyConsidered][0] = true;
+				tmpSkippedBecauseRegion[indexToUseForAlreadyConsidered][1] = true;
+				tmpSkippedBecauseRegion[indexToUseForAlreadyConsidered][2] = true;
+				tmpSkippedBecauseRegion[indexToUseForAlreadyConsidered][3] = true;
+
 				continue;
-			} else if(SymmetryResolver.skipSearchBecauseOfASymmetryArgDontCareAboutRotation
+			} else if(skipSymmetries && SymmetryResolver.skipSearchBecauseOfASymmetryArgDontCareAboutRotation
 					(cuboid, paperToDevelop, indexCuboidonPaper, i,indexToUse)
-				&& skipSymmetries) {
+				) {
 				continue;
 
 			} else	if( 2*numCellsUsedDepth < paperToDevelop.length && 
@@ -234,6 +242,11 @@ public class DFSIntersectFinderRegions {
 			//Try to attach a cell onto indexToUse using all 4 rotations:
 			for(int dirNewCellAdd=0; dirNewCellAdd<NUM_ROTATIONS; dirNewCellAdd++) {
 				
+
+				if(alreadyConsidered[indexCuboidonPaperForAlreadyConsidered[paperToDevelop[i].i][paperToDevelop[i].j]][dirNewCellAdd]) {
+					continue;
+				}
+					
 				int neighbourArrayIndex = (dirNewCellAdd - curRotation + NUM_ROTATIONS) % NUM_ROTATIONS;
 				
 				if(cuboid.isCellIndexUsed(neighbours[neighbourArrayIndex].getIndex())) {
@@ -242,6 +255,8 @@ public class DFSIntersectFinderRegions {
 					continue;
 					
 				} else if(regions[regionIndex].getCellRegionsToHandleInRevOrder()[neighbours[neighbourArrayIndex].getIndex()] == false) {
+					
+					tmpSkippedBecauseRegion[indexToUseForAlreadyConsidered][dirNewCellAdd] = true;
 					continue;
 	
 				} else if(regions[regionIndex].getCellIndexToOrderOfDev().get(indexToUse) == regions[regionIndex].getMinOrderedCellCouldUsePerRegion() 
