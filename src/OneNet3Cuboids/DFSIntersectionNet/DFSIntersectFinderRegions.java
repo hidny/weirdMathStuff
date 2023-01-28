@@ -464,7 +464,7 @@ public class DFSIntersectFinderRegions {
 																  TopBottomBridgeOnlyUsedForNx1x1,
 																  regionTmp, k,
 																  symmetrySkipCuboid,
-																  alreadyConsidered, indexCuboidonPaperForAlreadyConsidered, tmpSkippedBecauseRegion)) {
+																  updateAlreadyConsidered(paperToDevelop, alreadyConsidered, tmpSkippedBecauseRegion, i, dirNewCellAdd, indexCuboidonPaperForAlreadyConsidered), indexCuboidonPaperForAlreadyConsidered, new boolean[cuboid.getNumCellsToFill()][NUM_ROTATIONS])) {
 
 																   break TRY_TO_DIVDE_REGIONS;
 														   }
@@ -557,6 +557,35 @@ public class DFSIntersectFinderRegions {
 		return retDuplicateSolutions;
 	}
 	
+	public static boolean[][] updateAlreadyConsidered(Coord2D paperToDevelop[], boolean alreadyConsidered[][], boolean tmpSkippedBecauseRegion[][], int maxIUsed, int dirNewCellAddUsedLast, int indexCuboidonPaperForAlreadyConsidered[][]) {
+		
+		boolean ret[][] = new boolean[alreadyConsidered.length][NUM_ROTATIONS];
+		
+		//TODO: probably bugged, so start simple...
+		for(int i=0; i<=maxIUsed; i++) {
+			for(int dir=0; dir<=dirNewCellAddUsedLast; dir++) {
+				
+				int indexToUseForAlreadyConsidered = indexCuboidonPaperForAlreadyConsidered[paperToDevelop[i].i][paperToDevelop[i].j];
+				
+				if(tmpSkippedBecauseRegion[indexToUseForAlreadyConsidered][dir]) {
+					ret[indexToUseForAlreadyConsidered][dir] = false;
+				} else {
+					ret[indexToUseForAlreadyConsidered][dir] = true;
+				}
+			}
+		
+		}
+		
+		for(int i=0; i<alreadyConsidered.length; i++) {
+			for(int j=0; j<alreadyConsidered[0].length; j++) {
+				if(alreadyConsidered[i][j]) {
+					ret[i][j] = true;
+				}
+			}
+		}
+		
+		return ret;
+	}
 
 
 	public static boolean depthFirstAlgoWillFindAsolutionInRegionIndex(Coord2D paperToDevelop[], int indexCuboidonPaper[][],
