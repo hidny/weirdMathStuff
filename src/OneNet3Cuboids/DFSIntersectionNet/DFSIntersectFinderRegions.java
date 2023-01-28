@@ -307,7 +307,10 @@ public class DFSIntersectFinderRegions {
 						   && regions.length == 1
 						   && numCellsUsedDepth + regions[regions.length - 1].getNumCellsInRegion() == Utils.getTotalArea(cuboid.getDimensions())
 						   
-						   //END TODO
+						   //If region was already split from normal cuboid split, don't split it again...
+						   //This might be another training wheel, or this might be good logic. I can't tell.
+						   // For now, it's faster to have this condition, but that may change
+						   && regionsBeforePotentailRegionSplit.length == regions.length
 				   ) {
 
 
@@ -421,7 +424,8 @@ public class DFSIntersectFinderRegions {
 																   System.exit(1);
 														   }
 
-
+														   //TODO: don't forget to consider the size of the current region!
+														 //TODO: if size of current region is small, maybe skip this recursion!
 														   if( isDubiousOrSmallRegionAfterSplitOtherCuboid(cuboidToBringAlongStartRot, regionForOtherCuboid, regionTmp[k], indexNewCell)
 																   && ! regionHasAtLeastOneSolution(paperToDevelop, indexCuboidOnPaper2ndCuboid,
 																  paperUsed, cuboidToBringAlongStartRot, numCellsUsedDepth,
@@ -1026,10 +1030,10 @@ public class DFSIntersectFinderRegions {
 		//solveCuboidIntersections(new CuboidToFoldOn(9, 1, 1), new CuboidToFoldOn(4, 3, 1));
 		//It got 4469 solutions and it took about 41.5 hours
 		
-		//solveCuboidIntersections(new CuboidToFoldOn(8, 1, 1), new CuboidToFoldOn(5, 2, 1));
+		solveCuboidIntersections(new CuboidToFoldOn(8, 1, 1), new CuboidToFoldOn(5, 2, 1));
 		//It got 35675 again, but this time it only took 3 hours! It took almost 2 days last time!
 		
-		solveCuboidIntersections(new CuboidToFoldOn(7, 1, 1), new CuboidToFoldOn(3, 3, 1));
+		//solveCuboidIntersections(new CuboidToFoldOn(7, 1, 1), new CuboidToFoldOn(3, 3, 1));
 		//It got 1070 (again) (They got 1080, but I think they were wrong)
 		
 		//solveCuboidIntersections(new CuboidToFoldOn(5, 1, 1), new CuboidToFoldOn(3, 2, 1));
