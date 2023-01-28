@@ -970,7 +970,7 @@ public class DFSIntersectFinderRegions {
 
 
          //TODO: maybe there's a way to improve on this?
-         return curRegion.getNumCellsInRegion() <= 3 * (origRegion.getNumCellsInRegion() - 1)/(4);
+         return curRegion.getNumCellsInRegion() <= (origRegion.getNumCellsInRegion() - 1)/(2);
 
      }
  
