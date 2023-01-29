@@ -730,61 +730,6 @@ public class DFSIntersectFinderRegions {
 			return hasSolution;
 	 }
 	 
- 
-         public static int[] rebuildTopBottomBridge(int indexCuboidonPaper[][], int bottomCellI, int bottomCellJ, CuboidToFoldOn cuboidNx1x1) {
- 
-                 if(indexCuboidonPaper[bottomCellI][bottomCellJ] != 0) {
-                         System.out.println("Doh");
-                 }
- 
-                 int ret[] = new int[cuboidNx1x1.getNumCellsToFill()];
- 
-                 LinkedList<Coord2D> queue = new LinkedList<Coord2D>();
- 
-                 boolean explored[] = new boolean[cuboidNx1x1.getNumCellsToFill()];
- 
- 
-                 queue.add(new Coord2D(bottomCellI, bottomCellJ));
-                 explored[0] = true;
- 
-                 while( ! queue.isEmpty() ) {
- 
-                         Coord2D cur = queue.removeFirst();
- 
-                        int curIndex = indexCuboidonPaper[cur.i][cur.j];
- 
-                        for(int j=0; j<NUM_ROTATIONS; j++) {
- 
-                                int new_i = cur.i + nugdeBasedOnRotation[0][j];
-                                int new_j = cur.j + nugdeBasedOnRotation[1][j];
- 
-                                int indexNewCell = indexCuboidonPaper[new_i][new_j];
- 
-                                if(indexNewCell >= 0 && ! explored[indexNewCell]) {
- 
-                                        explored[indexNewCell] = true;
- 
-                                        if(curIndex == 0) {
-                                                ret[indexNewCell] = j;
-                                        } else if(curIndex == cuboidNx1x1.getCellsUsed().length - 1) {
-                                                ret[indexNewCell] = NUM_ROTATIONS + j;
-                                        } else {
-                                                ret[indexNewCell] = ret[curIndex];
-                                        }
-                                        queue.add(new Coord2D(new_i, new_j));
- 
- 
-                                }
- 
- 
-                        }
- 
-                 }
- 
- 
-                 return ret;
- 
-         }
 	 
 	/*https://www.sciencedirect.com/science/article/pii/S0925772117300160
 	 * 
@@ -806,10 +751,10 @@ public class DFSIntersectFinderRegions {
 		//solveCuboidIntersections(new CuboidToFoldOn(8, 1, 1), new CuboidToFoldOn(5, 2, 1));
 		//It got 35675 again, but this time it only took 3 hours! It took almost 2 days last time!
 		
-		solveCuboidIntersections(new CuboidToFoldOn(7, 1, 1), new CuboidToFoldOn(3, 3, 1));
+		//solveCuboidIntersections(new CuboidToFoldOn(7, 1, 1), new CuboidToFoldOn(3, 3, 1));
 		//It got 1070 (again) (They got 1080, but I think they were wrong)
 		
-		//solveCuboidIntersections(new CuboidToFoldOn(5, 1, 1), new CuboidToFoldOn(3, 2, 1));
+		solveCuboidIntersections(new CuboidToFoldOn(5, 1, 1), new CuboidToFoldOn(3, 2, 1));
 		//It got 2263!
 
 		//solveCuboidIntersections(new CuboidToFoldOn(2, 1, 1), new CuboidToFoldOn(1, 2, 1));
