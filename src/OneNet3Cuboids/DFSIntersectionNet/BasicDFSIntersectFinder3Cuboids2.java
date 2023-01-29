@@ -174,6 +174,8 @@ public class BasicDFSIntersectFinder3Cuboids2 {
 				System.out.println("                          and 3rd cuboid that has a start index of " + startIndex3rdCuboid + " and a rotation index of " + startRotation3rdCuboid +".");
 				
 				System.out.println("Current UTC timestamp in milliseconds: " + System.currentTimeMillis());
+				java.util.Date time=new java.util.Date(System.currentTimeMillis());
+				System.out.println("Human-readable time: " + time.toString());
 			}
 		}
 		
@@ -277,22 +279,24 @@ public class BasicDFSIntersectFinder3Cuboids2 {
 			int curRotationCuboid3 = cuboidsToBringAlongStartRot[1].getRotationPaperRelativeToMap(indexToUse3);
 			
 			//Try to attach a cell onto indexToUse using all 4 rotations:
-			for(int j=0; j<neighbours.length; j++) {
+			for(int dirNewCellAdd=0; dirNewCellAdd<NUM_ROTATIONS; dirNewCellAdd++) {
 				
-				if(cuboid.isCellIndexUsed(neighbours[j].getIndex())) {
+				int neighbourArrayIndex = (dirNewCellAdd - curRotation + NUM_ROTATIONS) % NUM_ROTATIONS;
+				
+				if(cuboid.isCellIndexUsed(neighbours[neighbourArrayIndex].getIndex())) {
 					
 					//Don't reuse a used cell:
 					continue;
 					
-				} else if(regions[regionIndex].getCellRegionsToHandleInRevOrder()[neighbours[j].getIndex()] == false) {
+				} else if(regions[regionIndex].getCellRegionsToHandleInRevOrder()[neighbours[neighbourArrayIndex].getIndex()] == false) {
 					continue;
 	
 				} else if(regions[regionIndex].getCellIndexToOrderOfDev().get(indexToUse) == regions[regionIndex].getMinOrderedCellCouldUsePerRegion() 
-						&& j <  regions[regionIndex].getMinCellRotationOfMinCellToDevPerRegion()) {
+						&& dirNewCellAdd <  regions[regionIndex].getMinCellRotationOfMinCellToDevPerRegion()) {
 					continue;
 				}
 
-				int neighbourIndexCuboid2 = (j - curRotationCuboid2 + curRotation+ NUM_ROTATIONS) % NUM_ROTATIONS;
+				int neighbourIndexCuboid2 = (dirNewCellAdd - curRotationCuboid2 + NUM_ROTATIONS) % NUM_ROTATIONS;
 				
 				int indexNewCell2 = cuboidsToBringAlongStartRot[0].getNeighbours(indexToUse2)[neighbourIndexCuboid2].getIndex();
 				
@@ -301,7 +305,7 @@ public class BasicDFSIntersectFinder3Cuboids2 {
 					continue;
 				}
 
-				int neighbourIndexCuboid3 = (j - curRotationCuboid3 + curRotation+ NUM_ROTATIONS) % NUM_ROTATIONS;
+				int neighbourIndexCuboid3 = (dirNewCellAdd - curRotationCuboid3 + NUM_ROTATIONS) % NUM_ROTATIONS;
 				int indexNewCell3 = cuboidsToBringAlongStartRot[1].getNeighbours(indexToUse3)[neighbourIndexCuboid3].getIndex();
 				
 				if(cuboidsToBringAlongStartRot[1].isCellIndexUsed(indexNewCell3)) {
@@ -309,12 +313,10 @@ public class BasicDFSIntersectFinder3Cuboids2 {
 					continue;
 				}
 				
-				int rotationToAddCellOn = (j + curRotation) % NUM_ROTATIONS;
-				
-				int new_i = paperToDevelop[i].i + nugdeBasedOnRotation[0][rotationToAddCellOn];
-				int new_j = paperToDevelop[i].j + nugdeBasedOnRotation[1][rotationToAddCellOn];
+				int new_i = paperToDevelop[i].i + nugdeBasedOnRotation[0][dirNewCellAdd];
+				int new_j = paperToDevelop[i].j + nugdeBasedOnRotation[1][dirNewCellAdd];
 
-				int indexNewCell = neighbours[j].getIndex();
+				int indexNewCell = neighbours[neighbourArrayIndex].getIndex();
 				
 				
 				if(paperUsed[new_i][new_j]) {
@@ -323,12 +325,12 @@ public class BasicDFSIntersectFinder3Cuboids2 {
 				}
 				
 				
-				int rotationNeighbourPaperRelativeToMap = (curRotation - neighbours[j].getRot() + NUM_ROTATIONS) % NUM_ROTATIONS;
+				int rotationNeighbourPaperRelativeToMap = (curRotation - neighbours[neighbourArrayIndex].getRot() + NUM_ROTATIONS) % NUM_ROTATIONS;
 				int rotationNeighbourPaperRelativeToMap2 = (curRotationCuboid2 - cuboidsToBringAlongStartRot[0].getNeighbours(indexToUse2)[neighbourIndexCuboid2].getRot() + NUM_ROTATIONS)  % NUM_ROTATIONS;
 				int rotationNeighbourPaperRelativeToMap3 = (curRotationCuboid3 - cuboidsToBringAlongStartRot[1].getNeighbours(indexToUse3)[neighbourIndexCuboid3].getRot() + NUM_ROTATIONS)  % NUM_ROTATIONS;
 				
 				if(SymmetryResolver.skipSearchBecauseOfASymmetryArg
-						(cuboid, paperToDevelop, i, indexCuboidonPaper, rotationToAddCellOn, curRotation, paperUsed, indexToUse, indexNewCell)
+						(cuboid, paperToDevelop, i, indexCuboidonPaper, dirNewCellAdd, curRotation, paperUsed, indexToUse, indexNewCell)
 					&& skipSymmetries == true) {
 					continue;
 				}
@@ -349,7 +351,7 @@ public class BasicDFSIntersectFinder3Cuboids2 {
 					regions = splitRegionsIfNewCellSplitsRegions(paperToDevelop, indexCuboidonPaper,
 							paperUsed, cuboid, numCellsUsedDepth,
 							regions,
-							indexToUse, j, prevNewMinOrderedCellCouldUse, prevMinCellRotationOfMinCellToDev,
+							indexToUse, dirNewCellAdd, prevNewMinOrderedCellCouldUse, prevMinCellRotationOfMinCellToDev,
 							new_i, new_j, indexNewCell, rotationNeighbourPaperRelativeToMap,
 							skipSymmetries,
 							cuboidsToBringAlongStartRot, indexOtherCuboidsOnPaper, indexNewCell2, rotationNeighbourPaperRelativeToMap2, indexNewCell3, rotationNeighbourPaperRelativeToMap3,
@@ -373,9 +375,9 @@ public class BasicDFSIntersectFinder3Cuboids2 {
 					paperToDevelop[numCellsUsedDepth] = new Coord2D(new_i, new_j);
 
 					if(indexToUse == 0) {
-						topBottombridgeUsedNx1x1[indexNewCell] = j;
+						topBottombridgeUsedNx1x1[indexNewCell] = dirNewCellAdd;
 					} else if(indexToUse == cuboid.getCellsUsed().length - 1) {
-						topBottombridgeUsedNx1x1[indexNewCell] = NUM_ROTATIONS + j;
+						topBottombridgeUsedNx1x1[indexNewCell] = NUM_ROTATIONS + dirNewCellAdd;
 					} else {
 						topBottombridgeUsedNx1x1[indexNewCell] = topBottombridgeUsedNx1x1[indexToUse];
 					}
@@ -386,7 +388,7 @@ public class BasicDFSIntersectFinder3Cuboids2 {
 
 					//Add cell to new region(s):
 					for(int r=regionsBeforePotentailRegionSplit.length - 1; r<regions.length; r++) {
-						regions[r].addCellToRegion(indexNewCell, numCellsUsedDepth, indexToUse, j);
+						regions[r].addCellToRegion(indexNewCell, numCellsUsedDepth, indexToUse, dirNewCellAdd);
 					}
 
 					numCellsUsedDepth += 1;
@@ -828,11 +830,14 @@ public class BasicDFSIntersectFinder3Cuboids2 {
 		CuboidToFoldOn main = new CuboidToFoldOn(11, 1, 1);
 		CuboidToFoldOn others[] = new CuboidToFoldOn[] { new CuboidToFoldOn(7, 2, 1), new CuboidToFoldOn(5, 3, 1)};
 		
+		//CuboidToFoldOn main = new CuboidToFoldOn(1, 3, 1);
+		//CuboidToFoldOn others[] = new CuboidToFoldOn[] { new CuboidToFoldOn(3, 1, 1), new CuboidToFoldOn(1, 1, 3)};
+		
 		//CuboidToFoldOn main = new CuboidToFoldOn(1, 2, 1);
 		//CuboidToFoldOn others[] = new CuboidToFoldOn[] { new CuboidToFoldOn(1, 2, 1), new CuboidToFoldOn(1, 1, 2)};
 
 		//CuboidToFoldOn main = new CuboidToFoldOn(5, 1, 1);
-		//CuboidToFoldOn others[] = new CuboidToFoldOn[] { new CuboidToFoldOn(1, 5, 1), new CuboidToFoldOn(1, 3, 2)};
+		//CuboidToFoldOn others[] = new CuboidToFoldOn[] { new CuboidToFoldOn(1, 3, 2), new CuboidToFoldOn(1, 5, 1) };
 		
 		//Takes a long time:
 		//CuboidToFoldOn main = new CuboidToFoldOn(1, 7, 1);
@@ -852,6 +857,8 @@ public class BasicDFSIntersectFinder3Cuboids2 {
 		
 		solveCuboidIntersections(main, others);
 		System.out.println("Current UTC timestamp in milliseconds: " + System.currentTimeMillis());
+		java.util.Date time=new java.util.Date(System.currentTimeMillis());
+		System.out.println(time.toString());
 		
 		
 		/* 5x1x1 on December 8th:
