@@ -337,6 +337,9 @@ public class DFSIntersectFinderRegions {
 						   //This might be another training wheel, or this might be good logic. I can't tell.
 						   // For now, it's faster to have this condition, but that may change
 						   && regionsBeforePotentailRegionSplit.length == regions.length
+						   
+						   //I don't know!
+						   && numCellsUsedDepth < cuboid.getNumCellsToFill() - 10
 				   ) {
 
 
@@ -968,9 +971,9 @@ public class DFSIntersectFinderRegions {
 	
      public static boolean isDubiousOrSmallRegionAfterSplitOtherCuboid(CuboidToFoldOn cuboid, Region origRegion, Region curRegion, int indexNewCell) {
 
-
+//return true;
          //TODO: maybe there's a way to improve on this?
-         return curRegion.getNumCellsInRegion() <= (origRegion.getNumCellsInRegion() - 1)/(2);
+         return curRegion.getNumCellsInRegion() <= 1 * (origRegion.getNumCellsInRegion() - 1)/(4);
 
      }
  
@@ -1110,10 +1113,10 @@ public class DFSIntersectFinderRegions {
 		//solveCuboidIntersections(new CuboidToFoldOn(8, 1, 1), new CuboidToFoldOn(5, 2, 1));
 		//It got 35675 again, but this time it only took 3 hours! It took almost 2 days last time!
 		
-		//solveCuboidIntersections(new CuboidToFoldOn(7, 1, 1), new CuboidToFoldOn(3, 3, 1));
+		solveCuboidIntersections(new CuboidToFoldOn(7, 1, 1), new CuboidToFoldOn(3, 3, 1));
 		//It got 1070 (again) (They got 1080, but I think they were wrong)
 		
-		solveCuboidIntersections(new CuboidToFoldOn(5, 1, 1), new CuboidToFoldOn(3, 2, 1));
+		//solveCuboidIntersections(new CuboidToFoldOn(5, 1, 1), new CuboidToFoldOn(3, 2, 1));
 		//It got 2263!
 
 		//solveCuboidIntersections(new CuboidToFoldOn(2, 1, 1), new CuboidToFoldOn(1, 2, 1));
