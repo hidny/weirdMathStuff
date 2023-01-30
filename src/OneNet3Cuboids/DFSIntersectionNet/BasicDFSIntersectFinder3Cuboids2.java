@@ -125,10 +125,10 @@ public class BasicDFSIntersectFinder3Cuboids2 {
 		
 		CuboidToFoldOn cuboidsToBringAlongStartRot[] = new CuboidToFoldOn[2];
 		
-		int startIArea46 = 0;
-		int startJArea46 = 26; //(9 above bottom 12) I don't know the index...
+		int startIArea46 = 1;
+		int startJArea46 = 0; //(9 above bottom 12) I don't know the index...
 		
-		for(int i=0; i<startingPointsAndRotationsToCheck[0].size(); i++) {
+		for(int i=startIArea46; i<startingPointsAndRotationsToCheck[0].size(); i++) {
 			
 			int startIndex2ndCuboid = startingPointsAndRotationsToCheck[0].get(i).getCellIndex();
 			int startRotation2ndCuboid = startingPointsAndRotationsToCheck[0].get(i).getRotationRelativeToCuboidMap();
@@ -146,7 +146,6 @@ public class BasicDFSIntersectFinder3Cuboids2 {
 				
 				if(Utils.getTotalArea(cuboidToBuild.getDimensions()) == TARGET_AREA_FOR_11X1X1
 						&& (i< startIArea46 || (i == startIArea46 && j <startJArea46))) {
-					i = startIArea46;
 					j = startJArea46;
 					
 					startIndex3rdCuboid = startingPointsAndRotationsToCheck[1].get(j).getCellIndex();
