@@ -346,7 +346,9 @@ public class DFSIntersectFinderRegions {
 					}
 					
 					//TODO: maybe add more to it...
-					threeBombHandler.removeCell();
+					threeBombHandler.removeCell(paperUsed, indexCuboidonPaper, cuboid,  regions[regions.length - 1],
+							new_i, new_j, indexNewCell, rotationNeighbourPaperRelativeToMap);
+					
 					
 					//Tear down (undo add of new cell)
 					numCellsUsedDepth -= 1;
