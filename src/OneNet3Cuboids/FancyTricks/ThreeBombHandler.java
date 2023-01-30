@@ -1,5 +1,7 @@
 package OneNet3Cuboids.FancyTricks;
 
+import java.util.Scanner;
+
 import OneNet3Cuboids.CuboidToFoldOn;
 import OneNet3Cuboids.Utils;
 import OneNet3Cuboids.Region.Region;
@@ -18,7 +20,7 @@ public class ThreeBombHandler {
 		
 		this.TOP = cuboidNx1x1ToWorkWith.getDimensions()[0] * 4 + 1;
 		
-		this.threeBombActivated = new boolean[cuboidNx1x1ToWorkWith.getDimensions()[0]];
+		this.threeBombActive = new boolean[cuboidNx1x1ToWorkWith.getDimensions()[0]];
 		
 	}
 	
@@ -30,7 +32,9 @@ public class ThreeBombHandler {
 	
 	private int TOP = -1;
 	
-	public boolean threeBombActivated[] = null;
+	public boolean threeBombActive[] = null;
+	
+	private static Scanner in = new Scanner(System.in);
 	
 	//TODO: optional:
 	// maybe cache the num cells used per row?
@@ -64,6 +68,11 @@ public class ThreeBombHandler {
 				break;
 			}
 		}
+		
+		boolean debugAddedCellInTheMiddle = false;
+		if(numInRow == 2) {
+			debugAddedCellInTheMiddle = true;
+		}
 
 		curi = new_i;
 		curj = new_j;
@@ -85,27 +94,36 @@ public class ThreeBombHandler {
 			//For debug:
 			/* && rotationNeighbourPaperRelativeToMap % 2 == 1*/
 			
-			/*System.out.println("Added 3 in a row: (Cell index = " + indexNewCell + ")");
-			
-			//paperUsed[new_i][new_j] = true;
-			boolean wasMinus1 = indexCuboidonPaper[new_i][new_j] == -1;
-			
-			if(wasMinus1) {
-				indexCuboidonPaper[new_i][new_j] = indexNewCell;
-			}
-			Utils.printFoldWithIndex(indexCuboidonPaper);
+			if(debugAddedCellInTheMiddle) {
+				
+				//TODO: if debugAddedCellInTheMiddle is true, maybe there's no hope?
+				//TODO: it looks like there's no hope! Just take advantage of this!
 
-			//paperUsed[new_i][new_j] = false;
-			if(wasMinus1) {
-				indexCuboidonPaper[new_i][new_j] = -1;
+				System.out.println("Added 3 in a row: (Cell index = " + indexNewCell + ")");
+				System.out.println("Maybe there's no hope because we added it to the middle one?");
+				
+				//paperUsed[new_i][new_j] = true;
+				boolean wasMinus1 = indexCuboidonPaper[new_i][new_j] == -1;
+				
+				if(wasMinus1) {
+					indexCuboidonPaper[new_i][new_j] = indexNewCell;
+				}
+				Utils.printFoldWithIndex(indexCuboidonPaper);
+	
+				//paperUsed[new_i][new_j] = false;
+				if(wasMinus1) {
+					indexCuboidonPaper[new_i][new_j] = -1;
+				}
+				
+				//in.nextLine();
 			}
-			*/
-			//TODO: activate the 3-bomb!
-			
-			this.threeBombActivated[indexNewCell % this.threeBombActivated.length] = true;
+
+			//Activate the 3-bomb:
+			this.threeBombActive[indexNewCell % this.threeBombActive.length] = true;
+
 		} else {
 
-			this.threeBombActivated[indexNewCell % this.threeBombActivated.length] = false;
+			this.threeBombActive[indexNewCell % this.threeBombActive.length] = false;
 		}
 		
 	}
@@ -164,6 +182,7 @@ public class ThreeBombHandler {
 			//For debug:
 			/* && rotationNeighbourPaperRelativeToMap % 2 == 1*/
 			
+			/*
 			System.out.println("3 in a row after removing: (Cell index = " + indexRemovedCell + ")");
 			
 			//paperUsed[new_i][new_j] = true;
@@ -178,13 +197,13 @@ public class ThreeBombHandler {
 			if(wasMinus1) {
 				indexCuboidonPaper[removed_i][removed_j] = -1;
 			}
+			*/
 			
-			//TODO: activate the 3-bomb!
-			
-			this.threeBombActivated[indexRemovedCell % this.threeBombActivated.length] = true;
+			//Activate the 3-bomb:
+			this.threeBombActive[indexRemovedCell % this.threeBombActive.length] = true;
 		} else {
 
-			this.threeBombActivated[indexRemovedCell % this.threeBombActivated.length] = false;
+			this.threeBombActive[indexRemovedCell % this.threeBombActive.length] = false;
 		}
 	}
 
