@@ -223,7 +223,7 @@ public class DFSIntersectFinderRegions {
 				
 				//System.out.println("BREAK!");
 				//TODO: it's broken for some reason. Please investigate.
-				//break;
+				break;
 			}
 
 			CoordWithRotationAndIndex neighbours[] = cuboid.getNeighbours(indexToUse);
@@ -788,7 +788,7 @@ public class DFSIntersectFinderRegions {
 		//It got 35675 again, but this time it only took 3 hours! It took almost 2 days last time!
 		
 		//solveCuboidIntersections(new CuboidToFoldOn(7, 1, 1), new CuboidToFoldOn(3, 3, 1));
-		//It got 1070 (again) (They got 1080, but I think they were wrong)
+		////It got 1070 (again) (They got 1080, but I think they were wrong)
 		
 		solveCuboidIntersections(new CuboidToFoldOn(5, 1, 1), new CuboidToFoldOn(3, 2, 1));
 		//It got 2263!

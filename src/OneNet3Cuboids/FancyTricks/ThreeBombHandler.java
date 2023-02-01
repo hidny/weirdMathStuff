@@ -393,7 +393,18 @@ public class ThreeBombHandler {
 					//System.out.println("BOMB TEST!");
 					//System.out.println("BOMB TEST!");
 					
-					return true;
+					//TODO: no magic numbers
+					
+					//The 3-bomb only exploded if you're in the same region:
+					for(int j=0; j<4; j++) {
+						int indexToCheck = i + cuboid.getDimensions()[0] * j;
+						if(i == 0) {
+							indexToCheck += cuboid.getDimensions()[0];
+						}
+						if( ! cuboid.isCellIndexUsed(indexToCheck) && curRegion.getCellRegionsToHandleInRevOrder()[i + cuboid.getDimensions()[0] * j]) {
+							return true;
+						}
+					}
 					
 				}
 			}
