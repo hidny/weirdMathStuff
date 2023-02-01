@@ -200,6 +200,7 @@ public class DFSIntersectFinderRegions {
 			
 			int indexToUse = indexCuboidonPaper[paperToDevelop[i].i][paperToDevelop[i].j];
 			
+			
 			if( ! regions[regionIndex].getCellIndexToOrderOfDev().containsKey(indexToUse)) {
 				continue;
 			} else if(SymmetryResolver.skipSearchBecauseOfASymmetryArgDontCareAboutRotation
@@ -212,8 +213,19 @@ public class DFSIntersectFinderRegions {
 					(cuboid, paperToDevelop, indexCuboidonPaper, i,indexToUse, regions[regionIndex], topBottombridgeUsedNx1x1) && skipSymmetries) {
 				
 				break;
+				
+				//Maybe put this right after the contains key if condition? (regions[regionIndex].getCellIndexToOrderOfDev().containsKey(indexToUse))
+			} else if(threeBombHandler.quickCheckThreeBombDetonatedForCurrentIteration(cuboid,
+					paperToDevelop,
+					indexCuboidonPaper,
+					indexToUse,
+					regions[regionIndex]) ){
+				
+				//System.out.println("BREAK!");
+				//TODO: it's broken for some reason. Please investigate.
+				//break;
 			}
-			
+
 			CoordWithRotationAndIndex neighbours[] = cuboid.getNeighbours(indexToUse);
 			
 			int curRotation = cuboid.getRotationPaperRelativeToMap(indexToUse);
@@ -345,15 +357,18 @@ public class DFSIntersectFinderRegions {
 						System.exit(1);
 					}
 					
-					//TODO: maybe add more to it...
-					threeBombHandler.removeCell(paperUsed, indexCuboidonPaper, cuboid,  regions[regions.length - 1],
-							new_i, new_j, indexNewCell, rotationNeighbourPaperRelativeToMap);
-					
 					
 					//Tear down (undo add of new cell)
 					numCellsUsedDepth -= 1;
 
 					regions = regionsBeforePotentailRegionSplit;
+					
+
+					//Remember to keep this after the regions update
+					//TODO: maybe add more to it...
+					threeBombHandler.removeCell(paperUsed, indexCuboidonPaper, cuboid,  regions[regions.length - 1],
+							new_i, new_j, indexNewCell, rotationNeighbourPaperRelativeToMap);
+					
 					
 					//Remove cell from last region(s):
 					regions[regions.length - 1].removeCellFromRegion(indexNewCell, numCellsUsedDepth, prevNewMinOrderedCellCouldUse, prevMinCellRotationOfMinCellToDev);
