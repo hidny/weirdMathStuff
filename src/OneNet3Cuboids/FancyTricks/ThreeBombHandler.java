@@ -28,9 +28,9 @@ public class ThreeBombHandler {
 	}
 	
 	
-	public static final int nugdeToGetRowNeighbourBasedOnRotation[][] = {{0, 1, 0 , 1}, {1, 0, 1, 0}};
+	public static final int nugdeBasedOnRotationFor3Bomb[][] = {{0, 1, 0 , -1}, {1, 0, -1, 0}};
 
-	public static final int nugdeBasedOnRotation[][] = {{-1, 0, 1, 0}, {0, 1, 0 , -1}};
+	//public static final int nugdeBasedOnRotationFor3Bomb[][] = {{1, 0, -1, 0}, {0, -1, 0, 1}};
 	
 	public static final int BOTTOM = 0;
 	public static final int NUM_ROTATIONS = 4;
@@ -43,6 +43,21 @@ public class ThreeBombHandler {
 	
 	private static Scanner in = new Scanner(System.in);
 	
+	public boolean cuboidIsMissingExactlyOneCellAtHeightN(CuboidToFoldOn nx1x1cuboid, int indexNewCell) {
+		
+		int start = indexNewCell % this.threeBombActive.length;
+		if(start == 0) {
+			start += this.threeBombActive.length;
+		}
+		
+		int numNotUsed = 0;
+		for(int i=0; i<4; i++) {
+			if(nx1x1cuboid.getCellsUsed()[start + i * this.threeBombActive.length] == false) {
+				numNotUsed++;
+			}
+		}
+		return numNotUsed == 1;
+	}
 	//TODO: optional:
 	// maybe cache the num cells used per row?
 	
@@ -66,8 +81,8 @@ public class ThreeBombHandler {
 		//check first way:
 		for(int i=1; i<NUM_ROTATIONS; i++) {
 
-			curi = curi + nugdeToGetRowNeighbourBasedOnRotation[0][rotationNeighbourPaperRelativeToMap];
-			curj = curj + nugdeToGetRowNeighbourBasedOnRotation[1][rotationNeighbourPaperRelativeToMap];
+			curi = curi + nugdeBasedOnRotationFor3Bomb[0][rotationNeighbourPaperRelativeToMap];
+			curj = curj + nugdeBasedOnRotationFor3Bomb[1][rotationNeighbourPaperRelativeToMap];
 
 			if(paperUsed[curi][curj]) {
 				numInRow++;
@@ -86,8 +101,8 @@ public class ThreeBombHandler {
 
 		for(int i=1; i<NUM_ROTATIONS; i++) {
 
-			curi = curi - nugdeToGetRowNeighbourBasedOnRotation[0][rotationNeighbourPaperRelativeToMap];
-			curj = curj - nugdeToGetRowNeighbourBasedOnRotation[1][rotationNeighbourPaperRelativeToMap];
+			curi = curi - nugdeBasedOnRotationFor3Bomb[0][rotationNeighbourPaperRelativeToMap];
+			curj = curj - nugdeBasedOnRotationFor3Bomb[1][rotationNeighbourPaperRelativeToMap];
 
 			if(paperUsed[curi][curj]) {
 				numInRow++;
@@ -96,7 +111,9 @@ public class ThreeBombHandler {
 			}
 		}
 		
-		if(numInRow == 3) {
+		
+		//TODO: OMG: make sure 1/4 of the cells is not used!
+		if(numInRow == 3 && cuboidIsMissingExactlyOneCellAtHeightN(nx1x1cuboid, indexNewCell)) {
 			
 			//For debug:
 			/* && rotationNeighbourPaperRelativeToMap % 2 == 1*/
@@ -106,16 +123,18 @@ public class ThreeBombHandler {
 			this.threeBombActive[indexNewCell % this.threeBombActive.length] = true;
 			
 
+			//System.out.println("---");
 			curi = new_i;
 			curj = new_j;
 			
 			//TODO: make it faster?
 			for(int i=1; i<NUM_ROTATIONS; i++) {
 
-				curi = curi + nugdeBasedOnRotation[0][rotationNeighbourPaperRelativeToMap];
-				curj = curj + nugdeBasedOnRotation[1][rotationNeighbourPaperRelativeToMap];
+				curi = curi + nugdeBasedOnRotationFor3Bomb[0][rotationNeighbourPaperRelativeToMap];
+				curj = curj + nugdeBasedOnRotationFor3Bomb[1][rotationNeighbourPaperRelativeToMap];
 
 				if(! paperUsed[curi][curj]) {
+					//System.out.println("1: " + curi + ", " + curj);
 					break;
 				}
 			}
@@ -123,18 +142,21 @@ public class ThreeBombHandler {
 			int minIndex1 = indexCuboidonPaper.length;
 			
 			for(int r=0; r<NUM_ROTATIONS; r++) {
-				int i2 = curi + nugdeBasedOnRotation[0][r];
-				int j2 = curj + nugdeBasedOnRotation[1][r];
+				int i2 = curi + nugdeBasedOnRotationFor3Bomb[0][r];
+				int j2 = curj + nugdeBasedOnRotationFor3Bomb[1][r];
 				
 				if(indexCuboidonPaper[i2][j2] >= 0
 						&& curRegion.getCellIndexToOrderOfDev().containsKey(indexCuboidonPaper[i2][j2])) {
 					//TODO: check if indexCuboidonPaper[i2][j2]) is the neighbour of curi and curj...
 					
 					int curMin = curRegion.getCellIndexToOrderOfDev().get(indexCuboidonPaper[i2][j2]);
-					
+
+					//System.out.println("index 1: " + indexCuboidonPaper[i2][j2]);
 					if(curMin < minIndex1) {
 						minIndex1 = curMin;
 					}
+				} else if(indexCuboidonPaper[i2][j2] >= 0) {
+					//System.out.println("Not in ordering table...(1) " + indexCuboidonPaper[i2][j2]);
 				}
 			}
 			
@@ -147,10 +169,11 @@ public class ThreeBombHandler {
 			//TODO: make it faster?
 			for(int i=1; i<NUM_ROTATIONS; i++) {
 
-				curi = curi - nugdeBasedOnRotation[0][rotationNeighbourPaperRelativeToMap];
-				curj = curj - nugdeBasedOnRotation[1][rotationNeighbourPaperRelativeToMap];
+				curi = curi - nugdeBasedOnRotationFor3Bomb[0][rotationNeighbourPaperRelativeToMap];
+				curj = curj - nugdeBasedOnRotationFor3Bomb[1][rotationNeighbourPaperRelativeToMap];
 
 				if(! paperUsed[curi][curj]) {
+					//System.out.println("2: " + curi + ", " + curj);
 					break;
 				}
 			}
@@ -159,24 +182,34 @@ public class ThreeBombHandler {
 			int minIndex2 = indexCuboidonPaper.length;
 			
 			for(int r=0; r<NUM_ROTATIONS; r++) {
-				int i2 = curi + nugdeBasedOnRotation[0][r];
-				int j2 = curj + nugdeBasedOnRotation[1][r];
+				int i2 = curi + nugdeBasedOnRotationFor3Bomb[0][r];
+				int j2 = curj + nugdeBasedOnRotationFor3Bomb[1][r];
 				
 				if(indexCuboidonPaper[i2][j2] >= 0
 						&& curRegion.getCellIndexToOrderOfDev().containsKey(indexCuboidonPaper[i2][j2])) {
 					//TODO: check if indexCuboidonPaper[i2][j2]) is the neighbour of curi and curj...
 					int curMin = curRegion.getCellIndexToOrderOfDev().get(indexCuboidonPaper[i2][j2]);
 					
+					//System.out.println("index 2: " + indexCuboidonPaper[i2][j2]);
 					if(curMin < minIndex2) {
 						minIndex2 = curMin;
 					}
+				} else if(indexCuboidonPaper[i2][j2] >= 0) {
+					//System.out.println("Not in ordering table...(2) " + indexCuboidonPaper[i2][j2]);
 				}
 			}
 			
 			
 
 			//END TODO: copy/paste code
-			
+			if(minIndex1 == indexCuboidonPaper.length || minIndex2 == indexCuboidonPaper.length) {
+				Utils.printFoldWithIndex(indexCuboidonPaper);
+				System.out.println(minIndex1);
+				System.out.println(minIndex2);
+				System.out.println(indexNewCell);
+				System.out.println("DOH1");
+				System.exit(1);
+			}
 			threeBombMinIndexToUse[indexNewCell % this.threeBombActive.length] = Math.max(minIndex1, minIndex2);
 			
 			
@@ -242,8 +275,8 @@ public class ThreeBombHandler {
 		//check first way:
 		for(int i=1; i<NUM_ROTATIONS; i++) {
 
-			curi = curi + nugdeToGetRowNeighbourBasedOnRotation[0][rotationNeighbourPaperRelativeToMap];
-			curj = curj + nugdeToGetRowNeighbourBasedOnRotation[1][rotationNeighbourPaperRelativeToMap];
+			curi = curi + nugdeBasedOnRotationFor3Bomb[0][rotationNeighbourPaperRelativeToMap];
+			curj = curj + nugdeBasedOnRotationFor3Bomb[1][rotationNeighbourPaperRelativeToMap];
 
 			if(paperUsed[curi][curj]) {
 				numInRowTrial1++;
@@ -260,8 +293,8 @@ public class ThreeBombHandler {
 	
 			for(int i=1; i<NUM_ROTATIONS; i++) {
 	
-				curi = curi - nugdeToGetRowNeighbourBasedOnRotation[0][rotationNeighbourPaperRelativeToMap];
-				curj = curj - nugdeToGetRowNeighbourBasedOnRotation[1][rotationNeighbourPaperRelativeToMap];
+				curi = curi - nugdeBasedOnRotationFor3Bomb[0][rotationNeighbourPaperRelativeToMap];
+				curj = curj - nugdeBasedOnRotationFor3Bomb[1][rotationNeighbourPaperRelativeToMap];
 	
 				if(paperUsed[curi][curj]) {
 					numInRowTrial2++;
@@ -282,8 +315,8 @@ public class ThreeBombHandler {
 			int orderIndex1 = indexCuboidonPaper.length;
 			
 			for(int r=0; r<NUM_ROTATIONS; r++) {
-				int i2 = curi + nugdeBasedOnRotation[0][r];
-				int j2 = curj + nugdeBasedOnRotation[1][r];
+				int i2 = curi + nugdeBasedOnRotationFor3Bomb[0][r];
+				int j2 = curj + nugdeBasedOnRotationFor3Bomb[1][r];
 				
 				if(indexCuboidonPaper[i2][j2] >= 0
 						&& curRegion.getCellIndexToOrderOfDev().containsKey(indexCuboidonPaper[i2][j2])) {
@@ -303,11 +336,11 @@ public class ThreeBombHandler {
 			curj = removed_j;
 			
 			if(numInRowTrial1 == 0) {
-				curi = curi - 4 * nugdeToGetRowNeighbourBasedOnRotation[0][rotationNeighbourPaperRelativeToMap];
-				curj = curj - 4 * nugdeToGetRowNeighbourBasedOnRotation[1][rotationNeighbourPaperRelativeToMap];
+				curi = curi - 4 * nugdeBasedOnRotationFor3Bomb[0][rotationNeighbourPaperRelativeToMap];
+				curj = curj - 4 * nugdeBasedOnRotationFor3Bomb[1][rotationNeighbourPaperRelativeToMap];
 			} else {
-				curi = curi + 4 * nugdeToGetRowNeighbourBasedOnRotation[0][rotationNeighbourPaperRelativeToMap];
-				curj = curj + 4 * nugdeToGetRowNeighbourBasedOnRotation[1][rotationNeighbourPaperRelativeToMap];
+				curi = curi + 4 * nugdeBasedOnRotationFor3Bomb[0][rotationNeighbourPaperRelativeToMap];
+				curj = curj + 4 * nugdeBasedOnRotationFor3Bomb[1][rotationNeighbourPaperRelativeToMap];
 			}
 			
 			//TODO: get min index 2
@@ -315,8 +348,8 @@ public class ThreeBombHandler {
 			int orderIndex2 = indexCuboidonPaper.length;
 			
 			for(int r=0; r<NUM_ROTATIONS; r++) {
-				int i2 = curi + nugdeBasedOnRotation[0][r];
-				int j2 = curj + nugdeBasedOnRotation[1][r];
+				int i2 = curi + nugdeBasedOnRotationFor3Bomb[0][r];
+				int j2 = curj + nugdeBasedOnRotationFor3Bomb[1][r];
 				
 				if(indexCuboidonPaper[i2][j2] >= 0
 						&& curRegion.getCellIndexToOrderOfDev().containsKey(indexCuboidonPaper[i2][j2])) {
@@ -334,6 +367,14 @@ public class ThreeBombHandler {
 
 			//END TODO: copy/paste code
 			
+			if(orderIndex1 == indexCuboidonPaper.length || orderIndex2 == indexCuboidonPaper.length) {
+				Utils.printFoldWithIndex(indexCuboidonPaper);
+				System.out.println(orderIndex1);
+				System.out.println(orderIndex2);
+				System.out.println(indexRemovedCell);
+				System.out.println("DOH2");
+				System.exit(1);
+			}
 			threeBombMinIndexToUse[indexRemovedCell % this.threeBombActive.length] = Math.max(orderIndex1, orderIndex2);
 			
 
@@ -380,9 +421,13 @@ public class ThreeBombHandler {
 			Coord2D paperToDevelop[],
 			int indexCuboidonPaper[][],
 			int cellIndexToUse,
-			Region curRegion
+			Region curRegion,
+			long numIterations,
+			int numCellsUsedDepth
 			) {
 		
+		
+		//TODO: it doesn't work! debug this!
 
 		if(FoldResolveOrderedRegionsNby1by1.getNumUsedNeighbourCellonPaper(indexCuboidonPaper,paperToDevelop[0]) == 1) {
 			
