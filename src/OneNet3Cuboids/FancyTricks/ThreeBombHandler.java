@@ -513,6 +513,7 @@ public class ThreeBombHandler {
 		int minOrder = curRegion.getCellIndexToOrderOfDev().get(cellIndexToUse);
 		
 		//TODO: caching...
+		//Something like higherOrderPerSection...
 		for(int i=0; i<cuboid.getNumCellsToFill(); i++) {
 			
 			if((topBottombridgeUsedNx1x1[i] != curThreeBombSection || i == TOP)

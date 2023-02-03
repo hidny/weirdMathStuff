@@ -112,7 +112,7 @@ public class DFSIntersectFinderRegions {
 			
 			int topBottombridgeUsedNx1x1[] = new int[Utils.getTotalArea(cuboidToBuild.getDimensions())];
 		
-			doDepthFirstSearch(paperToDevelop, indexCuboidOnPaper, paperUsed, cuboid, numCellsUsedDepth, regionsToHandleRevOrder, -1L, skipSymmetries, solutionResolver, cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid, topBottombridgeUsedNx1x1, threeBombHandler);
+			doDepthFirstSearch(paperToDevelop, indexCuboidOnPaper, paperUsed, cuboid, numCellsUsedDepth, regionsToHandleRevOrder, -1L, skipSymmetries, solutionResolver, cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid, topBottombridgeUsedNx1x1, threeBombHandler, false);
 			
 
 			System.out.println("Num break 1: " + numBreak1);
@@ -137,14 +137,22 @@ public class DFSIntersectFinderRegions {
 	public static long doDepthFirstSearch(Coord2D paperToDevelop[], int indexCuboidonPaper[][], boolean paperUsed[][], CuboidToFoldOn cuboid, int numCellsUsedDepth,
 			Region regions[], long limitDupSolutions, boolean skipSymmetries, SolutionResolverIntersectInterface solutionResolver, CuboidToFoldOn cuboidToBringAlongStartRot, int indexCuboidOnPaper2ndCuboid[][],
 			int topBottombridgeUsedNx1x1[],
-			ThreeBombHandler threeBombHandler) {
+			ThreeBombHandler threeBombHandler,
+			boolean debugNope) {
 
 		if(numCellsUsedDepth == cuboid.getNumCellsToFill()) {
 			
 			int indexes[][][] = new int[2][][];
 			indexes[0] = indexCuboidonPaper;
 			indexes[1] = indexCuboidOnPaper2ndCuboid;
-			return solutionResolver.resolveSolution(cuboid, paperToDevelop, indexes, paperUsed);
+			long tmp = solutionResolver.resolveSolution(cuboid, paperToDevelop, indexes, paperUsed);
+
+			if(debugNope) {
+				System.out.println("STOP!");
+				System.out.println(numIterations);
+				System.exit(1);
+			}
+			return tmp;
 		}
 
 		if(regions.length == 1 && regions[0].getNumCellsInRegion() < cuboid.getNumCellsToFill() - numCellsUsedDepth && limitDupSolutions < 0) {
@@ -224,12 +232,19 @@ public class DFSIntersectFinderRegions {
 					numIterations, numCellsUsedDepth,
 					topBottombridgeUsedNx1x1) ){
 				
-			//	Utils.printFoldWithIndex(indexCuboidonPaper);
-			//	Utils.printFold(paperUsed);
-			//	System.out.println("Index to use: " + indexToUse);
-			//	System.out.println("BREAK!");
-				//TODO: it's broken for some reason. Please investigate.
+				if(numIterations > 464860 && numIterations < 464907) {
+					System.out.println("Num iterations: " + numIterations + " vs  464907");
+				
+					Utils.printFoldWithIndex(indexCuboidonPaper);
+					Utils.printFold(paperUsed);
+					System.out.println("Index to use: " + indexToUse);
+					System.out.println("BREAK!");
+					//TODO: it's broken for some reason. Please investigate.
+				
+				}
+				
 				break;
+				//debugNope = true;
 			}
 
 			CoordWithRotationAndIndex neighbours[] = cuboid.getNeighbours(indexToUse);
@@ -310,7 +325,8 @@ public class DFSIntersectFinderRegions {
 							skipSymmetries,
 							cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid, indexNewCell2, rotationNeighbourPaperRelativeToMap2,
 							topBottombridgeUsedNx1x1,
-							threeBombHandler);
+							threeBombHandler,
+							debugNope);
 					
 					if(regions == null) {
 						cantAddCellBecauseOfOtherPaperNeighbours = true;
@@ -356,7 +372,7 @@ public class DFSIntersectFinderRegions {
 							new_i, new_j, indexNewCell, rotationNeighbourPaperRelativeToMap, topBottombridgeUsedNx1x1);
 					
 					
-					retDuplicateSolutions += doDepthFirstSearch(paperToDevelop, indexCuboidonPaper, paperUsed, cuboid, numCellsUsedDepth, regions, newLimitDupSolutions, skipSymmetries, solutionResolver, cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid, topBottombridgeUsedNx1x1, threeBombHandler);
+					retDuplicateSolutions += doDepthFirstSearch(paperToDevelop, indexCuboidonPaper, paperUsed, cuboid, numCellsUsedDepth, regions, newLimitDupSolutions, skipSymmetries, solutionResolver, cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid, topBottombridgeUsedNx1x1, threeBombHandler, debugNope);
 
 					if(numCellsUsedDepth < regions[0].getCellIndexToOrderOfDev().size()) {
 						System.out.println("WHAT???");
@@ -412,13 +428,14 @@ public class DFSIntersectFinderRegions {
 			Region regions[], int regionIndex, boolean skipSymmetries,
 			CuboidToFoldOn cuboidToBringAlongStartRot, int indexCuboidOnPaper2ndCuboid[][],
 			int topBottombridgeUsedNx1x1[],
-			ThreeBombHandler threeBombHandler) {
+			ThreeBombHandler threeBombHandler,
+			boolean debugNope) {
 		
 		
 		Region regionArgToUse[] = new Region[1];
 		regionArgToUse[0] = regions[regionIndex];
 		
-		if(doDepthFirstSearch(paperToDevelop, indexCuboidonPaper, paperUsed, cuboid, numCellsUsedDepth, regionArgToUse, 0L, skipSymmetries, null, cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid, topBottombridgeUsedNx1x1, threeBombHandler)
+		if(doDepthFirstSearch(paperToDevelop, indexCuboidonPaper, paperUsed, cuboid, numCellsUsedDepth, regionArgToUse, 0L, skipSymmetries, null, cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid, topBottombridgeUsedNx1x1, threeBombHandler, debugNope)
 				> 0L) {
 			return true;
 		} else {
@@ -432,13 +449,14 @@ public class DFSIntersectFinderRegions {
 			Region regions[], int regionIndex, boolean skipSymmetries,
 			CuboidToFoldOn cuboidToBringAlongStartRot, int indexCuboidOnPaper2ndCuboid[][],
 			int topBottombridgeUsedNx1x1[],
-			ThreeBombHandler threeBombHandler) {
+			ThreeBombHandler threeBombHandler,
+			boolean debugNope) {
 		
 		
 		Region regionArgToUse[] = new Region[1];
 		regionArgToUse[0] = regions[regionIndex];
 		
-		if(doDepthFirstSearch(paperToDevelop, indexCuboidonPaper, paperUsed, cuboid, numCellsUsedDepth, regionArgToUse, 1L, skipSymmetries, null, cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid, topBottombridgeUsedNx1x1, threeBombHandler)
+		if(doDepthFirstSearch(paperToDevelop, indexCuboidonPaper, paperUsed, cuboid, numCellsUsedDepth, regionArgToUse, 1L, skipSymmetries, null, cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid, topBottombridgeUsedNx1x1, threeBombHandler, debugNope)
 				== 1L) {
 			return true;
 		} else {
@@ -461,7 +479,8 @@ public class DFSIntersectFinderRegions {
 			boolean skipSymmetries,
 			CuboidToFoldOn cuboidToBringAlongStartRot, int indexCuboidOnPaper2ndCuboid[][], int indexNewCell2, int rotationNeighbourPaperRelativeToMap2,
 			int topBottombridgeUsedNx1x1[],
-			ThreeBombHandler threeBombHandler) {
+			ThreeBombHandler threeBombHandler,
+			boolean debugNope) {
 		
 		boolean cantAddCellBecauseARegionDoesntHaveSolution = false;
 		
@@ -554,7 +573,8 @@ public class DFSIntersectFinderRegions {
 					                       cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid, indexNewCell2, rotationNeighbourPaperRelativeToMap2,
 					                       topBottombridgeUsedNx1x1,
 					                       regionsSplit, indexToAdd,
-					                       threeBombHandler)) {
+					                       threeBombHandler,
+					           			   debugNope)) {
 
 								cantAddCellBecauseARegionDoesntHaveSolution = true;
 								numBreak1++;
@@ -578,7 +598,8 @@ public class DFSIntersectFinderRegions {
 					                       cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid, indexNewCell2, rotationNeighbourPaperRelativeToMap2,
 					                       topBottombridgeUsedNx1x1,
 					                       regionsSplit, indexToTry,
-					                       threeBombHandler)) {
+					                       threeBombHandler,
+					           			 debugNope)) {
 									
 								cantAddCellBecauseARegionDoesntHaveSolution = true;
 								numBreak2++;
@@ -626,7 +647,8 @@ public class DFSIntersectFinderRegions {
 									regionsSplit, i2, skipSymmetries,
 									cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid,
 									topBottombridgeUsedNx1x1,
-									threeBombHandler);
+									threeBombHandler,
+									debugNope);
 
 							numCellsUsedDepth -= 1;
 							
@@ -710,7 +732,8 @@ public class DFSIntersectFinderRegions {
                        CuboidToFoldOn cuboidToBringAlongStartRot, int indexCuboidOnPaper2ndCuboid[][], int indexNewCell2, int rotationNeighbourPaperRelativeToMap2,
                        int topBottombridgeUsedNx1x1[],
                       Region regionsSplit[], int regionIndexToCheck,
-                      ThreeBombHandler threeBombHandler) {
+                      ThreeBombHandler threeBombHandler,
+          			boolean debugNope) {
 
 		 	boolean hasSolution = false;
 
@@ -739,7 +762,8 @@ public class DFSIntersectFinderRegions {
 					regionsSplit, regionIndexToCheck, skipSymmetries,
 					cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid,
 					topBottombridgeUsedNx1x1,
-					threeBombHandler)
+					threeBombHandler,
+					debugNope)
 				) {
 				
 				
@@ -793,10 +817,10 @@ public class DFSIntersectFinderRegions {
 		//solveCuboidIntersections(new CuboidToFoldOn(8, 1, 1), new CuboidToFoldOn(5, 2, 1));
 		//It got 35675 again, but this time it only took 3 hours! It took almost 2 days last time!
 		
-		//solveCuboidIntersections(new CuboidToFoldOn(7, 1, 1), new CuboidToFoldOn(3, 3, 1));
+		solveCuboidIntersections(new CuboidToFoldOn(7, 1, 1), new CuboidToFoldOn(3, 3, 1));
 		////It got 1070 (again) (They got 1080, but I think they were wrong)
 		
-		solveCuboidIntersections(new CuboidToFoldOn(5, 1, 1), new CuboidToFoldOn(3, 2, 1));
+		//solveCuboidIntersections(new CuboidToFoldOn(5, 1, 1), new CuboidToFoldOn(3, 2, 1));
 		//It got 2263!
 
 		//solveCuboidIntersections(new CuboidToFoldOn(2, 1, 1), new CuboidToFoldOn(1, 2, 1));
