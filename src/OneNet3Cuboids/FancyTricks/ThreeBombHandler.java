@@ -459,7 +459,7 @@ public class ThreeBombHandler {
 				}
 			}
 			
-		} else {
+		} else if( ! curRegion.getCellRegionsToHandleInRevOrder()[TOP]){
 			//TODO: get num active sections...
 			for(int i=0; i<threeBombActive.length; i++) {
 				if(threeBombActive[i] && threeBombMaxOrderIndexToUse[i] < curRegion.getCellIndexToOrderOfDev().get(cellIndexToUse)) {
@@ -515,7 +515,7 @@ public class ThreeBombHandler {
 		//TODO: caching...
 		for(int i=0; i<cuboid.getNumCellsToFill(); i++) {
 			
-			if(topBottombridgeUsedNx1x1[i] != curThreeBombSection
+			if((topBottombridgeUsedNx1x1[i] != curThreeBombSection || i == TOP)
 					&& curRegion.getCellIndexToOrderOfDev().containsKey(i)
 					&& minOrder <=  curRegion.getCellIndexToOrderOfDev().get(i)) {
 				
@@ -526,4 +526,5 @@ public class ThreeBombHandler {
 		}
 		return false;
 	}
+	
 }
