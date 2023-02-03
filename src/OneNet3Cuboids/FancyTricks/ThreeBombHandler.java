@@ -429,7 +429,7 @@ public class ThreeBombHandler {
 		
 		//TODO: it doesn't work! debug this!
 
-		if(FoldResolveOrderedRegionsNby1by1.getNumUsedNeighbourCellonPaper(indexCuboidonPaper,paperToDevelop[0]) == 1) {
+		if(FoldResolveOrderedRegionsNby1by1.getNumUsedNeighbourCellonPaper(indexCuboidonPaper,paperToDevelop[0]) <= 1) {
 			
 			for(int i=0; i<threeBombActive.length; i++) {
 				if(threeBombActive[i] && threeBombMinIndexToUse[i] < curRegion.getCellIndexToOrderOfDev().get(cellIndexToUse)) {
@@ -446,7 +446,7 @@ public class ThreeBombHandler {
 						if(i == 0) {
 							indexToCheck += cuboid.getDimensions()[0];
 						}
-						if( ! cuboid.isCellIndexUsed(indexToCheck) && curRegion.getCellRegionsToHandleInRevOrder()[i + cuboid.getDimensions()[0] * j]) {
+						if( ! cuboid.isCellIndexUsed(indexToCheck) && curRegion.getCellRegionsToHandleInRevOrder()[indexToCheck]) {
 							return true;
 						}
 					}
@@ -454,11 +454,14 @@ public class ThreeBombHandler {
 				}
 			}
 			
+			return false;
 		}
 		//TODO: Check if a 4-in-a-row line can still be added on paper... 
 		
-		//TODO: check if bottom cuboid has only 1 neighbour, for the easy case...
+		//check if bottom cuboid has only 1 neighbour, for the easy case...
 		
-		return false;
+		//Solving 11x1x1 and 5x3x1 got up to 4 over 5 with 1377 solutions.
+		
+		return true;
 	}
 }
