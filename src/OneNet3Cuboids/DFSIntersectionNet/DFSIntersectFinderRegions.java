@@ -221,7 +221,8 @@ public class DFSIntersectFinderRegions {
 					indexToUse,
 					regions[regionIndex],
 					//Debug:
-					numIterations, numCellsUsedDepth) ){
+					numIterations, numCellsUsedDepth,
+					topBottombridgeUsedNx1x1) ){
 				
 			//	Utils.printFoldWithIndex(indexCuboidonPaper);
 			//	Utils.printFold(paperUsed);
@@ -352,7 +353,7 @@ public class DFSIntersectFinderRegions {
 					}
 					
 					threeBombHandler.addCell(paperUsed, indexCuboidonPaper, cuboid,  regions[regions.length - 1],
-							new_i, new_j, indexNewCell, rotationNeighbourPaperRelativeToMap);
+							new_i, new_j, indexNewCell, rotationNeighbourPaperRelativeToMap, topBottombridgeUsedNx1x1);
 					
 					
 					retDuplicateSolutions += doDepthFirstSearch(paperToDevelop, indexCuboidonPaper, paperUsed, cuboid, numCellsUsedDepth, regions, newLimitDupSolutions, skipSymmetries, solutionResolver, cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid, topBottombridgeUsedNx1x1, threeBombHandler);
@@ -372,7 +373,7 @@ public class DFSIntersectFinderRegions {
 					//Remember to keep this after the regions update
 					//TODO: maybe add more to it...
 					threeBombHandler.removeCell(paperUsed, indexCuboidonPaper, cuboid,  regions[regions.length - 1],
-							new_i, new_j, indexNewCell, rotationNeighbourPaperRelativeToMap);
+							new_i, new_j, indexNewCell, rotationNeighbourPaperRelativeToMap, topBottombridgeUsedNx1x1);
 					
 					
 					//Remove cell from last region(s):
@@ -792,10 +793,10 @@ public class DFSIntersectFinderRegions {
 		//solveCuboidIntersections(new CuboidToFoldOn(8, 1, 1), new CuboidToFoldOn(5, 2, 1));
 		//It got 35675 again, but this time it only took 3 hours! It took almost 2 days last time!
 		
-		solveCuboidIntersections(new CuboidToFoldOn(7, 1, 1), new CuboidToFoldOn(3, 3, 1));
+		//solveCuboidIntersections(new CuboidToFoldOn(7, 1, 1), new CuboidToFoldOn(3, 3, 1));
 		////It got 1070 (again) (They got 1080, but I think they were wrong)
 		
-		//solveCuboidIntersections(new CuboidToFoldOn(5, 1, 1), new CuboidToFoldOn(3, 2, 1));
+		solveCuboidIntersections(new CuboidToFoldOn(5, 1, 1), new CuboidToFoldOn(3, 2, 1));
 		//It got 2263!
 
 		//solveCuboidIntersections(new CuboidToFoldOn(2, 1, 1), new CuboidToFoldOn(1, 2, 1));

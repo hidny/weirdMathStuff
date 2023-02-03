@@ -23,7 +23,8 @@ public class ThreeBombHandler {
 		this.TOP = cuboidNx1x1ToWorkWith.getDimensions()[0] * 4 + 1;
 		
 		this.threeBombActive = new boolean[cuboidNx1x1ToWorkWith.getDimensions()[0]];
-		this.threeBombMinIndexToUse = new int[cuboidNx1x1ToWorkWith.getDimensions()[0]];
+		this.threeBombMaxOrderIndexToUse = new int[cuboidNx1x1ToWorkWith.getDimensions()[0]];
+		this.threeBombSectionUsedPerRow = new int[cuboidNx1x1ToWorkWith.getDimensions()[0]];
 		
 	}
 	
@@ -39,7 +40,8 @@ public class ThreeBombHandler {
 	private int TOP = -1;
 	
 	public boolean threeBombActive[] = null;
-	public int threeBombMinIndexToUse[] = null;
+	public int threeBombMaxOrderIndexToUse[] = null;
+	public int threeBombSectionUsedPerRow[] = null;
 	
 	private static Scanner in = new Scanner(System.in);
 	
@@ -65,7 +67,8 @@ public class ThreeBombHandler {
 	// Detect when there's 3 in a row...
 	//TODO: will we even need indexCuboidOnPaper?
 	public void addCell(boolean paperUsed[][], int indexCuboidonPaper[][], CuboidToFoldOn nx1x1cuboid,  Region curRegion,
-			int new_i, int new_j, int indexNewCell, int rotationNeighbourPaperRelativeToMap) {
+			int new_i, int new_j, int indexNewCell, int rotationNeighbourPaperRelativeToMap,
+			int topBottombridgeUsedNx1x1[]) {
 		
 		
 		if(indexNewCell == TOP || indexNewCell == BOTTOM) {
@@ -210,8 +213,8 @@ public class ThreeBombHandler {
 				System.out.println("DOH1");
 				System.exit(1);
 			}
-			threeBombMinIndexToUse[indexNewCell % this.threeBombActive.length] = Math.max(minIndex1, minIndex2);
-			
+			threeBombMaxOrderIndexToUse[indexNewCell % this.threeBombActive.length] = Math.max(minIndex1, minIndex2);
+			threeBombSectionUsedPerRow[indexNewCell % this.threeBombActive.length] = topBottombridgeUsedNx1x1[indexNewCell];
 			
 
 			if(debugAddedCellInTheMiddle) {
@@ -257,7 +260,8 @@ public class ThreeBombHandler {
 	// Do the clever solution later...
 	
 	public void removeCell(boolean paperUsed[][], int indexCuboidonPaper[][], CuboidToFoldOn nx1x1cuboid,  Region curRegion,
-			int removed_i, int removed_j, int indexRemovedCell, int rotationNeighbourPaperRelativeToMap) {
+			int removed_i, int removed_j, int indexRemovedCell, int rotationNeighbourPaperRelativeToMap,
+			int topBottombridgeUsedNx1x1[]) {
 		// Maybe do nothing for now, but figure out how to make it faster later.
 		
 		
@@ -375,8 +379,8 @@ public class ThreeBombHandler {
 				System.out.println("DOH2");
 				System.exit(1);
 			}
-			threeBombMinIndexToUse[indexRemovedCell % this.threeBombActive.length] = Math.max(orderIndex1, orderIndex2);
-			
+			threeBombMaxOrderIndexToUse[indexRemovedCell % this.threeBombActive.length] = Math.max(orderIndex1, orderIndex2);
+			threeBombSectionUsedPerRow[indexRemovedCell % this.threeBombActive.length] = topBottombridgeUsedNx1x1[indexRemovedCell];
 
 			
 			//System.out.println("3 in a row after removing: (Cell index = " + indexRemovedCell + ")");
@@ -423,7 +427,8 @@ public class ThreeBombHandler {
 			int cellIndexToUse,
 			Region curRegion,
 			long numIterations,
-			int numCellsUsedDepth
+			int numCellsUsedDepth,
+			int topBottombridgeUsedNx1x1[]
 			) {
 		
 		
@@ -432,7 +437,7 @@ public class ThreeBombHandler {
 		if(FoldResolveOrderedRegionsNby1by1.getNumUsedNeighbourCellonPaper(indexCuboidonPaper,paperToDevelop[0]) == 1) {
 			
 			for(int i=0; i<threeBombActive.length; i++) {
-				if(threeBombActive[i] && threeBombMinIndexToUse[i] < curRegion.getCellIndexToOrderOfDev().get(cellIndexToUse)) {
+				if(threeBombActive[i] && threeBombMaxOrderIndexToUse[i] < curRegion.getCellIndexToOrderOfDev().get(cellIndexToUse)) {
 					
 					//Utils.printFoldWithIndex(indexCuboidonPaper);
 					//System.out.println("BOMB TEST!");
@@ -454,11 +459,71 @@ public class ThreeBombHandler {
 				}
 			}
 			
+		} else {
+			//TODO: get num active sections...
+			for(int i=0; i<threeBombActive.length; i++) {
+				if(threeBombActive[i] && threeBombMaxOrderIndexToUse[i] < curRegion.getCellIndexToOrderOfDev().get(cellIndexToUse)) {
+					
+					
+					
+					//The 3-bomb only exploded if you're in the same region:
+					for(int j=0; j<4; j++) {
+						int indexToCheck = i + cuboid.getDimensions()[0] * j;
+						if(i == 0) {
+							indexToCheck += cuboid.getDimensions()[0];
+						}
+						if( ! cuboid.isCellIndexUsed(indexToCheck) && curRegion.getCellRegionsToHandleInRevOrder()[i + cuboid.getDimensions()[0] * j]) {
+
+							if( ! isOutsideSectionsActive(cuboid,
+									cellIndexToUse,
+									curRegion,
+									numIterations,
+									topBottombridgeUsedNx1x1,
+									threeBombSectionUsedPerRow[i]
+									)) {
+								//TODO: test
+								
+								/*System.out.println("No go?");
+								Utils.printFoldWithIndex(indexCuboidonPaper);
+
+								in.next();
+								*/
+								return true;
+							}
+						}
+					}
+				}
+			}
 		}
 		//TODO: Check if a 4-in-a-row line can still be added on paper... 
 		
 		//TODO: check if bottom cuboid has only 1 neighbour, for the easy case...
 		
+		return false;
+	}
+	
+	public boolean isOutsideSectionsActive(CuboidToFoldOn cuboid,
+			int cellIndexToUse,
+			Region curRegion,
+			long numIterations,
+			int topBottombridgeUsedNx1x1[],
+			int curThreeBombSection
+			) {
+		
+		int minOrder = curRegion.getCellIndexToOrderOfDev().get(cellIndexToUse);
+		
+		//TODO: caching...
+		for(int i=0; i<cuboid.getNumCellsToFill(); i++) {
+			
+			if(topBottombridgeUsedNx1x1[i] != curThreeBombSection
+					&& curRegion.getCellIndexToOrderOfDev().containsKey(i)
+					&& minOrder <=  curRegion.getCellIndexToOrderOfDev().get(i)) {
+				
+				return true;
+				
+			}
+					
+		}
 		return false;
 	}
 }
