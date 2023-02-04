@@ -68,8 +68,12 @@ public class ThreeBombHandler {
 	//TODO: will we even need indexCuboidOnPaper?
 	public void addCell(boolean paperUsed[][], int indexCuboidonPaper[][], CuboidToFoldOn nx1x1cuboid,  Region curRegion,
 			int new_i, int new_j, int indexNewCell, int rotationNeighbourPaperRelativeToMap,
-			int topBottombridgeUsedNx1x1[]) {
+			int topBottombridgeUsedNx1x1[], long numIterations) {
 		
+		if(numIterations == 1251590) {
+			System.out.println("DEBUG add cell (2nd one please)");
+			Utils.printFoldWithIndex(indexCuboidonPaper);
+		}
 		
 		if(indexNewCell == TOP || indexNewCell == BOTTOM) {
 			return;
@@ -210,9 +214,11 @@ public class ThreeBombHandler {
 				System.out.println(minIndex1);
 				System.out.println(minIndex2);
 				System.out.println(indexNewCell);
+				System.out.println("Num iterations: " + numIterations);
 				System.out.println("DOH1");
 				System.exit(1);
 			}
+			//System.out.println("Add threeBombMaxOrderIndexToUse" + (indexNewCell % this.threeBombActive.length) + " -> " + Math.max(minIndex1, minIndex2));
 			threeBombMaxOrderIndexToUse[indexNewCell % this.threeBombActive.length] = Math.max(minIndex1, minIndex2);
 			threeBombSectionUsedPerRow[indexNewCell % this.threeBombActive.length] = topBottombridgeUsedNx1x1[indexNewCell];
 			
@@ -261,7 +267,7 @@ public class ThreeBombHandler {
 	
 	public void removeCell(boolean paperUsed[][], int indexCuboidonPaper[][], CuboidToFoldOn nx1x1cuboid,  Region curRegion,
 			int removed_i, int removed_j, int indexRemovedCell, int rotationNeighbourPaperRelativeToMap,
-			int topBottombridgeUsedNx1x1[]) {
+			int topBottombridgeUsedNx1x1[], long numIterations) {
 		// Maybe do nothing for now, but figure out how to make it faster later.
 		
 		
@@ -310,6 +316,10 @@ public class ThreeBombHandler {
 		
 		if(numInRowTrial2 == 3) {
 
+			if(numIterations == 470747) {
+				Utils.printFoldWithIndex(indexCuboidonPaper);
+				System.out.println("Debug");
+			}
 			//For debug:
 			/* && rotationNeighbourPaperRelativeToMap % 2 == 1*/
 			
@@ -379,6 +389,8 @@ public class ThreeBombHandler {
 				System.out.println("DOH2");
 				System.exit(1);
 			}
+			//System.out.println("Remove threeBombMaxOrderIndexToUse" + (indexRemovedCell % this.threeBombActive.length) + " -> " + Math.max(orderIndex1, orderIndex2) +"  (" + orderIndex1 + ", " + orderIndex2 + ")" + "(" + numIterations + ")");
+			
 			threeBombMaxOrderIndexToUse[indexRemovedCell % this.threeBombActive.length] = Math.max(orderIndex1, orderIndex2);
 			threeBombSectionUsedPerRow[indexRemovedCell % this.threeBombActive.length] = topBottombridgeUsedNx1x1[indexRemovedCell];
 
@@ -431,6 +443,10 @@ public class ThreeBombHandler {
 			int topBottombridgeUsedNx1x1[]
 			) {
 		
+		if(numIterations == 470751) {
+			Utils.printFoldWithIndex(indexCuboidonPaper);
+			System.out.println("Debug");
+		}
 		
 		//TODO: it doesn't work! debug this!
 
