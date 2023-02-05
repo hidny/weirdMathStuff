@@ -226,11 +226,31 @@ public class DFSIntersectFinderRegions {
 
 		debugIterations[numCellsUsedDepth] = numIterations;
 		
+		//if(numIterations == 15034) {
+		//	Utils.printFoldWithIndex(indexCuboidonPaper);
+		//	Utils.printFold(paperUsed);
+		//	System.out.println(numIterations);
+		//	System.out.println("Done print 1");
+		//}
+		
+		//TODO: use a cache, and compare results.
+		int maxOrderBasedOn3Bomb = threeBombHandler.getMaxOrderIndex(cuboid,
+				paperToDevelop,
+				indexCuboidonPaper,
+				regions[regionIndex],
+				numIterations,
+				numCellsUsedDepth,
+				topBottombridgeUsedNx1x1
+			);
+		
 		//DEPTH-FIRST START:
-		for(int i=regions[regionIndex].getMinOrderedCellCouldUsePerRegion(); i<paperToDevelop.length && paperToDevelop[i] != null; i++) {
+		for(int i=regions[regionIndex].getMinOrderedCellCouldUsePerRegion(); i<=maxOrderBasedOn3Bomb && i<paperToDevelop.length && paperToDevelop[i] != null; i++) {
 			
 			int indexToUse = indexCuboidonPaper[paperToDevelop[i].i][paperToDevelop[i].j];
 			
+			//if(maxOrderBasedOn3Bomb < i) {
+			//	debugNope = true;
+			//}
 			
 			if( ! regions[regionIndex].getCellIndexToOrderOfDev().containsKey(indexToUse)) {
 				continue;
@@ -246,32 +266,6 @@ public class DFSIntersectFinderRegions {
 				break;
 				
 				//Maybe put this right after the contains key if condition? (regions[regionIndex].getCellIndexToOrderOfDev().containsKey(indexToUse))
-			} else if(threeBombHandler.quickCheckThreeBombDetonatedForCurrentIteration(cuboid,
-					paperToDevelop,
-					indexCuboidonPaper,
-					indexToUse,
-					regions[regionIndex],
-					//Debug:
-					numIterations, numCellsUsedDepth,
-					topBottombridgeUsedNx1x1) ){
-				
-				if(numIterations >= 470751-1000 && numIterations <= 470751) {
-					System.out.println("Num iterations: " + numIterations + " vs  470751");
-				
-					Utils.printFoldWithIndex(indexCuboidonPaper);
-					Utils.printFold(paperUsed);
-					System.out.println("Index to use: " + indexToUse);
-					System.out.println("BREAK!");
-					System.out.println("Depth: " + numCellsUsedDepth);
-					if(debugNope == false) {
-						System.out.println("Switching debugNope to true!");
-					}
-					//TODO: it's broken for some reason. Please investigate.
-				
-				}
-				
-				break;
-				//debugNope = true;
 			}
 
 			CoordWithRotationAndIndex neighbours[] = cuboid.getNeighbours(indexToUse);
@@ -415,10 +409,7 @@ public class DFSIntersectFinderRegions {
 					
 
 					//Remember to keep this after the regions update
-					//TODO: maybe add more to it...
-					threeBombHandler.removeCell(paperUsed, indexCuboidonPaper, cuboid,  regions[regions.length - 1],
-							new_i, new_j, indexNewCell, rotationNeighbourPaperRelativeToMap, topBottombridgeUsedNx1x1, numIterations);
-					
+
 					
 					//Remove cell from last region(s):
 					regions[regions.length - 1].removeCellFromRegion(indexNewCell, numCellsUsedDepth, prevNewMinOrderedCellCouldUse, prevMinCellRotationOfMinCellToDev);
@@ -431,6 +422,10 @@ public class DFSIntersectFinderRegions {
 					
 					cuboid.removeCell(indexNewCell);
 					cuboidToBringAlongStartRot.removeCell(indexNewCell2);
+					
+					threeBombHandler.removeCell(paperToDevelop, paperUsed, indexCuboidonPaper, cuboid,  regions[regions.length - 1],
+							new_i, new_j, indexNewCell, rotationNeighbourPaperRelativeToMap, topBottombridgeUsedNx1x1, numIterations);
+					
 					//End tear down
 
 
@@ -682,9 +677,6 @@ public class DFSIntersectFinderRegions {
 									threeBombHandler,
 									debugNope, debugIterations);
 
-							threeBombHandler.removeCell(paperUsed, indexCuboidonPaper, cuboid,  regionsSplit[i2],
-									new_i, new_j, indexNewCell, rotationNeighbourPaperRelativeToMap, topBottombridgeUsedNx1x1, numIterations);
-
 							numCellsUsedDepth -= 1;
 							
 							
@@ -696,8 +688,10 @@ public class DFSIntersectFinderRegions {
 							indexCuboidonPaper[new_i][new_j] = -1;
 							paperToDevelop[numCellsUsedDepth] = null;
 							
-
 							indexCuboidOnPaper2ndCuboid[new_i][new_j] = -1;
+							
+							threeBombHandler.removeCell(paperToDevelop, paperUsed, indexCuboidonPaper, cuboid,  regions[i2],
+									new_i, new_j, indexNewCell, rotationNeighbourPaperRelativeToMap, topBottombridgeUsedNx1x1, numIterations);
 							
 						}
 						
@@ -811,9 +805,6 @@ public class DFSIntersectFinderRegions {
 			}
 			
 
-			threeBombHandler.removeCell(paperUsed, indexCuboidonPaper, cuboid,  regionsSplit[regionIndexToCheck],
-					new_i, new_j, indexNewCell, rotationNeighbourPaperRelativeToMap, topBottombridgeUsedNx1x1, numIterations);
-			
 			numCellsUsedDepth -= 1;
 			
 			
@@ -830,6 +821,9 @@ public class DFSIntersectFinderRegions {
 			//Don't remove this: (It's supposed to be set for now)
 			//cuboid.removeCell(indexNewCell);
 
+			threeBombHandler.removeCell(paperToDevelop, paperUsed, indexCuboidonPaper, cuboid,  regionsSplit[regionIndexToCheck],
+					new_i, new_j, indexNewCell, rotationNeighbourPaperRelativeToMap, topBottombridgeUsedNx1x1, numIterations);
+			
 			cuboidToBringAlongStartRot.removeCell(indexNewCell2);
 			
 			//End mini-tear down
