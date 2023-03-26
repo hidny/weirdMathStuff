@@ -42,7 +42,9 @@ public class BasicUniqueCheckImproved {
 			
 
 			for(int i=0; i<scores.length; i++) {
-				scores[i] = new BigInteger((widthShape * BIG_ENOUGH_NUMBER + heightShape) + "");
+				//3 * 256^2 fixes a possible hash collision
+				// I made it 3 instead of 1 because in future, I want placement of first and second 1 to mean something
+				scores[i] = new BigInteger((3 * BIG_ENOUGH_NUMBER * BIG_ENOUGH_NUMBER + widthShape * BIG_ENOUGH_NUMBER + heightShape) + "");
 
 			}
 			
@@ -101,7 +103,9 @@ public class BasicUniqueCheckImproved {
 			
 
 			for(int i=0; i<scores.length; i++) {
-				scores[i] = new BigInteger((heightShape * BIG_ENOUGH_NUMBER + widthShape) + "");
+				//3 * 256^2 fixes a possible hash collision
+				// I made it 3 instead of 1 because in future, I want placement of first and second 1 to mean something
+				scores[i] = new BigInteger((3 * BIG_ENOUGH_NUMBER * BIG_ENOUGH_NUMBER + heightShape * BIG_ENOUGH_NUMBER + widthShape) + "");
 
 			}
 			
@@ -158,7 +162,9 @@ public class BasicUniqueCheckImproved {
 
 
 			for(int i=0; i<scores.length; i++) {
-				scores[i] = new BigInteger((widthShape * BIG_ENOUGH_NUMBER + heightShape) + "");
+				//3 * 256^2 fixes a possible hash collision
+				// I made it 3 instead of 1 because in future, I want placement of first and second 1 to mean something
+				scores[i] = new BigInteger((3 * BIG_ENOUGH_NUMBER * BIG_ENOUGH_NUMBER + widthShape * BIG_ENOUGH_NUMBER + heightShape) + "");
 
 			}
 

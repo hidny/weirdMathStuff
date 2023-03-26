@@ -103,14 +103,13 @@ public class ShapeIntersectionCheckerAtSolutionTime implements SolutionResolverI
 		} //End loop for each start position
 		
 
-		
 		return ret;
 	}
 
 	@Override
 	public long getNumUniqueFound() {
 		// TODO Auto-generated method stub
-		return 0;
+		return numSolutions;
 	}
 
 	

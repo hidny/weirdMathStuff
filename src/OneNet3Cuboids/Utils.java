@@ -191,24 +191,24 @@ public class Utils {
 	
 	
 	//TODO: remove empty border (reuse code)
-		//TODO: improve and make it return a string
 		public static void printFold(boolean array[][]) {
+			
+			StringBuilder sb = new StringBuilder();
 			
 			int borders[] = getBorders(array);
 			
 			for(int i=borders[0]; i<borders[1] + 1; i++) {
 				for(int j=borders[2]; j<borders[3] + 1; j++) {
 					if(array[i][j]) {
-						System.out.print("#");
+						sb.append('#');
 					} else {
-						System.out.print(".");
+						sb.append('.');
 					}
 				}
-				System.out.println("|");
+				sb.append("|" + System.lineSeparator());
 			}
-			System.out.println();
+			System.out.println(sb.toString());
 		}
-		
 		
 
 		//TODO: remove empty border (reuse code)
@@ -231,6 +231,8 @@ public class Utils {
 			String space ="";
 			String points = "";
 			
+			StringBuilder sb = new StringBuilder();
+			
 			for(int i=0; i<maxLength; i++) {
 				space += " ";
 				points += ".";
@@ -243,18 +245,18 @@ public class Utils {
 						int lengthNum = (array[i][j] + "").length();
 						
 						if(lengthNum < maxLength) {
-							System.out.print("|" + space.substring(lengthNum) + array[i][j]);
+							sb.append("|" + space.substring(lengthNum) + array[i][j]);
 						} else {
-							System.out.print("|"+ array[i][j]);
+							sb.append("|"+ array[i][j]);
 						}
 						
 					} else {
-						System.out.print("|" + points);
+						sb.append("|" + points);
 					}
 				}
-				System.out.println("|");
+				sb.append("|" + System.lineSeparator());
 			}
-			System.out.println();
+			System.out.println(sb.toString());
 		}
 		
 		public static boolean debugBadFold(int array[][], boolean used[]) {

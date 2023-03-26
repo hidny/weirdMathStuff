@@ -311,6 +311,12 @@ public class SymmetryResolver {
 		//These rules work because of the 4-way symmetry
 		if(cellIndexToUse == 0) {
 			
+			//TODO: tmp skip 4 and 3 step:
+			if(FoldResolveOrderedRegionsNby1by1.getNumUsedNeighbourCellonPaper(indexCuboidonPaper,paperToDevelop[0]) >= 2 ) {
+				return true;
+			}
+			//END TODO
+			
 			if(FoldResolveOrderedRegionsNby1by1.getNumUsedNeighbourCellonPaper(indexCuboidonPaper,paperToDevelop[0]) < 3 && rotationToAddCellOnPaper == 3) {
 				//(Leave cell on left alone unless bottom is touching all 4 cells)
 				//nope

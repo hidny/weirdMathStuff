@@ -100,7 +100,9 @@ public class DFSIntersectFinderRegions {
 		ArrayList<PivotCellDescription> startingPointsAndRotationsToCheck = PivotCellDescription.getUniqueRotationListsWithCellInfo(cuboidToBringAlong);
 		
 		System.out.println("Num starting points and rotations to check: " + startingPointsAndRotationsToCheck.size());
-		for(int i=0; i<startingPointsAndRotationsToCheck.size(); i++) {
+		
+		//(Set i=1 for non-trial Nx1x1 intersections)
+		for(int i=7; i<8; i++) {
 			
 			int startIndex2ndCuboid =startingPointsAndRotationsToCheck.get(i).getCellIndex();
 			int startRotation2ndCuboid = startingPointsAndRotationsToCheck.get(i).getRotationRelativeToCuboidMap();
@@ -845,12 +847,17 @@ public class DFSIntersectFinderRegions {
 	public static void main(String args[]) {
 		System.out.println("Fold Resolver Ordered Regions intersection skip symmetries Nx1x1:");
 
+		
+		//solveCuboidIntersections(new CuboidToFoldOn(13, 1, 1), new CuboidToFoldOn(3, 3, 3));
+		
+		solveCuboidIntersections(new CuboidToFoldOn(11, 1, 1), new CuboidToFoldOn(5, 3, 1));
+		
 		//solveCuboidIntersections(new CuboidToFoldOn(11, 1, 1), new CuboidToFoldOn(7, 2, 1));
 		
 		//solveCuboidIntersections(new CuboidToFoldOn(9, 1, 1), new CuboidToFoldOn(4, 3, 1));
 		//It got 4469 solutions and it took about 41.5 hours
 		
-		solveCuboidIntersections(new CuboidToFoldOn(8, 1, 1), new CuboidToFoldOn(5, 2, 1));
+		//solveCuboidIntersections(new CuboidToFoldOn(8, 1, 1), new CuboidToFoldOn(5, 2, 1));
 		//It got 35675 again, but this time it only took 3 hours! It took almost 2 days last time!
 		
 		//solveCuboidIntersections(new CuboidToFoldOn(7, 1, 1), new CuboidToFoldOn(3, 3, 1));
@@ -864,6 +871,19 @@ public class DFSIntersectFinderRegions {
 		//Best 5,1,1: 3 minute 45 seconds (3014430 solutions) (December 27th)
 		
 		
+		//Find non-trivial cuboid intersections:
+		//solveCuboidIntersections(new CuboidToFoldOn(9, 1, 1), new CuboidToFoldOn(9, 1, 1));
+		//Nx1x1: suprise intersections: (Not on OEIS :( )
+		// I guess that the odds number are different from even?
+		//1: 0
+		//2: 72
+		//3: 47
+		//4: 204
+		//5: 189
+		//6: 372
+		//7: 217
+		//8: 1114
+		//9: 495
 
 		
 		System.out.println("Current UTC timestamp in milliseconds: " + System.currentTimeMillis());

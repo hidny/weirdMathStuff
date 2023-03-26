@@ -45,6 +45,10 @@ public class StandardResolverForSmallIntersectSolution implements SolutionResolv
 				Utils.printFoldWithIndex(indexCuboidonPaper[i]);
 			}
 			
+			System.out.println("Solution code:");
+			System.out.println(uniqChecker.debugLastScore);
+			
+			
 			System.out.println("Num unique solutions found: " + 
 					FoldResolveOrderedRegionsSkipSymmetries.numUniqueFound);
 			
