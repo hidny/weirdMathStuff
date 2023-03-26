@@ -22,6 +22,18 @@ public class ShapeIntersectionCheckerAtSolutionTime implements SolutionResolverI
 	// (8x1x1 and 5x2x1).
 
 	private MemorylessUniqueCheckSkipSymmetriesMemManage2ForNx1x1 memorylessUniqueCheckSkipSymmetriesMemManage2;
+	
+	private boolean quiet = false;
+	
+	public ShapeIntersectionCheckerAtSolutionTime(CuboidToFoldOn otherShape, boolean quiet) {
+
+		this(otherShape);
+		this.quiet = quiet;
+		
+		numSolutions = 0;
+		
+	}
+
 	public ShapeIntersectionCheckerAtSolutionTime(CuboidToFoldOn otherShape) {
 		
 		memorylessUniqueCheckSkipSymmetriesMemManage2 = new MemorylessUniqueCheckSkipSymmetriesMemManage2ForNx1x1(otherShape);
@@ -29,6 +41,7 @@ public class ShapeIntersectionCheckerAtSolutionTime implements SolutionResolverI
 		//Clear number of uniq solution because this program will be using it
 		// uniqList should be empty though...
 		BasicUniqueCheck.uniqList.clear();
+		
 	}
 
 	private static int numTrials = 0;
@@ -39,7 +52,7 @@ public class ShapeIntersectionCheckerAtSolutionTime implements SolutionResolverI
 		long ret = 0L;
 		
 		numTrials++;
-		if(numTrials % 1000000 == 0) {
+		if(numTrials % 1000000 == 0 && quiet == false) {
 			System.out.println("Num trials: " + numTrials);
 			System.out.println("What's being tried:");
 			Utils.printFold(OrigPaperUsed);
@@ -57,22 +70,25 @@ public class ShapeIntersectionCheckerAtSolutionTime implements SolutionResolverI
 					
 					if(BasicUniqueCheck.isUnique(OrigPaperUsed)) {
 						
-						System.out.println("Found intersection:");
-						
+
 						numSolutions++;
 						FoldResolveOrderedRegionsSkipSymmetries.numUniqueFound++;
 						
-						System.out.println("Number of different intersections found: " + numSolutions);
-						
-						Utils.printFold(OrigPaperUsed);
+						if(! quiet) {
+	 						System.out.println("Found intersection:");
+							
+							System.out.println("Number of different intersections found: " + numSolutions);
+							
+							Utils.printFold(OrigPaperUsed);
+			
+							System.out.println();
+							System.out.println("Solution 1:");
+							Utils.printFoldWithIndex(indexCuboidonPaper);
 		
-						System.out.println();
-						System.out.println("Solution 1:");
-						Utils.printFoldWithIndex(indexCuboidonPaper);
-	
-						System.out.println();
-						System.out.println("Solution 2:");
-						Utils.printFoldWithIndex(memorylessUniqueCheckSkipSymmetriesMemManage2.getIndexCuboidOnPaper());
+							System.out.println();
+							System.out.println("Solution 2:");
+							Utils.printFoldWithIndex(memorylessUniqueCheckSkipSymmetriesMemManage2.getIndexCuboidOnPaper());
+						}
 						
 						ret = 1L;
 						
