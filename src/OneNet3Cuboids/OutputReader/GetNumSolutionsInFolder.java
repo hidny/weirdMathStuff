@@ -16,11 +16,11 @@ public class GetNumSolutionsInFolder {
 		File folder = new File("C:/Users/Michael/Desktop/msttParkerChallenge/5X3X1and11x1x1Intersects/");
 
 
-		CuboidToFoldOn cuboid = new  CuboidToFoldOn(1, 1, 11);
+		//CuboidToFoldOn cuboid = new  CuboidToFoldOn(1, 1, 11);
 		//CuboidToFoldOn cuboid = new  CuboidToFoldOn(5, 3, 1);
 	    boolean quiet = true;
 	    
-		//CuboidToFoldOn cuboid = new  CuboidToFoldOn(7, 2, 1);
+		CuboidToFoldOn cuboid = new  CuboidToFoldOn(7, 2, 1);
 	    //boolean quiet = false;
 
 		File[] listOfFiles = folder.listFiles();
@@ -61,8 +61,13 @@ public class GetNumSolutionsInFolder {
 				
 				in = new Scanner(new File(listOfFiles[i].getAbsolutePath()));
 				
+				int count = 0;
 				while(in.hasNextLine()) {
+					count++;
 					
+					if(count %100000 == 0) {
+						System.out.println("Hello count in file of " + count);
+					}
 					boolean tmpArray[][] = OutputReaderUtilsFunctions.getNextSolutionAsPaperUsedArray(in);
 					
 					if(tmpArray == null) {

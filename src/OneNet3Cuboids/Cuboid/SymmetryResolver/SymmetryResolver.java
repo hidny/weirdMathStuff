@@ -311,10 +311,10 @@ public class SymmetryResolver {
 		//These rules work because of the 4-way symmetry
 		if(cellIndexToUse == 0) {
 			
-			//TODO: tmp skip 4 and 3 step:
-			if(FoldResolveOrderedRegionsNby1by1.getNumUsedNeighbourCellonPaper(indexCuboidonPaper,paperToDevelop[0]) >= 2 ) {
-				return true;
-			}
+			//TODO: tmp skip 4 and 3 AND 2 step:
+			//if(FoldResolveOrderedRegionsNby1by1.getNumUsedNeighbourCellonPaper(indexCuboidonPaper,paperToDevelop[0]) >= 1 ) {
+			//	return true;
+			//}
 			//END TODO
 			
 			if(FoldResolveOrderedRegionsNby1by1.getNumUsedNeighbourCellonPaper(indexCuboidonPaper,paperToDevelop[0]) < 3 && rotationToAddCellOnPaper == 3) {

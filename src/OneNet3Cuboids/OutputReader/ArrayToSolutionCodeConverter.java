@@ -29,7 +29,11 @@ public class ArrayToSolutionCodeConverter {
 		//CuboidToFoldOn cuboid = new  CuboidToFoldOn(1, 11, 1);
 		//CuboidToFoldOn cuboid = new  CuboidToFoldOn(1, 11, 1);
 		//CuboidToFoldOn cuboid = new  CuboidToFoldOn(5, 3, 1);
-		CuboidToFoldOn cuboid = new  CuboidToFoldOn(7, 2, 1);
+		//CuboidToFoldOn cuboid = new  CuboidToFoldOn(7, 2, 1);
+
+		//CuboidToFoldOn cuboid = new  CuboidToFoldOn(13, 1, 1);
+		//CuboidToFoldOn cuboid = new  CuboidToFoldOn(3, 3, 3);
+		CuboidToFoldOn cuboid = new  CuboidToFoldOn(6, 3, 1);
 		
 		ShapeIntersectionCheckerAtSolutionTime shapeCheck = new ShapeIntersectionCheckerAtSolutionTime(cuboid);
 		
@@ -53,11 +57,23 @@ public class ArrayToSolutionCodeConverter {
 			
 			//Got 0 :(
 			//in = new Scanner(new File("C:/Users/Michael/Desktop/msttParkerChallenge/5X3X1and11x1x1Intersects/Intersect11x1x1and5x3x1AtIndex5part1.txt"));
+
+			//in = new Scanner(new File("C:/Users/Michael/Desktop/msttParkerChallenge/5X3X1and11x1x1Intersects/Intersect11x1x1and5x3x1AtIndex20to24incl.txt"));
 			
 			
 			//Got 0 :(
-			//in = new Scanner(new File("C:/Users/Michael/Desktop/msttParkerChallenge/5X3X1and11x1x1Intersects/Intersect11x1x1and5x3x1AtIndex4.txt"));
+			//in = new Scanner(new File("C:/Users/Michael/Desktop/msttParkerChallenge/5X3X1and11x1x1Intersects/Intersect11x1x1and5x3x1AtIndex6to7part1.txt"));
 
+			//Got 0 :(
+			//in = new Scanner(new File("C:/Users/Michael/Desktop/msttParkerChallenge/5X3X1and11x1x1Intersects/Intersect11x1x1and5x3x1AtIndex7part2.txt"));
+
+			//Got 0 :(
+			//in = new Scanner(new File("C:/Users/Michael/Desktop/msttParkerChallenge/5X3X1and11x1x1Intersects/Intersect11x1x1and5x3x1AtIndex8.txt"));
+			
+			//Got 0 :(
+			//in = new Scanner(new File("C:/Users/Michael/Desktop/msttParkerChallenge/5X3X1and11x1x1Intersects/Intersect11x1x1and5x3x1AtIndex9.txt"));
+
+			
 			//Got 0 :(
 			//in = new Scanner(new File("C:/Users/Michael/Desktop/msttParkerChallenge/5X3X1and11x1x1Intersects/Intersect11x1x1and5x3x1AtIndex10to13incl.txt"));
 			
@@ -88,6 +104,10 @@ public class ArrayToSolutionCodeConverter {
 			//got 0 :(
 			//in = new Scanner(new File("C:/Users/Michael/Desktop/msttParkerChallenge/5X3X1and11x1x1Intersects/Intersect11x1x1and5x3x1AtIndex43to45incl.txt"));
 			
+			//in = new Scanner(new File("D:/TEST13X1X1Index7.TXT"));
+			//in = new Scanner(new File("D:/TEST13X1X1Index3to6.TXT"));
+			in = new Scanner(new File("D:/TEST13X1X1Index6to9.TXT"));
+			
 			//TODO: move to a special folder and change name to index0.txt
 			
 			
@@ -99,11 +119,15 @@ public class ArrayToSolutionCodeConverter {
 			
 			//in = new Scanner(new File("C:/Users/Michael/Desktop/Intersect11x1x1and5x3x1AtIndex14to19incl.txt"));
 			
-			in = new Scanner(new File("C:/Users/Michael/Desktop/Intersect11x1x1and5x3x1AtIndex6to9incl.txt"));
+			//in = new Scanner(new File("C:/Users/Michael/Desktop/Intersect11x1x1and5x3x1AtIndex6to9incl.txt"));
 			//Intersect11x1x1and5x3x1AtIndex6to9incl.txt
 		
+			int count = 0;
 			while(in.hasNextLine()) {
-				
+				count++;
+				if(count % 100000 == 0) {
+					System.out.println("hello count of " + count);
+				}
 				boolean tmpArray[][] = OutputReaderUtilsFunctions.getNextSolutionAsPaperUsedArray(in);
 				
 				if(tmpArray == null) {
