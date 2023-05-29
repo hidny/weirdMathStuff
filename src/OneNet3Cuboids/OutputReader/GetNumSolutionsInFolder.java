@@ -17,10 +17,13 @@ public class GetNumSolutionsInFolder {
 
 
 		//CuboidToFoldOn cuboid = new  CuboidToFoldOn(1, 1, 11);
-		//CuboidToFoldOn cuboid = new  CuboidToFoldOn(5, 3, 1);
+		CuboidToFoldOn cuboid = new  CuboidToFoldOn(5, 3, 1);
 	    boolean quiet = true;
 	    
-		CuboidToFoldOn cuboid = new  CuboidToFoldOn(7, 2, 1);
+
+		ShapeIntersectionCheckerAtSolutionTime shapeCheck = new ShapeIntersectionCheckerAtSolutionTime(cuboid, quiet);
+	    
+		//CuboidToFoldOn cuboid = new  CuboidToFoldOn(7, 2, 1);
 	    //boolean quiet = false;
 
 		File[] listOfFiles = folder.listFiles();
@@ -57,7 +60,7 @@ public class GetNumSolutionsInFolder {
 
 			    in.close();
 			    
-				ShapeIntersectionCheckerAtSolutionTime shapeCheck = new ShapeIntersectionCheckerAtSolutionTime(cuboid, quiet);
+				//ShapeIntersectionCheckerAtSolutionTime shapeCheck = new ShapeIntersectionCheckerAtSolutionTime(cuboid, quiet);
 				
 				in = new Scanner(new File(listOfFiles[i].getAbsolutePath()));
 				

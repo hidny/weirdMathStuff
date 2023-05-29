@@ -32,8 +32,8 @@ public class ArrayToSolutionCodeConverter {
 		//CuboidToFoldOn cuboid = new  CuboidToFoldOn(7, 2, 1);
 
 		//CuboidToFoldOn cuboid = new  CuboidToFoldOn(13, 1, 1);
-		//CuboidToFoldOn cuboid = new  CuboidToFoldOn(3, 3, 3);
-		CuboidToFoldOn cuboid = new  CuboidToFoldOn(6, 3, 1);
+		CuboidToFoldOn cuboid = new  CuboidToFoldOn(3, 3, 3);
+		//CuboidToFoldOn cuboid = new  CuboidToFoldOn(6, 3, 1);
 		
 		ShapeIntersectionCheckerAtSolutionTime shapeCheck = new ShapeIntersectionCheckerAtSolutionTime(cuboid);
 		
@@ -44,69 +44,70 @@ public class ArrayToSolutionCodeConverter {
 			
 			//in = new Scanner(new File("11x1x1AND5x3x1Only1BottomNeighbourSolutions.txt"));
 			//Got 0 :(
-			//in = new Scanner(new File("C:/Users/Michael/Desktop/msttParkerChallenge/5X3X1and11x1x1Intersects/Intersect11x1x1and5x3x1AtIndex0.txt"));
+			//in = new Scanner(new File("C:/Users/Michael/Desktop/mattParkerChallenge/5X3X1and11x1x1Intersects/Intersect11x1x1and5x3x1AtIndex0.txt"));
 
 			//Got 0 :(
-			//in = new Scanner(new File("C:/Users/Michael/Desktop/msttParkerChallenge/5X3X1and11x1x1Intersects/Intersect11x1x1and5x3x1AtIndex1Finally.txt"));
+			//in = new Scanner(new File("C:/Users/Michael/Desktop/mattParkerChallenge/5X3X1and11x1x1Intersects/Intersect11x1x1and5x3x1AtIndex1Finally.txt"));
 
 			//Got 0 :(
-			//in = new Scanner(new File("C:/Users/Michael/Desktop/msttParkerChallenge/5X3X1and11x1x1Intersects/Intersect11x1x1and5x3x1AtIndex1and2Finally.txt"));
+			//in = new Scanner(new File("C:/Users/Michael/Desktop/mattParkerChallenge/5X3X1and11x1x1Intersects/Intersect11x1x1and5x3x1AtIndex1and2Finally.txt"));
 
 			//Got 0 :(
-			//in = new Scanner(new File("C:/Users/Michael/Desktop/msttParkerChallenge/5X3X1and11x1x1Intersects/Intersect11x1x1and5x3x1AtIndex1to4inclMissingEndOf4.txt"));
+			//in = new Scanner(new File("C:/Users/Michael/Desktop/mattParkerChallenge/5X3X1and11x1x1Intersects/Intersect11x1x1and5x3x1AtIndex1to4inclMissingEndOf4.txt"));
 			
 			//Got 0 :(
-			//in = new Scanner(new File("C:/Users/Michael/Desktop/msttParkerChallenge/5X3X1and11x1x1Intersects/Intersect11x1x1and5x3x1AtIndex5part1.txt"));
+			//in = new Scanner(new File("C:/Users/Michael/Desktop/mattParkerChallenge/5X3X1and11x1x1Intersects/Intersect11x1x1and5x3x1AtIndex5part1.txt"));
 
-			//in = new Scanner(new File("C:/Users/Michael/Desktop/msttParkerChallenge/5X3X1and11x1x1Intersects/Intersect11x1x1and5x3x1AtIndex20to24incl.txt"));
+			//in = new Scanner(new File("C:/Users/Michael/Desktop/mattParkerChallenge/5X3X1and11x1x1Intersects/Intersect11x1x1and5x3x1AtIndex20to24incl.txt"));
 			
 			
 			//Got 0 :(
-			//in = new Scanner(new File("C:/Users/Michael/Desktop/msttParkerChallenge/5X3X1and11x1x1Intersects/Intersect11x1x1and5x3x1AtIndex6to7part1.txt"));
-
-			//Got 0 :(
-			//in = new Scanner(new File("C:/Users/Michael/Desktop/msttParkerChallenge/5X3X1and11x1x1Intersects/Intersect11x1x1and5x3x1AtIndex7part2.txt"));
+			//in = new Scanner(new File("C:/Users/Michael/Desktop/mattParkerChallenge/5X3X1and11x1x1Intersects/Intersect11x1x1and5x3x1AtIndex6to7part1.txt"));
 
 			//Got 0 :(
-			//in = new Scanner(new File("C:/Users/Michael/Desktop/msttParkerChallenge/5X3X1and11x1x1Intersects/Intersect11x1x1and5x3x1AtIndex8.txt"));
+			//in = new Scanner(new File("C:/Users/Michael/Desktop/mattParkerChallenge/5X3X1and11x1x1Intersects/Intersect11x1x1and5x3x1AtIndex7part2.txt"));
+
+			//Got 0 :(
+			//in = new Scanner(new File("C:/Users/Michael/Desktop/mattParkerChallenge/5X3X1and11x1x1Intersects/Intersect11x1x1and5x3x1AtIndex8.txt"));
 			
 			//Got 0 :(
-			//in = new Scanner(new File("C:/Users/Michael/Desktop/msttParkerChallenge/5X3X1and11x1x1Intersects/Intersect11x1x1and5x3x1AtIndex9.txt"));
+			//in = new Scanner(new File("C:/Users/Michael/Desktop/mattParkerChallenge/5X3X1and11x1x1Intersects/Intersect11x1x1and5x3x1AtIndex9.txt"));
 
 			
 			//Got 0 :(
-			//in = new Scanner(new File("C:/Users/Michael/Desktop/msttParkerChallenge/5X3X1and11x1x1Intersects/Intersect11x1x1and5x3x1AtIndex10to13incl.txt"));
+			//in = new Scanner(new File("C:/Users/Michael/Desktop/mattParkerChallenge/5X3X1and11x1x1Intersects/Intersect11x1x1and5x3x1AtIndex10to13incl.txt"));
 			
 			//Got 0 :(
-			//in = new Scanner(new File("C:/Users/Michael/Desktop/msttParkerChallenge/5X3X1and11x1x1Intersects/Intersect11x1x1and5x3x1AtIndex14to19incl.txt"));
+			//in = new Scanner(new File("C:/Users/Michael/Desktop/mattParkerChallenge/5X3X1and11x1x1Intersects/Intersect11x1x1and5x3x1AtIndex14to19incl.txt"));
 			
 			//Got 0 :(
-			//in = new Scanner(new File("C:/Users/Michael/Desktop/msttParkerChallenge/5X3X1and11x1x1Intersects/Intersect11x1x1and5x3x1AtIndex20to24incl.txt"));
+			//in = new Scanner(new File("C:/Users/Michael/Desktop/mattParkerChallenge/5X3X1and11x1x1Intersects/Intersect11x1x1and5x3x1AtIndex20to24incl.txt"));
 			
 			//Got 0 :(
-			//in = new Scanner(new File("C:/Users/Michael/Desktop/msttParkerChallenge/5X3X1and11x1x1Intersects/Intersect11x1x1and5x3x1AtIndex20to31incl.txt"));
+			//in = new Scanner(new File("C:/Users/Michael/Desktop/mattParkerChallenge/5X3X1and11x1x1Intersects/Intersect11x1x1and5x3x1AtIndex20to31incl.txt"));
 			
 			//Got 0 :(
-			//in = new Scanner(new File("C:/Users/Michael/Desktop/msttParkerChallenge/5X3X1and11x1x1Intersects/Intersect11x1x1and5x3x1AtIndex20to35incl.txt"));
+			//in = new Scanner(new File("C:/Users/Michael/Desktop/mattParkerChallenge/5X3X1and11x1x1Intersects/Intersect11x1x1and5x3x1AtIndex20to35incl.txt"));
 			
 			//Got 0 :(
-			//in = new Scanner(new File("C:/Users/Michael/Desktop/msttParkerChallenge/5X3X1and11x1x1Intersects/Intersect11x1x1and5x3x1AtIndex36to39incl.txt"));
+			//in = new Scanner(new File("C:/Users/Michael/Desktop/mattParkerChallenge/5X3X1and11x1x1Intersects/Intersect11x1x1and5x3x1AtIndex36to39incl.txt"));
 			
 			//Got 0 :(
-			//in = new Scanner(new File("C:/Users/Michael/Desktop/msttParkerChallenge/5X3X1and11x1x1Intersects/Intersect11x1x1and5x3x1AtIndex40.txt"));
+			//in = new Scanner(new File("C:/Users/Michael/Desktop/mattParkerChallenge/5X3X1and11x1x1Intersects/Intersect11x1x1and5x3x1AtIndex40.txt"));
 
 			//Got 0 :(
-			//in = new Scanner(new File("C:/Users/Michael/Desktop/msttParkerChallenge/5X3X1and11x1x1Intersects/Intersect11x1x1and5x3x1AtIndex41.txt"));
+			//in = new Scanner(new File("C:/Users/Michael/Desktop/mattParkerChallenge/5X3X1and11x1x1Intersects/Intersect11x1x1and5x3x1AtIndex41.txt"));
 
 			//Got 0 :(
-			//in = new Scanner(new File("C:/Users/Michael/Desktop/msttParkerChallenge/5X3X1and11x1x1Intersects/Intersect11x1x1and5x3x1AtIndex42.txt"));
+			//in = new Scanner(new File("C:/Users/Michael/Desktop/mattParkerChallenge/5X3X1and11x1x1Intersects/Intersect11x1x1and5x3x1AtIndex42.txt"));
 			
 			//got 0 :(
-			//in = new Scanner(new File("C:/Users/Michael/Desktop/msttParkerChallenge/5X3X1and11x1x1Intersects/Intersect11x1x1and5x3x1AtIndex43to45incl.txt"));
+			//in = new Scanner(new File("C:/Users/Michael/Desktop/mattParkerChallenge/5X3X1and11x1x1Intersects/Intersect11x1x1and5x3x1AtIndex43to45incl.txt"));
 			
-			//in = new Scanner(new File("D:/TEST13X1X1Index7.TXT"));
+			//in = new Scanner(new File("D:/TEST13X1X1Index0again.TXT"));
+			in = new Scanner(new File("D:/TEST13X1X1Index1AND2.TXT"));
 			//in = new Scanner(new File("D:/TEST13X1X1Index3to6.TXT"));
-			in = new Scanner(new File("D:/TEST13X1X1Index6to9.TXT"));
+			//in = new Scanner(new File("D:/TEST13X1X1Index6to9.TXT"));
 			
 			//TODO: move to a special folder and change name to index0.txt
 			
