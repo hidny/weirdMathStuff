@@ -1,4 +1,4 @@
-package OneNet3Cuboids.DFSIntersectionNet;
+package OneNet3Cuboids.MultiplePiecesHandler;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,7 +16,10 @@ import OneNet3Cuboids.GraphUtils.PivotCellDescription;
 import OneNet3Cuboids.Region.Region;
 import OneNet3Cuboids.SolutionResovler.*;
 
-public class DFSIntersectFinderRegions {
+public class CuboidComputeTaskGetter {
+
+
+	public static long curNumPiecesCreated = 0;
 
 	
 	public static final int NUM_ROTATIONS = 4;
@@ -102,7 +105,7 @@ public class DFSIntersectFinderRegions {
 		System.out.println("Num starting points and rotations to check: " + startingPointsAndRotationsToCheck.size());
 		
 		//(Set i=1 for non-trial Nx1x1 intersections)
-		for(int i=7; i<8; i++) {
+		for(int i=0; i<startingPointsAndRotationsToCheck.size(); i++) {
 			
 			int startIndex2ndCuboid =startingPointsAndRotationsToCheck.get(i).getCellIndex();
 			int startRotation2ndCuboid = startingPointsAndRotationsToCheck.get(i).getRotationRelativeToCuboidMap();
@@ -119,10 +122,6 @@ public class DFSIntersectFinderRegions {
 			doDepthFirstSearch(paperToDevelop, indexCuboidOnPaper, paperUsed, cuboid, numCellsUsedDepth, regionsToHandleRevOrder, -1L, skipSymmetries, solutionResolver, cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid, topBottombridgeUsedNx1x1, threeBombHandler, false, debugIterations);
 			
 
-			System.out.println("Num break 1: " + numBreak1);
-			System.out.println("Num break 2: " + numBreak2);
-			System.out.println("Num pass: " + numPass);
-			
 			System.out.println("Done with trying to intersect 2nd cuboid that has a start index of " + startIndex2ndCuboid + " and a rotation index of " + startRotation2ndCuboid +".");
 			System.out.println("Current UTC timestamp in milliseconds: " + System.currentTimeMillis());
 			
@@ -164,38 +163,7 @@ public class DFSIntersectFinderRegions {
 			}
 			return tmp;
 		}
-
-		if(regions.length == 1 && regions[0].getNumCellsInRegion() < cuboid.getNumCellsToFill() - numCellsUsedDepth && limitDupSolutions < 0) {
-			System.out.println("What?? This should not be possible");
-			System.out.println("Num iterations: " + numIterations);
-			
-			Utils.printFold(paperUsed);
-			Utils.printFoldWithIndex(indexCuboidonPaper);
-			Utils.printFoldWithIndex(indexCuboidOnPaper2ndCuboid);
-
-			System.out.println("Num regions: " + regions.length);
-			System.out.println("regions[0].getNumCellsInRegion(): " + regions[0].getNumCellsInRegion());
-			System.out.println("cuboid.getNumCellsToFill(): " + cuboid.getNumCellsToFill());
-			System.out.println("numCellsUsedDepth: " + numCellsUsedDepth);
-			
-			System.exit(1);
-		} else {
-			
-			System.out.println("------------");
-			System.out.println("Num iterations: " + numIterations);
-			
-			Utils.printFold(paperUsed);
-			Utils.printFoldWithIndex(indexCuboidonPaper);
-			Utils.printFoldWithIndex(indexCuboidOnPaper2ndCuboid);
-
-			System.out.println("Num regions: " + regions.length);
-			System.out.println("regions[0].getNumCellsInRegion(): " + regions[0].getNumCellsInRegion());
-			System.out.println("cuboid.getNumCellsToFill(): " + cuboid.getNumCellsToFill());
-			System.out.println("numCellsUsedDepth: " + numCellsUsedDepth);
-			
-			System.out.println("Still ok");
-		}
-		System.out.println("*********************************");
+		
 		
 		
 		regions = FoldResolveOrderedRegionsSkipSymmetries.handleCompletedRegionIfApplicable(regions, limitDupSolutions, indexCuboidonPaper, paperUsed);
@@ -220,51 +188,12 @@ public class DFSIntersectFinderRegions {
 			return 1L;
 		}
 		
-		//Display debug/what's-going-on update
-		numIterations++;
-		
-		if(numIterations % 100000000L == 0) {
-			System.out.println("Num iterations: " + numIterations);
-			Utils.printFold(paperUsed);
-			Utils.printFoldWithIndex(indexCuboidonPaper);
-			Utils.printFoldWithIndex(indexCuboidOnPaper2ndCuboid);
-			if(numCellsUsedDepth + regions[regions.length - 1].getNumCellsInRegion() == Utils.getTotalArea(cuboid.getDimensions())) {
-				System.out.println("Solutions: " + solutionResolver.getNumUniqueFound());
-				System.out.println();
-			} else {
-				//TODO: unhack it by passing along solution resolver to regions...
-				System.out.println("Solutions in region hack: " + BasicUniqueCheckImproved.uniqList.size());
-				System.out.println();
-				
-				for(int i=0; i<cuboid.getNumCellsToFill(); i++) {
-					if(regions[regions.length - 1].getCellRegionsToHandleInRevOrder()[i]) {
-						System.out.println("cell of current region: " + i);
-					}
-				}
-			}
-			
-
-			System.out.println("Last cell inserted: " + indexCuboidonPaper[paperToDevelop[numCellsUsedDepth - 1].i][paperToDevelop[numCellsUsedDepth - 1].j]);
-			
-			System.out.println(numBreak1);
-			System.out.println(numBreak2);
-			System.out.println(numPass);
-			
-		}
-		//End display debug/what's-going-on update
 		
 		int regionIndex = regions.length - 1;
 		long retDuplicateSolutions = 0L;
 		
 
 		debugIterations[numCellsUsedDepth] = numIterations;
-		
-		//if(numIterations == 15034) {
-		//	Utils.printFoldWithIndex(indexCuboidonPaper);
-		//	Utils.printFold(paperUsed);
-		//	System.out.println(numIterations);
-		//	System.out.println("Done print 1");
-		//}
 		
 		//TODO: use a cache, and compare results.
 		int maxOrderBasedOn3Bomb = threeBombHandler.getMaxOrderIndex(cuboid,
@@ -281,9 +210,6 @@ public class DFSIntersectFinderRegions {
 			
 			int indexToUse = indexCuboidonPaper[paperToDevelop[i].i][paperToDevelop[i].j];
 			
-			//if(maxOrderBasedOn3Bomb < i) {
-			//	debugNope = true;
-			//}
 			
 			if( ! regions[regionIndex].getCellIndexToOrderOfDev().containsKey(indexToUse)) {
 				continue;
@@ -479,52 +405,7 @@ public class DFSIntersectFinderRegions {
 	
 
 
-	public static boolean depthFirstAlgoWillFindAsolutionInRegionIndex(Coord2D paperToDevelop[], int indexCuboidonPaper[][],
-			boolean paperUsed[][], CuboidToFoldOn cuboid, int numCellsUsedDepth,
-			Region regions[], int regionIndex, boolean skipSymmetries,
-			CuboidToFoldOn cuboidToBringAlongStartRot, int indexCuboidOnPaper2ndCuboid[][],
-			int topBottombridgeUsedNx1x1[],
-			ThreeBombHandler threeBombHandler,
-			boolean debugNope, long debugIterations[]) {
-		
-		
-		Region regionArgToUse[] = new Region[1];
-		regionArgToUse[0] = regions[regionIndex];
-		
-		if(doDepthFirstSearch(paperToDevelop, indexCuboidonPaper, paperUsed, cuboid, numCellsUsedDepth, regionArgToUse, 0L, skipSymmetries, null, cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid, topBottombridgeUsedNx1x1, threeBombHandler, debugNope, debugIterations)
-				> 0L) {
-			return true;
-		} else {
-		
-			return false;
-		}
-	}
  
-	public static boolean depthFirstAlgoWillFindOnly1solutionInRegionIndex(Coord2D paperToDevelop[], int indexCuboidonPaper[][],
-			boolean paperUsed[][], CuboidToFoldOn cuboid, int numCellsUsedDepth,
-			Region regions[], int regionIndex, boolean skipSymmetries,
-			CuboidToFoldOn cuboidToBringAlongStartRot, int indexCuboidOnPaper2ndCuboid[][],
-			int topBottombridgeUsedNx1x1[],
-			ThreeBombHandler threeBombHandler,
-			boolean debugNope, long debugIterations[]) {
-		
-		
-		Region regionArgToUse[] = new Region[1];
-		regionArgToUse[0] = regions[regionIndex];
-		
-		if(doDepthFirstSearch(paperToDevelop, indexCuboidonPaper, paperUsed, cuboid, numCellsUsedDepth, regionArgToUse, 1L, skipSymmetries, null, cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid, topBottombridgeUsedNx1x1, threeBombHandler, debugNope, debugIterations)
-				== 1L) {
-			return true;
-		} else {
-		
-			return false;
-		}
-	}
-	
-	public static long numBreak1 = 0;
-	public static long numBreak2 = 0;
-	public static long numPass = 0;
-
 
 	//j = rotation relativeCuboidMap
 	public static Region[] splitRegionsIfNewCellSplitsRegions(Coord2D paperToDevelop[], int indexCuboidonPaper[][],
@@ -619,51 +500,8 @@ public class DFSIntersectFinderRegions {
 								System.exit(1);
 							}
 							
-							//If the new region is small enough, check if it's viable:
-							if( isDubiousOrSmallRegionAfterSplit(cuboid, regions[regions.length - 1], regionsSplit[indexToAdd], indexNewCell)
-								&& ! regionHasAtLeastOneSolution(paperToDevelop, indexCuboidonPaper,
-					                       paperUsed, cuboid, numCellsUsedDepth,
-					                       indexToUse, newMinRotationToUse, prevNewMinOrderedCellCouldUse, prevMinCellRotationOfMinCellToDev,
-					                       new_i, new_j, indexNewCell, rotationNeighbourPaperRelativeToMap,
-					                       skipSymmetries,
-					                       cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid, indexNewCell2, rotationNeighbourPaperRelativeToMap2,
-					                       topBottombridgeUsedNx1x1,
-					                       regionsSplit, indexToAdd,
-					                       threeBombHandler,
-					           			   debugNope, debugIterations)) {
-
-								cantAddCellBecauseARegionDoesntHaveSolution = true;
-								numBreak1++;
-								
-								break TRY_TO_DIVDE_REGIONS;
-							
-							}
 							
 						}
-						
-						//Check if the bigger regions are viable (try the regions skipped over earlier)
-						for(int k=0; k<numNewWays + 1; k++) {
-							int indexToTry = regions.length - 1 + k;
-
-							if( ! isDubiousOrSmallRegionAfterSplit(cuboid, regions[regions.length - 1], regionsSplit[indexToTry], indexNewCell)
-									&& ! regionHasAtLeastOneSolution(paperToDevelop, indexCuboidonPaper,
-					                       paperUsed, cuboid, numCellsUsedDepth,
-					                       indexToUse, newMinRotationToUse, prevNewMinOrderedCellCouldUse, prevMinCellRotationOfMinCellToDev,
-					                       new_i, new_j, indexNewCell, rotationNeighbourPaperRelativeToMap,
-					                       skipSymmetries,
-					                       cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid, indexNewCell2, rotationNeighbourPaperRelativeToMap2,
-					                       topBottombridgeUsedNx1x1,
-					                       regionsSplit, indexToTry,
-					                       threeBombHandler,
-					           			 debugNope, debugIterations)) {
-									
-								cantAddCellBecauseARegionDoesntHaveSolution = true;
-								numBreak2++;
-								break TRY_TO_DIVDE_REGIONS;
-								
-							}
-						}
-						numPass++;
 						
 						regionIndex = regions.length - 1;
 						
@@ -702,13 +540,7 @@ public class DFSIntersectFinderRegions {
 									new_i, new_j, indexNewCell, rotationNeighbourPaperRelativeToMap, topBottombridgeUsedNx1x1, numIterations);
 							
 							
-							regionHasOneSolution[i2] = depthFirstAlgoWillFindOnly1solutionInRegionIndex(paperToDevelop, indexCuboidonPaper,
-									paperUsed, cuboid, numCellsUsedDepth,
-									regionsSplit, i2, skipSymmetries,
-									cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid,
-									topBottombridgeUsedNx1x1,
-									threeBombHandler,
-									debugNope, debugIterations);
+							regionHasOneSolution[i2] = false;
 
 							numCellsUsedDepth -= 1;
 							
@@ -770,172 +602,6 @@ public class DFSIntersectFinderRegions {
 		}
 	}
 
-	 public static boolean isDubiousOrSmallRegionAfterSplit(CuboidToFoldOn cuboid, Region origRegion, Region curRegion, int indexNewCell) {
-		 
-		 //If region doesn't have top, and top is unclaimed by parent region, it's dubious:
-		 if(origRegion.getCellRegionsToHandleInRevOrder()[cuboid.getNumCellsToFill() - 1]
-				 && indexNewCell != cuboid.getNumCellsToFill() - 1) {
-			 if(! curRegion.getCellRegionsToHandleInRevOrder()[cuboid.getNumCellsToFill() - 1]) {
-				 return true;
-			 } else {
-				 return false;
-			 }
-		 } else {
-		 
-			 return curRegion.getNumCellsInRegion() < (origRegion.getNumCellsInRegion() - 1)/(2);
-		 }
-     }
 	 
-	 public static boolean regionHasAtLeastOneSolution(Coord2D paperToDevelop[], int indexCuboidonPaper[][],
-                       boolean paperUsed[][], CuboidToFoldOn cuboid, int numCellsUsedDepth,
-                       int indexToUse, int newMinRotationToUse, int prevNewMinOrderedCellCouldUse, int prevMinCellRotationOfMinCellToDev,
-                       int new_i, int new_j, int indexNewCell, int rotationNeighbourPaperRelativeToMap,
-                       boolean skipSymmetries,
-                       CuboidToFoldOn cuboidToBringAlongStartRot, int indexCuboidOnPaper2ndCuboid[][], int indexNewCell2, int rotationNeighbourPaperRelativeToMap2,
-                       int topBottombridgeUsedNx1x1[],
-                      Region regionsSplit[], int regionIndexToCheck,
-                      ThreeBombHandler threeBombHandler,
-          			boolean debugNope, long debugIterations[]) {
-
-		 	boolean hasSolution = false;
-
-		 	cuboidToBringAlongStartRot.setCell(indexNewCell2, rotationNeighbourPaperRelativeToMap2);
-			
-			paperUsed[new_i][new_j] = true;
-			indexCuboidonPaper[new_i][new_j] = indexNewCell;
-			paperToDevelop[numCellsUsedDepth] = new Coord2D(new_i, new_j);
-
-			indexCuboidOnPaper2ndCuboid[new_i][new_j] = indexNewCell2;
-			
-			regionsSplit[regionIndexToCheck].addCellToRegion(indexNewCell, numCellsUsedDepth, indexToUse, newMinRotationToUse);
-			
-			if(indexToUse == 0) {
-				topBottombridgeUsedNx1x1[indexNewCell] = newMinRotationToUse;
-			} else if(indexToUse == cuboid.getCellsUsed().length - 1) {
-				topBottombridgeUsedNx1x1[indexNewCell] = NUM_ROTATIONS + newMinRotationToUse;
-			} else {
-				topBottombridgeUsedNx1x1[indexNewCell] = topBottombridgeUsedNx1x1[indexToUse];
-			}
-
-			numCellsUsedDepth += 1;
-			
-			threeBombHandler.addCell(paperUsed, indexCuboidonPaper, cuboid,  regionsSplit[regionIndexToCheck],
-					new_i, new_j, indexNewCell, rotationNeighbourPaperRelativeToMap, topBottombridgeUsedNx1x1, numIterations);
-			
-			if(depthFirstAlgoWillFindAsolutionInRegionIndex(paperToDevelop, indexCuboidonPaper,
-					paperUsed, cuboid, numCellsUsedDepth,
-					regionsSplit, regionIndexToCheck, skipSymmetries,
-					cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid,
-					topBottombridgeUsedNx1x1,
-					threeBombHandler,
-					debugNope, debugIterations)
-				) {
-				
-				
-				//System.out.println("Region impossible!");
-				
-				hasSolution = true;
-			}
-			
-
-			numCellsUsedDepth -= 1;
-			
-			
-			//Mini tear down
-			regionsSplit[regionIndexToCheck].removeCellFromRegion(indexNewCell, numCellsUsedDepth, prevNewMinOrderedCellCouldUse, prevMinCellRotationOfMinCellToDev);
-
-
-			paperUsed[new_i][new_j] = false;
-			indexCuboidonPaper[new_i][new_j] = -1;
-			paperToDevelop[numCellsUsedDepth] = null;
-
-			indexCuboidOnPaper2ndCuboid[new_i][new_j] = -1;
-
-			//Don't remove this: (It's supposed to be set for now)
-			//cuboid.removeCell(indexNewCell);
-
-			threeBombHandler.removeCell(paperToDevelop, paperUsed, indexCuboidonPaper, cuboid,  regionsSplit[regionIndexToCheck],
-					new_i, new_j, indexNewCell, rotationNeighbourPaperRelativeToMap, topBottombridgeUsedNx1x1, numIterations);
-			
-			cuboidToBringAlongStartRot.removeCell(indexNewCell2);
-			
-			//End mini-tear down
-			//END TODO:  put quick check in function
-			
-			return hasSolution;
-	 }
-	 
-	 
-	/*https://www.sciencedirect.com/science/article/pii/S0925772117300160
-	 * 
-	 *  "From the necessary condition, the smallest possible surface area that can fold into two boxes is 22,
-	 *   and the smallest possible surface area for three different boxes is 46.
-	 *   (...) However, the area 46 is too huge to search. "
-	 *  
-	 *  Challenge accepted!
-	 */
-
-	public static void main(String args[]) {
-		System.out.println("Fold Resolver Ordered Regions intersection skip symmetries Nx1x1:");
-
-		
-		//solveCuboidIntersections(new CuboidToFoldOn(13, 1, 1), new CuboidToFoldOn(3, 3, 3));
-		
-		solveCuboidIntersections(new CuboidToFoldOn(11, 1, 1), new CuboidToFoldOn(5, 3, 1));
-		
-		//solveCuboidIntersections(new CuboidToFoldOn(11, 1, 1), new CuboidToFoldOn(7, 2, 1));
-		
-		//solveCuboidIntersections(new CuboidToFoldOn(9, 1, 1), new CuboidToFoldOn(4, 3, 1));
-		//It got 4469 solutions and it took about 41.5 hours
-		
-		//solveCuboidIntersections(new CuboidToFoldOn(8, 1, 1), new CuboidToFoldOn(5, 2, 1));
-		//It got 35675 again, but this time it only took 3 hours! It took almost 2 days last time!
-		
-		//solveCuboidIntersections(new CuboidToFoldOn(7, 1, 1), new CuboidToFoldOn(3, 3, 1));
-		////It got 1070 (again) (They got 1080, but I think they were wrong)
-		
-		//solveCuboidIntersections(new CuboidToFoldOn(5, 1, 1), new CuboidToFoldOn(3, 2, 1));
-		//It got 2263!
-
-		//solveCuboidIntersections(new CuboidToFoldOn(2, 1, 1), new CuboidToFoldOn(1, 2, 1));
-		
-		//Best 5,1,1: 3 minute 45 seconds (3014430 solutions) (December 27th)
-		
-		
-		//Find non-trivial cuboid intersections:
-		//solveCuboidIntersections(new CuboidToFoldOn(9, 1, 1), new CuboidToFoldOn(9, 1, 1));
-		//Nx1x1: suprise intersections: (Not on OEIS :( )
-		// I guess that the odds number are different from even?
-		//1: 0
-		//2: 72
-		//3: 47
-		//4: 204
-		//5: 189
-		//6: 372
-		//7: 217
-		//8: 1114
-		//9: 495
-
-		
-		System.out.println("Current UTC timestamp in milliseconds: " + System.currentTimeMillis());
-		
-		
-		/* 5x1x1 on December 8th:
-			Final number of unique solutions: 3014430
-		//I hope it's right...
-		//It took 6.5 hours.
-		// Try to get it under 1 hour.
-		 */
-		
-	}
-	/*//TODO:
-46	1 × 1 × 11, 1 × 2 × 7, 1 × 3 × 5
-54	1 × 1 × 13, 1 × 3 × 6, 3 × 3 × 3
-58	1 × 1 × 14, 1 × 2 × 9, 1 × 4 × 5
-62	1 × 1 × 15, 1 × 3 × 7, 2 × 3 × 5
-64	1 × 2 × 10, 2 × 2 × 7, 2 × 4 × 4
-70	1 × 1 × 17, 1 × 2 × 11, 1 × 3 × 8, 1 × 5 × 5
-88	1 × 2 × 14, 1 × 4 × 8, 2 × 2 × 10, 2 × 4 × 6
-*/
 	
 }

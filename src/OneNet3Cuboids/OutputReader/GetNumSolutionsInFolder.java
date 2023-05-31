@@ -13,17 +13,17 @@ public class GetNumSolutionsInFolder {
 	public static void main(String[] args) {
 		
 
-		File folder = new File("C:/Users/Michael/Desktop/msttParkerChallenge/5X3X1and11x1x1Intersects/");
+		File folder = new File("C:/Users/Michael/Desktop/mattParkerChallenge/5X3X1and11x1x1Intersects/");
 
 
-		//CuboidToFoldOn cuboid = new  CuboidToFoldOn(1, 1, 11);
-		CuboidToFoldOn cuboid = new  CuboidToFoldOn(5, 3, 1);
+		CuboidToFoldOn cuboid = new  CuboidToFoldOn(1, 1, 11);
+		//CuboidToFoldOn cuboid = new  CuboidToFoldOn(5, 3, 1);
+		//CuboidToFoldOn cuboid = new  CuboidToFoldOn(7, 2, 1);
 	    boolean quiet = true;
 	    
 
 		ShapeIntersectionCheckerAtSolutionTime shapeCheck = new ShapeIntersectionCheckerAtSolutionTime(cuboid, quiet);
 	    
-		//CuboidToFoldOn cuboid = new  CuboidToFoldOn(7, 2, 1);
 	    //boolean quiet = false;
 
 		File[] listOfFiles = folder.listFiles();
