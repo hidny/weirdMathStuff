@@ -158,7 +158,7 @@ public class CuboidComputeTaskGetter {
 						threeBombHandler,
 						debugNope, debugIterations);
 				
-				/*
+				
 				System.out.println("Debug 1");
 				System.out.println("Target task index: " + targetTaskIndex);
 				System.out.println("Cell depth: " + numCellsUsedDepth);
@@ -167,7 +167,7 @@ public class CuboidComputeTaskGetter {
 				Utils.printFoldWithIndex(indexCuboidonPaper);
 				Utils.printFoldWithIndex(indexCuboidOnPaper2ndCuboid);
 				System.out.println("----");
-				*/
+				
 			}
 			
 			curNumPiecesCreated++;
@@ -350,6 +350,9 @@ public class CuboidComputeTaskGetter {
 					getComputeTaskForStartingPointAndRotation(paperToDevelop, indexCuboidonPaper, paperUsed, cuboid, numCellsUsedDepth, regions, newLimitDupSolutions, skipSymmetries, solutionResolver, cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid, topBottombridgeUsedNx1x1, threeBombHandler, debugNope, debugIterations,
 							maxDepth, targetTaskIndex);
 
+					if(ComputeTaskMain.computeTask != null) {
+						return;
+					}
 					if(numCellsUsedDepth < regions[0].getCellIndexToOrderOfDev().size()) {
 						System.out.println("WHAT???");
 						System.exit(1);

@@ -102,7 +102,7 @@ public class DFSIntersectFinderRegions {
 		System.out.println("Num starting points and rotations to check: " + startingPointsAndRotationsToCheck.size());
 		
 		//(Set i=1 for non-trial Nx1x1 intersections)
-		for(int i=7; i<8; i++) {
+		for(int i=0; i<startingPointsAndRotationsToCheck.size(); i++) {
 			
 			int startIndex2ndCuboid =startingPointsAndRotationsToCheck.get(i).getCellIndex();
 			int startRotation2ndCuboid = startingPointsAndRotationsToCheck.get(i).getRotationRelativeToCuboidMap();
@@ -144,10 +144,12 @@ public class DFSIntersectFinderRegions {
 			ThreeBombHandler threeBombHandler,
 			boolean debugNope, long debugIterations[]) {
 
+		/*
 		System.out.println("...TEST");
 		Utils.printFold(paperUsed);
 		Utils.printFoldWithIndex(indexCuboidonPaper);
 		Utils.printFoldWithIndex(indexCuboidOnPaper2ndCuboid);
+		*/
 		
 		//System.out.println("START");
 		if(numCellsUsedDepth == cuboid.getNumCellsToFill()) {
@@ -884,7 +886,7 @@ public class DFSIntersectFinderRegions {
 		
 		//solveCuboidIntersections(new CuboidToFoldOn(13, 1, 1), new CuboidToFoldOn(3, 3, 3));
 		
-		solveCuboidIntersections(new CuboidToFoldOn(11, 1, 1), new CuboidToFoldOn(5, 3, 1));
+		//solveCuboidIntersections(new CuboidToFoldOn(11, 1, 1), new CuboidToFoldOn(5, 3, 1));
 		
 		//solveCuboidIntersections(new CuboidToFoldOn(11, 1, 1), new CuboidToFoldOn(7, 2, 1));
 		
@@ -897,7 +899,7 @@ public class DFSIntersectFinderRegions {
 		//solveCuboidIntersections(new CuboidToFoldOn(7, 1, 1), new CuboidToFoldOn(3, 3, 1));
 		////It got 1070 (again) (They got 1080, but I think they were wrong)
 		
-		//solveCuboidIntersections(new CuboidToFoldOn(5, 1, 1), new CuboidToFoldOn(3, 2, 1));
+		solveCuboidIntersections(new CuboidToFoldOn(5, 1, 1), new CuboidToFoldOn(3, 2, 1));
 		//It got 2263!
 
 		//solveCuboidIntersections(new CuboidToFoldOn(2, 1, 1), new CuboidToFoldOn(1, 2, 1));

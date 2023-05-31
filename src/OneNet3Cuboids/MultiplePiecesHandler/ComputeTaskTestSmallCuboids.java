@@ -2,6 +2,8 @@ package OneNet3Cuboids.MultiplePiecesHandler;
 
 import java.util.Scanner;
 
+import OneNet3Cuboids.DupRemover.BasicUniqueCheckImproved;
+
 public class ComputeTaskTestSmallCuboids {
 
 	public static void main(String args[]) {
@@ -10,7 +12,7 @@ public class ComputeTaskTestSmallCuboids {
 		int maxDepth = 7;
 		
 		//10671
-		for(int i=0; i<10672; i++) {
+		for(int i=0; i<4353; i++) {
 			
 			System.out.println(i);
 			
@@ -18,5 +20,7 @@ public class ComputeTaskTestSmallCuboids {
 			
 			
 		}
+		
+		System.out.println("Test size: " + BasicUniqueCheckImproved.uniqList.size());
 	}
 }

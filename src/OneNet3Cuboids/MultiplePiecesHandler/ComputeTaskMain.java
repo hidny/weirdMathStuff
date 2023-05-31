@@ -9,7 +9,7 @@ public class ComputeTaskMain {
 	// Length of depth 7 is 5396...
 	
 	public static int START_DEPTH = 7;
-	public static int TARGET_TASK_INDEX = 0;
+	public static int TARGET_TASK_INDEX = 1000000;
 	
 	
 	//public static int TARGET_TASK_INDEX = 729;
@@ -33,6 +33,12 @@ public class ComputeTaskMain {
 
 		updateComputeTask(start_depth, targetIndex);
 		
+		if(computeTask == null) {
+			System.out.println("Target index too high.");
+			System.out.println("Num pieces found: " + CuboidComputeTaskGetter.curNumPiecesCreated);
+			System.exit(0);
+		}
+		
 		System.out.println("back to main");
 		ComputeTaskDescription taskDescriptionToUse = computeTask;
 		
@@ -44,8 +50,7 @@ public class ComputeTaskMain {
 		System.out.println("----");
 		
 		System.out.println("Run compute task for index " + targetIndex + ": (Please wait)");
-		
-		
+				
 		DFSIntersectFinderRegions.doDepthFirstSearch(
 				taskDescriptionToUse.paperToDevelop,
 				taskDescriptionToUse.indexCuboidonPaper,
@@ -87,8 +92,8 @@ public class ComputeTaskMain {
 		
 		
 		
-		CuboidComputeTaskGetter.getComputeTask(new CuboidToFoldOn(5, 1, 1), new CuboidToFoldOn(3, 2, 1), true, startDepth, targetIndex);
-		
+		//CuboidComputeTaskGetter.getComputeTask(new CuboidToFoldOn(5, 1, 1), new CuboidToFoldOn(3, 2, 1), true, startDepth, targetIndex);
+		CuboidComputeTaskGetter.getComputeTask(new CuboidToFoldOn(5, 1, 1), new CuboidToFoldOn(5, 1, 1), true, startDepth, targetIndex);
 		
 		
 	}
