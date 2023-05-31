@@ -9,7 +9,6 @@ import OneNet3Cuboids.Utils;
 import OneNet3Cuboids.Coord.Coord2D;
 import OneNet3Cuboids.Coord.CoordWithRotationAndIndex;
 import OneNet3Cuboids.Cuboid.SymmetryResolver.SymmetryResolver;
-import OneNet3Cuboids.DupRemover.BasicUniqueCheckImproved;
 import OneNet3Cuboids.FancyTricks.ThreeBombHandler;
 import OneNet3Cuboids.FoldingAlgoStartAnywhere.FoldResolveOrderedRegionsSkipSymmetries;
 import OneNet3Cuboids.GraphUtils.PivotCellDescription;
@@ -20,19 +19,23 @@ public class CuboidComputeTaskGetter {
 
 
 	public static long curNumPiecesCreated = 0;
-
 	
 	public static final int NUM_ROTATIONS = 4;
 	public static final int NUM_NEIGHBOURS = NUM_ROTATIONS;
 	
 	
-	public static void solveCuboidIntersections(CuboidToFoldOn cuboidToWrap, CuboidToFoldOn cuboidToBringAlong) {
-		solveCuboidIntersections(cuboidToWrap, cuboidToBringAlong, true);
-	}
 	
-	public static void solveCuboidIntersections(CuboidToFoldOn cuboidToBuild, CuboidToFoldOn cuboidToBringAlong, boolean skipSymmetries) {
+	public static void getComputeTask(CuboidToFoldOn cuboidToBuild, CuboidToFoldOn cuboidToBringAlong, boolean skipSymmetries
+			, int maxDepth, int targetTaskIndex) {
+		
+		curNumPiecesCreated = 0;
 		SolutionResolverIntersectInterface solutionResolver = null;
 		
+
+		if(maxDepth <= 0 || Utils.getTotalArea(cuboidToBuild.getDimensions())  <= maxDepth) {
+			System.out.println("ERROR: invalid start depth of " + maxDepth);
+			System.exit(1);
+		}
 		
 		if(Utils.getTotalArea(cuboidToBuild.getDimensions()) != Utils.getTotalArea(cuboidToBringAlong.getDimensions())) {
 			System.out.println("ERROR: The two cuboid to intersect don't have the same area.");
@@ -42,10 +45,11 @@ public class CuboidComputeTaskGetter {
 		// Set the solution resolver to different things depending on the size of the cuboid:
 		solutionResolver = new StandardResolverForSmallIntersectSolution(cuboidToBuild);
 		
-		solveCuboidIntersections(cuboidToBuild, cuboidToBringAlong, skipSymmetries, solutionResolver);
+		getComputeTaskInner(cuboidToBuild, cuboidToBringAlong, skipSymmetries, solutionResolver, maxDepth, targetTaskIndex);
 	}
 
-	public static void solveCuboidIntersections(CuboidToFoldOn cuboidToBuild, CuboidToFoldOn cuboidToBringAlong, boolean skipSymmetries, SolutionResolverIntersectInterface solutionResolver) {
+	public static void getComputeTaskInner(CuboidToFoldOn cuboidToBuild, CuboidToFoldOn cuboidToBringAlong, boolean skipSymmetries, SolutionResolverIntersectInterface solutionResolver,
+			int maxDepth, int targetTaskIndex) {
 		
 		
 		//cube.set start location 0 and rotation 0
@@ -96,16 +100,12 @@ public class CuboidComputeTaskGetter {
 		
 		ThreeBombHandler threeBombHandler = new ThreeBombHandler(cuboid);
 		
-		//TODO: Later try intersecting with all of them at once, so it's easier to get distinct solutions,
-		// and maybe it's faster?
 
-		//TODO: 2nd one
 		ArrayList<PivotCellDescription> startingPointsAndRotationsToCheck = PivotCellDescription.getUniqueRotationListsWithCellInfo(cuboidToBringAlong);
 		
 		System.out.println("Num starting points and rotations to check: " + startingPointsAndRotationsToCheck.size());
 		
-		//(Set i=1 for non-trial Nx1x1 intersections)
-		for(int i=0; i<startingPointsAndRotationsToCheck.size(); i++) {
+		for(int i=0; i<startingPointsAndRotationsToCheck.size() && (curNumPiecesCreated <= targetTaskIndex || targetTaskIndex < 0); i++) {
 			
 			int startIndex2ndCuboid =startingPointsAndRotationsToCheck.get(i).getCellIndex();
 			int startRotation2ndCuboid = startingPointsAndRotationsToCheck.get(i).getRotationRelativeToCuboidMap();
@@ -119,88 +119,82 @@ public class CuboidComputeTaskGetter {
 			
 			long debugIterations[] = new long[Utils.getTotalArea(cuboidToBuild.getDimensions())]; 
 		
-			doDepthFirstSearch(paperToDevelop, indexCuboidOnPaper, paperUsed, cuboid, numCellsUsedDepth, regionsToHandleRevOrder, -1L, skipSymmetries, solutionResolver, cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid, topBottombridgeUsedNx1x1, threeBombHandler, false, debugIterations);
+			getComputeTaskForStartingPointAndRotation(paperToDevelop, indexCuboidOnPaper, paperUsed, cuboid, numCellsUsedDepth, regionsToHandleRevOrder, -1L, skipSymmetries, solutionResolver, cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid, topBottombridgeUsedNx1x1, threeBombHandler, false, debugIterations, maxDepth, targetTaskIndex);
 			
 
-			System.out.println("Done with trying to intersect 2nd cuboid that has a start index of " + startIndex2ndCuboid + " and a rotation index of " + startRotation2ndCuboid +".");
-			System.out.println("Current UTC timestamp in milliseconds: " + System.currentTimeMillis());
-			
 		}
 		
-		//TODO: end todo 2nd one
 		
 		
-		System.out.println("Final number of unique solutions: " + solutionResolver.getNumUniqueFound());
 	}
 	
 	
 	public static final int nugdeBasedOnRotation[][] = {{-1, 0, 1, 0}, {0, 1, 0 , -1}};
-	public static long numIterations = 0;
 	
-	public static long doDepthFirstSearch(Coord2D paperToDevelop[], int indexCuboidonPaper[][], boolean paperUsed[][], CuboidToFoldOn cuboid, int numCellsUsedDepth,
+	public static void getComputeTaskForStartingPointAndRotation(Coord2D paperToDevelop[], int indexCuboidonPaper[][], boolean paperUsed[][], CuboidToFoldOn cuboid, int numCellsUsedDepth,
 			Region regions[], long limitDupSolutions, boolean skipSymmetries, SolutionResolverIntersectInterface solutionResolver, CuboidToFoldOn cuboidToBringAlongStartRot, int indexCuboidOnPaper2ndCuboid[][],
 			int topBottombridgeUsedNx1x1[],
 			ThreeBombHandler threeBombHandler,
-			boolean debugNope, long debugIterations[]) {
+			boolean debugNope, long debugIterations[],
+			int maxDepth, int targetTaskIndex
+			) {
 
-		System.out.println("...TEST");
-		
-		//System.out.println("START");
-		if(numCellsUsedDepth == cuboid.getNumCellsToFill()) {
+		if(cuboid.getNumCellsFilledUp() == maxDepth) {
+
+			/*System.out.println();
+			System.out.println("PIECE FOUND:");
+			System.out.println("piece index: " + curNumPiecesCreated);
+			Utils.printFold(paperUsed);
+			Utils.printFoldWithIndex(indexCuboidonPaper);
+			Utils.printFoldWithIndex(indexCuboidOnPaper2ndCuboid);
 			
-			int indexes[][][] = new int[2][][];
-			indexes[0] = indexCuboidonPaper;
-			indexes[1] = indexCuboidOnPaper2ndCuboid;
-			long tmp = solutionResolver.resolveSolution(cuboid, paperToDevelop, indexes, paperUsed);
-
-			if(debugNope) {
-				System.out.println("STOP!");
-				System.out.println(numIterations);
-				for(int i=0; i<numCellsUsedDepth; i++) {
-					System.out.println("Iteration: " + debugIterations[i]);
-				}
-				System.exit(1);
+			System.out.println("Last cell inserted: " + indexCuboidonPaper[paperToDevelop[numCellsUsedDepth - 1].i][paperToDevelop[numCellsUsedDepth - 1].j]);
+			*/
+			if( targetTaskIndex == curNumPiecesCreated) {
+				
+				ComputeTaskMain.computeTask = new ComputeTaskDescription(paperToDevelop, indexCuboidonPaper, paperUsed, cuboid, numCellsUsedDepth,
+						regions, limitDupSolutions, skipSymmetries, solutionResolver, cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid,
+						topBottombridgeUsedNx1x1,
+						threeBombHandler,
+						debugNope, debugIterations);
+				
+				/*
+				System.out.println("Debug 1");
+				System.out.println("Target task index: " + targetTaskIndex);
+				System.out.println("Cell depth: " + numCellsUsedDepth);
+				System.out.println("Max depth: " + maxDepth);
+				Utils.printFold(paperUsed);
+				Utils.printFoldWithIndex(indexCuboidonPaper);
+				Utils.printFoldWithIndex(indexCuboidOnPaper2ndCuboid);
+				System.out.println("----");
+				*/
 			}
-			return tmp;
+			
+			curNumPiecesCreated++;
+			
+			//TODO: fill an ArrayList with relevant info?
+			return;
 		}
-		
 		
 		
 		regions = FoldResolveOrderedRegionsSkipSymmetries.handleCompletedRegionIfApplicable(regions, limitDupSolutions, indexCuboidonPaper, paperUsed);
 		
 		if(regions == null) {
 			
-			if(debugNope) {
-				System.out.println("STOP (in region)!");
-				System.out.println(numIterations);
-				System.out.println("Depth solution: " + numCellsUsedDepth);
-				System.out.println("Complete region:");
-				Utils.printFoldWithIndex(indexCuboidonPaper);
-				Utils.printFold(paperUsed);
-				for(int i=0; i<numCellsUsedDepth; i++) {
-					System.out.println("Iteration: " + debugIterations[i]);
-				}
-				System.out.println("Done");
-				
-				System.exit(1);
-			}
-			
-			return 1L;
+			return;
 		}
 		
 		
 		int regionIndex = regions.length - 1;
 		long retDuplicateSolutions = 0L;
 		
-
-		debugIterations[numCellsUsedDepth] = numIterations;
 		
 		//TODO: use a cache, and compare results.
 		int maxOrderBasedOn3Bomb = threeBombHandler.getMaxOrderIndex(cuboid,
 				paperToDevelop,
 				indexCuboidonPaper,
 				regions[regionIndex],
-				numIterations,
+				curNumPiecesCreated,
 				numCellsUsedDepth,
 				topBottombridgeUsedNx1x1
 			);
@@ -213,6 +207,7 @@ public class CuboidComputeTaskGetter {
 			
 			if( ! regions[regionIndex].getCellIndexToOrderOfDev().containsKey(indexToUse)) {
 				continue;
+
 			} else if(SymmetryResolver.skipSearchBecauseOfASymmetryArgDontCareAboutRotation
 					(cuboid, paperToDevelop, indexCuboidonPaper, i,indexToUse)
 				&& skipSymmetries) {
@@ -224,7 +219,6 @@ public class CuboidComputeTaskGetter {
 				
 				break;
 				
-				//Maybe put this right after the contains key if condition? (regions[regionIndex].getCellIndexToOrderOfDev().containsKey(indexToUse))
 			}
 
 			CoordWithRotationAndIndex neighbours[] = cuboid.getNeighbours(indexToUse);
@@ -350,10 +344,11 @@ public class CuboidComputeTaskGetter {
 					}
 					
 					threeBombHandler.addCell(paperUsed, indexCuboidonPaper, cuboid,  regions[regions.length - 1],
-							new_i, new_j, indexNewCell, rotationNeighbourPaperRelativeToMap, topBottombridgeUsedNx1x1, numIterations);
+							new_i, new_j, indexNewCell, rotationNeighbourPaperRelativeToMap, topBottombridgeUsedNx1x1, curNumPiecesCreated);
 					
 					
-					retDuplicateSolutions += doDepthFirstSearch(paperToDevelop, indexCuboidonPaper, paperUsed, cuboid, numCellsUsedDepth, regions, newLimitDupSolutions, skipSymmetries, solutionResolver, cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid, topBottombridgeUsedNx1x1, threeBombHandler, debugNope, debugIterations);
+					getComputeTaskForStartingPointAndRotation(paperToDevelop, indexCuboidonPaper, paperUsed, cuboid, numCellsUsedDepth, regions, newLimitDupSolutions, skipSymmetries, solutionResolver, cuboidToBringAlongStartRot, indexCuboidOnPaper2ndCuboid, topBottombridgeUsedNx1x1, threeBombHandler, debugNope, debugIterations,
+							maxDepth, targetTaskIndex);
 
 					if(numCellsUsedDepth < regions[0].getCellIndexToOrderOfDev().size()) {
 						System.out.println("WHAT???");
@@ -383,7 +378,7 @@ public class CuboidComputeTaskGetter {
 					cuboidToBringAlongStartRot.removeCell(indexNewCell2);
 					
 					threeBombHandler.removeCell(paperToDevelop, paperUsed, indexCuboidonPaper, cuboid,  regions[regions.length - 1],
-							new_i, new_j, indexNewCell, rotationNeighbourPaperRelativeToMap, topBottombridgeUsedNx1x1, numIterations);
+							new_i, new_j, indexNewCell, rotationNeighbourPaperRelativeToMap, topBottombridgeUsedNx1x1, curNumPiecesCreated);
 					
 					//End tear down
 
@@ -391,7 +386,7 @@ public class CuboidComputeTaskGetter {
 					if(limitDupSolutions >= 0 && retDuplicateSolutions > limitDupSolutions) {
 						//Handling option to only find 1 or 2 solutions:
 						//This has to be done after tear-down because these objects are soft-copied...
-						return retDuplicateSolutions;
+						return;
 					}
 
 					regionIndex = regions.length - 1;
@@ -400,7 +395,7 @@ public class CuboidComputeTaskGetter {
 			} // End loop rotation
 		} //End loop index
 
-		return retDuplicateSolutions;
+		return;
 	}
 	
 
@@ -537,7 +532,7 @@ public class CuboidComputeTaskGetter {
 							numCellsUsedDepth += 1;
 							
 							threeBombHandler.addCell(paperUsed, indexCuboidonPaper, cuboid,  regionsSplit[i2],
-									new_i, new_j, indexNewCell, rotationNeighbourPaperRelativeToMap, topBottombridgeUsedNx1x1, numIterations);
+									new_i, new_j, indexNewCell, rotationNeighbourPaperRelativeToMap, topBottombridgeUsedNx1x1, curNumPiecesCreated);
 							
 							
 							regionHasOneSolution[i2] = false;
@@ -556,7 +551,7 @@ public class CuboidComputeTaskGetter {
 							indexCuboidOnPaper2ndCuboid[new_i][new_j] = -1;
 							
 							threeBombHandler.removeCell(paperToDevelop, paperUsed, indexCuboidonPaper, cuboid,  regions[i2],
-									new_i, new_j, indexNewCell, rotationNeighbourPaperRelativeToMap, topBottombridgeUsedNx1x1, numIterations);
+									new_i, new_j, indexNewCell, rotationNeighbourPaperRelativeToMap, topBottombridgeUsedNx1x1, curNumPiecesCreated);
 							
 						}
 						

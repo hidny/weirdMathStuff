@@ -40,6 +40,16 @@ public class CuboidToFoldOn {
 	public boolean[] getCellsUsed() {
 		return cellsUsed;
 	}
+	
+	public int getNumCellsFilledUp() {
+		int ret = 0;
+		for(int i=0; i<cellsUsed.length; i++) {
+			if(cellsUsed[i]) {
+				ret++;
+			}
+		}
+		return ret;
+	}
 
 	//Create same cuboid, but remove state info:
 	public CuboidToFoldOn(CuboidToFoldOn orig) {

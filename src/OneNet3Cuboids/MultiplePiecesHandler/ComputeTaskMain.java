@@ -9,7 +9,7 @@ public class ComputeTaskMain {
 	// Length of depth 7 is 5396...
 	
 	public static int START_DEPTH = 7;
-	public static int TARGET_TASK_INDEX = 700000;
+	public static int TARGET_TASK_INDEX = 0;
 	
 	
 	//public static int TARGET_TASK_INDEX = 729;
@@ -64,10 +64,13 @@ public class ComputeTaskMain {
 				taskDescriptionToUse.debugIterations
 			);
 		
-		computeTask = null;
-		taskDescriptionToUse = null;
 		
 		System.out.println("Finished task.");
+		
+		System.out.println("Final number of unique solutions: " + taskDescriptionToUse.solutionResolver.getNumUniqueFound());
+
+		computeTask = null;
+		taskDescriptionToUse = null;
 
 	}
 	

@@ -145,6 +145,9 @@ public class DFSIntersectFinderRegions {
 			boolean debugNope, long debugIterations[]) {
 
 		System.out.println("...TEST");
+		Utils.printFold(paperUsed);
+		Utils.printFoldWithIndex(indexCuboidonPaper);
+		Utils.printFoldWithIndex(indexCuboidOnPaper2ndCuboid);
 		
 		//System.out.println("START");
 		if(numCellsUsedDepth == cuboid.getNumCellsToFill()) {
@@ -179,7 +182,7 @@ public class DFSIntersectFinderRegions {
 			System.out.println("numCellsUsedDepth: " + numCellsUsedDepth);
 			
 			System.exit(1);
-		} else {
+		}/* else {
 			
 			System.out.println("------------");
 			System.out.println("Num iterations: " + numIterations);
@@ -196,7 +199,7 @@ public class DFSIntersectFinderRegions {
 			System.out.println("Still ok");
 		}
 		System.out.println("*********************************");
-		
+		*/
 		
 		regions = FoldResolveOrderedRegionsSkipSymmetries.handleCompletedRegionIfApplicable(regions, limitDupSolutions, indexCuboidonPaper, paperUsed);
 		
