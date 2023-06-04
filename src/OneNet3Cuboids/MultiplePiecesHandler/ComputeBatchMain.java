@@ -3,7 +3,6 @@ package OneNet3Cuboids.MultiplePiecesHandler;
 import java.math.BigInteger;
 
 import OneNet3Cuboids.DupRemover.BasicUniqueCheckImproved;
-import UtilityFunctions.UtilityFunctions;
 
 public class ComputeBatchMain {
 
@@ -18,11 +17,18 @@ secret key: 122572
 Exp: 17
 Mod: 2083723
 	 */
+	/*
+	//How to test it:
+	public static int BATCH_SIZE = 100000;
+	public static int START_DEPTH = 5;
+	public static int GET_ALL_PIECES = -1;
+	
+	 */
 	public static int BATCH_SIZE = 1000;
 	public static int START_DEPTH = 13;
 	public static int GET_ALL_PIECES = -1;
 	
-	public static int indexFromArgTODO = 2;
+	public static int indexFromArgTODO = 3;
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
