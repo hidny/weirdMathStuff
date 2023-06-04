@@ -19,12 +19,16 @@ public class NeighbourGraphCreator {
 		Coord numberingInv[] = Utils.getFlatInverseNumberingOfCuboid(numbering, a, b, c);
 		
 		String ret1 = DataModelViews.getFlatNumberingView(a, b, c);
-		System.out.println(ret1);
+		
+		/*
+		 System.out.println(ret1);
+		 
 
 		System.out.println("Printed flattened cuboid with bonus square at bottom...");
 		
 		System.out.println("This is the map I will use to encode neighbours and get somewhere... hopefully.");
-		
+		*/
+
 		int flatArray[][] = makeTempFlatMapArray(a, b, c, numbering);
 		
 		//Sanity check:
@@ -52,6 +56,7 @@ public class NeighbourGraphCreator {
 			}
 		}
 		
+		/*
 		for(int i=0; i<neighbours.length; i++) {
 			
 			System.out.println("Neighbours for " + i + ":");
@@ -77,6 +82,7 @@ public class NeighbourGraphCreator {
 			}
 			System.out.println();
 		}
+		*/
 		
 		return neighbours;
 	}

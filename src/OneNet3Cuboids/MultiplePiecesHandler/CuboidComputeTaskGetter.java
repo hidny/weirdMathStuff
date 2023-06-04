@@ -159,14 +159,14 @@ public class CuboidComputeTaskGetter {
 						debugNope, debugIterations);
 				
 				
-				System.out.println("Debug 1");
+				System.out.println();
+				System.out.println("New task description:");
 				System.out.println("Target task index: " + targetTaskIndex);
-				System.out.println("Cell depth: " + numCellsUsedDepth);
-				System.out.println("Max depth: " + maxDepth);
+				System.out.println("start depth: " + numCellsUsedDepth);
 				Utils.printFold(paperUsed);
 				Utils.printFoldWithIndex(indexCuboidonPaper);
 				Utils.printFoldWithIndex(indexCuboidOnPaper2ndCuboid);
-				System.out.println("----");
+				System.out.println();
 				
 			}
 			

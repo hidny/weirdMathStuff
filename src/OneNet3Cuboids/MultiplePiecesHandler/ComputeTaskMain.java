@@ -8,7 +8,7 @@ public class ComputeTaskMain {
 
 	// Length of depth 7 is 5396...
 	
-	public static int START_DEPTH = 7;
+	public static int START_DEPTH = 13;
 	public static int TARGET_TASK_INDEX = 1000000;
 	
 	
@@ -39,15 +39,8 @@ public class ComputeTaskMain {
 			System.exit(0);
 		}
 		
-		System.out.println("back to main");
 		ComputeTaskDescription taskDescriptionToUse = computeTask;
 		
-		System.out.println("Debug 2");
-		System.out.println("Cell depth: " + computeTask.numCellsUsedDepth);
-		Utils.printFold(computeTask.paperUsed);
-		Utils.printFoldWithIndex(computeTask.indexCuboidonPaper);
-		Utils.printFoldWithIndex(computeTask.indexCuboidOnPaper2ndCuboid);
-		System.out.println("----");
 		
 		System.out.println("Run compute task for index " + targetIndex + ": (Please wait)");
 				
@@ -72,7 +65,7 @@ public class ComputeTaskMain {
 		
 		System.out.println("Finished task.");
 		
-		System.out.println("Final number of unique solutions: " + taskDescriptionToUse.solutionResolver.getNumUniqueFound());
+		System.out.println("Final number of unique solutions for Task: " + taskDescriptionToUse.solutionResolver.getNumUniqueFound());
 
 		computeTask = null;
 		taskDescriptionToUse = null;
@@ -84,16 +77,17 @@ public class ComputeTaskMain {
 		
 		System.out.println("Fold Resolver Ordered Regions intersection skip symmetries Nx1x1:");
 
-		//solveCuboidIntersections(new CuboidToFoldOn(11, 1, 1), new CuboidToFoldOn(5, 3, 1));
-		//solveCuboidIntersections(new CuboidToFoldOn(13, 1, 1), new CuboidToFoldOn(3, 3, 3));
-		
 		computeTask = null;
+		
+		//CuboidComputeTaskGetter.getComputeTask(new CuboidToFoldOn(11, 1, 1), new CuboidToFoldOn(5, 3, 1), true, startDepth, targetIndex);
+		CuboidComputeTaskGetter.getComputeTask(new CuboidToFoldOn(13, 1, 1), new CuboidToFoldOn(3, 3, 3), true, startDepth, targetIndex);
+		
 		//TODO: update the cuboids used:
 		
 		
 		
 		//CuboidComputeTaskGetter.getComputeTask(new CuboidToFoldOn(5, 1, 1), new CuboidToFoldOn(3, 2, 1), true, startDepth, targetIndex);
-		CuboidComputeTaskGetter.getComputeTask(new CuboidToFoldOn(5, 1, 1), new CuboidToFoldOn(5, 1, 1), true, startDepth, targetIndex);
+		//CuboidComputeTaskGetter.getComputeTask(new CuboidToFoldOn(5, 1, 1), new CuboidToFoldOn(5, 1, 1), true, startDepth, targetIndex);
 		
 		
 	}

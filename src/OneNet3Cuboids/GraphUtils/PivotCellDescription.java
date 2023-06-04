@@ -127,23 +127,23 @@ Cell and rotation: 4 and 1
 		
 		ArrayList<PivotCellDescription> listPivots = new ArrayList<PivotCellDescription>();
 		
-		System.out.println("Get arrays created:");
+		//System.out.println("Get arrays created:");
 		for(int i=0; i<Utils.getTotalArea(exampleCuboid.getDimensions()); i++) {
 			
-			System.out.println("Cell index " + i + ":");
+			//System.out.println("Cell index " + i + ":");
 			for(int j=0; j<NUM_ROTATIONS; j++) {
 				//System.out.println("Rotation: " + j + ":");
 				PivotCellDescription tmp = new PivotCellDescription(exampleCuboid, i, j);
 			
 				listPivots.add(tmp);
 			
-				for(int k=0; k<tmp.lengthsAroundCell.length; k++) {
+				/*for(int k=0; k<tmp.lengthsAroundCell.length; k++) {
 					System.out.print(tmp.lengthsAroundCell[k] + ", ");
 				}
-				System.out.println();
+				System.out.println();*/
 			}
-			System.out.println();
-			System.out.println();
+			//System.out.println();
+			//System.out.println();
 			
 		}
 		
@@ -165,6 +165,7 @@ Cell and rotation: 4 and 1
 			}
 		}
 
+		/*
 		System.out.println("Num unique pivot locations: " + ret.size());
 		System.out.println("Total area multiplied by 4 rotations: " + (4 * Utils.getTotalArea(exampleCuboid.getDimensions())));
 		System.out.println();
@@ -180,6 +181,7 @@ Cell and rotation: 4 and 1
 			}
 			System.out.println();
 		}
+		*/
 
 		return ret;
 	}
