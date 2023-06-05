@@ -18,6 +18,7 @@ import OneNet3Cuboids.SolutionResovler.*;
 public class CuboidComputeTaskGetter {
 
 
+	public static long checkpointCounter = 0;
 	public static long curNumPiecesCreated = 0;
 	
 	public static final int NUM_ROTATIONS = 4;
@@ -25,10 +26,16 @@ public class CuboidComputeTaskGetter {
 	
 	
 	
-	public static void getComputeTask(CuboidToFoldOn cuboidToBuild, CuboidToFoldOn cuboidToBringAlong, boolean skipSymmetries
-			, int maxDepth, int targetTaskIndex) {
+	public static void getComputeTask(CuboidToFoldOn cuboidToBuild, CuboidToFoldOn cuboidToBringAlong, boolean skipSymmetries,
+			int maxDepth, int targetTaskIndex) {
 		
 		curNumPiecesCreated = 0;
+		checkpointCounter = 0L;
+		
+		if(skipDirections == null) {
+			initSkipDirectionsHashTable();
+		}
+		
 		SolutionResolverIntersectInterface solutionResolver = null;
 		
 
@@ -128,6 +135,38 @@ public class CuboidComputeTaskGetter {
 		
 	}
 	
+	public static void setSkipToHashMap(int numCellsUsedDepth, long prevCheckpointCounter, long prevNumPiecesCreated) {
+
+		if(numCellsUsedDepth < DEPTH_TO_BOTHER_INDEXING && prevCheckpointCounter >= 0) {
+			
+			String key = prevCheckpointCounter + ", " + prevNumPiecesCreated;
+			
+			System.out.println("Set Skip To hash Map!");
+			System.out.println("curNumPiecesCreated: " + curNumPiecesCreated);
+			
+			if(skipDirections[numCellsUsedDepth].containsKey(key)) {
+				System.out.println("ERROR: Huh? This shouldn't happen?");
+				System.out.println("AAH!");
+				System.exit(0);
+			}
+			
+			skipDirections[numCellsUsedDepth].put(key, checkpointCounter + "," + curNumPiecesCreated);
+			
+		}
+	}
+	
+	public static int DEPTH_TO_BOTHER_INDEXING = 11;
+	public static HashMap<String, String> skipDirections[] = null;
+	public static int numInserts = 0;
+	public static int curNumNoProgress[] = new int[DEPTH_TO_BOTHER_INDEXING];
+	
+	public static void initSkipDirectionsHashTable() {
+		skipDirections = new HashMap[DEPTH_TO_BOTHER_INDEXING];
+		
+		for(int i=0; i<skipDirections.length; i++) {
+			skipDirections[i] = new HashMap<String, String>();
+		}
+	}
 	
 	public static final int nugdeBasedOnRotation[][] = {{-1, 0, 1, 0}, {0, 1, 0 , -1}};
 	
@@ -139,6 +178,7 @@ public class CuboidComputeTaskGetter {
 			int maxDepth, int targetTaskIndex
 			) {
 
+		
 		if(cuboid.getNumCellsFilledUp() == maxDepth) {
 
 			/*System.out.println();
@@ -171,16 +211,47 @@ public class CuboidComputeTaskGetter {
 			}
 			
 			curNumPiecesCreated++;
-			
-			//TODO: fill an ArrayList with relevant info?
 			return;
 		}
 		
+		long prevCheckpointCounter = -1;
+		long prevNumPiecesCreated = -1;
+		
+		//Logic for skipping ahead on the second pass:
+		if(numCellsUsedDepth < DEPTH_TO_BOTHER_INDEXING) {
+			
+			prevCheckpointCounter = checkpointCounter;
+			prevNumPiecesCreated = curNumPiecesCreated;
+			
+			if(skipDirections[numCellsUsedDepth].containsKey(checkpointCounter + ", " + curNumPiecesCreated)) {
+
+				String tokens[] = skipDirections[numCellsUsedDepth].get(checkpointCounter + ", " + curNumPiecesCreated).split(",");
+				
+				if(Long.parseLong(tokens[1]) <= targetTaskIndex) {
+					checkpointCounter = Long.parseLong(tokens[0]);
+					curNumPiecesCreated = Long.parseLong(tokens[1]);
+					
+					//System.out.println("Going from " + prevCheckpointCounter + " to " + checkpointCounter);
+					//System.out.println("Going from " + prevNumPiecesCreated + " pieces to " + curNumPiecesCreated);
+					
+					//System.exit(0);
+					return;
+				}
+			}
+
+			
+		}
+		checkpointCounter++;
+		//End logic for skipping ahead on the second pass
+		
+
+
 		
 		regions = FoldResolveOrderedRegionsSkipSymmetries.handleCompletedRegionIfApplicable(regions, limitDupSolutions, indexCuboidonPaper, paperUsed);
 		
 		if(regions == null) {
 			
+			setSkipToHashMap(numCellsUsedDepth, prevCheckpointCounter, prevNumPiecesCreated);
 			return;
 		}
 		
@@ -389,6 +460,8 @@ public class CuboidComputeTaskGetter {
 					if(limitDupSolutions >= 0 && retDuplicateSolutions > limitDupSolutions) {
 						//Handling option to only find 1 or 2 solutions:
 						//This has to be done after tear-down because these objects are soft-copied...
+
+						setSkipToHashMap(numCellsUsedDepth, prevCheckpointCounter, prevNumPiecesCreated);
 						return;
 					}
 
@@ -398,6 +471,7 @@ public class CuboidComputeTaskGetter {
 			} // End loop rotation
 		} //End loop index
 
+		setSkipToHashMap(numCellsUsedDepth, prevCheckpointCounter, prevNumPiecesCreated);
 		return;
 	}
 	

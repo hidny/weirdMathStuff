@@ -31,6 +31,7 @@ public class ComputeTaskMain {
 	public static void runSubtask(int start_depth, int targetIndex){
 		
 
+		//System.out.println("DEBUG Target Index: " + targetIndex);
 		updateComputeTask(start_depth, targetIndex);
 		
 		if(computeTask == null) {

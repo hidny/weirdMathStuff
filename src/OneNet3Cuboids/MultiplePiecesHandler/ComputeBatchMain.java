@@ -17,18 +17,24 @@ secret key: 122572
 Exp: 17
 Mod: 2083723
 	 */
-	/*
-	//How to test it:
-	public static int BATCH_SIZE = 100000;
-	public static int START_DEPTH = 5;
-	public static int GET_ALL_PIECES = -1;
 	
-	 */
+	//How to test it:
+	//Test Works:
+	//public static int BATCH_SIZE = 20000;
+	//public static int START_DEPTH = 6;
+	//public static int GET_ALL_PIECES = -1;
+	
+	//Test Works:
+	//public static int BATCH_SIZE = 29270;
+	//public static int START_DEPTH = 8;
+	//public static int GET_ALL_PIECES = -1;
+	
+	//What to run:
 	public static int BATCH_SIZE = 1000;
 	public static int START_DEPTH = 13;
 	public static int GET_ALL_PIECES = -1;
 	
-	public static int indexFromArgTODO = 3;
+	public static int indexFromArgTODO = 8;
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -90,6 +96,11 @@ Mod: 2083723
 				
 
 				long primes[] = getPrimeDivisors(mod);
+				
+				if(primes[0] * primes[1] < mod) {
+					continue;
+				}
+				
 				carMichaelTotient = (int)getLCM(primes[0] - 1, primes[1] - 1);
 				
 				if(carMichaelTotient % defaultExp != 0) {
@@ -105,6 +116,8 @@ Mod: 2083723
 			d++;
 		}
 		
+		System.out.println(defaultExp);
+		System.out.println(mod);
 		System.out.println("secret key: " + d);
 		
 		sanityTestShuffle(new BigInteger("" + defaultExp), new BigInteger("" + d), new BigInteger("" + mod));
@@ -119,7 +132,7 @@ Mod: 2083723
 		//int modInt= 21;
 		
 		System.out.println("Sanity testing RSA shuffle:");
-		
+
 		int modInt = mod.intValue();
 		
 		for(int i=0; i<modInt; i++) {
