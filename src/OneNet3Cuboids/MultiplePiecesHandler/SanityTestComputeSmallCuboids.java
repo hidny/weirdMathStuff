@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 import OneNet3Cuboids.DupRemover.BasicUniqueCheckImproved;
 
-public class ComputeTaskTestSmallCuboids {
+public class SanityTestComputeSmallCuboids {
 
 	public static void main(String args[]) {
 		

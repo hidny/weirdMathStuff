@@ -6,7 +6,7 @@ import OneNet3Cuboids.DupRemover.BasicUniqueCheckImproved;
 
 //13x1x1 and 3x3x3 with max depth of 13:
 // 2083716 pieces / 8 (piece/minute) / 60(minutes/hour) /24 (hours/day) = 181 days
-public class ComputeTaskRoughEstimator {
+public class ComputeTaskRoughEstimatorOLD {
 
 	public static void main(String args[]) {
 		

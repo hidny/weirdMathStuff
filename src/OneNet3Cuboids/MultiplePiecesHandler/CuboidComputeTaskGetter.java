@@ -141,8 +141,8 @@ public class CuboidComputeTaskGetter {
 			
 			String key = prevCheckpointCounter + ", " + prevNumPiecesCreated;
 			
-			System.out.println("Set Skip To hash Map!");
-			System.out.println("curNumPiecesCreated: " + curNumPiecesCreated);
+			//System.out.println("Set Skip To hash Map!");
+			//System.out.println("curNumPiecesCreated: " + curNumPiecesCreated);
 			
 			if(skipDirections[numCellsUsedDepth].containsKey(key)) {
 				System.out.println("ERROR: Huh? This shouldn't happen?");

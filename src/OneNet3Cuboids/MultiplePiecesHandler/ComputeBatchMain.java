@@ -30,11 +30,11 @@ Mod: 2083723
 	//public static int GET_ALL_PIECES = -1;
 	
 	//What to run:
-	public static int BATCH_SIZE = 1000;
+	public static int BATCH_SIZE = 2000;
 	public static int START_DEPTH = 13;
 	public static int GET_ALL_PIECES = -1;
 	
-	public static int indexFromArgTODO = 8;
+	public static int indexFromArgTODO = 16;
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
