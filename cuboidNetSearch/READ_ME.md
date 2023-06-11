@@ -103,20 +103,21 @@ batch_index_to_search=0
 This should get you 2263 solutions. This should take less than 2 minutes.
 
 ```
-cuboid1=4x1x1
-cuboid2=4x1x1
+cuboid1=2x1x1
+cuboid2=2x1x1
 search_start_depth=5
 batch_size=4000
 batch_index_to_search=0
 ```
-This should get you 228,547 solutions. This should take less than 1 minute. This just gets the solutions for the 4x1x1 cuboid
+This should get you 723 solutions. This should take less than 1 minute. This just gets the solutions for the 2x1x1 cuboid.
+Please don't do this for bigger Nx1x1 cuboids because there's lots of solutions and it will be a waste of disk space.
 
 
 ```
 cuboid1=7x1x1
 cuboid2=3x3x1
 search_start_depth=5
-batch_size=4000
+batch_size=1000
 batch_index_to_search=0
 ```
 This should get you 1070 solutions. This should take less than 1 hour. If you want the 1080 solutions from the previous papers, you will have to use another version of the jar
