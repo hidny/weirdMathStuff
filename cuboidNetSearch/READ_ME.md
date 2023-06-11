@@ -4,9 +4,8 @@
 The purpose of the jar file is to search for nets that fold into 2 different cuboids in a way where you can choose which slice of the search space the program should work on, so it
 could be easily distributed. For big cuboids, it would take an individual CPU years to complete, so it's best to divide the work up, and get it done faster.
 
-The way to run this is by simply setting up the properties you want in net_search.properties, and running it.
+The way to run this is by simply setting up the properties you want in net_search.properties inside the cuboidNetSearch folder (same folder as README.md), and running it.
 You could run it by double-clicking it, or running "java -jar cuboid_net_search.jar" in the command line. I believe double-clicking it makes it faster, but I haven't really tested it.
-
 
 As it runs in the background, it will output to a new file in the folder path you specified in net_search.properties, or if you didn't specify a folder path,
 it will output into the 'net_search_output' folder which will be in the same directory as the READ_ME.md file.
@@ -16,6 +15,8 @@ I didn't bother making any windows or alert messages telling you it's running. T
 or by checking if you can see "Java(TM) Platform SE binary" in the list of task manager processes taking up at least 10% of CPU.
 If you want to stop the program, feel free to kill it from the task manager anytime you want.
 
+In my experience, I get the best results when I run 3 of these at once, but if you actually want to be able to use your computer as it runs,
+maybe only have 1 or 2 running in the background at once.
 
 ### How to Configure the properties file (TODO)
 
@@ -91,3 +92,32 @@ net_search_11x1x1_and_5x3x1_SD_13_BS_4000_IND_21.txt
 
 
 ### Configurations for small cuboids to sanity test it
+
+```
+cuboid1=5x1x1
+cuboid2=3x2x1
+search_start_depth=5
+batch_size=4000
+batch_index_to_search=0
+```
+This should get you 2263 solutions. This should take less than 2 minutes.
+
+```
+cuboid1=4x1x1
+cuboid2=4x1x1
+search_start_depth=5
+batch_size=4000
+batch_index_to_search=0
+```
+This should get you 228,547 solutions. This should take less than 1 minute. This just gets the solutions for the 4x1x1 cuboid
+
+
+```
+cuboid1=7x1x1
+cuboid2=3x3x1
+search_start_depth=5
+batch_size=4000
+batch_index_to_search=0
+```
+This should get you 1070 solutions. This should take less than 1 hour. If you want the 1080 solutions from the previous papers, you will have to use another version of the jar
+that accepts invible cuts in the net. I might provide that on a later date.
