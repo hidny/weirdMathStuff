@@ -134,7 +134,14 @@ Mod: 2083723
 		        String path = filenameString;
 		        
 		        if(prop.getProperty("output_folder") == null) {
-		        	path = "net_search_output" + File.separator + filenameString;
+		        	
+		        	String defaultDirName = "net_search_output";
+		        	path = defaultDirName + File.separator + filenameString;
+		        	File directory = new File(defaultDirName);
+		        	if( ! directory.exists()) {
+		        		directory.mkdir();
+		        	}
+		        	
 		        	o = new PrintStream(new File(path));
 			        
 		        } else {

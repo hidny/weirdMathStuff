@@ -1,0 +1,6 @@
+Cuboids to compare:
+11x1x1
+and
+5x3x2
+Fold Resolver Ordered Regions intersection skip symmetries Nx1x1:
+ERROR: The two cuboid to intersect don't have the same area.

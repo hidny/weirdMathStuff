@@ -1,0 +1,16 @@
+Cuboids to compare:
+13x1x1
+and
+3x3x3
+Fold Resolver Ordered Regions intersection skip symmetries Nx1x1:
+Num starting points and rotations to check: 9
+Target index too high.
+Num pieces found: 2083716
+Final num pieces:
+2083716
+
+Setup shuffle for pseudo-random sampling of tasks:
+17
+2083723
+secret key: 61173
+Sanity testing RSA shuffle:
