@@ -1,5 +1,25 @@
 ## Cuboid Net Searcher
 
+### Purpose
+The purpose of the jar file is to search for nets that fold into 2 different cuboids in a way where you can choose which slice of the search space the program should work on, so it
+could be easily distributed. For big cuboids, it would take an individual CPU years to complete, so it's best to divide the work up, and get it done faster.
+
+The way to run this is by simply setting up the properties you want in net_search.properties, and running it.
+You could run it by double-clicking it, or running "java -jar cuboid_net_search.jar" in the command line. I believe double-clicking it makes it faster, but I haven't really tested it.
+
+
+As it runs in the background, it will output to a new file in the folder path you specified in net_search.properties, or if you didn't specify a folder path,
+it will output into the 'net_search_output' folder which will be in the same directory as the READ_ME.md file.
+I advise checking the output file to make sure that there were no errors.
+
+I didn't bother making any windows or alert messages telling you it's running. The way to tell is by checking that it's running by checking if the new file is being updated,
+or by checking if you can see "Java(TM) Platform SE binary" in the list of task manager processes taking up at least 10% of CPU.
+If you want to stop the program, feel free to kill it from the task manager anytime you want.
+
+
+### How to Configure the properties file (TODO)
+
+
 2 Million pieces, batch, separate machine,
 how to start
 how to set path windows
@@ -42,6 +62,7 @@ See wikipedia for RSA for more details.
 
 
 
+### Example configurations (TODO)
 
 other example:
 ```
@@ -67,3 +88,6 @@ The cuboids will be rearranged to the standard form where the Nx1x1 cuboid is at
 will be written like this "11x1x1"
 File name for this example:
 net_search_11x1x1_and_5x3x1_SD_13_BS_4000_IND_21.txt
+
+
+### Configurations for small cuboids to sanity test it
