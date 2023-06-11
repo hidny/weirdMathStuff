@@ -2,6 +2,7 @@ package OneNet3Cuboids.MultiplePiecesHandler;
 
 import OneNet3Cuboids.CuboidToFoldOn;
 import OneNet3Cuboids.Utils;
+import OneNet3Cuboids.Coord.Coord;
 import OneNet3Cuboids.DFSIntersectionNet.DFSIntersectFinderRegions;
 
 public class ComputeTaskMain {
@@ -24,15 +25,15 @@ public class ComputeTaskMain {
 			System.out.println("ERROR: please specify the TARGET_TASK_INDEX. (It's currently less than 0)");
 		}
 		
-		runSubtask(START_DEPTH, TARGET_TASK_INDEX);
+		runSubtask(START_DEPTH, TARGET_TASK_INDEX, new CuboidToFoldOn(13, 1, 1), new CuboidToFoldOn(3, 3, 3));
 		
 	}
 	
-	public static void runSubtask(int start_depth, int targetIndex){
+	public static void runSubtask(int start_depth, int targetIndex, CuboidToFoldOn cuboid1, CuboidToFoldOn cuboid2) {
 		
 
 		//System.out.println("DEBUG Target Index: " + targetIndex);
-		updateComputeTask(start_depth, targetIndex);
+		updateComputeTask(start_depth, targetIndex, cuboid1, cuboid2);
 		
 		if(computeTask == null) {
 			System.out.println("Target index too high.");
@@ -73,15 +74,24 @@ public class ComputeTaskMain {
 
 	}
 	
-	public static void updateComputeTask(int startDepth, int targetIndex) {
+	public static void updateComputeTask(int startDepth, int targetIndex, CuboidToFoldOn cuboid1, CuboidToFoldOn cuboid2) {
 		
 		
 		System.out.println("Fold Resolver Ordered Regions intersection skip symmetries Nx1x1:");
 
 		computeTask = null;
 		
+		CuboidComputeTaskGetter.getComputeTask(
+				cuboid1,
+				cuboid2,
+				true,
+				startDepth,
+				targetIndex
+		);
+		
 		//CuboidComputeTaskGetter.getComputeTask(new CuboidToFoldOn(11, 1, 1), new CuboidToFoldOn(5, 3, 1), true, startDepth, targetIndex);
-		CuboidComputeTaskGetter.getComputeTask(new CuboidToFoldOn(13, 1, 1), new CuboidToFoldOn(3, 3, 3), true, startDepth, targetIndex);
+		//CuboidComputeTaskGetter.getComputeTask(new CuboidToFoldOn(13, 1, 1), new CuboidToFoldOn(3, 3, 3), true, startDepth, targetIndex);
+		//CuboidComputeTaskGetter.getComputeTask(new CuboidToFoldOn(14, 1, 1), new CuboidToFoldOn(5, 4, 1), true, startDepth, targetIndex);
 		
 		//TODO: update the cuboids used:
 		

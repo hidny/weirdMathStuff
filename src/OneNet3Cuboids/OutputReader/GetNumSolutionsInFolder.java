@@ -15,8 +15,9 @@ public class GetNumSolutionsInFolder {
 		//File folder = new File("C:/Users/Michael/projectEuler2/Cuboid/output/AttemptAt13x1x1and3x3x3byOnlySearchingSimpleSolutions");
 
 		File folder = new File("D:/output13x1x1DoneSoFar");
-		CuboidToFoldOn cuboid = new  CuboidToFoldOn(3, 3, 3);
-		//CuboidToFoldOn cuboid = new  CuboidToFoldOn(6, 3, 1);
+		//CuboidToFoldOn cuboid = new  CuboidToFoldOn(1, 13, 1);
+		//CuboidToFoldOn cuboid = new  CuboidToFoldOn(3, 3, 3);
+		CuboidToFoldOn cuboid = new  CuboidToFoldOn(6, 3, 1);
 		boolean quiet = false;
 		
 		//File folder = new File("C:/Users/Michael/Desktop/mattParkerChallenge/5X3X1and11x1x1Intersects/");

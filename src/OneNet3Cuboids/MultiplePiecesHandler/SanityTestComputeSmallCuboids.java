@@ -2,6 +2,7 @@ package OneNet3Cuboids.MultiplePiecesHandler;
 
 import java.util.Scanner;
 
+import OneNet3Cuboids.CuboidToFoldOn;
 import OneNet3Cuboids.DupRemover.BasicUniqueCheckImproved;
 
 public class SanityTestComputeSmallCuboids {
@@ -16,7 +17,7 @@ public class SanityTestComputeSmallCuboids {
 			
 			System.out.println(i);
 			
-			ComputeTaskMain.runSubtask(maxDepth, i);
+			ComputeTaskMain.runSubtask(maxDepth, i, new CuboidToFoldOn(5, 1, 1), new CuboidToFoldOn(3, 2, 1));
 			
 			
 		}
