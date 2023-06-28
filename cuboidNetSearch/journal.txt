@@ -1,0 +1,11 @@
+June 26th, 2023:
+
+I'm currently 13% of the way through searching for nets that fold into the 3x3x3 and 13x1x1 cuboid. I decided not to count nets with invisible cuts in them because I don't like those solutions and they're a bit more troublesome to handle finding
+nets that fold into all three cuboids of area 54.
+
+Currently, I got 534 solutions found and expect there to be around 4000 solutions in total. My program will finish running in about 4 months.
+From Ryuhei's Intro to computational orignami book, he states that he found 690 solutions in less than 6 minutes through using a randomize algo.
+
+That one data point tells me that he was probably able to find the lion's share of solutions if not all the solutions within a day.
+That's a bit humbling to think about, but on the bright side, it probably means there's lots of room for improvement. I'll keep at it, and try to optimize this later.
+
