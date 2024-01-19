@@ -32,7 +32,7 @@ Another thing to note is that the 1st cuboid should be of the form Nx1x1. If it'
 #### search_start_depth
 
 This number tells the program how many cells/squares/tiles to start from. 
-The ways the program divides the problem into slices is by having an index for every possible configuration of a net with 'search_start_depth' cells/squares/tiles inside. The bigger the depth, the more indexes you have to search, but the faster each index is to search. For example, because we set this to 13, and there is around 2 million configurations/states of a net with 13 square, there will be 2 million indexes to search. If the depth was 12, the number of indexes to search would be less, but each index would take longer.
+The way the program divides the problem into slices is by having an index for every possible configuration of a net with 'search_start_depth' cells/squares/tiles inside. The bigger the depth, the more indexes you have to search, but the faster each index is to search. For example, because we set this to 13, and there are around 2 million configurations/states of a net with 13 squares, there will be 2 million indexes to search. If the depth was 12, the number of indexes to search would be less, but each index would take longer.
 
 The acceptable range is probably from 1 to 15.
 
@@ -46,7 +46,7 @@ The last index searched = ({batch_size} + 1) * {batch_index_to_search} -1
 The number of indexes that will be searched is equal to {batch_size}.
 
 #### output_folder
-The output folder of the program. Unfortunately, because of java, we need two backslashes for paths with backslashes. Note that you can't specify the filename, because that's created in a standardized way. This is the only field that optional. if you didn't specify a folder path, it will output into the 'net_search_output' folder which will be in the same directory as the READ_ME.md file.
+The output folder of the program. Unfortunately, because of java, we need two backslashes for paths with backslashes. Note that you can't specify the filename, because that's created in a standardized way. This is the only field that is optional. if you didn't specify a folder path, it will output into the 'net_search_output' folder which will be in the same directory as the READ_ME.md file.
 
 ### Other Details About the Implementation
 
@@ -86,7 +86,7 @@ batch_size=4000
 batch_index_to_search=21
 output_folder=D:\\net_search_output\\
 ```
-This searches for a net that folds the 13x1x1 cuboid and the 3x3x3 cuboid starting at depth 13 (13 tiles in the net already places) at index 84000 (21 * 4000), and ending at index 8799. It will output the file to the folder: 'D:\\net_search_output\\'
+This searches for a net that folds the 13x1x1 cuboid and the 3x3x3 cuboid starting at depth 13 (13 tiles in the net already placed) at index 84000 (21 * 4000), and ending at index 8799. It will output the file to the folder: 'D:\\net_search_output\\'
 
 ```
 cuboid1=13x1x1
@@ -106,7 +106,7 @@ batch_index_to_search=21
 ```
 Default path should be inside of {current_dir}/net_search_output/
 The cuboids will be rearranged to the standard form where the Nx1x1 cuboid is at the front and
-will be written like this "11x1x1".
+will be written like this: "11x1x1".
 File name for this example:
 net_search_11x1x1_and_5x3x1_SD_13_BS_4000_IND_21.txt
 
@@ -141,7 +141,7 @@ batch_size=1000
 batch_index_to_search=0
 ```
 This should get you 1070 solutions. This should take less than 1 hour. If you want the 1080 solutions that previous papers say exist, you will have to use another version of the jar
-that accepts inviable cuts in the net. I might provide that on a later date.
+that accepts invisible cuts in the net. I might provide that on a later date.
 
 ```
 cuboid1=13x1x1
