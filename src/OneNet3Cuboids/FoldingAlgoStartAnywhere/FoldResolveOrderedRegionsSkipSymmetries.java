@@ -374,20 +374,21 @@ public class FoldResolveOrderedRegionsSkipSymmetries {
 			int indexOtherCell = indexCuboidonPaper[i1][j1];
 			int rotationOtherCell = cuboid.getRotationPaperRelativeToMap(indexOtherCell);
 
+
+			//There's a 180 rotation because the neighbour is attaching to the new cell (so it's flipped!)
+			int neighbourIndexNeeded = (rotReq + ONE_EIGHTY_ROTATION - rotationOtherCell+ NUM_ROTATIONS) % NUM_ROTATIONS;
+
+
+			if(cuboid.getNeighbours(indexOtherCell)[neighbourIndexNeeded].getIndex() != indexNewCell) {
+				continue;
+			}
+			
 			if(regions[regionIndex].getCellIndexToOrderOfDev().containsKey(indexOtherCell)
 					&& regions[regionIndex].getCellIndexToOrderOfDev().get(indexOtherCell) < regions[regionIndex].getCellIndexToOrderOfDev().get(indexToUse) ) {
 				cantAddCellBecauseOfOtherPaperNeighbours = true;
 				break;
 			}
 			
-			//There's a 180 rotation because the neighbour is attaching to the new cell (so it's flipped!)
-			int neighbourIndexNeeded = (rotReq + ONE_EIGHTY_ROTATION - rotationOtherCell+ NUM_ROTATIONS) % NUM_ROTATIONS;
-
-
-			if(cuboid.getNeighbours(indexOtherCell)[neighbourIndexNeeded].getIndex() != indexNewCell) {
-				cantAddCellBecauseOfOtherPaperNeighbours = true;
-				break;
-			}
 		}
 	}
 	return cantAddCellBecauseOfOtherPaperNeighbours;

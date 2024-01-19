@@ -8,25 +8,27 @@ import OneNet3Cuboids.CuboidToFoldOn;
 import OneNet3Cuboids.Utils;
 import OneNet3Cuboids.SolutionResovler.ShapeIntersectionCheckerAtSolutionTime;
 
-public class GetNumSolutionsInFolder {
+public class GetNumSolutionsInFolderMagnifier {
 
+	public static int MAGNIFICATION_FACTOR = 3;
+	
 	public static void main(String[] args) {
 		
 		//File folder = new File("C:/Users/Michael/projectEuler2/Cuboid/output/AttemptAt13x1x1and3x3x3byOnlySearchingSimpleSolutions");
 
-		File folder = new File("D:\\area54DoubleCheck");
+		//File folder = new File("D:/output13x1x1DoneSoFar");
 		
 		//CuboidToFoldOn cuboid = new  CuboidToFoldOn(1, 13, 1);
-		CuboidToFoldOn cuboid = new  CuboidToFoldOn(3, 3, 3);
-		//CuboidToFoldOn cuboid = new  CuboidToFoldOn(6, 3, 1);
+		//CuboidToFoldOn cuboid = new  CuboidToFoldOn(3, 3, 3);
+		//CuboidToFoldOn cuboid = new  CuboidToFoldOn(12, 6, 2);
 
 		boolean quiet = false;
 		
-		//File folder = new File("C:/Users/Michael/Desktop/mattParkerChallenge/5X3X1and11x1x1Intersects/");
+		File folder = new File("C:/Users/Michael/Desktop/mattParkerChallenge/5X3X1and11x1x1Intersects/");
 		
 		//CuboidToFoldOn cuboid = new  CuboidToFoldOn(1, 1, 11);
 		//CuboidToFoldOn cuboid = new  CuboidToFoldOn(5, 3, 1);
-		//CuboidToFoldOn cuboid = new  CuboidToFoldOn(7, 2, 1);
+		CuboidToFoldOn cuboid = new  CuboidToFoldOn(MAGNIFICATION_FACTOR * 7, MAGNIFICATION_FACTOR * 2, MAGNIFICATION_FACTOR * 1);
 	    //boolean quiet = true;
 	    
 
@@ -81,9 +83,12 @@ public class GetNumSolutionsInFolder {
 					}
 					boolean tmpArray[][] = OutputReaderUtilsFunctions.getNextSolutionAsPaperUsedArray(in);
 					
+					
 					if(tmpArray == null) {
 						break;
 					}
+					
+					tmpArray = magnifyBoolArray(tmpArray);
 					
 					boolean array[][] = OutputReaderUtilsFunctions.addBorderAroundArray(tmpArray, 2);
 		
@@ -122,4 +127,22 @@ public class GetNumSolutionsInFolder {
 		System.out.println("Done.");
 	}
 
+	public static boolean[][] magnifyBoolArray(boolean orig[][]) {
+		boolean ret[][] = new boolean[MAGNIFICATION_FACTOR * orig.length][MAGNIFICATION_FACTOR * orig[0].length];
+		
+		for(int i=0; i<orig.length; i++) {
+			for(int j=0; j<orig[0].length; j++) {
+				if(orig[i][j]) {
+					for(int i2=0; i2<MAGNIFICATION_FACTOR; i2++) {
+						for(int j2=0; j2<MAGNIFICATION_FACTOR; j2++) {
+						
+							ret[MAGNIFICATION_FACTOR*i + i2][MAGNIFICATION_FACTOR*j + j2] = true;
+						}
+					}
+				}
+			}
+		}
+		
+		return ret;
+	}
 }
