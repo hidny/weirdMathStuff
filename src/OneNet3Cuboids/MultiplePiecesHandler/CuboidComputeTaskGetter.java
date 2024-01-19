@@ -157,6 +157,8 @@ public class CuboidComputeTaskGetter {
 	
 	public static int DEPTH_TO_BOTHER_INDEXING = 11;
 	public static HashMap<String, String> skipDirections[] = null;
+	public static int numInserts = 0;
+	public static int curNumNoProgress[] = new int[DEPTH_TO_BOTHER_INDEXING];
 	
 	public static void initSkipDirectionsHashTable() {
 		skipDirections = new HashMap[DEPTH_TO_BOTHER_INDEXING];

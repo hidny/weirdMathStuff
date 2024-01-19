@@ -52,7 +52,7 @@ public class MemorylessUniqueCheckSkipSymmetriesMemManage2ForNx1x1 {
 		
 		validSetup = new boolean[totalArea];
 		isSimilarCellToStart = new boolean[totalArea];
-		//TODO: Assuming it's a Nx1x1 where the top cell is similar to the bottom one:
+		//Assuming it's a Nx1x1, the top cell is similar to the bottom one:
 		isSimilarCellToStart[isSimilarCellToStart.length - 1]  = true;
 		
 

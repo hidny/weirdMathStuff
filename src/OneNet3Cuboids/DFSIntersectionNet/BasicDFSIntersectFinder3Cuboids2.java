@@ -826,15 +826,11 @@ public class BasicDFSIntersectFinder3Cuboids2 {
 		//CuboidToFoldOn main = new CuboidToFoldOn(13, 1, 1);
 		//CuboidToFoldOn others[] = new CuboidToFoldOn[] { new CuboidToFoldOn(3, 3, 3), new CuboidToFoldOn(6, 3, 1)};
 				
-		//CuboidToFoldOn main = new CuboidToFoldOn(11, 1, 1);
-		//CuboidToFoldOn others[] = new CuboidToFoldOn[] { new CuboidToFoldOn(7, 2, 1), new CuboidToFoldOn(5, 3, 1)};
+		CuboidToFoldOn main = new CuboidToFoldOn(11, 1, 1);
+		CuboidToFoldOn others[] = new CuboidToFoldOn[] { new CuboidToFoldOn(7, 2, 1), new CuboidToFoldOn(5, 3, 1)};
 		
 		//CuboidToFoldOn main = new CuboidToFoldOn(1, 3, 1);
 		//CuboidToFoldOn others[] = new CuboidToFoldOn[] { new CuboidToFoldOn(3, 1, 1), new CuboidToFoldOn(1, 1, 3)};
-		
-		CuboidToFoldOn main = new CuboidToFoldOn(1, 5, 1);
-		CuboidToFoldOn others[] = new CuboidToFoldOn[] { new CuboidToFoldOn(3, 2, 1), new CuboidToFoldOn(1, 1, 3)};
-				
 		
 		//CuboidToFoldOn main = new CuboidToFoldOn(1, 2, 1);
 		//CuboidToFoldOn others[] = new CuboidToFoldOn[] { new CuboidToFoldOn(1, 2, 1), new CuboidToFoldOn(1, 1, 2)};
