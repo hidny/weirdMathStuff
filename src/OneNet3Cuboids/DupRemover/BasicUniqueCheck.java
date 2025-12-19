@@ -86,7 +86,7 @@ public class BasicUniqueCheck {
 		}
 		
 		for(int i = lasti - firsti; i<array.length - 1; i++) {
-				vertFactor = vertFactor.multiply(intermediateFactor);
+			vertFactor = vertFactor.multiply(intermediateFactor);
 		}
 		
 

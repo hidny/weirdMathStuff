@@ -19,7 +19,8 @@ public class NeighbourGraphCreator {
 		Coord numberingInv[] = Utils.getFlatInverseNumberingOfCuboid(numbering, a, b, c);
 		
 		String ret1 = DataModelViews.getFlatNumberingView(a, b, c);
-		
+
+		 System.out.println(ret1);
 		/*
 		 System.out.println(ret1);
 		 

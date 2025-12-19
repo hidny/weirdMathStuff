@@ -23,6 +23,8 @@ public class ShapeIntersectionCheckerAtSolutionTime implements SolutionResolverI
 
 	private MemorylessUniqueCheckSkipSymmetriesMemManage2ForNx1x1 memorylessUniqueCheckSkipSymmetriesMemManage2;
 	
+	private MemorylessUniqueCheckSkipSymmetriesMemManage2ForNx1x1 memorylessUniqueCheckSkipSymmetriesMemManage1;
+	
 	private boolean quiet = false;
 	
 	public ShapeIntersectionCheckerAtSolutionTime(CuboidToFoldOn otherShape, boolean quiet) {
@@ -36,6 +38,8 @@ public class ShapeIntersectionCheckerAtSolutionTime implements SolutionResolverI
 
 	public ShapeIntersectionCheckerAtSolutionTime(CuboidToFoldOn otherShape) {
 		
+		memorylessUniqueCheckSkipSymmetriesMemManage1 = new MemorylessUniqueCheckSkipSymmetriesMemManage2ForNx1x1(new CuboidToFoldOn(11, 1, 1));
+
 		memorylessUniqueCheckSkipSymmetriesMemManage2 = new MemorylessUniqueCheckSkipSymmetriesMemManage2ForNx1x1(otherShape);
 
 		//Clear number of uniq solution because this program will be using it
@@ -68,26 +72,57 @@ public class ShapeIntersectionCheckerAtSolutionTime implements SolutionResolverI
 
 				if(memorylessUniqueCheckSkipSymmetriesMemManage2.isValidSetupAtIndexedStartLocationWithRotation(paperToDevelop, OrigPaperUsed, index, rotation, START_INDEX)) {
 					
+					
 					if(BasicUniqueCheck.isUnique(OrigPaperUsed)) {
 						
 
 						numSolutions++;
 						FoldResolveOrderedRegionsSkipSymmetries.numUniqueFound++;
 						
-						if(! quiet) {
+						if(! quiet && numSolutions % 10000 == 0) {
 	 						System.out.println("Found intersection:");
 							
 							System.out.println("Number of different intersections found: " + numSolutions);
 							
 							Utils.printFold(OrigPaperUsed);
 			
+
 							System.out.println();
 							System.out.println("Solution 1:");
-							Utils.printFoldWithIndex(indexCuboidonPaper);
-		
+							Utils.printFoldWithIndex(memorylessUniqueCheckSkipSymmetriesMemManage2.getIndexCuboidOnPaper());
+							
 							System.out.println();
 							System.out.println("Solution 2:");
-							Utils.printFoldWithIndex(memorylessUniqueCheckSkipSymmetriesMemManage2.getIndexCuboidOnPaper());
+							outer:
+							for(int index2=0; index2<paperToDevelop.length; index2++) {
+								
+								for(int rotation2=0; rotation2<4; rotation2++) {
+									if(memorylessUniqueCheckSkipSymmetriesMemManage1
+											.isValidSetupAtIndexedStartLocationWithRotation(paperToDevelop, OrigPaperUsed, index2, rotation2, START_INDEX)) {
+										Utils.printFoldWithIndex(memorylessUniqueCheckSkipSymmetriesMemManage1.getIndexCuboidOnPaper());
+										
+										MemorylessUniqueCheckSkipSymmetriesMemManage2ForNx1x1.eraseChangesToPaperUsedAndIndexCuboidOnPaper(
+												paperToDevelop,
+												memorylessUniqueCheckSkipSymmetriesMemManage1.getPaperUsed(),
+												memorylessUniqueCheckSkipSymmetriesMemManage1.getIndexCuboidOnPaper(),
+												MemorylessUniqueCheckSkipSymmetriesMemManage2ForNx1x1.DEFAULT_ROTATION,
+												MemorylessUniqueCheckSkipSymmetriesMemManage2ForNx1x1.NO_REFLECTION);
+										
+										break outer;
+									} else {
+									
+										MemorylessUniqueCheckSkipSymmetriesMemManage2ForNx1x1.eraseChangesToPaperUsedAndIndexCuboidOnPaper(
+												paperToDevelop,
+												memorylessUniqueCheckSkipSymmetriesMemManage1.getPaperUsed(),
+												memorylessUniqueCheckSkipSymmetriesMemManage1.getIndexCuboidOnPaper(),
+												MemorylessUniqueCheckSkipSymmetriesMemManage2ForNx1x1.DEFAULT_ROTATION,
+												MemorylessUniqueCheckSkipSymmetriesMemManage2ForNx1x1.NO_REFLECTION);
+									}
+								}
+							}
+							
+							//Utils.printFoldWithIndex(indexCuboidonPaper);
+		
 						}
 						
 						ret = 1L;
