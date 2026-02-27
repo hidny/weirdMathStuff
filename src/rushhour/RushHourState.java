@@ -19,7 +19,6 @@ public class RushHourState {
 		//Defaults to car length 2.
 		//There's a warning there's an overlap
 		
-		//17 moves apparently:
 		test.insertCar(0, 0, 3, true);
 		test.insertCar(2, 2, true, true);
 		test.insertCar(4, 3, true);
@@ -137,6 +136,7 @@ public class RushHourState {
 		
 		return ret;
 	}
+	
 	
 	public RushHourState findCarToFillSpaceInDir(int dirIndexFromEmpty, Coord emptySpace, int map[][]) {
 
