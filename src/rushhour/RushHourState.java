@@ -14,6 +14,12 @@ public class RushHourState {
 
 		RushHourState test = new RushHourState(6);
 		
+		//Features:
+		//Cars are auto-labeled
+		//Defaults to car length 2.
+		//There's a warning there's an overlap
+		
+		//17 moves apparently:
 		test.insertCar(0, 0, 3, true);
 		test.insertCar(2, 2, true, true);
 		test.insertCar(4, 3, true);
@@ -24,10 +30,16 @@ public class RushHourState {
 		test.insertCar(3, 2, false);
 		test.insertCar(4, 5, false);
 		
-		//TODO: remove label
-		//TODO: default to length 2.
-		//TODO: warn when crash
 		System.out.println(test);
+		
+		ArrayList<RushHourState> options = test.getOptions();
+		
+		for(int i=0; i<options.size(); i++) {
+			System.out.println(options.get(i).lastMoveDetails);
+			System.out.println(options.get(i));
+		}
+		
+		System.out.println("Number of moves: " + options.size());
 	}
 	
 	//Goal 1 to the right
@@ -36,8 +48,9 @@ public class RushHourState {
 		this.map = new int[size][size];
 		
 	}
-	public RushHourState(int map[][]) {
+	public RushHourState(int map[][], int label, Coord start, Coord end, int dirUsed) {
 		this.map = map;
+		lastMoveDetails = "Moved " + label + " from " +start + " to " + end + ". (" + Coord.convertIndexDirToString(dirUsed) + ")";
 		
 	}
 	private int curLabelIndex = 2;
@@ -89,7 +102,11 @@ public class RushHourState {
 		String ret = "";
 		for(int i=0; i<this.map.length; i++) {
 			for(int j=0; j<this.map[0].length; j++) {
-				ret += this.map[i][j];
+				if(this.map[i][j] == 0) {
+					ret += "_";
+				} else {
+					ret += this.map[i][j];
+				}
 			}
 			ret += "\n";
 		}
@@ -103,30 +120,16 @@ public class RushHourState {
 			for(int j=0; j<this.map[0].length; j++) {
 				
 				if(this.map[i][j] == 0) {
-					//TODO: Look in the 4 cardinal dirs for a car that will fill the space.
 					
-					//UP
-					// >0 because we're assuming that cars are 2 long...
-					for(int i1=i-1;i1>0; i1--) {
-						if(this.map[i1][j] != 0 && this.map[i1-1][j] == this.map[i1][j]) {
-							//MOVE
-							boolean move3 = false;
-							if(i1-2 >=0 && this.map[i1-2][j] == this.map[i1-1][j]) {
-								//TODO: move 3
-								move3 = true;
-							} else {
-								//TODO move 2
-							}
-							
-							int newmap[][] = hardCopyMap(this.map);
-							
-							//TODO:
-							
-						} else if(this.map[i1][j] != 0 && this.map[i1-1][j] != this.map[i1][j]) {
-							break;
+					for(int indexDirFromEmptySpace = 0; indexDirFromEmptySpace < 4; indexDirFromEmptySpace++) {
+						
+						RushHourState tmp = findCarToFillSpaceInDir(indexDirFromEmptySpace, new Coord(i, j), map);
+						
+						if(tmp != null) {
+							ret.add(tmp);
 						}
 					}
-					//copy/paste 4 times...
+					
 				}
 			}
 		}
@@ -134,6 +137,60 @@ public class RushHourState {
 		
 		return ret;
 	}
+	
+	public RushHourState findCarToFillSpaceInDir(int dirIndexFromEmpty, Coord emptySpace, int map[][]) {
+
+		RushHourState ret = null;
+		
+		Coord cur = emptySpace.moveInDir(dirIndexFromEmpty);
+
+		for(;cur.moveInDir(dirIndexFromEmpty).inBound(map); cur = cur.moveInDir(dirIndexFromEmpty)) {
+			
+			Coord next = cur.moveInDir(dirIndexFromEmpty);
+
+			if(this.map[cur.getI()][cur.getJ()] != 0 && this.map[cur.getI()][cur.getJ()] == this.map[next.getI()][next.getJ()]) {
+				
+				//FOUND CAR TO MOVE:
+				Coord next2 = next.moveInDir(dirIndexFromEmpty);
+				
+				int carLength = 2;
+				if(next2.inBound(map) && this.map[next2.getI()][next2.getJ()] == this.map[next.getI()][next.getJ()]) {
+					carLength = 3;
+				}
+				int label = this.map[cur.getI()][cur.getJ()];
+				
+				int newmap[][] = hardCopyMap(this.map);
+				
+				
+				Coord removeCoords = cur;
+				for(int k=0; k<carLength; k++) {
+					newmap[removeCoords.getI()][removeCoords.getJ()] = 0;
+					removeCoords = removeCoords.moveInDir(dirIndexFromEmpty);
+				}
+				
+				Coord addCoords = emptySpace;
+				for(int k=0; k<carLength; k++) {
+					newmap[addCoords.getI()][addCoords.getJ()] = label;
+					addCoords = addCoords.moveInDir(dirIndexFromEmpty);
+				}
+				
+				ret = new RushHourState(newmap, label,
+						Coord.getTopLeftCoord(cur, dirIndexFromEmpty, carLength),
+						Coord.getTopLeftCoord(emptySpace, dirIndexFromEmpty, carLength),
+						Coord.getOppositeDir(dirIndexFromEmpty)
+					);
+				break;
+				
+				//END FOUND CAR TO MOVE
+	
+			} else if(this.map[cur.getI()][cur.getJ()] != 0 && this.map[cur.getI()][cur.getJ()] != this.map[next.getI()][next.getJ()]) {
+				break;
+			}
+		}
+		
+		return ret;
+	}
+	
 	
 	public static int[][] hardCopyMap(int map[][]) {
 		int ret[][] = new int[map.length][map[0].length];
@@ -151,3 +208,4 @@ public class RushHourState {
 
 	
 }
+
