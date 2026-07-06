@@ -5,12 +5,13 @@ import java.util.HashMap;
 public class TryBFSIterator {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 
 		for(int n=1; n<20; n++) {
 			
 			numSolutions = 0;
 			netSearchStart(n);
+			
+			//TODO: Acknowledge that it gives: n*#solutions
 			
 			if(numSolutions % n != 0 ) {
 				System.out.println("Oops! I didn't get the right number!");
@@ -20,73 +21,50 @@ public class TryBFSIterator {
 		}
 	}
 
+	public static Tile memMap[][] = null;
+	
 	public static Tile map[][] = null;
 
 	public static Tile insert_initial_tile() {
 	
+		memMap = new Tile[map.length][map[0].length];
+		for(int i=0; i<memMap.length; i++) {
+			for(int j=0; j<memMap[0].length; j++) {
+				memMap[i][j] = new Tile();
+				memMap[i][j].i = i;
+				memMap[i][j].j = j;
+				memMap[i][j].labelNumber = i * memMap[0].length + j;
+				
+			}
+		}
+		
 		int zeroCoordI = map.length / 2;
 		int zeroCoordJ = map[0].length / 2;
 		
-		Tile tile = new Tile();
-		tile.i = zeroCoordI;
-		tile.j = zeroCoordJ;
-		tile.labelNumber = 0;
 		
-		map[zeroCoordI][zeroCoordJ] = tile;
+		map[zeroCoordI][zeroCoordJ] = memMap[zeroCoordI][zeroCoordJ];
 		
-		return tile;
+		return map[zeroCoordI][zeroCoordJ];
 	}
 	
 	
-	public static void netSearchStart(int max_size) {
-		
-
-		/*net_search_start(max_size):
-		    Define Mapping <Int to Int> tile_to_ordering
-		    cur_size = 0, cur_order_index = 0, cur_rot_index = 0
-		    tile_to_ordering.put(cur_order_index, cur_size)
-		    insert_initial_tile(cur_order_index)
-		    cur_size = cur_size + 1
-
-		    net_search(tile_to_ordering, max_size, cur_size,
-		    cur_order_index, cur_rot_index)
-		    
-		   */
-		HashMap<Tile, Integer>  tileToOrdering = new HashMap<Tile, Integer>();
-		HashMap<Integer, Tile>  orderingToTile = new HashMap<Integer, Tile>();
-		int cur_size = 0;
-		int cur_order_index = 0;
-		int cur_rot_index = 0;
-		
-		map = new Tile[3 * max_size][3 * max_size];
-		
-		Tile init = insert_initial_tile();
-		
-		orderingToTile.put(cur_order_index, init);
-		tileToOrdering.put(init, cur_order_index);
-		
-		cur_size+=1;
-		
-		net_search(tileToOrdering, orderingToTile, max_size, cur_size, cur_order_index, cur_rot_index);
-		
-	}
 	
 	public static Tile getNeiOnFlatPaper(Tile curTile, int rot) {
 		
-		Tile ret = new Tile();
-		ret.i = curTile.i;
-		ret.j = curTile.j;
+		
+		int iNei = curTile.i;
+		int jNei = curTile.j;
 		
 		if(rot == 0) {
-			ret.i -= 1;
+			iNei -= 1;
 		} else if(rot == 1) {
-			ret.j += 1;
+			jNei += 1;
 			
 		} else if(rot == 2) {
-			ret.i += 1;
+			iNei += 1;
 		} else if(rot == 3) {
 
-			ret.j -= 1;
+			jNei -= 1;
 			
 		} else {
 			System.out.println("Ooops!");
@@ -94,11 +72,7 @@ public class TryBFSIterator {
 			return null;
 		}
 		
-		if(map[ret.i][ret.j] != null) {
-			return map[ret.i][ret.j];
-		} else {
-			return ret;
-		}
+		return memMap[iNei][jNei];
 	}
 	
 	
@@ -147,8 +121,47 @@ public class TryBFSIterator {
 	//net_search(Mapping <Int to Int> tile_to_ordering,
 	//    max_size, cur_size, cur_order_index, cur_rot_index):
 	
-	public static int numSolutions = 0;
+	public static long numSolutions = 0;
 	
+
+	public static void netSearchStart(int max_size) {
+		
+
+		/*net_search_start(max_size):
+	    Define Mapping <Int to Int> tile_to_ordering
+	    cur_size = 0, cur_order_index = 0, cur_rot_index = 0
+	    tile_to_ordering.put(cur_order_index, cur_size)
+	    insert_initial_tile()
+	    cur_size = cur_size + 1
+	
+	    net_search(tile_to_ordering, max_size, cur_size,
+	    cur_order_index, cur_rot_index)
+		    
+		   */
+		HashMap<Tile, Integer>  tileToOrdering = new HashMap<Tile, Integer>();
+		HashMap<Integer, Tile>  orderingToTile = new HashMap<Integer, Tile>();
+		int cur_size = 0;
+		int cur_order_index = 0;
+		int cur_rot_index = 0;
+		
+		map = new Tile[3 * max_size][3 * max_size];
+		
+		Tile init = insert_initial_tile();
+		
+		orderingToTile.put(cur_order_index, init);
+		tileToOrdering.put(init, cur_order_index);
+		
+		cur_size+=1;
+		
+		net_search(tileToOrdering, orderingToTile, max_size, cur_size, cur_order_index, cur_rot_index);
+		
+	}
+	
+	//UP TO HERE:
+	/*
+	 * net_search(Mapping <Int to Int> tile_to_ordering,
+    max_size, cur_size, cur_order_index, cur_rot_index):
+	 */
 	public static void net_search(HashMap<Tile, Integer>  tileToOrdering,
 			HashMap<Integer, Tile>  orderingToTile,
 			int max_size, int cur_size, int cur_order_index, int cur_rot_index) {
