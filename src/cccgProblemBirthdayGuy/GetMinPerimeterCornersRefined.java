@@ -3,7 +3,8 @@ package cccgProblemBirthdayGuy;
 public class GetMinPerimeterCornersRefined {
 
 	//See intro for more details...
-
+	//Tried up to 10M...
+	// Never found need for third Rectangle...
 	public static final int LENGTH = 10000000;
 	
 	public static void main(String[] args) {
