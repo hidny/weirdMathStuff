@@ -4,33 +4,45 @@ public class GetMinPerimeterCornersRefined {
 
 	//See intro for more details...
 
-	public static final int LENGTH = 1000000;
+	public static final int LENGTH = 10000000;
 	
 	public static void main(String[] args) {
 
+		System.out.println("Trying with LENGTH: " + LENGTH);
 
-		dynamicProgrammingTrials(3);
+		dynamicProgrammingTrials(4);
 	}
 
 	
 	public static void dynamicProgrammingTrials(int numCornerTrials) {
 		
 		int trials[][] = new int[numCornerTrials][LENGTH];
+		boolean stopTrying[] = new boolean[LENGTH];
 		
 		for(int i=0; i<trials.length; i++) {
 			if(i == 0) {
-				trials[i] = getTrialN(null, i + 1);
+				trials[i] = getTrialN(i + 1);
 			} else {
-				trials[i] = getTrialN(trials[i - 1], i + 1);
+				trials[i] = getTrialN(trials[i - 1], stopTrying, i + 1);
+				
+				for(int j=1; j<LENGTH; j++) {
+					if(trials[i][j] == trials[i-1][j]) {
+						stopTrying[j] = true;
+					}
+				}
+				
 			}
 		}
 		
 	}
 	
 	public static int solve1Static[] = null;
-	
-	public static int[] getTrialN(int prevTrial[], int n) {
-		
+
+	public static int[] getTrialN(int n) {
+		return getTrialN(null, null, n);
+	}
+
+	public static int[] getTrialN(int prevTrial[], boolean stopTrying[], int n) {
 		if(n < 0 ) {
 			System.out.println("ERROR: start n at 1");
 			System.exit(1);
@@ -43,15 +55,23 @@ public class GetMinPerimeterCornersRefined {
 		System.out.println("-----------------");
 		System.out.println("-----------------");
 		System.out.println("-----------------");
+		System.out.println("Trying with " + n + " Rectangles in the corners:");
 
 		int solveN[] = new int[LENGTH];
 		for(int i=1; i<solveN.length; i++) {
 			solveN[i] = prevTrial[i];
 		}
 		
+		int debug = 0;
 		for(int i=1; i<solveN.length; i++) {
 			
-			solveN[i] = attemptImproveAreaIWithN(n, solveN, i);
+			if( ! stopTrying[i]) {
+				debug++;
+				if(n >=3 && debug % 1000 == 0) {
+					System.out.println("At n = " + n + ": Trying i= " + i + ":");
+				}
+				solveN[i] = attemptImproveAreaIWithN(n, solveN, i);
+			}
 			
 		}
 	
@@ -104,11 +124,15 @@ public class GetMinPerimeterCornersRefined {
 				numSolutions++;
 				
 				//foundBetter = true;
-				if(n > 2 || numSolutions % 10000 == 0) {
+				if(n > 2 || numSolutions % 100000 == 0 || trial > 60) {
 					System.out.println("Trial " + n + " better i: " + i);
 					System.out.println("Split off rectangle area: (" + trial + ") plus (" + otherArea + ") = " + i);
 					//TODO: record all of the solutions???
 					//Maybe later
+					if(n >=3) {
+						System.out.println("Successful exit!");
+						System.exit(0);
+					}
 				}
 				//TODO: print prev...
 				
