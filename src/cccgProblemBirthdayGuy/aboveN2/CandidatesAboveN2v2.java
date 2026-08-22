@@ -11,14 +11,14 @@ public class CandidatesAboveN2v2 {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 
-		int LENGTH = 10000;
+		int LENGTH = 100000;
 
 		int trials[][] = GetMinPerimeterCornersRefined.dynamicProgrammingTrials(2, LENGTH);
 		
 		
 		//TODO MAX_K = 100, C_MAX = 50...
 		//That's interesting...
-		int MAX_K = 50;
+		int MAX_K = 100;
 		
 		//Looking to find potential Areas that start with the (N-C)x(N+C) rectangle
 		// where C <= C_MAX
@@ -35,76 +35,108 @@ public class CandidatesAboveN2v2 {
 		System.out.println("------------------------");
 		System.out.println("------------------------");
 		
-		for(int target=0-C_MAX_SQUARED; target < effectiveMax; target++) {
+		for(int target=0 - C_MAX_SQUARED; target < effectiveMax; target++) {
+							
+			boolean bestAfterKTrials = true;
+			boolean oneShotWorks = false;
 			
-			if(trials[0][target + C_MAX_SQUARED] > trials[1][target + C_MAX_SQUARED]) {
+			int currentBestCValue = -1;
+			
+			for(int k=0; k<=MAX_K; k++) {
 				
-				boolean bestAfterK = true;
+				int indexToCheck = target + k *k;
 				
-				int currentBestCValue = -1;
-				
-				for(int k=0; k<=MAX_K; k++) {
+				if(indexToCheck < 0) {
+					continue;
+				} else if(currentBestCValue == -1) {
+					currentBestCValue = k;
 					
-					int indexToCheck = target + k *k;
+					if(trials[0][target + k *k] <= trials[1][target + k *k]) {
+						oneShotWorks = true;
+					} else {
+						oneShotWorks = false;
+					}
+					//System.out.println("First best:");
+					//System.out.println("k = " + k);
+					//System.out.println("trials[1][target + k *k]: " + trials[1][target + k *k]);
 					
-					if(indexToCheck < 0) {
-						continue;
-					} else if(currentBestCValue == -1) {
+				} else if(indexToCheck >= trials[0].length) {
+					break;
+				}
+				//N^2 perim same
+				
+				//System.out.println("1: " + (j + currentBestCValue * currentBestCValue - C_MAX*C_MAX));
+				//System.out.println("2: " + (j + k *k -C_MAX*C_MAX));
+				
+				/*if(k == 1) {
+					System.out.println("Test k=1");
+					System.out.println("k = " + k);
+					System.out.println("trials[1][target + k *k]: " + trials[1][target + k *k]);
+				}*/
+				
+				if(trials[1][target + k *k] < trials[1][target + currentBestCValue * currentBestCValue]) {
+					
+					if(trials[0][target + k *k] <= trials[1][target + k *k]) {
+						oneShotWorks = true;
+					} else {
+						oneShotWorks = false;
+					}
+					
+					//System.out.println("k = " + k);
+					//System.out.println("trials[1][target + k *k]: " + trials[1][target + k *k]);
+					
+					if( k <= C_MAX) {
 						currentBestCValue = k;
-					} else if(indexToCheck >= trials.length) {
+					} else {
+						bestAfterKTrials = false;
+					}
+					
+				} else if(trials[0][target + k *k] == trials[1][target + currentBestCValue * currentBestCValue]) {
+					oneShotWorks = true;
+				}
+			}
+			
+			if(bestAfterKTrials && ! oneShotWorks) {
+				System.out.println("currentBestCValue = " + currentBestCValue);
+				System.out.println("Best after " + MAX_K + " reductions");
+				System.out.println("i.e: NxN, (N-1)x(N+1), ..., (N-" + MAX_K + ")x(N+" + MAX_K + ")");
+				
+				System.out.println("Target found: " + target);
+				System.out.println("Target found relative to N^2-CMAX^2: " + (target + C_MAX_SQUARED));
+				
+				int bestK2 = -1;
+				int k2 = 0;
+				boolean gotStopped = false;
+				
+				for(; k2*k2 + target < trials[0].length; k2++) {
+					if(k2 *k2 + target < 0) {
+						continue;
+					}
+					
+					if(trials[1][target + k2 *k2] < trials[1][target + currentBestCValue*currentBestCValue]) {
+						gotStopped = true;
+						bestK2 = k2;
 						break;
 					}
-					//N^2 perim same
 					
-					//System.out.println("1: " + (j + currentBestCValue * currentBestCValue - C_MAX*C_MAX));
-					//System.out.println("2: " + (j + k *k -C_MAX*C_MAX));
-					if(trials[1][target + k *k] < trials[1][target + currentBestCValue * currentBestCValue]) {
-						
-						if( k <= C_MAX) {
-							currentBestCValue = k;
-						} else {
-							bestAfterK = false;
-						}
-					}
 				}
 				
-				if(bestAfterK) {
-					System.out.println("currentBestCValue = " + currentBestCValue);
-					System.out.println("Best after " + MAX_K + " reductions");
-					System.out.println("i.e: NxN, (N-1)x(N+1), ..., (N-" + MAX_K + ")x(N+" + MAX_K + ")");
+				if(gotStopped) {
+					System.out.println("(N-" + bestK2 + ")x(N+" + bestK2 + ") is more efficient...");
 					
-					System.out.println("Target found: " + target);
-					System.out.println("Target found relative to N^2-CMAX^2: " + (target + C_MAX_SQUARED));
-					
-					int bestK2 = -1;
-					int k2 = 0;
-					boolean gotStopped = false;
-					
-					for(; k2*k2 + target < trials[0].length; k2++) {
-						if(k2 *k2 + target < 0) {
-							continue;
-						}
-						
-						if(trials[1][target + k2 *k2] < trials[1][target + currentBestCValue*currentBestCValue]) {
-							gotStopped = true;
-							bestK2 = k2;
-							break;
-						}
-						
+					if(bestK2 <= MAX_K) {
+						System.out.println("DEBUG ???");
+						System.exit(1);
 					}
+				} else {
+					System.out.println("Good news! I couldn't find something better and checked up to k= " + (k2-1) + " inclusively.");
 					
-					if(gotStopped) {
-						System.out.println("(N-" + bestK2 + ")x(N+" + bestK2 + ") is more efficient...");
-					} else {
-						System.out.println("Good news! I couldn't find something better and checked up to k= " + (k2-1) + " inclusively.");
-						
-						//TODO: get rid of this...
-					}
-					System.out.println();
-					System.out.println();
-					
-					
+					//TODO: get rid of this...
 				}
+				System.out.println();
+				System.out.println();
+				
+				
 			}
 		}
 	}
