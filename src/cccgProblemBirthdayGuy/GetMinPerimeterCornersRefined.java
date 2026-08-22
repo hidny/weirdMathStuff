@@ -3,30 +3,30 @@ package cccgProblemBirthdayGuy;
 public class GetMinPerimeterCornersRefined {
 
 	//See intro for more details...
-	//Tried up to 10M...
+	//Tried up to 20M...
 	// Never found need for third Rectangle...
-	public static final int LENGTH = 10000000;
+	public static final int LENGTH = 10000;
 	
 	public static void main(String[] args) {
 
 		System.out.println("Trying with LENGTH: " + LENGTH);
 
-		dynamicProgrammingTrials(4);
+		dynamicProgrammingTrials(4, LENGTH);
 	}
 
 	
-	public static void dynamicProgrammingTrials(int numCornerTrials) {
+	public static int[][] dynamicProgrammingTrials(int numCornerTrials, int length) {
 		
-		int trials[][] = new int[numCornerTrials][LENGTH];
-		boolean stopTrying[] = new boolean[LENGTH];
+		int trials[][] = new int[numCornerTrials][length];
+		boolean stopTrying[] = new boolean[length];
 		
 		for(int i=0; i<trials.length; i++) {
 			if(i == 0) {
-				trials[i] = getTrialN(i + 1);
+				trials[i] = getTrialN(i + 1, length);
 			} else {
-				trials[i] = getTrialN(trials[i - 1], stopTrying, i + 1);
+				trials[i] = getTrialN(trials[i - 1], stopTrying, i + 1, length);
 				
-				for(int j=1; j<LENGTH; j++) {
+				for(int j=0; j<length; j++) {
 					if(trials[i][j] == trials[i-1][j]) {
 						stopTrying[j] = true;
 					}
@@ -34,23 +34,24 @@ public class GetMinPerimeterCornersRefined {
 				
 			}
 		}
+		return trials;
 		
 	}
 	
 	public static int solve1Static[] = null;
 
-	public static int[] getTrialN(int n) {
-		return getTrialN(null, null, n);
+	public static int[] getTrialN(int n, int length) {
+		return getTrialN(null, null, n, length);
 	}
 
-	public static int[] getTrialN(int prevTrial[], boolean stopTrying[], int n) {
+	public static int[] getTrialN(int prevTrial[], boolean stopTrying[], int n, int length) {
 		if(n < 0 ) {
 			System.out.println("ERROR: start n at 1");
 			System.exit(1);
 		}
 		
 		if( n == 1) {
-			return setupSolve1();
+			return setupSolve1(length);
 		}
 		
 		System.out.println("-----------------");
@@ -58,13 +59,13 @@ public class GetMinPerimeterCornersRefined {
 		System.out.println("-----------------");
 		System.out.println("Trying with " + n + " Rectangles in the corners:");
 
-		int solveN[] = new int[LENGTH];
-		for(int i=1; i<solveN.length; i++) {
+		int solveN[] = new int[length];
+		for(int i=0; i<solveN.length; i++) {
 			solveN[i] = prevTrial[i];
 		}
 		
 		int debug = 0;
-		for(int i=1; i<solveN.length; i++) {
+		for(int i=0; i<solveN.length; i++) {
 			
 			if( ! stopTrying[i]) {
 				debug++;
@@ -82,12 +83,12 @@ public class GetMinPerimeterCornersRefined {
 	
 	
 	
-	public static int[] setupSolve1() {
+	public static int[] setupSolve1(int length) {
 		System.out.println("Setting up solve1:");
-		int solve1[] = new int[LENGTH];
+		int solve1[] = new int[length];
 		
 		//I'm just going to try to remember to watch out for 0s...
-		solve1[0] = -1000000;
+		solve1[0] = 0;
 		
 		for(int i=1; i<solve1.length; i++) {
 			
