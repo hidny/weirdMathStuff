@@ -5,7 +5,7 @@ public class GetMinPerimeterCornersRefined {
 	//See intro for more details...
 	//Tried up to 20M...
 	// Never found need for third Rectangle...
-	public static final int LENGTH = 10000;
+	public static final int LENGTH = 1000000;
 	
 	public static void main(String[] args) {
 
@@ -72,7 +72,7 @@ public class GetMinPerimeterCornersRefined {
 				if(n >=3 && debug % 1000 == 0) {
 					System.out.println("At n = " + n + ": Trying i= " + i + ":");
 				}
-				solveN[i] = attemptImproveAreaIWithN(n, solveN, i);
+				solveN[i] = attemptImproveAreaIWithN(n, prevTrial, i);
 			}
 			
 		}
@@ -131,9 +131,13 @@ public class GetMinPerimeterCornersRefined {
 					System.out.println("Split off rectangle area: (" + trial + ") plus (" + otherArea + ") = " + i);
 					//TODO: record all of the solutions???
 					//Maybe later
-					if(n >=3) {
-						System.out.println("Successful exit!");
+					if(n >=4) {
+						
+						System.out.println("Successful exit with n = " + n + "!");
 						System.exit(0);
+					}if(n >=3) {
+						
+						System.out.println(" n = " + n + " win with n= " + n);
 					}
 				}
 				//TODO: print prev...
