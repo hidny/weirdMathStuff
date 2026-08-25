@@ -3,9 +3,9 @@ package cccgProblemBirthdayGuy;
 public class GetMinPerimeterCornersRefined {
 
 	//See intro for more details...
-	//Tried up to 20M...
-	// Never found need for third Rectangle...
-	public static final int LENGTH = 10000000;
+	//Tried up to 5M
+	// Never found 4th rectangle. I might need to use the aboveN^2 package for it.
+	public static final int LENGTH = 100000;
 	
 	public static void main(String[] args) {
 
@@ -33,6 +33,7 @@ public class GetMinPerimeterCornersRefined {
 				}
 				
 			}
+			numSolutions = 0;
 		}
 		return trials;
 		
@@ -69,7 +70,7 @@ public class GetMinPerimeterCornersRefined {
 			
 			if( ! stopTrying[i]) {
 				debug++;
-				if((n >=3 && debug % 1000 == 0) || n>=5) {
+				if((n >=3 && debug % 100000 == 0) || n>=5) {
 					
 					System.out.println("At n = " + n + " with debugIteration " + debug + ": Trying i= " + i + ":");
 				}
@@ -124,21 +125,21 @@ public class GetMinPerimeterCornersRefined {
 			if(res < currentRet) {
 				currentRet = res;
 
-				numSolutions++;
 				
 				//foundBetter = true;
-				if(n > 2 || numSolutions % 100000 == 0 || trial > 60) {
+				if(n > 3 || numSolutions % 1000 == 0 || trial > 60 || (n == 3 && numSolutions < 100)) {
 					System.out.println("Trial " + n + " better i: " + i);
-					System.out.println("Split off rectangle area: (" + trial + ") plus (" + otherArea + ") = " + i);
+					System.out.println("Split off rectangle area: (" + trial + ") plus (" + otherArea + ") = " + i + "(num solutions: " + numSolutions + ", n: " + n + ")");
 					//TODO: record all of the solutions???
 					//Maybe later
 					
 				}
-				if(n >=5) {
+				if(n >=4) {
 					
 					System.out.println("Successful exit with n = " + n + "!");
 					System.exit(0);
 				}
+				numSolutions++;
 				//TODO: print prev...
 				
 			}
