@@ -23,7 +23,7 @@ public class prob295SecondTrial {
 		System.out.println("Next:");
 		solve(3, 5);
 		
-		for(int i=4; i<10; i++) {
+		for(int i=4; i<16; i++) {
 			for(int j=i+1; true; j++) {
 				System.out.println("Search minDenom: " + i + " and numTerms: " + j);
 				boolean foundSolution = solve(i, j);
@@ -57,8 +57,14 @@ public class prob295SecondTrial {
 
 	public static boolean foundSolution = false;
 	
+	public static long debug = 0;
+	
 	public static boolean solve(int minDenom, int numTerms, Fraction target, ArrayList<Integer> cur) {
 		
+		if(debug % 10000000 == 0) {
+			printCur(cur);
+		}
+		debug++;
 		if(numTerms == 1) {
 			if(target.getNumerator().equals(BigInteger.ONE)) {
 				cur.add((int)target.getDenominator().longValue());
@@ -89,9 +95,27 @@ public class prob295SecondTrial {
 			if(Fraction.mult(nextFraction, array[numTerms]).compareTo(target) < 0) {
 				break;
 			}
+
+			if(nextFraction.compareTo(target) > 0) {
+				continue;
+			}
+			
+			//if(Fraction.mult(nextFraction, array[numTerms - 1]).compareTo(target) < 0) {
+				//System.out.println("TODO");
+			//}
 			
 			cur.add(i);
 			Fraction newTarget = Fraction.minus(target, nextFraction);
+			
+			if(newTarget.compareTo(Fraction.ZERO) < 0) {
+				//TODO: remove later:
+				System.out.println(array[numTerms]);
+				System.out.println(nextFraction);
+				System.out.println("Target change:");
+				System.out.println(target);
+				System.out.println(newTarget);
+				System.exit(1);
+			}
 			
 			solve(i+1, numTerms - 1, newTarget, cur);
 			
@@ -102,5 +126,21 @@ public class prob295SecondTrial {
 		
 		return foundSolution;
 		
+	}
+	
+	public static void printCur(ArrayList<Integer> cur) {
+		
+		System.out.println("Debug:");
+		String ret = "";
+		for(int i=0; i<cur.size(); i++) {
+			if(i < cur.size() - 1) {
+			ret += "" + cur.get(i) + "^-1 +  ";
+			} else {
+				ret += "" + cur.get(i) + "^-1";
+			}
+			
+		}
+		ret += "\n";
+		System.out.println(ret);
 	}
 }
