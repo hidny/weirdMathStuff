@@ -6,6 +6,7 @@ import UtilityFunctions.Fraction;
 
 public class prob295FirstDraft {
 
+	//Reference:
 	//https://oeis.org/A192881
 	
 	
@@ -174,6 +175,10 @@ public class prob295FirstDraft {
 		if(remainder.compareTo(Fraction.ONE) > 0) {
 			return null;
 		}
+		if(minDeno < 0) {
+			System.exit(1);
+			return null;
+		}
 		
 		long denom = remainder.getDenominator().longValue();
 		
@@ -198,8 +203,15 @@ public class prob295FirstDraft {
 				
 				Fraction checkOverLimit;
 				
-				for(int aMult=1; true; aMult++) {
+				int minaMult = (int)(minDeno/aBase);
+				
+				if(minaMult * aBase < minDeno) {
+					minaMult++;
+				}
+				
+				for(long aMult=minaMult; true; aMult++) {
 					
+					//TODO: if gcd(newA, denom) > gcd(divs[k], denom), do it later...
 					long newA = aBase * aMult;
 					
 					//System.out.println("New a: " + newA);
@@ -220,11 +232,12 @@ public class prob295FirstDraft {
 					
 					
 					for(int bMult=1; true; bMult++) {
-						
+
+						//TODO: if gcd(newB, denom) > gcd(divs2[k2], denom), do it later...
 						long newB = bBase * bMult;
 						//System.out.println("New b: " + newB);
 						
-						if(newA >= newB) {
+						if(newA >= newB) {//TODO: skip to start...
 							continue;
 						}
 						checkOverLimit = new Fraction(1, newB);
