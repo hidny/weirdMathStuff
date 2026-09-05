@@ -9,7 +9,6 @@ public class prob295FirstDraft {
 	//Reference:
 	//https://oeis.org/A192881
 	
-	
 	public static void main(String args[]) {
 		
 		
