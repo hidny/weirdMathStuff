@@ -88,6 +88,7 @@ public class prob295SecondTrial {
 			return foundSolution;
 		}
 		
+		boolean gotMinFraction = false;
 		for(int i=minDenom; true; i++) {
 			
 			Fraction nextFraction = new Fraction(1, i);
@@ -97,6 +98,12 @@ public class prob295SecondTrial {
 			}
 
 			if(nextFraction.compareTo(target) > 0) {
+				
+				if(gotMinFraction == false) {
+					i = (int)Math.floor(Fraction.divide(Fraction.ONE, target).getDecimalFormat()) - 2;
+					gotMinFraction = true;
+				}
+				
 				continue;
 			}
 			
