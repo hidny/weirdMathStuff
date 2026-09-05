@@ -49,7 +49,7 @@ public class prob295SecondTrial {
 	public static boolean solve(int minDenom, int numTerms) {
 		
 		foundSolution = false;
-		solve(minDenom, numTerms, Fraction.ONE, new ArrayList<Integer>());
+		solve(minDenom, numTerms, Fraction.ONE, new ArrayList<Long>());
 		
 		return foundSolution;
 		
@@ -59,15 +59,15 @@ public class prob295SecondTrial {
 	
 	public static long debug = 0;
 	
-	public static boolean solve(int minDenom, int numTerms, Fraction target, ArrayList<Integer> cur) {
+	public static boolean solve(int minDenom, int numTerms, Fraction target, ArrayList<Long> cur) {
 		
-		if(debug % 10000000 == 0) {
+		if(debug % 100000000 == 0) {
 			printCur(cur);
 		}
 		debug++;
 		if(numTerms == 1) {
 			if(target.getNumerator().equals(BigInteger.ONE)) {
-				cur.add((int)target.getDenominator().longValue());
+				cur.add(target.getDenominator().longValue());
 				
 				if(target.getDenominator().longValue() >= minDenom) {
 					String ret = "";
@@ -104,7 +104,7 @@ public class prob295SecondTrial {
 				//System.out.println("TODO");
 			//}
 			
-			cur.add(i);
+			cur.add((long)i);
 			Fraction newTarget = Fraction.minus(target, nextFraction);
 			
 			if(newTarget.compareTo(Fraction.ZERO) < 0) {
@@ -128,7 +128,7 @@ public class prob295SecondTrial {
 		
 	}
 	
-	public static void printCur(ArrayList<Integer> cur) {
+	public static void printCur(ArrayList<Long> cur) {
 		
 		System.out.println("Debug:");
 		String ret = "";
