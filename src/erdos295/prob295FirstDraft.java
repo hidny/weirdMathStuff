@@ -52,6 +52,20 @@ public class prob295FirstDraft {
 			System.out.println("1/" + array[0] + " +  1/ " + array[1]);
 			
 		}
+		
+		b = new int[] {3, 4};
+		sum = getSum(b);
+		
+		remainder = Fraction.minus(Fraction.ONE, sum);
+		
+		if(threeMoreToOne(remainder, 5, -1) != null) {
+			System.out.println("last 3 fractions of (3, 4) = ");
+			
+			int array[] = threeMoreToOne(remainder, 5, -1);
+			
+			System.out.println("1/" + array[0] + " +  1/ " + array[1] + " + 1/ " + array[2]);
+			
+		}
 	}
 	
 	
@@ -105,7 +119,6 @@ public class prob295FirstDraft {
 			
 			System.out.println("A " + aBase + "    B " + bBase);
 			
-			TRIAL_AB:
 			for(int aMult=1; true; aMult++) {
 				
 				long newA = aBase * aMult;
@@ -152,4 +165,118 @@ public class prob295FirstDraft {
 		
 		return null;
 	}
+	
+	
+	public static Fraction THREE = new Fraction(3, 1);
+	
+	public static int[] threeMoreToOne(Fraction remainder, int minDeno, int maxDeno) {
+		
+		if(remainder.compareTo(Fraction.ONE) > 0) {
+			return null;
+		}
+		
+		long denom = remainder.getDenominator().longValue();
+		
+		long divs[] = UtilityFunctions.UtilityFunctions.getAllDivisors(denom);
+		
+		for(int k=0; k<divs.length; k++) {
+			
+			
+			long aBase = divs[k];
+			
+			long divs2[] =  UtilityFunctions.UtilityFunctions.getAllDivisors(denom / divs[k]);
+			
+			
+			for(int k2=0; k2<divs2.length; k2++) {
+				
+				long bBase = divs2[k2];
+				
+				long cBase = (denom / aBase) / bBase;
+				
+				
+				//System.out.println("A " + aBase + "    B " + bBase + "    C : "  + cBase);
+				
+				Fraction checkOverLimit;
+				
+				for(int aMult=1; true; aMult++) {
+					
+					long newA = aBase * aMult;
+					
+					//System.out.println("New a: " + newA);
+					checkOverLimit = new Fraction(1, newA);
+					
+					if(newA < minDeno) {
+						continue;
+					}
+					if(Fraction.mult(checkOverLimit, THREE).compareTo(remainder) < 0) {
+						break;
+					}
+					
+					if(checkOverLimit.compareTo(remainder) >= 0) {
+						continue;
+					}
+					
+					Fraction remainderAfterA = Fraction.minus(remainder, new Fraction(1, newA));
+					
+					
+					for(int bMult=1; true; bMult++) {
+						
+						long newB = bBase * bMult;
+						//System.out.println("New b: " + newB);
+						
+						if(newA >= newB) {
+							continue;
+						}
+						checkOverLimit = new Fraction(1, newB);
+						
+						if(Fraction.mult(checkOverLimit, TWO).compareTo(remainderAfterA) < 0) {
+							break;
+						}
+						
+						if(checkOverLimit.compareTo(remainderAfterA) >= 0) {
+							continue;
+						}
+						
+						for(int cMult=1; true; cMult++) {
+
+							
+							long newC = cBase * cMult;
+							//System.out.println("New c: " + newC);
+							
+							if(newB >= newC) {
+								continue;
+							}
+							
+							//System.out.println("----------");
+							//System.out.println(remainder);
+							//System.out.println(newA);
+							//System.out.println(newB);
+							//System.out.println(newC);
+							
+							
+							Fraction newFraction = new Fraction(newA * newB + newA * newC + newB*newC, newA*newB*newC);
+							
+							if(newFraction.compareTo(remainder) < 0) {
+								break;
+								
+							} else if(newFraction.compareTo(remainder) == 0) {
+								return new int[] {(int)newA, (int)newB, (int)newC};
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		
+		return null;
+	}
 }
+
+//16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 32, 33, 34, 36, 38, 39, 40, 42, 43, 44, 50, 52, 54
+
+//Missing                           31          35  37         41           45 46 47 48 49 51 53
+
+//AHA large primes are no-go...
+// TODO: maybe optimize in such a way that there are too many large primes somehow?
+//Maybe the denom of the remainder has to be small enough and it's obvious when it's too big?
