@@ -79,6 +79,13 @@ public class Fraction implements Comparable {
 		return "" + getDecimalFormat();
 	}
 	
+	public String printNumDen() {
+		String temp = numerator + "\n";
+		temp += "----------------------------------\n";
+		temp += denominator + "\n\n";
+		return temp;
+	}
+	
 	//gets decimal format by using only the first (digits) digits.
 	//hopefully this will stop any potential explosions...
 	public double getDecimalFormat(int digits) {
