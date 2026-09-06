@@ -14,6 +14,7 @@ public class prob295SecondTrial {
 	
 	public static void main(String args[]) {
 		
+		System.out.println("Second trial");
 		solve(1, 1);
 		
 		System.out.println("Next:");
