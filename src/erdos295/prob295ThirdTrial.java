@@ -60,7 +60,7 @@ public class prob295ThirdTrial {
 	
 	public static long debug = 0;
 	
-	public static boolean solve(int minDenom, int numTerms, Fraction target, ArrayList<Long> cur, boolean debugExpectedSol) {
+	public static boolean solve(long minDenom, int numTerms, Fraction target, ArrayList<Long> cur, boolean debugExpectedSol) {
 		
 		if(debug % 100000000 == 0) {
 			printCur(cur);
@@ -118,86 +118,117 @@ public class prob295ThirdTrial {
 				min2ndLast = new Fraction(1, possibleMinFor2ndLast);
 			}
 			
-
-			Fraction min2ndLastPlusOne = new Fraction(1, possibleMinFor2ndLast + 1);
-			
 			//Check if the second last and last can't do it:
 			if(Fraction.plus(Fraction.divide(Fraction.ONE, minLast), min2ndLast).compareTo(target) < 0) {
 
 				//debugExpectedSol = false;
 				return foundSolution;
 			}
-
-			//Check if there's only one way to do second last and last:
-			if(Fraction.plus(Fraction.divide(Fraction.ONE, minLast), min2ndLastPlusOne).compareTo(target) < 0) {
-
-				
-				//System.out.println("Test setup:");
-				//System.out.println("Min 2nd one: " + possibleMin);
-				//System.out.println("Min min2ndLastPlusOne: " + min2ndLastPlusOne.getDecimalFormat() );
-				//System.out.println("Min last: " + minLast.getDecimalFormat() );
-				//System.out.println("Min minDenom: " + minDenom );
-				
-				//maxDenom = minDenom;
-				
-				
-				
-				//TEST:
-				//minDenomDEBUG = Math.max(minDenom, possibleMinFor2ndLast);
-				//maxDenomDEBUG = possibleMinFor2ndLast;
-				
-				//REAL:
-				minDenom = (int)Math.max(minDenom, possibleMinFor2ndLast);
-				maxDenom = possibleMinFor2ndLast;
-			}
+			minDenom = Math.max(possibleMinFor2ndLast, minDenom);
 			
-		}
-		
-		for(int i=minDenom; i<=maxDenom; i++) {
+			Fraction minLastFraction = Fraction.divide(Fraction.ONE, minLast);
 			
-			Fraction nextFraction = new Fraction(1, i);
-			
-			
-
-			if(nextFraction.compareTo(target) > 0) {
+			//TODO: copy/paste code except for one if condition.
+			for(long i=minDenom; i<=maxDenom; i++) {
 				
-				if(gotMinFraction == false) {
-					i = (int)Math.floor(Fraction.divide(Fraction.ONE, target).getDecimalFormat()) - 2;
-					gotMinFraction = true;
+				Fraction nextFraction = new Fraction(1, i);
+				
+				if(Fraction.plus(nextFraction, minLastFraction).compareTo(target) < 0) {
+					break;
 				}
 				
-				continue;
-			}
-			
-			//if(Fraction.mult(nextFraction, array[numTerms - 1]).compareTo(target) < 0) {
-				//System.out.println("TODO");
-			//}
-			
-			cur.add((long)i);
-			Fraction newTarget = Fraction.minus(target, nextFraction);
-			
-			if(newTarget.compareTo(Fraction.ZERO) < 0) {
+	
+				if(nextFraction.compareTo(target) > 0) {
+					
+					if(gotMinFraction == false) {
+						i = (int)Math.floor(Fraction.divide(Fraction.ONE, target).getDecimalFormat()) - 2;
+						gotMinFraction = true;
+					}
+					
+					continue;
+				}
 				
-				//TODO: remove later:
-				System.out.println(array[numTerms]);
-				System.out.println(nextFraction);
-				System.out.println("Target change:");
-				System.out.println(target);
-				System.out.println(newTarget);
-				System.exit(1);
+				//if(Fraction.mult(nextFraction, array[numTerms - 1]).compareTo(target) < 0) {
+					//System.out.println("TODO");
+				//}
+				
+				cur.add((long)i);
+				Fraction newTarget = Fraction.minus(target, nextFraction);
+				
+				if(newTarget.compareTo(Fraction.ZERO) < 0) {
+					
+					//TODO: remove later:
+					System.out.println(array[numTerms]);
+					System.out.println(nextFraction);
+					System.out.println("Target change:");
+					System.out.println(target);
+					System.out.println(newTarget);
+					System.exit(1);
+				}
+				
+				//Testing code:
+				//if( (maxDenomDEBUG < i && maxDenomDEBUG >= 0) || (minDenomDEBUG > i && minDenomDEBUG>=0)) {
+					//System.out.println("test");
+					//System.out.println(maxDenomDEBUG + " vs " + i);
+				//	solve(i+1, numTerms - 1, newTarget, cur, false);
+				//} else {
+					solve(i+1, numTerms - 1, newTarget, cur, debugExpectedSol);
+				//}
+				cur.remove(cur.size() - 1);
+				
+				
 			}
-			
-			//Testing code:
-			//if( (maxDenomDEBUG < i && maxDenomDEBUG >= 0) || (minDenomDEBUG > i && minDenomDEBUG>=0)) {
-				//System.out.println("test");
-				//System.out.println(maxDenomDEBUG + " vs " + i);
-			//	solve(i+1, numTerms - 1, newTarget, cur, false);
-			//} else {
-				solve(i+1, numTerms - 1, newTarget, cur, debugExpectedSol);
-			//}
-			cur.remove(cur.size() - 1);
+			//END TODO: copy/paste code except for one if condition.
 			
 			
+		} else {
+		
+			for(long i=minDenom; i<=maxDenom; i++) {
+				
+				Fraction nextFraction = new Fraction(1, i);
+				
+				
+	
+				if(nextFraction.compareTo(target) > 0) {
+					
+					if(gotMinFraction == false) {
+						i = (int)Math.floor(Fraction.divide(Fraction.ONE, target).getDecimalFormat()) - 2;
+						gotMinFraction = true;
+					}
+					
+					continue;
+				}
+				
+				//if(Fraction.mult(nextFraction, array[numTerms - 1]).compareTo(target) < 0) {
+					//System.out.println("TODO");
+				//}
+				
+				cur.add((long)i);
+				Fraction newTarget = Fraction.minus(target, nextFraction);
+				
+				if(newTarget.compareTo(Fraction.ZERO) < 0) {
+					
+					//TODO: remove later:
+					System.out.println(array[numTerms]);
+					System.out.println(nextFraction);
+					System.out.println("Target change:");
+					System.out.println(target);
+					System.out.println(newTarget);
+					System.exit(1);
+				}
+				
+				//Testing code:
+				//if( (maxDenomDEBUG < i && maxDenomDEBUG >= 0) || (minDenomDEBUG > i && minDenomDEBUG>=0)) {
+					//System.out.println("test");
+					//System.out.println(maxDenomDEBUG + " vs " + i);
+				//	solve(i+1, numTerms - 1, newTarget, cur, false);
+				//} else {
+					solve(i+1, numTerms - 1, newTarget, cur, debugExpectedSol);
+				//}
+				cur.remove(cur.size() - 1);
+				
+				
+			}
 		}
 		
 		return foundSolution;
