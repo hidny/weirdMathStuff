@@ -128,6 +128,16 @@ public class prob295ThirdTrial {
 			
 			Fraction minLastFraction = Fraction.divide(Fraction.ONE, minLast);
 			
+			//TODO: get allowed multiples for i...
+			
+			
+			// target e/f
+			// f = (d1 d2 d3 d4 ... dn-3)/q
+			// TODO: idea: 
+			// Let M = f * q
+			// Do algo to find all numbers x between min and max and has gcd(f, x) = x
+			// Should be faster... but harder.
+			
 			//TODO: copy/paste code except for one if condition.
 			for(long i=minDenom; i<=maxDenom; i++) {
 				
