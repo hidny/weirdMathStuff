@@ -2,6 +2,7 @@ package erdos295;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import UtilityFunctions.Fraction;
 
@@ -130,6 +131,26 @@ public class prob295ThirdTrial {
 			
 			//TODO: get allowed multiples for i...
 			
+			//TODO: minDenom and maxDenom should be BigInteger
+			ArrayList<BigInteger> listToPayAttentionTo = new ArrayList<BigInteger>();
+			
+			//TODO: Something is wrong with the condition of this while loop:
+			for(int k=1; (maxDenom/k >= minDenom); k++) {
+				ArrayList<BigInteger> list = prob295_get_gcd_numbers.getListOfNumbersToCheck(
+						new BigInteger("" + minDenom),
+						new BigInteger("" + maxDenom),
+						cur,
+						k
+				);
+				
+				listToPayAttentionTo.addAll(list);
+			}
+			
+			HashSet <BigInteger> listExpectedSet = new HashSet <BigInteger>();
+			
+			for(int i=0; i<listToPayAttentionTo.size(); i++) {
+				listExpectedSet.add(listToPayAttentionTo.get(i));
+			}
 			
 			// target e/f
 			// f = (d1 d2 d3 d4 ... dn-3)/q
@@ -137,6 +158,8 @@ public class prob295ThirdTrial {
 			// Let M = f * q
 			// Do algo to find all numbers x between min and max and has gcd(f, x) = x
 			// Should be faster... but harder.
+			
+			boolean expectedSolutionBefore = debugExpectedSol;
 			
 			//TODO: copy/paste code except for one if condition.
 			for(long i=minDenom; i<=maxDenom; i++) {
@@ -163,6 +186,11 @@ public class prob295ThirdTrial {
 				//}
 				
 				cur.add((long)i);
+				if(listExpectedSet.contains(i) == false) {
+					debugExpectedSol = false;
+				} else if(debugExpectedSol) {
+					debugExpectedSol = expectedSolutionBefore;
+				}
 				Fraction newTarget = Fraction.minus(target, nextFraction);
 				
 				if(newTarget.compareTo(Fraction.ZERO) < 0) {
@@ -182,6 +210,7 @@ public class prob295ThirdTrial {
 					//System.out.println(maxDenomDEBUG + " vs " + i);
 				//	solve(i+1, numTerms - 1, newTarget, cur, false);
 				//} else {
+				
 					solve(i+1, numTerms - 1, newTarget, cur, debugExpectedSol);
 				//}
 				cur.remove(cur.size() - 1);

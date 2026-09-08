@@ -9,7 +9,7 @@ public class prob295_get_gcd_numbers {
 
 	
 	//TODO: use it and test it!
-	public static prob295Obj getListPrimesAndExpos(ArrayList<Long> listDenomsUsed) {
+	public static HashMap<Long, Integer> getListPrimesAndExpos(ArrayList<Long> listDenomsUsed) {
 		prob295Obj ret = new prob295Obj();
 		
 		HashMap<Long, Integer> factorAndExpo = new HashMap<Long, Integer>();
@@ -39,10 +39,18 @@ public class prob295_get_gcd_numbers {
 					numPrimes++;
 				}
 			}
-			
 		}
+			
 		
+		return factorAndExpo;
+	}
+	
+	public static prob295Obj convertToLists(HashMap<Long, Integer> factorAndExpo) {
+		prob295Obj ret = new prob295Obj();
+
 		Iterator <Long>it = factorAndExpo.keySet().iterator();
+		
+		int numPrimes = factorAndExpo.size();
 		
 		ret.multPrimesAvailable = new BigInteger[numPrimes];
 		ret.numExpoPerPrime = new int[numPrimes];
@@ -58,37 +66,48 @@ public class prob295_get_gcd_numbers {
 			System.exit(1);
 		}
 		
-		
 		return ret;
 	}
 	
 	
 	public static ArrayList<BigInteger> getListOfNumbersToCheck(BigInteger min, BigInteger max, ArrayList<Long> listDenomsUsed, long k) {
 		
-		long maxDenom = listDenomsUsed.get(listDenomsUsed.size() - 1);
+		HashMap<Long, Integer> list1 = getListPrimesAndExpos(listDenomsUsed);
+
+		BigInteger initMult = BigInteger.ONE;
 		
-		if(k == 1) {
-			ArrayList<BigInteger> bigIntList = new ArrayList<BigInteger>();
+		if(k > 1) {
+
+			ArrayList<Long> listK = new ArrayList<Long>();
+			listK.add(k);
+			HashMap<Long, Integer> list2 = getListPrimesAndExpos(listK);
 			
-			for(int i=0; i<bigIntList.size(); i++) {
-				bigIntList.add(new BigInteger(listDenomsUsed.get(i) + ""));
+			Iterator <Long>it = list2.keySet().iterator();
+			
+			while(it.hasNext()) {
+				
+				long nextPrimeInK = it.next();
+				int numExpos = list1.get(nextPrimeInK) + list2.get(nextPrimeInK);
+				
+				initMult = initMult.multiply(new BigInteger("" + nextPrimeInK).pow(numExpos));
+				list1.remove(nextPrimeInK);
+				
 			}
-			
-			//TODO
 		}
 		
-		return null;
+		prob295Obj obj = convertToLists(list1);
+		
+		return getGCDNumbers(
+				 min,
+				 max,
+				 obj.multPrimesAvailable,
+				 obj.numExpoPerPrime,
+				 0,
+				 initMult,
+				 new ArrayList<BigInteger>()
+		);
 	}
 	
-	//TODO: maybe move it to BigInteger in future.
-	public static ArrayList<BigInteger> getGCDNumbers(BigInteger min, BigInteger max, BigInteger multPrimesAvailable[], int numExpoPerPrime[]) {
-		
-
-		ArrayList<BigInteger> ret = new ArrayList<BigInteger>();
-		
-		
-		return getGCDNumbers(min, max, multPrimesAvailable, numExpoPerPrime, 0, BigInteger.ONE, ret);
-	}
 	
 	 private static ArrayList<BigInteger> getGCDNumbers(
 			 BigInteger min,
@@ -141,7 +160,7 @@ public class prob295_get_gcd_numbers {
 		 listDenomsUsed.add(20L);
 		 listDenomsUsed.add(25L);
 		 
-		 prob295Obj obj = getListPrimesAndExpos(listDenomsUsed);
+		 prob295Obj obj = convertToLists(getListPrimesAndExpos(listDenomsUsed));
 		 
 		 System.out.println("20 and 25:");
 		 for(int i=0; i<obj.multPrimesAvailable.length; i++) {
