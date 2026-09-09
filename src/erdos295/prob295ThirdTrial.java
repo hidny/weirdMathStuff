@@ -111,6 +111,10 @@ public class prob295ThirdTrial {
 			Fraction minLast = Fraction.divide(new Fraction(target.getDenominator(), BigInteger.ONE), tmpMaxDenomFractionIfRestEqual);
 			
 			long possibleMinFor2ndLast = (long)Math.floor(Fraction.divide(Fraction.ONE, target).getDecimalFormat()) - 2;
+
+			BigInteger minLastDenomBigInt = minLast.getDenominator().divide(minLast.getNumerator());
+			
+			//TODO: max last Denom please!
 			
 			Fraction min2ndLast = new Fraction(1, possibleMinFor2ndLast);
 			
@@ -126,6 +130,7 @@ public class prob295ThirdTrial {
 				return foundSolution;
 			}
 			minDenom = Math.max(possibleMinFor2ndLast, minDenom);
+			BigInteger minDenomBigInt = new BigInteger("" + minDenom);
 			
 			Fraction minLastFraction = Fraction.divide(Fraction.ONE, minLast);
 			
@@ -135,7 +140,7 @@ public class prob295ThirdTrial {
 			ArrayList<BigInteger> listToPayAttentionTo = new ArrayList<BigInteger>();
 			
 			//TODO: Something is wrong with the condition of this while loop:
-			for(int k=1; (maxDenom/k >= minDenom); k++) {
+			for(int k=1; (minLastDenomBigInt.compareTo(minDenomBigInt.multiply(new BigInteger("" + k)))) > 0; k++) {
 				ArrayList<BigInteger> list = prob295_get_gcd_numbers.getListOfNumbersToCheck(
 						new BigInteger("" + minDenom),
 						new BigInteger("" + maxDenom),
