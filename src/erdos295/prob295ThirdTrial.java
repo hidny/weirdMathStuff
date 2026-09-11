@@ -216,6 +216,10 @@ public class prob295ThirdTrial {
 							new Fraction(maxLastDenom, BigInteger.ONE))) >= 0;
 					k++) {
 				
+				if(k % 100000 == 0) {
+					//TODO: if k is allowed to be big, don't use this trick!
+					System.out.println("k = " + k);
+				}
 				/*System.out.println();
 				System.out.println();
 				System.out.println("maxDenom: " + maxDenom);
@@ -278,7 +282,6 @@ public class prob295ThirdTrial {
 			if(listToPayAttentionTo.isEmpty()) {
 				return foundSolution;
 			}
-			*/
 			
 			
 			// target e/f
@@ -291,6 +294,10 @@ public class prob295ThirdTrial {
 			boolean expectedSolutionBefore = debugExpectedSol;
 			
 			//TODO: copy/paste code except for one if condition.
+			
+			if(maxDenom > Math.pow(10, 6)) {
+				System.out.println("Big num?");
+			}
 			for(long i=minDenom; i<=maxDenom; i++) {
 				
 				Fraction nextFraction = new Fraction(1, i);
