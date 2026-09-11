@@ -210,15 +210,21 @@ public class prob295ThirdTrial {
 			// b > f*k / dmax
 			// b <= maxDenom
 			
+			int PATIENCE = 10000;
+			
 			int debuglastK = -1;
 			for(int k=1; (new Fraction(maxDenom, 1)).compareTo( //k*
 					Fraction.divide(Fraction.mult(new Fraction(k, 1), targetDenom), 
 							new Fraction(maxLastDenom, BigInteger.ONE))) >= 0;
 					k++) {
 				
-				if(k % 100000 == 0) {
+				if(k % PATIENCE == 0) {
 					//TODO: if k is allowed to be big, don't use this trick!
 					System.out.println("k = " + k);
+					System.out.println("BREAKING");
+
+					debuglastK = k;
+					break;
 				}
 				/*System.out.println();
 				System.out.println();
@@ -256,7 +262,7 @@ public class prob295ThirdTrial {
 			
 			if(debuglastK > 0) {
 				System.out.println("debuglastK: " + debuglastK);
-				if(debuglastK > 1000000) {
+				if(debuglastK >= PATIENCE) {
 					System.out.println("Are you sure?");
 					System.out.println();
 					System.out.println();
@@ -295,9 +301,6 @@ public class prob295ThirdTrial {
 			
 			//TODO: copy/paste code except for one if condition.
 			
-			if(maxDenom > Math.pow(10, 6)) {
-				System.out.println("Big num?");
-			}
 			for(long i=minDenom; i<=maxDenom; i++) {
 				
 				Fraction nextFraction = new Fraction(1, i);
