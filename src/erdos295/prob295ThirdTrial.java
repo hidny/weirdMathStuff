@@ -61,6 +61,8 @@ public class prob295ThirdTrial {
 	
 	public static long debug = 0;
 	
+	public static BigInteger DEBUG_MAX_LAST = null;
+	
 	public static boolean solve(long minDenom, int numTerms, Fraction target, ArrayList<Long> cur, boolean debugExpectedSol) {
 		
 		if(debug % 100000000 == 0) {
@@ -72,6 +74,7 @@ public class prob295ThirdTrial {
 				
 				if(target.getDenominator().longValue() >= minDenom) {
 					
+					
 					String ret = "";
 					for(int i=0; i<cur.size(); i++) {
 						ret += "" + cur.get(i) + "^-1 +  ";
@@ -80,9 +83,17 @@ public class prob295ThirdTrial {
 					ret += "" + target.getDenominator() + "^-1";
 					ret += "\n";
 					System.out.println("Solution: " + ret);
+					//System.out.println("DEBUG_MAX_LAST: " + DEBUG_MAX_LAST);
 					foundSolution = true;
 					
 
+					if(DEBUG_MAX_LAST != null && target.getDenominator().compareTo(DEBUG_MAX_LAST) > 0) {
+						System.out.println("DOH! DEBUG_MAX_LAST is too big!");
+						System.out.println(DEBUG_MAX_LAST);
+						System.out.println(target.getDenominator());
+						System.exit(1);
+					}
+					
 					if(debugExpectedSol == false) {
 						System.out.println("Unexpected!");
 						System.exit(1);
@@ -93,28 +104,99 @@ public class prob295ThirdTrial {
 		}
 		
 
-		Fraction tmpMaxDenomFractionIfRestEqual = Fraction.divide(array[numTerms], target);
-		Fraction tmpMaxDenomSquared = Fraction.mult(tmpMaxDenomFractionIfRestEqual, tmpMaxDenomFractionIfRestEqual);
+		Fraction tmpMaxDenom = Fraction.divide(array[numTerms], target);
+		Fraction tmpMinFraction = Fraction.divide(target, array[numTerms]);
 		
-		//maxDenom if the value of the rest of the terms is equal to the current one:
-		long maxDenom = (long)Math.ceil(tmpMaxDenomFractionIfRestEqual.getDecimalFormat()) + 1;
+		long maxDenom = (long)Math.ceil(tmpMaxDenom.getDecimalFormat());
 		
-		//long maxDenomDEBUG = -1;
-		//long minDenomDEBUG = -1;
+		Fraction fracDenomTooLow = new Fraction(1, maxDenom -1);
+		Fraction fracDenomAtLimit = new Fraction(1, maxDenom);
+		
+		if(tmpMinFraction.compareTo(fracDenomTooLow) >= 0) {
+			System.out.println("ERROR: Didn't find max Denom!");
+			System.exit(1);
+		}
+		if(tmpMinFraction.compareTo(fracDenomAtLimit) < 0) {
+			System.out.println("ERROR: max Denom found is too low.");
+			System.exit(1);
+		}
+		
 
 		boolean gotMinFraction = false;
 		
 		
 		if(numTerms == 2) {
+			
+
+			long tmpMin2ndLastDenomPot = (long)Math.ceil(Fraction.divide(array[1], target).getDecimalFormat());
+			
+			// Handle case where the last term is really big:
+			if(tmpMin2ndLastDenomPot >= minDenom) {
+				
+				Fraction min2ndLastDenomFraction = new Fraction(1, tmpMin2ndLastDenomPot);
+				Fraction min2ndLastDenomFractionCheck = new Fraction(1, tmpMin2ndLastDenomPot - 1);
+				
+				if(min2ndLastDenomFraction.compareTo(target) > 0) {
+					System.out.println("ERROR: Didn't find min Denom Fraction!");
+					System.exit(1);
+				}
+	
+				if(min2ndLastDenomFractionCheck.compareTo(target) < 0) {
+					System.out.println("ERROR: min Denom Fraction is too high!");
+					System.exit(1);
+				}
+				
+				
+				
+				Fraction targetAfterFirstTry = Fraction.minus(target, min2ndLastDenomFraction);
+				
+				if(targetAfterFirstTry.getNumerator().compareTo(BigInteger.ONE) == 0) {
+					
+					if(targetAfterFirstTry.getDenominator().compareTo(new BigInteger("" + tmpMin2ndLastDenomPot)) > 0) {
+						//System.out.println("AAAH ");
+						//System.out.println(targetAfterFirstTry.getDenominator());
+						//System.out.println("vs: " + new BigInteger("" + tmpMin2ndLastDenomPot));
+						cur.add((long)tmpMin2ndLastDenomPot);
+						
+						DEBUG_MAX_LAST = null;
+						//System.out.println("Really big last term");
+						
+						solve(tmpMin2ndLastDenomPot + 1, numTerms - 1, targetAfterFirstTry, cur, debugExpectedSol);
+						
+						cur.remove(cur.size() - 1);
+						//System.out.println("AAAH2");
+					}
+				}
+				
+				
+				minDenom = tmpMin2ndLastDenomPot + 1;
+			}
+			// END Handle case where the last term is really big.
+
+			// Max last term after case where last term is really big is handled:
+			
+			//Now that the really big term possibility is handled, this is a good upper-bound for the last denominator:
+			BigInteger maxLastDenom = new BigInteger("" + minDenom).pow(2);
+			
+			//System.out.println("min Denom: " + minDenom);
+			//System.out.println("tmpMin2ndLastDenomPot: " + tmpMin2ndLastDenomPot);
+			
+			DEBUG_MAX_LAST = maxLastDenom;
+			
+			//minLastDenom = 1 + max2ndLastDenom  because the terms are defined to be monotonically increasing.
+			long minLastDenom = maxDenom + 1;
+			
+			
+			//UP TO HERE
+			//TODO: look at notes for how to handle...
+			
+			/*
 			System.out.println("-------------------------------------");
 			
 			System.out.println(debug);
 			if(debug == 514) {
 				System.out.println("Debug");
 			}
-			//TODO: This formula works, but it might be a bit naive... try to improve this on 4th trial.
-			//Also, get stats on how much this section doesn't filter...
-			Fraction minLast = Fraction.divide(new Fraction(target.getDenominator(), BigInteger.ONE), tmpMaxDenomFractionIfRestEqual);
 			
 			long possibleMinFor2ndLast = (long)Math.floor(Fraction.divide(Fraction.ONE, target).getDecimalFormat()) - 2;
 
@@ -137,11 +219,11 @@ public class prob295ThirdTrial {
 			Fraction maxLastDenom = Fraction.divide(Fraction.ONE, Fraction.minus(target, new Fraction(BigInteger.ONE, new BigInteger("" + possibleMinFor2ndLast))));
 			
 			System.out.println("???" + possibleMinFor2ndLast);
-			System.exit(1);
+			//System.exit(1);
 			//
 			
 			//Check if the second last and last can't do it:
-			if(Fraction.plus(Fraction.divide(Fraction.ONE, minLast), min2ndLast).compareTo(target) < 0) {
+			if(Fraction.plus(Fraction.divide(Fraction.ONE, minLastDenom), min2ndLast).compareTo(target) < 0) {
 
 				//debugExpectedSol = false;
 				return foundSolution;
@@ -149,7 +231,7 @@ public class prob295ThirdTrial {
 			minDenom = Math.max(possibleMinFor2ndLast, minDenom);
 			//BigInteger minDenomBigInt = new BigInteger("" + minDenom);
 			
-			Fraction minLastFraction = Fraction.divide(Fraction.ONE, minLast);
+			Fraction minLastFraction = Fraction.divide(Fraction.ONE, minLastDenom);
 			
 			//TODO: get allowed multiples for i...
 			
@@ -160,12 +242,12 @@ public class prob295ThirdTrial {
 			
 			Fraction targetDenom = new Fraction(target.getDenominator(), BigInteger.ONE);
 			
-			for(int k=1; tmpMaxDenomFractionIfRestEqual.compareTo(
+			for(int k=1; tmpMaxDenom.compareTo(
 					Fraction.divide(Fraction.mult(new Fraction(k, 1), targetDenom), maxLastDenom)) >= 0;
 					k++) {
 				System.out.println("k: " + k);
 				System.out.println("targetDenom: " + targetDenom);
-				System.out.println("tmpMaxDenomFractionIfRestEqual: " + tmpMaxDenomFractionIfRestEqual);
+				System.out.println("tmpMaxDenomFractionIfRestEqual: " + tmpMaxDenom);
 				System.out.println("maxLastDenom: " + maxLastDenom);
 				ArrayList<BigInteger> list = prob295_get_gcd_numbers.getListOfNumbersToCheck(
 						new BigInteger("" + minDenom),
@@ -207,14 +289,11 @@ public class prob295ThirdTrial {
 			
 			boolean expectedSolutionBefore = debugExpectedSol;
 			
+			*/
 			//TODO: copy/paste code except for one if condition.
 			for(long i=minDenom; i<=maxDenom; i++) {
 				
 				Fraction nextFraction = new Fraction(1, i);
-				
-				if(Fraction.plus(nextFraction, minLastFraction).compareTo(target) < 0) {
-					break;
-				}
 				
 	
 				if(nextFraction.compareTo(target) > 0) {
@@ -232,7 +311,7 @@ public class prob295ThirdTrial {
 				//}
 				
 				cur.add((long)i);
-				if(listExpectedSet.contains(new BigInteger("" + i)) == false) {
+				/*if(listExpectedSet.contains(new BigInteger("" + i)) == false) {
 					debugExpectedSol = false;
 					System.out.println("Unexpected i: " + i);
 					if(i == 42) {
@@ -243,7 +322,7 @@ public class prob295ThirdTrial {
 					if(expectedSolutionBefore) {
 						System.out.println("Expected i: " + i + " ( " + expectedSolutionBefore + ")");
 					}
-				}
+				}*/
 				Fraction newTarget = Fraction.minus(target, nextFraction);
 				
 				if(newTarget.compareTo(Fraction.ZERO) < 0) {
@@ -261,10 +340,10 @@ public class prob295ThirdTrial {
 				//if( (maxDenomDEBUG < i && maxDenomDEBUG >= 0) || (minDenomDEBUG > i && minDenomDEBUG>=0)) {
 					//System.out.println("test");
 					//System.out.println(maxDenomDEBUG + " vs " + i);
-				//	solve(i, numTerms - 1, newTarget, cur, false);
+				//	solve(i + 1, numTerms - 1, newTarget, cur, false);
 				//} else {
 				
-					solve(i, numTerms - 1, newTarget, cur, debugExpectedSol);
+					solve(i + 1, numTerms - 1, newTarget, cur, debugExpectedSol);
 				//}
 				cur.remove(cur.size() - 1);
 				
