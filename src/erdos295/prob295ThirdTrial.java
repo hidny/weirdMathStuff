@@ -196,7 +196,6 @@ public class prob295ThirdTrial {
 
 			//UP TO HERE
 
-			/*
 			//TODO: get allowed multiples for i...
 			
 			//TODO: minDenom and maxDenom should be BigInteger
@@ -209,17 +208,25 @@ public class prob295ThirdTrial {
 			//Let target = e/f
 			// f*k = b*d
 			// b > f*k / dmax
-			// b <= 
+			// b <= maxDenom
 			
+			int debuglastK = -1;
 			for(int k=1; (new Fraction(maxDenom, 1)).compareTo( //k*
 					Fraction.divide(Fraction.mult(new Fraction(k, 1), targetDenom), 
 							new Fraction(maxLastDenom, BigInteger.ONE))) >= 0;
 					k++) {
+				
+				/*System.out.println();
+				System.out.println();
+				System.out.println("maxDenom: " + maxDenom);
+
+				System.out.println("vs:");
 				System.out.println("k: " + k);
 				System.out.println("targetDenom: " + targetDenom);
-				System.out.println("tmpMaxDenomFractionIfRestEqual: " + tmpMaxDenom);
-				System.out.println("maxLastDenom: " + maxLastDenom);
 				
+				//System.out.println("tmpMaxDenomFractionIfRestEqual: " + tmpMaxDenom);
+				System.out.println("maxLastDenom: " + maxLastDenom);
+				*/
 				ArrayList<BigInteger> list = prob295_get_gcd_numbers.getListOfNumbersToCheck(
 						new BigInteger("" + minDenom),
 						new BigInteger("" + maxDenom),
@@ -227,28 +234,51 @@ public class prob295ThirdTrial {
 						k
 				);
 				
-				System.out.println("List length: " + list.size());
+				/*System.out.println("List length: " + list.size());
 				for(int i=0; i<list.size(); i++) {
 					System.out.println("element: " + list.get(i));
 					System.out.println();
-				}
+				}*/
 				
 				listToPayAttentionTo.addAll(list);
+				debuglastK = k;
 			}
-
 			HashSet <BigInteger> listExpectedSet = new HashSet <BigInteger>();
 			
 			for(int i=0; i<listToPayAttentionTo.size(); i++) {
 				listExpectedSet.add(listToPayAttentionTo.get(i));
 				
 			}
-			Object arrayDebug[] = listExpectedSet.toArray();
-			System.out.println("------");
-			System.out.println("allowed values:");
-			for(int i=0; i<arrayDebug.length; i++) {
-				System.out.println("arrayDebug: " + arrayDebug[i]);
+			
+			if(debuglastK > 0) {
+				System.out.println("debuglastK: " + debuglastK);
+				if(debuglastK > 1000000) {
+					System.out.println("Are you sure?");
+					System.out.println();
+					System.out.println();
+					System.out.println("maxDenom: " + maxDenom);
+
+					System.out.println("vs:");
+					System.out.println("k: " + debuglastK);
+					System.out.println("targetDenom: " + targetDenom);
+					
+					//System.out.println("tmpMaxDenomFractionIfRestEqual: " + tmpMaxDenom);
+					System.out.println("maxLastDenom: " + maxLastDenom);
+				}
+	
+				
+				Object arrayDebug[] = listExpectedSet.toArray();
+				/*System.out.println("------");
+				System.out.println("allowed values:");
+				for(int i=0; i<arrayDebug.length; i++) {
+					System.out.println("arrayDebug: " + arrayDebug[i]);
+				}*/
 			}
 			
+			if(listToPayAttentionTo.isEmpty()) {
+				return foundSolution;
+			}
+			*/
 			
 			
 			// target e/f
@@ -260,7 +290,6 @@ public class prob295ThirdTrial {
 			
 			boolean expectedSolutionBefore = debugExpectedSol;
 			
-			*/
 			//TODO: copy/paste code except for one if condition.
 			for(long i=minDenom; i<=maxDenom; i++) {
 				
@@ -268,32 +297,26 @@ public class prob295ThirdTrial {
 				
 	
 				if(nextFraction.compareTo(target) > 0) {
-					
-					if(gotMinFraction == false) {
-						i = (int)Math.floor(Fraction.divide(Fraction.ONE, target).getDecimalFormat()) - 2;
-						gotMinFraction = true;
-					}
-					
-					continue;
+
+					System.out.println("ERROR: nextFraction.compareTo(target) > 0");
+					System.exit(1);
 				}
 				
-				//if(Fraction.mult(nextFraction, array[numTerms - 1]).compareTo(target) < 0) {
-					//System.out.println("TODO");
-				//}
-				
 				cur.add((long)i);
-				/*if(listExpectedSet.contains(new BigInteger("" + i)) == false) {
+				
+				if(listExpectedSet.contains(new BigInteger("" + i)) == false) {
 					debugExpectedSol = false;
-					System.out.println("Unexpected i: " + i);
-					if(i == 42) {
-						System.out.println("Debug");
-					}
+					
+					//TODO: AHH!
+					//System.out.println("Unexpected i: " + i);
+					
 				} else {
 					debugExpectedSol = expectedSolutionBefore;
 					if(expectedSolutionBefore) {
-						System.out.println("Expected i: " + i + " ( " + expectedSolutionBefore + ")");
+						//TODO: AH!
+						//System.out.println("Expected i: " + i + " ( " + expectedSolutionBefore + ")");
 					}
-				}*/
+				}
 				Fraction newTarget = Fraction.minus(target, nextFraction);
 				
 				if(newTarget.compareTo(Fraction.ZERO) < 0) {
@@ -308,13 +331,7 @@ public class prob295ThirdTrial {
 				}
 				
 				//Testing code:
-				//if( (maxDenomDEBUG < i && maxDenomDEBUG >= 0) || (minDenomDEBUG > i && minDenomDEBUG>=0)) {
-					//System.out.println("test");
-					//System.out.println(maxDenomDEBUG + " vs " + i);
-				//	solve(i + 1, numTerms - 1, newTarget, cur, false);
-				//} else {
-				
-					solve(i + 1, numTerms - 1, newTarget, cur, debugExpectedSol);
+				solve(i + 1, numTerms - 1, newTarget, cur, debugExpectedSol);
 				//}
 				cur.remove(cur.size() - 1);
 				
