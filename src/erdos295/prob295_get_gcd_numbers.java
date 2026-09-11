@@ -87,10 +87,19 @@ public class prob295_get_gcd_numbers {
 			while(it.hasNext()) {
 				
 				long nextPrimeInK = it.next();
-				int numExpos = list1.get(nextPrimeInK) + list2.get(nextPrimeInK);
+				
+				int numExpos = -1;
+				if(list1.containsKey(nextPrimeInK)) {
+					numExpos = list1.get(nextPrimeInK) + list2.get(nextPrimeInK);
+				} else {
+					numExpos = list2.get(nextPrimeInK);
+				}
 				
 				initMult = initMult.multiply(new BigInteger("" + nextPrimeInK).pow(numExpos));
-				list1.remove(nextPrimeInK);
+				
+				if(list1.containsKey(nextPrimeInK)) {
+					list1.remove(nextPrimeInK);
+				}
 				
 			}
 		}
