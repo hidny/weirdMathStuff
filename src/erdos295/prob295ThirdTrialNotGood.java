@@ -6,7 +6,7 @@ import java.util.HashSet;
 
 import UtilityFunctions.Fraction;
 
-public class prob295ThirdTrial {
+public class prob295ThirdTrialNotGood {
 
 
 	//Made it to:
