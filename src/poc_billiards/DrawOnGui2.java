@@ -244,6 +244,9 @@ public class DrawOnGui2 implements ActionListener {
 
 	}
 	
+	//Mimicing what's in:
+	//https://www.researchgate.net/publication/220991201_Common_Developments_of_Several_Different_Orthogonal_Boxes
+	// The blue line overshoots, but whatever.
 	public static void paintBlueLineComponent(Graphics g, int startX, int startY, int conditionNumber) {
 		
 
