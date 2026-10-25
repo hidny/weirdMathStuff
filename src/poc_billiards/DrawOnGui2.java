@@ -78,14 +78,14 @@ public class DrawOnGui2 implements ActionListener {
 	
 	public static final int SAFE_MULT = 2;
 	
-	//TODO: Doesn't look good!
-	//public static final int DIM_X = 6 * SAFE_MULT;
-	//public static final int DIM_Y = 45 * SAFE_MULT;
+	//Start config options:
+	
+	public static final int DIM_X = 6 * SAFE_MULT;
+	public static final int DIM_Y = 45 * SAFE_MULT;
 	
 
-	//TODO: Doesn't look good!
-	public static final int DIM_X =18 * SAFE_MULT;
-	public static final int DIM_Y =15 * SAFE_MULT;
+	//public static final int DIM_X =18 * SAFE_MULT;
+	//public static final int DIM_Y =15 * SAFE_MULT;
 	
 	//public static final int DIM_X =30 * SAFE_MULT;
 	//public static final int DIM_Y = 9 * SAFE_MULT;
@@ -94,6 +94,17 @@ public class DrawOnGui2 implements ActionListener {
 	//public static final int DIM_X = 90 * SAFE_MULT;
 	//public static final int DIM_Y =  3 * SAFE_MULT;
 	
+	//END start config options:
+
+	public static final int MULT = Math.min(1000 / DIM_X, 500 / DIM_Y);
+	
+	public static final int SLOPE_INV = 2;
+	
+	public static final int USUAL_STRETCH = SLOPE_INV * DIM_Y;
+
+	public static final int TOP_LEFT_X= 10;
+	public static final int TOP_LEFT_Y = 10;
+	
 	private class GPanel extends JPanel {
 		
 		@Override
@@ -101,17 +112,10 @@ public class DrawOnGui2 implements ActionListener {
 
 			super.paintComponent(g);
 			
-			int TOP_LEFT_X= 10;
-			int TOP_LEFT_Y = 10;
 			
 			boolean ret[][] = null;
 
-			int MULT = Math.min(1000 / DIM_X, 500 / DIM_Y);
 			
-		
-			int SLOPE_INV = 2;
-			
-			int USUAL_STRETCH = SLOPE_INV * DIM_Y;
 			
 			g.setColor(Color.YELLOW);
 			g.fillRect(TOP_LEFT_Y, TOP_LEFT_X, MULT * DIM_X, MULT * DIM_Y);
@@ -135,6 +139,9 @@ public class DrawOnGui2 implements ActionListener {
 	        
 	        boolean firstIteration = true;
 	        
+	        int maxYAtX0 = 0;
+	        int minYAtXDim = DIM_Y;
+	        
 	        int it = 0;
 	        while(true) {
 
@@ -145,6 +152,12 @@ public class DrawOnGui2 implements ActionListener {
 	        		break;
 	        	}
 	        	
+	        	if(curX == 0 && curY > maxYAtX0) {
+	        		maxYAtX0 = curY;
+	        	
+	        	} else if(curX == DIM_X && curY < minYAtXDim) {
+	        		minYAtXDim = curY;
+	        	}
 
 		        
 		        if(firstIteration) {
@@ -193,7 +206,7 @@ public class DrawOnGui2 implements ActionListener {
 		        System.out.println("new X: " + newX + " goRight: " + goRight + "DIMX: " + DIM_X + "go up: " + goUp);
 		        //TODO: put into a function
 
-		        if(! goRight) {
+		        if(! goRight ^ !goUp) {
 			        g.setColor(Color.GREEN);
 		        	
 		        } else {
@@ -209,7 +222,7 @@ public class DrawOnGui2 implements ActionListener {
 		        
 
 
-		        if(!(newX >0 && newX < DIM_X) && !(newY >0 && newY < DIM_X)) {
+		        if(!(newX >0 && newX < DIM_X) && !(newY >0 && newY < DIM_Y)) {
 		        	System.out.println("THE END!");
 		        	break;
 		        }
@@ -218,11 +231,142 @@ public class DrawOnGui2 implements ActionListener {
 	        }
 	        
 	        
+	        System.out.println("Number of iterations: " + it);
 	        
+	        System.out.println("maxYAtX0: " + maxYAtX0);
 	        
+	        paintBlueLineComponent(g, 0, DIM_Y, maxYAtX0);
+	        paintBlueLineComponent(g, DIM_X, 0, minYAtXDim);
 		}
 		
+		
+		//Add blue line on corners:
+
 	}
+	
+	public static void paintBlueLineComponent(Graphics g, int startX, int startY, int conditionNumber) {
+		
+
+        boolean firstIteration = true;
+        
+        boolean goRight = false;
+
+        boolean goUp = false;
+        if(startX == 0) {
+        	goRight = true;
+        }
+        if(startY == 0) {
+        	goUp = true;
+        }
+        
+        int curX = startX;
+        int curY = startY;
+        
+        
+        boolean equation1 = false;
+        if(startX == 0) {
+        	equation1 = true;
+        }
+        
+        int it = 0;
+        while(true) {
+
+        	it++;
+        	
+        	if(it > 10000) {
+        		System.out.println("BREAK2!");
+        		break;
+        	}
+        	
+
+	        
+	        if(firstIteration) {
+	        	firstIteration = false;
+	        } else {
+	        	
+	        	if(equation1) {
+
+	        		if(2 * (curY - conditionNumber) - curX < 0) {
+	        			break;
+	        		}
+	        	} else {
+	        		
+	        		if(2 * (curY - conditionNumber) - (curX - DIM_X) > 0) {
+	        			break;
+	        		}
+	        	}
+		        if((curX == 0 || curX == DIM_X) && (curY == 0 || curY == DIM_Y)) {
+		        	System.out.println("BREAK!");
+		        	break;
+		        }
+	        }
+	       
+	        //For Now: slope is 1/2 or -1/2... because of the answer given.
+	        
+	        if(! (curX >0 && curX < DIM_X) ) {
+	        	if(curX <=0) {
+	        		goRight = true;
+	        	} else {
+	        		goRight = false;
+	        	}
+	        }
+	        
+	        if( !(curY >0 && curY < DIM_Y) ) {
+	        	if(curY <=0) {
+	        		goUp = true;
+	        	} else {
+	        		goUp = false;
+	        	}
+	        }
+	        
+	        int dirX = 1;
+	        
+	        if(!goRight) {
+	        	dirX = -1;
+	        }
+	        
+	        int dirY = 1;
+	        
+	        if( ! goUp) {
+	        	dirY = -1;
+	        }
+
+	        int newX = curX + dirX;
+	        int newY = curY + dirY * SLOPE_INV;
+	        
+
+	        System.out.println("new X: " + newX + " new Y : " + newY + "   goRight: " + goRight + " DIMX: " + DIM_X + " go up: " + goUp);
+	        //TODO: put into a function
+
+	        if(! goRight ^ !goUp) {
+		        g.setColor(Color.BLUE);
+	        	
+	        } else {
+		        g.setColor(Color.BLUE);
+	        }
+	        
+	        g.drawLine(TOP_LEFT_X + MULT*curX, TOP_LEFT_Y + MULT*(DIM_Y - curY), TOP_LEFT_X + MULT*newX, TOP_LEFT_Y + MULT*(DIM_Y - newY));
+	        
+	        g.drawOval(TOP_LEFT_X + MULT*curX, TOP_LEFT_Y + MULT*(DIM_Y - curY), 2, 2);
+	        
+	        curX = newX;
+	        curY = newY;
+	        
+
+
+	        if(!(newX >0 && newX < DIM_X) && !(newY >0 && newY < DIM_Y)) {
+	        	System.out.println("THE END!");
+	        	break;
+	        }
+	        	
+	        
+        }
+        
+        
+        System.out.println("Number of iterations: " + it);
+        
+	}
+	
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
