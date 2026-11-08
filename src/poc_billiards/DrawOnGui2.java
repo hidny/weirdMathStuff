@@ -111,137 +111,154 @@ public class DrawOnGui2 implements ActionListener {
 		public void paintComponent(Graphics g) {
 
 			super.paintComponent(g);
-			
-			
-			boolean ret[][] = null;
 
-			
 			
 			g.setColor(Color.YELLOW);
 			g.fillRect(TOP_LEFT_Y, TOP_LEFT_X, MULT * DIM_X, MULT * DIM_Y);
 			
-			//g.drawRect(10,10, 190, 190);
-			//g.drawRect(startX, startY, DIM -1, DIM -1);
-			//g.setColor(Color.BLUE);
-			//g.fillOval(50, 50, 100, 100);
+			paintBilliard(g, false);
+			paintBilliard(g, true);
 
-			// Set the drawing color
+	}
+	
+	
+	public static void paintBilliard(Graphics g, boolean startTopLeft) {
+		boolean ret[][] = null;
 
-	        // Draw a line from (50, 50) to (200, 150)
-	        //g.drawLine(startX, startY + DIM, startX+100, startY);
+		
+		
+		//g.drawRect(10,10, 190, 190);
+		//g.drawRect(startX, startY, DIM -1, DIM -1);
+		//g.setColor(Color.BLUE);
+		//g.fillOval(50, 50, 100, 100);
 
-	        int curX=0;
-	        int curY=0;
+		// Set the drawing color
+
+        // Draw a line from (50, 50) to (200, 150)
+        //g.drawLine(startX, startY + DIM, startX+100, startY);
+
+        int curX=0;
+        int curY=0;
+        
+
+        boolean goRight = true;
+        boolean goUp = true;
+        
+        if(startTopLeft) {
+        	curY = DIM_Y;
+        	goUp = false;
+        }
+        
+        boolean firstIteration = true;
+        
+        int maxYAtX0 = 0;
+        int minYAtXDim = DIM_Y;
+        
+        int it = 0;
+        while(true) {
+
+        	it++;
+        	
+        	if(it > 10000) {
+        		System.out.println("BREAK2!");
+        		break;
+        	}
+        	
+        	if(curX == 0 && curY > maxYAtX0) {
+        		maxYAtX0 = curY;
+        	
+        	} else if(curX == DIM_X && curY < minYAtXDim) {
+        		minYAtXDim = curY;
+        	}
+
 	        
-
-	        boolean goRight = true;
-	        boolean goUp = true;
-	        
-	        boolean firstIteration = true;
-	        
-	        int maxYAtX0 = 0;
-	        int minYAtXDim = DIM_Y;
-	        
-	        int it = 0;
-	        while(true) {
-
-	        	it++;
-	        	
-	        	if(it > 10000) {
-	        		System.out.println("BREAK2!");
-	        		break;
-	        	}
-	        	
-	        	if(curX == 0 && curY > maxYAtX0) {
-	        		maxYAtX0 = curY;
-	        	
-	        	} else if(curX == DIM_X && curY < minYAtXDim) {
-	        		minYAtXDim = curY;
-	        	}
-
-		        
-		        if(firstIteration) {
-		        	firstIteration = false;
-		        } else {
-			        if((curX == 0 || curX == DIM_X) && (curY == 0 || curY == DIM_Y)) {
-			        	System.out.println("BREAK!");
-			        	break;
-			        }
-		        }
-		       
-		        //For Now: slope is 1/2 or -1/2... because of the answer given.
-		        
-		        if(! (curX >0 && curX < DIM_X) ) {
-		        	if(curX <=0) {
-		        		goRight = true;
-		        	} else {
-		        		goRight = false;
-		        	}
-		        }
-		        
-		        if( !(curY >0 && curY < DIM_Y) ) {
-		        	if(curY <=0) {
-		        		goUp = true;
-		        	} else {
-		        		goUp = false;
-		        	}
-		        }
-		        
-		        int dirX = 1;
-		        
-		        if(!goRight) {
-		        	dirX = -1;
-		        }
-		        
-		        int dirY = 1;
-		        
-		        if( ! goUp) {
-		        	dirY = -1;
-		        }
-
-		        int newX = curX + dirX * SLOPE_INV;
-		        int newY = curY + dirY;
-		        
-
-		        System.out.println("new X: " + newX + " goRight: " + goRight + "DIMX: " + DIM_X + "go up: " + goUp);
-		        //TODO: put into a function
-
-		        if(! goRight ^ !goUp) {
-			        g.setColor(Color.GREEN);
-		        	
-		        } else {
-			        g.setColor(Color.RED);
-		        }
-		        
-		        g.drawLine(TOP_LEFT_X + MULT*curX, TOP_LEFT_Y + MULT*(DIM_Y - curY), TOP_LEFT_X + MULT*newX, TOP_LEFT_Y + MULT*(DIM_Y - newY));
-		        
-		        g.drawOval(TOP_LEFT_X + MULT*curX, TOP_LEFT_Y + MULT*(DIM_Y - curY), 2, 2);
-		        
-		        curX = newX;
-		        curY = newY;
-		        
-
-
-		        if(!(newX >0 && newX < DIM_X) && !(newY >0 && newY < DIM_Y)) {
-		        	System.out.println("THE END!");
+	        if(firstIteration) {
+	        	firstIteration = false;
+	        } else {
+		        if((curX == 0 || curX == DIM_X) && (curY == 0 || curY == DIM_Y)) {
+		        	System.out.println("BREAK!");
 		        	break;
 		        }
-		        	
-		        
+	        }
+	       
+	        //For Now: slope is 1/2 or -1/2... because of the answer given.
+	        
+	        if(! (curX >0 && curX < DIM_X) ) {
+	        	if(curX <=0) {
+	        		goRight = true;
+	        	} else {
+	        		goRight = false;
+	        	}
 	        }
 	        
+	        if( !(curY >0 && curY < DIM_Y) ) {
+	        	if(curY <=0) {
+	        		goUp = true;
+	        	} else {
+	        		goUp = false;
+	        	}
+	        }
 	        
-	        System.out.println("Number of iterations: " + it);
+	        int dirX = 1;
 	        
-	        System.out.println("maxYAtX0: " + maxYAtX0);
+	        if(!goRight) {
+	        	dirX = -1;
+	        }
 	        
-	        paintBlueLineComponent(g, 0, DIM_Y, maxYAtX0);
-	        paintBlueLineComponent(g, DIM_X, 0, minYAtXDim);
-		}
-		
-		
-		//Add blue line on corners:
+	        int dirY = 1;
+	        
+	        if( ! goUp) {
+	        	dirY = -1;
+	        }
 
+	        int newX = curX + dirX * SLOPE_INV;
+	        int newY = curY + dirY;
+	        
+
+	        System.out.println("new X: " + newX + " goRight: " + goRight + "DIMX: " + DIM_X + "go up: " + goUp);
+	        //TODO: put into a function
+
+	        if(! goRight ^ !goUp) {
+		        g.setColor(Color.GREEN);
+		        if(startTopLeft) {
+			        g.setColor(Color.BLUE);
+		        }
+	        	
+	        } else {
+		        g.setColor(Color.RED);
+		        if(startTopLeft) {
+			        g.setColor(Color.MAGENTA);
+		        }
+	        }
+	        
+	        g.drawLine(TOP_LEFT_X + MULT*curX, TOP_LEFT_Y + MULT*(DIM_Y - curY), TOP_LEFT_X + MULT*newX, TOP_LEFT_Y + MULT*(DIM_Y - newY));
+	        
+	        g.drawOval(TOP_LEFT_X + MULT*curX, TOP_LEFT_Y + MULT*(DIM_Y - curY), 2, 2);
+	        
+	        curX = newX;
+	        curY = newY;
+	        
+
+
+	        if(!(newX >0 && newX < DIM_X) && !(newY >0 && newY < DIM_Y)) {
+	        	System.out.println("THE END!");
+	        	break;
+	        }
+	        	
+	        
+        }
+        
+        
+        System.out.println("Number of iterations: " + it);
+        
+        System.out.println("maxYAtX0: " + maxYAtX0);
+        
+        //paintBlueLineComponent(g, 0, DIM_Y, maxYAtX0);
+        //paintBlueLineComponent(g, DIM_X, 0, minYAtXDim);
+	}
+	
+	
+	//Add blue line on corners:
 	}
 	
 	//Mimicing what's in:
