@@ -121,6 +121,13 @@ public class DrawOnGui2 implements ActionListener {
 
 	}
 	
+		
+	public static int DistTotouchingRibbon = 0;
+	public static int curRibbonHeight = 0;
+	
+	public static int DistToAdjCorner = 0;
+	public static int curRibbonHeight2 = 0;
+	
 	
 	public static void paintBilliard(Graphics g, boolean startTopLeft) {
 		boolean ret[][] = null;
@@ -154,12 +161,12 @@ public class DrawOnGui2 implements ActionListener {
         int maxYAtX0 = 0;
         int minYAtXDim = DIM_Y;
         
-        int it = 0;
+        int numSteps = 0;
+        
         while(true) {
 
-        	it++;
         	
-        	if(it > 10000) {
+        	if(numSteps > 10000) {
         		System.out.println("BREAK2!");
         		break;
         	}
@@ -199,6 +206,35 @@ public class DrawOnGui2 implements ActionListener {
 	        	}
 	        }
 	        
+
+	        if(!startTopLeft) {	
+	        	if(curX == 0) {
+	        		
+	        		if(curY != 0 && (curRibbonHeight == 0 || curY < curRibbonHeight)) {
+	        			curRibbonHeight = curY;
+	        			DistTotouchingRibbon = numSteps;
+	        		}
+	        	}
+
+	        	if(curX == 0) {
+	        		
+	        		if(curY != 0 && (curRibbonHeight2 == 0 || curY > DIM_Y - curRibbonHeight2)) {
+	        			curRibbonHeight2 = DIM_Y - curY;
+	        			DistToAdjCorner = numSteps;
+	        			//System.exit(1);
+	        			System.out.println("Debug 2 curRibbonHeight2 " + curRibbonHeight2);
+	        			System.out.println("Debug 2 numSteps " + numSteps);
+	        		}
+	        	} else if(curX == DIM_X) {
+	        		
+	        		if(curY != 0 && (curRibbonHeight2 == 0 || curY < curRibbonHeight2)) {
+	        			curRibbonHeight2 = curY;
+	        			DistToAdjCorner = numSteps;
+	        		}
+	        	}
+	        }
+	        
+	        
 	        int dirX = 1;
 	        
 	        if(!goRight) {
@@ -214,6 +250,8 @@ public class DrawOnGui2 implements ActionListener {
 	        int newX = curX + dirX * SLOPE_INV;
 	        int newY = curY + dirY;
 	        
+
+        	numSteps++;
 
 	        System.out.println("new X: " + newX + " goRight: " + goRight + "DIMX: " + DIM_X + "go up: " + goUp);
 	        //TODO: put into a function
@@ -244,14 +282,23 @@ public class DrawOnGui2 implements ActionListener {
 	        	System.out.println("THE END!");
 	        	break;
 	        }
-	        	
+	        
+	        
 	        
         }
         
         
-        System.out.println("Number of iterations: " + it);
+        System.out.println("Number of iterations: " + numSteps);
         
         System.out.println("maxYAtX0: " + maxYAtX0);
+        
+        System.out.println("Debug ribbon up/down:");
+		System.out.println("curRibbonHeight: " + curRibbonHeight);
+		System.out.println("numSteps to get to other ribbon above: " + DistTotouchingRibbon + " out of " + numSteps);
+
+        System.out.println("Debug ribbon corner to adj corner:");
+		System.out.println("curRibbonHeight2: " + curRibbonHeight2);
+		System.out.println("numSteps to get to adj corner: " + DistToAdjCorner + " out of " + numSteps + "( This is wrong! )");
         
         //paintBlueLineComponent(g, 0, DIM_Y, maxYAtX0);
         //paintBlueLineComponent(g, DIM_X, 0, minYAtXDim);
