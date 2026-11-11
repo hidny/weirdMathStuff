@@ -2,6 +2,11 @@ package poc_billiards;
 
 import java.util.ArrayList;
 
+import poc_billiards.Model.Utils;
+import poc_billiardsCoord.Coord2D;
+import poc_billiardsDupRemover.BasicUniqueCheckImproved;
+
+
 public class polyominizeTest {
 
 	public static void main(String[] args) {
@@ -214,6 +219,17 @@ public class polyominizeTest {
 		printBoolTable(ret);
 		
 		System.out.println("Number of cells: " + countCells(ret) + " (expected: 532)");
+		
+		BasicUniqueCheckImproved.resetUniqList();
+
+		Coord2D borders[] = Utils.getOppositeCornersOfNet(ret);
+		
+		
+		if(BasicUniqueCheckImproved.isUnique(borders, ret)) {
+			System.out.println("Solution code: " + BasicUniqueCheckImproved.debugLastScore);
+		}
+		
+		checkSolutions.testSolution(BasicUniqueCheckImproved.debugLastScore.toString());
 		
 		return ret;
 	}
