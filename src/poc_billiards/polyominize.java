@@ -153,9 +153,18 @@ public class polyominize {
 		}
 		//END Notches and Tabs
 		
-		for(int i=0; i<strip.length; i++) {
-			for(int j=0; j<strip[0].length; j++) {
-				if(strip[i][j]) {
+		printBoolTable(strip);
+		
+		makeSmaller(strip);
+		
+		System.out.println("Number of cells: " + countCells(strip) + " (expected: 2660)");
+	}
+	
+	public static void printBoolTable(boolean net[][]) {
+
+		for(int i=0; i<net.length; i++) {
+			for(int j=0; j<net[0].length; j++) {
+				if(net[i][j]) {
 					System.out.print("#");
 				} else {
 					System.out.print("_");
@@ -164,12 +173,72 @@ public class polyominize {
 			System.out.println();
 		}
 		System.out.println();
-		
-		
-		System.out.println("Number of cells: " + countCells(strip) + " (expected: 2660)");
 	}
 	
 	
+	public static boolean[][] polyominize(boolean strip[][]) {
+		
+		
+		
+		
+		
+		return null;
+	}
+	
+	public static boolean[][] makeSmaller(boolean strip[][]) {
+		
+		int border[] = findBorders(strip);
+		
+
+		boolean ret[][] = new boolean
+				[border[1] - border[0] + 1]
+				[border[3] - border[2] + 1];
+		
+		for(int i=0; i<ret.length; i++) {
+			for(int j=0; j<ret[0].length; j++ ) {
+				ret[i][j] = strip[border[0] + i][border[2] + j];
+			}
+		}
+		
+		return ret;
+	}
+	
+	public static int[] findBorders(boolean array[][]) {
+		
+		int minI = array.length - 1;
+		int maxI = 0;
+
+		int minJ = array[0].length - 1;
+		int maxJ = 0;
+		
+		
+		for(int i=0; i<array.length; i++) {
+			for(int j=0; j<array[0].length; j++) {
+				if(array[i][j]) {
+					
+					if(i < minI) {
+						minI = i;
+					}
+					
+					if(i > maxI) {
+						maxI = i;
+					}
+					
+					if(j < minJ) {
+						minJ = j;
+					}
+					
+					if(j > maxJ) {
+						maxJ = j;
+					}
+				}
+			}
+		}
+		
+		return new int[] {minI, maxI, minJ, maxJ};
+	}
+	
+
 	public static int countCells(boolean net[][]) {
 		int ret = 0;
 		
