@@ -2,7 +2,7 @@ package poc_billiards;
 
 import java.util.ArrayList;
 
-public class polyominize {
+public class polyominizeTest {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -178,7 +178,7 @@ public class polyominize {
 	}
 	
 	
-	public static boolean[][] polyominize(boolean strip[][]) {
+	public static boolean[][] polyominizeOld(boolean strip[][]) {
 		
 		boolean ret[][] = new boolean[1000][1000];
 		
@@ -193,10 +193,10 @@ public class polyominize {
 					//double Y = (0.0 - (i) + 2*(j )) / 5.0;
 					
 
-					//double Y = (0.0 - (j) + 2*(i)) / 5.0;
-					//double X = (2.0*(j) + (i)) / 5.0;
-					double Y = (0.0 - (j + 0.5) + 2*(i + 0.5)) / 5.0;
-					double X = (2.0*(j + 0.5) + (i + 0.5)) / 5.0;
+					double Y = (0.0 - (j) + 2*(i)) / 5.0;
+					double X = (2.0*(j) + (i)) / 5.0;
+					//double Y = (0.0 - (j + 0.5) + 2*(i + 0.5)) / 5.0;
+					//double X = (2.0*(j + 0.5) + (i + 0.5)) / 5.0;
 					
 					int newJ = (int)Y;
 					int newI = (int)X;
@@ -250,7 +250,42 @@ public class polyominize {
 		
 		return ret;
 	}
+		
+	public static boolean[][] polyominize(boolean strip[][]) {
 	
+		boolean ret[][] = new boolean[1000][1000];
+		
+		for(int i=0; i<ret.length; i++) {
+			for(int j=0; j<ret[0].length; j++) {
+				
+				int xOrig = i - 500;
+				int yOrig = j - 500;
+				
+				int x = 2*xOrig - yOrig;
+				int y = xOrig + 2*yOrig + 1;
+				
+				if( x >= 0 && y >= 0 && x < strip.length && y < strip[0].length) {
+					if(strip[x][y]) {
+						ret[i][j] = true;
+					} else {
+						ret[i][j] = false;
+					}
+					System.out.println("good");
+				} else {
+					//System.out.println("coord: " + x + ", " + y);
+				}
+			}
+		}
+		ret = makeSmaller(ret);
+	
+		printBoolTable(ret);
+		
+		System.out.println("Number of cells: " + countCells(ret) + " (expected: 532)");
+		
+		return ret;
+	}
+
+
 	public static boolean[][] makeSmaller(boolean strip[][]) {
 		
 		int border[] = findBorders(strip);
