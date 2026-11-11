@@ -18,26 +18,27 @@ public class polyominizeTest {
 		ArrayList <Integer> bottomTabs = new ArrayList <Integer>();
 		
 		
+		// Only 1 solution...
 		bottomNotches.add(0); 
-		bottomNotches.add(150); // 1/3 (1/3 + 2/3 = 1)
+		//bottomNotches.add(150); // 1/3 (1/3 + 2/3 = 1)
 		bottomNotches.add(225); // 1/2
-		bottomNotches.add(375); // 5/6 (5/6 + 1/6 = 1)
+		//bottomNotches.add(375); // 5/6 (5/6 + 1/6 = 1)
 		
-		bottomTabs.add(75);  // 1/6
-		bottomTabs.add(300); // 2/3
+		//bottomTabs.add(75);  // 1/6
+		//bottomTabs.add(300); // 2/3
 		
 		
 		topNotches.add(12);  // 12 + 450 + 12 = 474
-		topNotches.add(147); // 147 + 327 = 474
-		topNotches.add(192); // 192 + 282 = 474
+		//topNotches.add(147); // 147 + 327 = 474
+		//topNotches.add(192); // 192 + 282 = 474
 		topNotches.add(237); // 2* 237 = 474
-		topNotches.add(372); // 372 + 102 = 474
-		topNotches.add(417); // 417 + 57 = 474
+		//topNotches.add(372); // 372 + 102 = 474
+		//topNotches.add(417); // 417 + 57 = 474
 		
-		topTabs.add(57);
-		topTabs.add(102);
-		topTabs.add(282);
-		topTabs.add(327);
+		//topTabs.add(57);
+		//topTabs.add(102);
+		//topTabs.add(282);
+		//topTabs.add(327);
 		
 		
 		
