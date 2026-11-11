@@ -168,7 +168,7 @@ public class polyominizeTest {
 	}
 	
 	private static int getIForStrip(int curCenter, int i, int stripLength) {
-		return (stripLength - bottomTab.length/2 + curCenter + i) % stripLength;
+		return (stripLength - bottomTab.length/2 + curCenter + i + 0) % stripLength;
 	}
 	
 	public static void printBoolTable(boolean net[][]) {
@@ -222,8 +222,6 @@ public class polyominizeTest {
 		
 		BasicUniqueCheckImproved.resetUniqList();
 
-		Coord2D borders[] = Utils.getOppositeCornersOfNet(ret);
-		
 		
 		if(BasicUniqueCheckImproved.isUnique(null, ret)) {
 			System.out.println("Solution code: " + BasicUniqueCheckImproved.debugLastScore);
