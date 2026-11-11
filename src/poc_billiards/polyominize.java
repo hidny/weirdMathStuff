@@ -158,6 +158,8 @@ public class polyominize {
 		makeSmaller(strip);
 		
 		System.out.println("Number of cells: " + countCells(strip) + " (expected: 2660)");
+		
+		polyominize(strip);
 	}
 	
 	public static void printBoolTable(boolean net[][]) {
@@ -178,11 +180,35 @@ public class polyominize {
 	
 	public static boolean[][] polyominize(boolean strip[][]) {
 		
+		boolean ret[][] = new boolean[1000][1000];
+		
+		for(int i=0; i<strip.length; i++) {
+			for(int j=0; j<strip[0].length; j++) {
+				if(strip[i][j]) {
+					//double X = 100.0 + (2*(i + 0.5) + (j + 0.5)) / 5.0;
+					//double Y = 100.0 + (0.0 -(i + 0.5) + 2*(j + 0.5)) / 5.0;
+					
+					double X = 100.0 + (2*(i) + (j )) / 5.0;
+					double Y = 100.0 + (0.0 -(i) + 2*(j )) / 5.0;
+					
+					
+					if(ret[(int)Y][(int)X]) {
+						System.out.println("Oh crap! (X, Y) lite up at least twice");
+					}
+					ret[(int)Y][(int)X] = true;
+				}
+			}
+		}
 		
 		
 		
+		ret = makeSmaller(ret);
+
+		printBoolTable(ret);
 		
-		return null;
+		System.out.println("Number of cells: " + countCells(ret) + " (expected: 532)");
+		
+		return ret;
 	}
 	
 	public static boolean[][] makeSmaller(boolean strip[][]) {
