@@ -77,7 +77,7 @@ public class checkSolutions {
 			}
 		}
 		
-		System.out.println("Num solutions: " + numCuboidsCoveredByNet);
+		System.out.println("Num solutions (2): " + numCuboidsCoveredByNet);
 		
 		if(numCuboidsCoveredByNet >= 3) {
 			
@@ -96,7 +96,7 @@ public class checkSolutions {
 			
 			boolean VERBOSE = true;
 			
-			for(int i=0; i<dimensionsToCheck.length; i++) {
+			/*for(int i=0; i<dimensionsToCheck.length; i++) {
 				if(solutionFound[i]) {
 					System.out.println("Solution for: " + getDimensionsString(dimensionsToCheck[i]));
 					
@@ -104,7 +104,7 @@ public class checkSolutions {
 					
 					System.out.println();
 				}
-			}
+			}*/
 			
 			System.out.println("Number of " + numCuboidsCoveredByNet + "-way solutions so far: " + numSoutionsFound);
 			System.out.println();

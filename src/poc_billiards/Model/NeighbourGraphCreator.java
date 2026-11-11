@@ -14,7 +14,7 @@ public class NeighbourGraphCreator {
 	public static int NUM_NEIGHBOURS =4;
 
 	public static CoordWithRotationAndIndex[][] initNeighbourhood(int a, int b, int c) {
-		return initNeighbourhood(a, b, c, true);
+		return initNeighbourhood(a, b, c, false);
 	}
 	
 	public static CoordWithRotationAndIndex[][] initNeighbourhood(int a, int b, int c, boolean verbose) {
@@ -26,12 +26,12 @@ public class NeighbourGraphCreator {
 		String ret1 = DataModelViews.getFlatNumberingView(a, b, c);
 		
 		if(verbose) {
-			System.out.println(ret1);
+			//System.out.println(ret1);
 	
-			System.out.println("Printed flattened cuboid with bonus square at bottom...");
+			//System.out.println("Printed flattened cuboid with bonus square at bottom...");
 			
-			System.out.println("This is the map I will use to encode neighbours and get somewhere... hopefully.");
-			}
+			//System.out.println("This is the map I will use to encode neighbours and get somewhere... hopefully.");
+		}
 		int flatArray[][] = makeTempFlatMapArray(a, b, c, numbering);
 		
 		//Sanity check:

@@ -61,7 +61,7 @@ public class ValidNetSolutionChecker {
 		
 		if(area != currentArea) {
 			
-			System.out.println("Reinit:");
+			//System.out.println("Reinit:");
 			currentArea = area;
 			
 			paperUsed = new boolean[2 * area][2 * area];
