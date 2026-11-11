@@ -185,17 +185,57 @@ public class polyominize {
 		for(int i=0; i<strip.length; i++) {
 			for(int j=0; j<strip[0].length; j++) {
 				if(strip[i][j]) {
-					//double X = 100.0 + (2*(i + 0.5) + (j + 0.5)) / 5.0;
-					//double Y = 100.0 + (0.0 -(i + 0.5) + 2*(j + 0.5)) / 5.0;
 					
-					double X = 100.0 + (2*(i) + (j )) / 5.0;
-					double Y = 100.0 + (0.0 -(i) + 2*(j )) / 5.0;
+					//double X = (2*(i + 0.5) + (j + 0.5)) / 5.0;
+					//double Y = (0.0 -(i + 0.5) + 2*(j + 0.5)) / 5.0;
 					
+					//double X = (2.0*(i) + (j )) / 5.0;
+					//double Y = (0.0 - (i) + 2*(j )) / 5.0;
 					
-					if(ret[(int)Y][(int)X]) {
-						System.out.println("Oh crap! (X, Y) lite up at least twice");
+
+					//double Y = (0.0 - (j) + 2*(i)) / 5.0;
+					//double X = (2.0*(j) + (i)) / 5.0;
+					double Y = (0.0 - (j + 0.5) + 2*(i + 0.5)) / 5.0;
+					double X = (2.0*(j + 0.5) + (i + 0.5)) / 5.0;
+					
+					int newJ = (int)Y;
+					int newI = (int)X;
+					
+					int adjustY = newI + 2 * newJ + 1;
+					int adjustX = 2 * newI - newJ;
+					
+					System.out.println("----------");
+					System.out.println(i + ", " + j);
+					System.out.println(Y + " , " + X);
+					System.out.println(adjustY + " , " + adjustX);
+					System.out.println("----------");
+					
+					if(
+							adjustX >= 0 
+							&& adjustY >= 0 
+							&& adjustY < strip.length 
+							&& adjustX < strip[0].length) {
+						
+						if(strip[adjustY][adjustX] ) {
+
+							if(ret[newI + 100][newJ + 100]) {
+								System.out.println("Oh crap! (X, Y) lit up at least twice");
+							}
+							
+							ret[newI + 100][newJ + 100] = true;
+							
+						}
+						//System.exit(1);
+					} else {
+						
+						if(2 * newJ - newI < 0) {
+							System.out.println("Smaller than 0");
+						}
+						
+						if(newJ + 2 * newI + 1 < 0) {
+							System.out.println("Smaller than 0 (2)");
+						}
 					}
-					ret[(int)Y][(int)X] = true;
 				}
 			}
 		}
