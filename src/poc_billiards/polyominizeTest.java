@@ -109,7 +109,7 @@ public class polyominizeTest {
 			
 			for(int i=0; i<bottomNotch.length; i++) {
 				for(int j=0; j<bottomNotch[0].length; j++) {
-					strip[(curCenter + i) % strip.length][GAP + j] = ! bottomNotch[i][j];
+					strip[getIForStrip(curCenter, i, strip.length)][GAP + j] = ! bottomNotch[i][j];
 				}
 			}
 			
@@ -121,7 +121,7 @@ public class polyominizeTest {
 			
 			for(int i=0; i<bottomTab.length; i++) {
 				for(int j=0; j<bottomTab[0].length; j++) {
-					strip[(curCenter + i) % strip.length][GAP - topNotch[0].length + j] = bottomTab[i][j];
+					strip[getIForStrip(curCenter, i, strip.length)][GAP - topNotch[0].length + j] = bottomTab[i][j];
 				}
 			}
 			
@@ -134,7 +134,7 @@ public class polyominizeTest {
 			
 			for(int i=0; i<topNotch.length; i++) {
 				for(int j=0; j<topNotch[0].length; j++) {
-					strip[(curCenter + i) % strip.length][GAP + width - topNotch[0].length  + j] = ! topNotch[i][j];
+					strip[getIForStrip(curCenter, i, strip.length)][GAP + width - topNotch[0].length  + j] = ! topNotch[i][j];
 				}
 			}
 			
@@ -146,7 +146,7 @@ public class polyominizeTest {
 			
 			for(int i=0; i<topTab.length; i++) {
 				for(int j=0; j<topTab[0].length; j++) {
-					strip[(curCenter + i) % strip.length][GAP + width + j] = topTab[i][j];
+					strip[getIForStrip(curCenter, i, strip.length)][GAP + width + j] = topTab[i][j];
 				}
 			}
 			
@@ -160,6 +160,10 @@ public class polyominizeTest {
 		System.out.println("Number of cells: " + countCells(strip) + " (expected: 2660)");
 		
 		polyominize(strip);
+	}
+	
+	private static int getIForStrip(int curCenter, int i, int stripLength) {
+		return (stripLength - bottomTab.length/2 + curCenter + i) % stripLength;
 	}
 	
 	public static void printBoolTable(boolean net[][]) {
