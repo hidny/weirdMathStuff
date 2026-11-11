@@ -1,5 +1,5 @@
 package poc_billiards.Model;
-import poc_billiardsCoord.CoordWithRotationAndIndex;
+import poc_billiards.Coord.CoordWithRotationAndIndex;
 
 public class CuboidToFoldOn implements CuboidToFoldOnInterface {
 

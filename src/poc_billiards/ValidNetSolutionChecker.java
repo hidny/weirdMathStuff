@@ -260,7 +260,7 @@ public class ValidNetSolutionChecker {
 				int indexToUse = indexCuboidOnPaper[paperToDevelop[curOrderedIndexToUse].i][paperToDevelop[curOrderedIndexToUse].j];
 				
 				//TOOD: wihy poc_billiarsCoord?
-				poc_billiardsCoord.CoordWithRotationAndIndex neighbours[] = cuboid.getNeighbours(indexToUse);
+				poc_billiards.Coord.CoordWithRotationAndIndex neighbours[] = cuboid.getNeighbours(indexToUse);
 				
 				int curRotation = cuboid.getRotationPaperRelativeToMap(indexToUse);
 				

@@ -3,8 +3,8 @@ package poc_billiards.Model;
 
 import java.math.BigInteger;
 
-import poc_billiardsCoord.Coord;
-import poc_billiardsCoord.Coord2D;
+import poc_billiards.Coord.Coord;
+import poc_billiards.Coord.Coord2D;
 
 public class Utils {
 

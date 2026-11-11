@@ -1,10 +1,11 @@
-package poc_billiardsDupRemover;
+package poc_billiards.DupRemover;
 
 import java.math.BigInteger;
 import java.util.HashSet;
 
 import poc_billiards.Model.Utils;
-import poc_billiardsCoord.Coord2D;
+import poc_billiards.Coord.Coord;
+import poc_billiards.Coord.Coord2D;
 
 public class BasicUniqueCheckImproved {
 
@@ -25,9 +26,9 @@ public class BasicUniqueCheckImproved {
 		uniqList = new HashSet<BigInteger>();
 	}
 	
-	public static boolean isUnique(Coord2D paperToDevelop[], boolean array[][]) {
+	public static boolean isUnique(int paperToDevelop[], boolean array[][]) {
 
-		int borders[] = Utils.getBorders(paperToDevelop);
+		int borders[] = Utils.getBorders(array);
 		
 		int firsti = borders[0];
 		int lasti = borders[1];

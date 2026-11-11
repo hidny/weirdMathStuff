@@ -3,8 +3,8 @@ package poc_billiards;
 import java.util.ArrayList;
 
 import poc_billiards.Model.Utils;
-import poc_billiardsCoord.Coord2D;
-import poc_billiardsDupRemover.BasicUniqueCheckImproved;
+import poc_billiards.Coord.Coord2D;
+import poc_billiards.DupRemover.BasicUniqueCheckImproved;
 
 
 public class polyominizeTest {
@@ -225,7 +225,7 @@ public class polyominizeTest {
 		Coord2D borders[] = Utils.getOppositeCornersOfNet(ret);
 		
 		
-		if(BasicUniqueCheckImproved.isUnique(borders, ret)) {
+		if(BasicUniqueCheckImproved.isUnique(null, ret)) {
 			System.out.println("Solution code: " + BasicUniqueCheckImproved.debugLastScore);
 		}
 		
