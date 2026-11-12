@@ -6,7 +6,6 @@ import poc_billiards.Model.Utils;
 import poc_billiards.Coord.Coord2D;
 import poc_billiards.DupRemover.BasicUniqueCheckImproved;
 
-
 public class polyominizeTest {
 
 	public static void main(String[] args) {
@@ -228,6 +227,13 @@ public class polyominizeTest {
 		System.out.println();
 		System.out.println();
 		checkSolutions.testSolution(BasicUniqueCheckImproved.debugLastScore.toString());
+
+		
+		//System.out.println();
+		//System.out.println();
+		
+
+		//checkSolutions.testSolution("(secret)");
 		
 		return ret;
 	}

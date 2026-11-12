@@ -54,7 +54,6 @@ public class ValidNetSolutionChecker {
 	private static boolean paperUsed[][] = null;
 	private static int indexCuboidOnPaper[][] = null;
 	private static Coord2D newPaperToDevelop[] = null;
-	private static Coord2D coord2DTable[][] = null;
 	
 	
 	public static void initModelForAreaIfApplicable(int area) {
@@ -71,15 +70,6 @@ public class ValidNetSolutionChecker {
 			//System.out.println("indexCuboidOnPaper USED OK");
 			
 			newPaperToDevelop = new Coord2D[area];
-			
-			coord2DTable = new Coord2D[2 * area][2 * area];
-			//System.out.println("Coord2D USED OK");
-
-			for(int i=0; i<coord2DTable.length; i++) {
-				for(int j=0; j<coord2DTable[0].length; j++) {
-					coord2DTable[i][j] = new Coord2D(i, j);
-				}
-			}
 			
 
 			for(int i=0; i<indexCuboidOnPaper.length; i++) {
@@ -133,7 +123,6 @@ public class ValidNetSolutionChecker {
 						paperUsed,
 						newPaperToDevelop,
 						cuboidToUse,
-						coord2DTable,
 						indexCuboidOnPaper,
 						//END refresh
 						verbose)
@@ -201,7 +190,6 @@ public class ValidNetSolutionChecker {
 			boolean paperUsed[][],
 			Coord2D newPaperToDevelop[],
 			CuboidToFoldOn cuboidToUse,
-			Coord2D coord2DTable[][],
 			int indexCuboidOnPaper[][],
 			boolean verbose
 		) {
@@ -215,7 +203,7 @@ public class ValidNetSolutionChecker {
 		}
 
 		int numCellsUsedDepth = 0;
-		newPaperToDevelop[numCellsUsedDepth] = coord2DTable[startI][startJ];
+		newPaperToDevelop[numCellsUsedDepth] = new Coord2D(startI, startJ);
 		
 		cuboidToUse.setCell(cuboidStartIndex, rotation);
 		indexCuboidOnPaper[startI][startJ] = cuboidStartIndex;
@@ -230,7 +218,6 @@ public class ValidNetSolutionChecker {
 				paperUsed,
 				cuboidToUse, 
 				numCellsUsedDepth,
-				coord2DTable,
 				verbose);
 	}
 	
@@ -241,7 +228,6 @@ public class ValidNetSolutionChecker {
 			boolean paperUsed[][],
 			CuboidToFoldOn cuboid, 
 			int numCellsUsedDepth,
-			Coord2D coord2DTable[][],
 			boolean verbose) {
 
 		
@@ -296,7 +282,7 @@ public class ValidNetSolutionChecker {
 					
 					paperUsed[new_i][new_j] = true;
 					indexCuboidOnPaper[new_i][new_j] = indexNewCell;
-					paperToDevelop[numCellsUsedDepth] = coord2DTable[new_i][new_j];
+					paperToDevelop[numCellsUsedDepth] = new Coord2D(new_i, new_j);
 
 					numCellsUsedDepth += 1;
 					//End setup
@@ -321,5 +307,4 @@ public class ValidNetSolutionChecker {
 		return true;
 	
 	}
-
 }
