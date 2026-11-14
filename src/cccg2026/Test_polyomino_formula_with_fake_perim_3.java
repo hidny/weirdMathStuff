@@ -23,7 +23,7 @@ public class Test_polyomino_formula_with_fake_perim_3 {
 	public static BigInteger powAntiNum[] = new BigInteger[(array.length + array[0].length + 1)];
 	
 	public static final int NUM = 1;
-	public static final int DENUM = 8;
+	public static final int DENUM = 256;
 	public static final int ANITNUM = DENUM - NUM;
 	
 	public static void setupArray(BigInteger array[], int num) {
@@ -131,6 +131,12 @@ public class Test_polyomino_formula_with_fake_perim_3 {
 			for(int j=0; j<array[0].length; j++) {
 				
 				Fraction probArrayElement = new Fraction(array[i][j], powDenum[i + j]);
+				
+				if(j == 0) {
+					//Exception!
+				} else {
+					probArrayElement = Fraction.mult(probArrayElement, j);
+				}
 				
 				probArrayElement = Fraction.mult(probArrayElement, new Fraction(powNum[j], BigInteger.ONE));
 				probArrayElement = Fraction.mult(probArrayElement, new Fraction(powAntiNum[i], BigInteger.ONE));
