@@ -23,7 +23,7 @@ public class Test_polyomino_formula_with_fake_perim_3 {
 	public static BigInteger powAntiNum[] = new BigInteger[(array.length + array[0].length + 1)];
 	
 	public static final int NUM = 1;
-	public static final int DENUM = 256;
+	public static final int DENUM = 3;
 	public static final int ANITNUM = DENUM - NUM;
 	
 	public static void setupArray(BigInteger array[], int num) {
