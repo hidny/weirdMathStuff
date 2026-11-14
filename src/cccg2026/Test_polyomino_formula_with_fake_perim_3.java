@@ -11,6 +11,27 @@ import UtilityFunctions.Fraction;
 //Counting Polyominoes by Area and Perimeter*
 //Gill Barequet and Zohar Nagel∗
 
+
+// I'm trying to calc the odds that if I find a NxN binary 1/0 grid that's big (tends to inf), and I pick a random cell,
+// what are the odds that the cell:
+// a) is 1
+// b) is part of a polyomino greater than area 40 (or infinite)
+
+// For the record, it's a 21.862 % chance that a randomly selected cell is in a polyomino that's area greater than 40 (for when odds of 1 being 1/2)
+
+// Area 40 is as high as the data in the paper goes...
+
+//I don't know what to do with this new-found knowledge. :( Oh well!
+
+//For prob cell 1 equal 1/2
+//public static final int NUM = 1;
+//public static final int DENUM = 2;
+
+//For prob cell 1 equal 1/10
+//public static final int NUM = 1;
+//public static final int DENUM = 10;
+
+
 public class Test_polyomino_formula_with_fake_perim_3 {
 
 	public static final BigInteger array[][] = new BigInteger[83][41];
@@ -22,8 +43,18 @@ public class Test_polyomino_formula_with_fake_perim_3 {
 	public static BigInteger powNum[] =   new BigInteger[(array.length + array[0].length + 1)];
 	public static BigInteger powAntiNum[] = new BigInteger[(array.length + array[0].length + 1)];
 	
+	//This thought experiment actually worked out! I don't know what to do with this info
+	// though!
+	
+	//Tried: Something is wrong at i = 62 maybe..
+	//Wired: AHA! The data to bring it down to 0 is missing from the paper.
+	// This is the best we could do...
+	
+	// approx 21.862 % chance that a randomly selected cell is in a polyomino that's area greater than 40.
+	// (If prob on is 1/2) and 0 polyominoes don't count.
+	
 	public static final int NUM = 1;
-	public static final int DENUM = 3;
+	public static final int DENUM = 2;
 	public static final int ANITNUM = DENUM - NUM;
 	
 	public static void setupArray(BigInteger array[], int num) {
@@ -99,6 +130,7 @@ public class Test_polyomino_formula_with_fake_perim_3 {
             			array[rowNum][startIndex + i - 1] = new BigInteger(tokens[i]);
             			//array[startIndex + i - 1][rowNum] = new BigInteger(tokens[i]);
             			System.out.println("array[" + rowNum + "][" + (startIndex + i - 1) + "] = new BigInteger(\"" + tokens[i] + "\");");
+            			System.out.println(array[rowNum][startIndex + i - 1]);
             		}
             		System.out.println();
             		
@@ -144,7 +176,9 @@ public class Test_polyomino_formula_with_fake_perim_3 {
 				probableInf = Fraction.minus(probableInf, probArrayElement);
 			}
 			System.out.println("Cur prob to go to infinity after i = " + i + ":");
-			System.out.println(probableInf.getDecimalFormat(15));
+			//System.out.println(probableInf.getDecimalFormat(15));
+			System.out.println("Approx prob:" + probableInf.getSmallNumber(15));
+			System.out.println();
 			
 		}
 		
