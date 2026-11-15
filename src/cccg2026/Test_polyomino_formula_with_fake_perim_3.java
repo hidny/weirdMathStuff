@@ -58,7 +58,7 @@ public class Test_polyomino_formula_with_fake_perim_3 {
 	// (If prob on is 1/2) and 0 polyominoes don't count.
 	
 	public static final int NUM = 1;
-	public static final int DENUM = 2;
+	public static final int DENUM = 10000;
 	public static final int ANITNUM = DENUM - NUM;
 	
 	public static void setupArray(BigInteger array[], int num) {
@@ -160,11 +160,10 @@ public class Test_polyomino_formula_with_fake_perim_3 {
 		Fraction origProb = new Fraction(new BigInteger("" + NUM), new BigInteger("" + DENUM));
 		
 		System.out.println("Original probability: " + origProb);
-		
-		for(int i=0; i<array.length; i++) {
+
+		for(int j=0; j<array[0].length; j++) {
+			for(int i=0; i<array.length; i++) {
 			
-			
-			for(int j=0; j<array[0].length; j++) {
 				
 				Fraction probArrayElement = new Fraction(array[i][j], powDenum[i + j]);
 				
@@ -179,7 +178,7 @@ public class Test_polyomino_formula_with_fake_perim_3 {
 				
 				probableInf = Fraction.minus(probableInf, probArrayElement);
 			}
-			System.out.println("Cur prob to go to infinity after i = " + i + ":");
+			System.out.println("Cur prob to go to infinity after j = " + j + ":");
 			//System.out.println(probableInf.getDecimalFormat(15));
 			System.out.println("Approx prob:" + probableInf.getSmallNumber(15));
 			System.out.println();

@@ -161,20 +161,23 @@ public class Fraction implements Comparable {
 	public String getSmallNumber(int digits) {
 		String sNumerator = this.numerator.toString();
 		String sDenominator = this.denominator.toString();
-		
-		BigInteger numerator = new BigInteger(sNumerator.substring(0, Math.min(digits, sNumerator.length())));
-		BigInteger denominator = new BigInteger(sDenominator.substring(0, Math.min(digits, sDenominator.length())));
-		
-		Fraction mult = Fraction.ONE;
-		
-		if(numerator.compareTo(denominator) < 0) {
-
-			return new Fraction(numerator.multiply(new BigInteger(10 + "")), denominator) + " x 10^" + (sNumerator.length() - sDenominator.length() - 1);
-		} else {
-			return new Fraction(numerator, denominator) + " x 10^" + (sNumerator.length() - sDenominator.length());
+		if(sNumerator.length() > digits) {
+			BigInteger numerator = new BigInteger(sNumerator.substring(0, Math.min(digits, sNumerator.length())));
+			BigInteger denominator = new BigInteger(sDenominator.substring(0, Math.min(digits, sDenominator.length())));
 			
+			Fraction mult = Fraction.ONE;
+			
+			if(numerator.compareTo(denominator) < 0) {
+	
+				return new Fraction(numerator.multiply(new BigInteger(10 + "")), denominator) + " x 10^" + (sNumerator.length() - sDenominator.length() - 1);
+			} else {
+				return new Fraction(numerator, denominator) + " x 10^" + (sNumerator.length() - sDenominator.length());
+				
+			}
+
+		} else {
+			return this.toString();
 		}
-		
 		
 	}
 		
