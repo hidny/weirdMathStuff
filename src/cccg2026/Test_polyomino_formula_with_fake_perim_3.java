@@ -26,6 +26,7 @@ import UtilityFunctions.Fraction;
 
 //TODO: does something cool happen when you set the probability really low?
 // TODO: Maybe you can somehow generate the number of polyominoes without bruteforcing it!
+// I doesn't look good! Nevermind!
 
 //For prob cell 1 equal 1/2
 //public static final int NUM = 1;
@@ -58,7 +59,7 @@ public class Test_polyomino_formula_with_fake_perim_3 {
 	// (If prob on is 1/2) and 0 polyominoes don't count.
 	
 	public static final int NUM = 1;
-	public static final int DENUM = 10000;
+	public static final int DENUM = 2;
 	public static final int ANITNUM = DENUM - NUM;
 	
 	public static void setupArray(BigInteger array[], int num) {
