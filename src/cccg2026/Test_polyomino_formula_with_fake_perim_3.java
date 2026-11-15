@@ -23,6 +23,10 @@ import UtilityFunctions.Fraction;
 
 //I don't know what to do with this new-found knowledge. :( Oh well!
 
+
+//TODO: does something cool happen when you set the probability really low?
+// TODO: Maybe you can somehow generate the number of polyominoes without bruteforcing it!
+
 //For prob cell 1 equal 1/2
 //public static final int NUM = 1;
 //public static final int DENUM = 2;
