@@ -163,31 +163,28 @@ public class DrawOnGui3 implements ActionListener {
 	
 	//Start config options:
 
-	//private static int N_ADJUST = 0;
-	//private static int N2_ADJUST = 0;
-	//public static final int DIM_X = 6 * SAFE_MULT;
-	//public static final int DIM_Y = 45 * SAFE_MULT;
-	
+	//AHA! They all work with 0 N_ADJUST and 0 N2_ADJUST!
 	private static int N_ADJUST = 0;
 	private static int N2_ADJUST = 0;
 	
-	//According to the Connor numbers, Top boundary seems to be 12 more than bottom boundary
-	public static int MAGIC_DIFF = 12;
+	public static final int DIM_X = 6 * SAFE_MULT;
+	public static final int DIM_Y = 45 * SAFE_MULT;
 	
+	
+	//According to the Conner Silverstein numbers, Top boundary seems to be 12 more than bottom boundary
+	// My program ignores the fact that the strip is diagonal and has a defined width, so to get the x coords to match on the grid,
+	// we have to take 12 units away the number for the top notches and tabs.
+	public static int MAGIC_DIFF = 12;
+
 	//public static final int DIM_X =18 * SAFE_MULT;
 	//public static final int DIM_Y =15 * SAFE_MULT;
 	
-	//private static int N_ADJUST = 0;
-	//private static int N2_ADJUST = 0;
 	//public static final int DIM_X =30 * SAFE_MULT;
 	//public static final int DIM_Y = 9 * SAFE_MULT;
 	
 
-	//0, 0 is good!
-	//private static int N_ADJUST = 0;
-	//private static int N2_ADJUST = 0;
-	public static final int DIM_X = 90 * SAFE_MULT;
-	public static final int DIM_Y =  3 * SAFE_MULT;
+	//public static final int DIM_X = 90 * SAFE_MULT;
+	//public static final int DIM_Y =  3 * SAFE_MULT;
 	
 	//END start config options:
 
