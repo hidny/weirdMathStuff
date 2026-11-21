@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -25,17 +26,46 @@ public class DrawOnGui2 implements ActionListener {
 	private JButton button2;
 	private int count = 0;
 	
-	//TODO: make this shiftable:
-	private int N = 5;
 	
+
+	private static ArrayList <Integer> topNotches = new ArrayList <Integer>();
+	private static ArrayList <Integer> topTabs = new ArrayList <Integer>();
+	private static ArrayList <Integer> bottomNotches = new ArrayList <Integer>();
+	private static ArrayList <Integer> bottomTabs = new ArrayList <Integer>();
+	
+	static {
+		
+		
+		// Only 1 solution...
+		bottomNotches.add(0); 
+		bottomNotches.add(150); // 1/3 (1/3 + 2/3 = 1)
+		bottomNotches.add(225); // 1/2
+		bottomNotches.add(375); // 5/6 (5/6 + 1/6 = 1)
+		
+		bottomTabs.add(75);  // 1/6
+		bottomTabs.add(300); // 2/3
+		
+		
+		topNotches.add(12);  // 12 + 450 + 12 = 474
+		topNotches.add(147); // 147 + 327 = 474
+		topNotches.add(192); // 192 + 282 = 474
+		topNotches.add(237); // 2* 237 = 474
+		topNotches.add(372); // 372 + 102 = 474
+		topNotches.add(417); // 417 + 57 = 474
+		
+		topTabs.add(57);
+		topTabs.add(102);
+		topTabs.add(282);
+		topTabs.add(327);
+	}
 	
 	public DrawOnGui2() {
 		frame = new JFrame();
 		frame.setSize(1100, 800);
 		
-		button = new JButton("Increase N");
+		button = new JButton("Increase N2 by 5");
 		button.addActionListener(this);
-		button2 = new JButton("Decrease N");
+		button2 = new JButton("Increase N by 5");
 		button2.addActionListener(this);
 		
 		label = new JLabel("Number of clicks: " + count);
@@ -79,18 +109,25 @@ public class DrawOnGui2 implements ActionListener {
 	public static final int SAFE_MULT = 2;
 	
 	//Start config options:
-	
-	public static final int DIM_X = 6 * SAFE_MULT;
-	public static final int DIM_Y = 45 * SAFE_MULT;
-	
 
-	//public static final int DIM_X =18 * SAFE_MULT;
-	//public static final int DIM_Y =15 * SAFE_MULT;
+	//private static int N_ADJUST = 0;
+	//private static int N2_ADJUST = 0;
+	//public static final int DIM_X = 6 * SAFE_MULT;
+	//public static final int DIM_Y = 45 * SAFE_MULT;
 	
+	private static int N_ADJUST = 0;
+	private static int N2_ADJUST = 0;
+	public static final int DIM_X =18 * SAFE_MULT;
+	public static final int DIM_Y =15 * SAFE_MULT;
+	
+	//private static int N_ADJUST = 0;
+	//private static int N2_ADJUST = 0;
 	//public static final int DIM_X =30 * SAFE_MULT;
 	//public static final int DIM_Y = 9 * SAFE_MULT;
 	
 
+	//private static int N_ADJUST = 0;
+	//private static int N2_ADJUST = 0;
 	//public static final int DIM_X = 90 * SAFE_MULT;
 	//public static final int DIM_Y =  3 * SAFE_MULT;
 	
@@ -256,6 +293,48 @@ public class DrawOnGui2 implements ActionListener {
 	        System.out.println("new X: " + newX + " goRight: " + goRight + "DIMX: " + DIM_X + "go up: " + goUp);
 	        //TODO: put into a function
 
+	        
+	        if(startTopLeft) {
+	        	//TODO: there's lots of copy/paste code here...
+	        	for(int i=0; i<topNotches.size(); i++) {
+	        		if(topNotches.get(i) >= (5*(numSteps)-N_ADJUST + 450) % 450
+	        				&& topNotches.get(i) < (5*(numSteps+1)-N_ADJUST + 450) % 450
+	        			) {
+	        			g.setColor(Color.CYAN);
+	        			g.drawOval(TOP_LEFT_X + MULT*curX-5, TOP_LEFT_Y + MULT*(DIM_Y - curY)-5, 10, 10);
+	        		}
+	        	}
+	        	
+	        	for(int i=0; i<topTabs.size(); i++) {
+	        		if(topTabs.get(i) >= (5*(numSteps)-N_ADJUST + 450) % 450
+	        				&& topTabs.get(i) < (5*(numSteps+1)-N_ADJUST + 450) % 450
+	        			) {
+	        			g.setColor(Color.BLACK);
+	        			g.drawOval(TOP_LEFT_X + MULT*curX-7, TOP_LEFT_Y + MULT*(DIM_Y - curY)-7, 14, 14);
+	        		}
+	        	}
+	        	
+	        } else {
+	        	for(int i=0; i<bottomNotches.size(); i++) {
+	        		if(bottomNotches.get(i) >= (5*(numSteps)-N2_ADJUST + 450) % 450
+	        				&& bottomNotches.get(i) < (5*(numSteps+1)-N2_ADJUST + 450) % 450
+	        			) {
+	        			g.setColor(Color.GRAY);
+	        			g.drawOval(TOP_LEFT_X + MULT*curX-5, TOP_LEFT_Y + MULT*(DIM_Y - curY)-5, 10, 10);
+	        		}
+	        	}
+	        	
+	        	for(int i=0; i<bottomTabs.size(); i++) {
+	        		if(bottomTabs.get(i) >= (5*(numSteps)-N2_ADJUST + 450) % 450
+	        				&& bottomTabs.get(i) < (5*(numSteps+1)-N2_ADJUST + 450) % 450
+	        			) {
+	        			g.setColor(Color.DARK_GRAY);
+	        			g.drawOval(TOP_LEFT_X + MULT*curX-7, TOP_LEFT_Y + MULT*(DIM_Y - curY)-7, 14, 14);
+	        		}
+	        	}
+	        	//END TODO: there's lots of copy/paste code.
+	        }
+	        
 	        if(! goRight ^ !goUp) {
 		        g.setColor(Color.GREEN);
 		        if(startTopLeft) {
@@ -271,7 +350,7 @@ public class DrawOnGui2 implements ActionListener {
 	        
 	        g.drawLine(TOP_LEFT_X + MULT*curX, TOP_LEFT_Y + MULT*(DIM_Y - curY), TOP_LEFT_X + MULT*newX, TOP_LEFT_Y + MULT*(DIM_Y - newY));
 	        
-	        g.drawOval(TOP_LEFT_X + MULT*curX, TOP_LEFT_Y + MULT*(DIM_Y - curY), 2, 2);
+	        //g.drawOval(TOP_LEFT_X + MULT*curX, TOP_LEFT_Y + MULT*(DIM_Y - curY), 2, 2);
 	        
 	        curX = newX;
 	        curY = newY;
@@ -451,22 +530,22 @@ public class DrawOnGui2 implements ActionListener {
 		String buttonText = event.getActionCommand();
 		
 		System.out.println("Button Text: " + buttonText);
-		if(buttonText.equals("Increase N")) {
-			N++;
+		if(buttonText.equals("Increase N2 by 5")) {
+			N2_ADJUST+=5;
 			
-			if(N >= 10) {
-				N = 9;
-			}
-			
-		} else if(buttonText.equals("Decrease N")) {
-			N--;
-			
-			if(N <= 0) {
-				N = 1;
-			}
+		} else if(buttonText.equals("Increase N by 5")) {
+			N_ADJUST+=5;
 			
 		}
-		System.out.println("N: " + N);
+		if(N_ADJUST >= 450) {
+			N_ADJUST -= 450;
+		}
+		if(N2_ADJUST >= 450) {
+			N2_ADJUST -= 450;
+		}
+		
+		System.out.println("N_ADJUST: " + N_ADJUST);
+		System.out.println("N2_ADJUST: " + N2_ADJUST);
 		panelDrawing.repaint();
 		
 	}

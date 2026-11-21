@@ -26,7 +26,7 @@ import UtilityFunctions.Fraction;
 
 //TODO: does something cool happen when you set the probability really low?
 // TODO: Maybe you can somehow generate the number of polyominoes without bruteforcing it!
-// I doesn't look good! Nevermind!
+// It doesn't look good! Nevermind!
 
 //For prob cell 1 equal 1/2
 //public static final int NUM = 1;
