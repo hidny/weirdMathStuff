@@ -77,6 +77,7 @@ public class DrawOnGui3 implements ActionListener {
 	public static final int LENGTH_STRIP = 450;
 	public static final int HALF_LENGTH_STRIP = LENGTH_STRIP / 2;
 	
+	//The strip seem to start from one corner, go to the other corner, and then come back to the original corner!
 	
 	public static int adjustedLengthAlongBox(int notchTabLocation, int adjustment) {
 		
@@ -167,8 +168,8 @@ public class DrawOnGui3 implements ActionListener {
 	private static int N_ADJUST = 0;
 	private static int N2_ADJUST = 0;
 	
-	public static final int DIM_X = 6 * SAFE_MULT;
-	public static final int DIM_Y = 45 * SAFE_MULT;
+	//public static final int DIM_X = 6 * SAFE_MULT;
+	//public static final int DIM_Y = 45 * SAFE_MULT;
 	
 	
 	//According to the Conner Silverstein numbers, Top boundary seems to be 12 more than bottom boundary
@@ -183,8 +184,9 @@ public class DrawOnGui3 implements ActionListener {
 	//public static final int DIM_Y = 9 * SAFE_MULT;
 	
 
-	//public static final int DIM_X = 90 * SAFE_MULT;
-	//public static final int DIM_Y =  3 * SAFE_MULT;
+	//TODO: the UI for 90x3 (1x88 doesn't stop and end at corners! Why?
+	public static final int DIM_X = 90 * SAFE_MULT;
+	public static final int DIM_Y =  3 * SAFE_MULT;
 	
 	//END start config options:
 
