@@ -79,7 +79,7 @@ public class DrawOnGui3 implements ActionListener {
 	}
 	
 	public static int adjustedLengthAlongBox(int notchTabLocation, int adjustment) {
-		//TODO: Magic numbers are bad!
+		//TODO: Magic numbers should be constant!
 		//450 = full length strip
 		//225 = 450/2
 		
@@ -173,6 +173,10 @@ public class DrawOnGui3 implements ActionListener {
 	
 	private static int N_ADJUST = 0;
 	private static int N2_ADJUST = 0;
+	
+	//According to the Connor numbers, Top boundary seems to be 12 more than bottom boundary
+	public static int MAGIC_DIFF = 12;
+	
 	//public static final int DIM_X =18 * SAFE_MULT;
 	//public static final int DIM_Y =15 * SAFE_MULT;
 	
@@ -361,12 +365,13 @@ public class DrawOnGui3 implements ActionListener {
 	        
 
 	        int yAdjustment = 5;
-	        
+
+        	System.out.println("Num steps: " + numSteps);
+        	
 	        if( ! startTopLeft) {
 	        	
 	        	//TODO: put in function, also, it's missing the last call at step 90! (Do it after the loop!)
 
-	        	System.out.println("Num steps: " + numSteps);
 	        	//TODO: there's lots of copy/paste code here...
 
 	        	for(int i=0; i<bottomNotches.size(); i++) {
@@ -396,7 +401,7 @@ public class DrawOnGui3 implements ActionListener {
 	        				yAdjustment = Math.abs(yAdjustment);
 	        			}
 	        			
-	        			g.setColor(Color.BLUE);
+	        			g.setColor(Color.BLACK);
 	        			//g.drawOval(TOP_LEFT_X + MULT*curX-7, TOP_LEFT_Y + MULT*(DIM_Y - curY)-7 + yAdjustment, 14, 14);
 	        			g.drawRect(TOP_LEFT_X + MULT*curX-7, TOP_LEFT_Y + MULT*(DIM_Y - curY)-7 - yAdjustment, 14, 14);
 	        		}
@@ -404,24 +409,39 @@ public class DrawOnGui3 implements ActionListener {
 	        	
 	        	
 	        } else {
-	        	/*for(int i=0; i<topTabs.size(); i++) {
-	        		if(topTabs.get(i) >= (10*(numStepsAdj)-N_ADJUST + 450) % 450
-	        				&& topTabs.get(i) < (10*(numStepsAdj+1)-N_ADJUST + 450) % 450
+	        	for(int i=0; i<topTabs.size(); i++) {
+	        		if( adjustedLengthAlongBox(topTabs.get(i) - MAGIC_DIFF, N2_ADJUST) >= (5*(numSteps) + 450) % 450
+	        				&& adjustedLengthAlongBox(topTabs.get(i) - MAGIC_DIFF, N2_ADJUST) < (5*(numSteps+1) + 450) % 450
 	        			) {
-	        			g.setColor(Color.BLACK);
-	        			//g.drawOval(TOP_LEFT_X + MULT*curX-7, TOP_LEFT_Y + MULT*(DIM_Y - curY)-7 + yAdjustment, 14, 14);
-	        			g.drawRect(TOP_LEFT_X + MULT*curX-7, TOP_LEFT_Y + MULT*(DIM_Y - curY)-7 + yAdjustment, 14, 14);
-	        		}
-	        	}
-	        	for(int i=0; i<topNotches.size(); i++) {
-	        		if(topNotches.get(i) >= (10*(numStepsAdj)-N_ADJUST + 450) % 450
-	        				&& topNotches.get(i) < (10*(numStepsAdj+1)-N_ADJUST + 450) % 450
-	        			) {
+
+	        			if(isFirstHalfLengthAlong(topTabs.get(i), N2_ADJUST)) {
+	        				yAdjustment = Math.abs(yAdjustment);
+	        			} else {
+	        				yAdjustment = - Math.abs(yAdjustment);
+	        			}
+	        			
 	        			g.setColor(Color.BLUE);
-	        			g.drawOval(TOP_LEFT_X + MULT*curX-5, TOP_LEFT_Y + MULT*(DIM_Y - curY)-5 + yAdjustment, 10, 10);
+	        			g.drawRect(TOP_LEFT_X + MULT*curX-5, TOP_LEFT_Y + MULT*(DIM_Y - curY)-5 - yAdjustment, 10, 10);
 	        		}
 	        	}
-	        	*/
+
+	        	for(int i=0; i<topNotches.size(); i++) {
+	        		if( adjustedLengthAlongBox(topNotches.get(i) - MAGIC_DIFF, N_ADJUST) >= (5*(numSteps) + 450) % 450
+	        				&& adjustedLengthAlongBox(topNotches.get(i) - MAGIC_DIFF, N_ADJUST) < (5*(numSteps+1) + 450) % 450
+	        			) {
+	        			
+	        			if(isFirstHalfLengthAlong(topNotches.get(i), N_ADJUST)) {
+	        				yAdjustment = - Math.abs(yAdjustment);
+	        			} else {
+	        				yAdjustment = Math.abs(yAdjustment);
+	        			}
+	        			
+	        			g.setColor(Color.BLUE);
+	        			//g.drawOval(TOP_LEFT_X + MULT*curX-7, TOP_LEFT_Y + MULT*(DIM_Y - curY)-7 + yAdjustment, 14, 14);
+	        			g.drawOval(TOP_LEFT_X + MULT*curX-7, TOP_LEFT_Y + MULT*(DIM_Y - curY)-7 - yAdjustment, 14, 14);
+	        		}
+	        	}
+	        	
 	        	//END TODO: there's lots of copy/paste code.
 	        }
 	        
