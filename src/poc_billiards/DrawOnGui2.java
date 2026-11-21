@@ -82,7 +82,7 @@ public class DrawOnGui2 implements ActionListener {
 		buttonDec = new JButton("Decrease N by 5");
 		buttonDec.addActionListener(this);
 		
-		label = new JLabel("Number of clicks: " + count);
+		label = new JLabel("Number of clicks: " + count + " N1 = " + N_ADJUST +"  N2=" + N2_ADJUST);
 		
 		contentPane = new JPanel();
 		contentPane.setLayout(new GridLayout(5, 5));
@@ -177,7 +177,8 @@ public class DrawOnGui2 implements ActionListener {
 			paintBilliard(g, false, false);
 			
 			//I don't the 2nd line isn't used!
-			//paintBilliard(g, true);
+			paintBilliard(g, true, true);
+			paintBilliard(g, false, false);
 
 	}
 	
@@ -324,14 +325,14 @@ public class DrawOnGui2 implements ActionListener {
         		//pass
         	}
 	        
-	        if(tabsAndNotchAbove) {
+	        if(tabsAndNotchAbove && startTopLeft) {
 	        	
 	        	//TODO: there's lots of copy/paste code here...
 	        	for(int i=0; i<topNotches.size(); i++) {
 	        		if(topNotches.get(i) >= (5*(numSteps)-N_ADJUST + 450) % 450
 	        				&& topNotches.get(i) < (5*(numSteps+1)-N_ADJUST + 450) % 450
 	        			) {
-	        			g.setColor(Color.CYAN);
+	        			g.setColor(Color.BLUE);
 	        			g.drawOval(TOP_LEFT_X + MULT*curX-5, TOP_LEFT_Y + MULT*(DIM_Y - curY)-5 + yAdjustment, 10, 10);
 	        		}
 	        	}
@@ -346,12 +347,12 @@ public class DrawOnGui2 implements ActionListener {
 	        		}
 	        	}
 	        	
-	        } else {
+	        } else if(!tabsAndNotchAbove && !startTopLeft) {
 	        	for(int i=0; i<bottomNotches.size(); i++) {
 	        		if(bottomNotches.get(i) >= (5*(numSteps)-N2_ADJUST + 450) % 450
 	        				&& bottomNotches.get(i) < (5*(numSteps+1)-N2_ADJUST + 450) % 450
 	        			) {
-	        			g.setColor(Color.GRAY);
+	        			g.setColor(Color.BLACK);
 	        			g.drawOval(TOP_LEFT_X + MULT*curX-5, TOP_LEFT_Y + MULT*(DIM_Y - curY)-5 + yAdjustment, 10, 10);
 	        		}
 	        	}
@@ -360,7 +361,7 @@ public class DrawOnGui2 implements ActionListener {
 	        		if(bottomTabs.get(i) >= (5*(numSteps)-N2_ADJUST + 450) % 450
 	        				&& bottomTabs.get(i) < (5*(numSteps+1)-N2_ADJUST + 450) % 450
 	        			) {
-	        			g.setColor(Color.DARK_GRAY);
+	        			g.setColor(Color.BLUE);
 	        			//g.drawOval(TOP_LEFT_X + MULT*curX-7, TOP_LEFT_Y + MULT*(DIM_Y - curY)-7 + yAdjustment, 14, 14);
 	        			g.drawRect(TOP_LEFT_X + MULT*curX-7, TOP_LEFT_Y + MULT*(DIM_Y - curY)-7 + yAdjustment, 14, 14);
 	        		}
