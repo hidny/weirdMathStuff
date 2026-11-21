@@ -22,8 +22,14 @@ public class DrawOnGui2 implements ActionListener {
 	private JLabel label;
 	private JPanel contentPane;
 	private JPanel panelDrawing;
-	private JButton button;
-	private JButton button2;
+	
+	private JButton buttonInc;
+	private JButton buttonInc2;
+	
+	private JButton buttonDec;
+	private JButton buttonDec2;
+	
+	private JButton buttonBeep;
 	private int count = 0;
 	
 	
@@ -63,17 +69,28 @@ public class DrawOnGui2 implements ActionListener {
 		frame = new JFrame();
 		frame.setSize(1100, 800);
 		
-		button = new JButton("Increase N2 by 5");
-		button.addActionListener(this);
-		button2 = new JButton("Increase N by 5");
-		button2.addActionListener(this);
+		buttonInc2 = new JButton("Increase N2 by 5");
+		buttonInc2.addActionListener(this);
+		buttonDec2 = new JButton("Decrease N2 by 5");
+		buttonDec2.addActionListener(this);
+		
+		buttonBeep = new JButton("beep");
+		buttonBeep.addActionListener(this);
+		
+		buttonInc = new JButton("Increase N by 5");
+		buttonInc.addActionListener(this);
+		buttonDec = new JButton("Decrease N by 5");
+		buttonDec.addActionListener(this);
 		
 		label = new JLabel("Number of clicks: " + count);
 		
 		contentPane = new JPanel();
 		contentPane.setLayout(new GridLayout(5, 5));
-		contentPane.add(button);
-		contentPane.add(button2);
+		contentPane.add(buttonInc2);
+		contentPane.add(buttonDec2);
+		//contentPane.add(buttonBeep);
+		contentPane.add(buttonInc);
+		contentPane.add(buttonDec);
 		contentPane.add(label);
 		
 		panelDrawing = new GPanel();
@@ -117,8 +134,8 @@ public class DrawOnGui2 implements ActionListener {
 	
 	private static int N_ADJUST = 0;
 	private static int N2_ADJUST = 0;
-	public static final int DIM_X =18 * SAFE_MULT;
-	public static final int DIM_Y =15 * SAFE_MULT;
+	//public static final int DIM_X =18 * SAFE_MULT;
+	//public static final int DIM_Y =15 * SAFE_MULT;
 	
 	//private static int N_ADJUST = 0;
 	//private static int N2_ADJUST = 0;
@@ -128,8 +145,8 @@ public class DrawOnGui2 implements ActionListener {
 
 	//private static int N_ADJUST = 0;
 	//private static int N2_ADJUST = 0;
-	//public static final int DIM_X = 90 * SAFE_MULT;
-	//public static final int DIM_Y =  3 * SAFE_MULT;
+	public static final int DIM_X = 90 * SAFE_MULT;
+	public static final int DIM_Y =  3 * SAFE_MULT;
 	
 	//END start config options:
 
@@ -153,8 +170,14 @@ public class DrawOnGui2 implements ActionListener {
 			g.setColor(Color.YELLOW);
 			g.fillRect(TOP_LEFT_Y, TOP_LEFT_X, MULT * DIM_X, MULT * DIM_Y);
 			
-			paintBilliard(g, false);
-			paintBilliard(g, true);
+			//Notches and tabs on top border:
+			paintBilliard(g, false, true);
+			
+			//Notches and tabs on bottom border:
+			paintBilliard(g, false, false);
+			
+			//I don't the 2nd line isn't used!
+			//paintBilliard(g, true);
 
 	}
 	
@@ -166,7 +189,7 @@ public class DrawOnGui2 implements ActionListener {
 	public static int curRibbonHeight2 = 0;
 	
 	
-	public static void paintBilliard(Graphics g, boolean startTopLeft) {
+	public static void paintBilliard(Graphics g, boolean startTopLeft, boolean tabsAndNotchAbove) {
 		boolean ret[][] = null;
 
 		
@@ -293,15 +316,23 @@ public class DrawOnGui2 implements ActionListener {
 	        System.out.println("new X: " + newX + " goRight: " + goRight + "DIMX: " + DIM_X + "go up: " + goUp);
 	        //TODO: put into a function
 
+
+	        int yAdjustment = 5;
+        	if( tabsAndNotchAbove) {
+        		yAdjustment *= -1;
+        	} else {
+        		//pass
+        	}
 	        
-	        if(startTopLeft) {
+	        if(tabsAndNotchAbove) {
+	        	
 	        	//TODO: there's lots of copy/paste code here...
 	        	for(int i=0; i<topNotches.size(); i++) {
 	        		if(topNotches.get(i) >= (5*(numSteps)-N_ADJUST + 450) % 450
 	        				&& topNotches.get(i) < (5*(numSteps+1)-N_ADJUST + 450) % 450
 	        			) {
 	        			g.setColor(Color.CYAN);
-	        			g.drawOval(TOP_LEFT_X + MULT*curX-5, TOP_LEFT_Y + MULT*(DIM_Y - curY)-5, 10, 10);
+	        			g.drawOval(TOP_LEFT_X + MULT*curX-5, TOP_LEFT_Y + MULT*(DIM_Y - curY)-5 + yAdjustment, 10, 10);
 	        		}
 	        	}
 	        	
@@ -310,7 +341,8 @@ public class DrawOnGui2 implements ActionListener {
 	        				&& topTabs.get(i) < (5*(numSteps+1)-N_ADJUST + 450) % 450
 	        			) {
 	        			g.setColor(Color.BLACK);
-	        			g.drawOval(TOP_LEFT_X + MULT*curX-7, TOP_LEFT_Y + MULT*(DIM_Y - curY)-7, 14, 14);
+	        			//g.drawOval(TOP_LEFT_X + MULT*curX-7, TOP_LEFT_Y + MULT*(DIM_Y - curY)-7 + yAdjustment, 14, 14);
+	        			g.drawRect(TOP_LEFT_X + MULT*curX-7, TOP_LEFT_Y + MULT*(DIM_Y - curY)-7 + yAdjustment, 14, 14);
 	        		}
 	        	}
 	        	
@@ -320,7 +352,7 @@ public class DrawOnGui2 implements ActionListener {
 	        				&& bottomNotches.get(i) < (5*(numSteps+1)-N2_ADJUST + 450) % 450
 	        			) {
 	        			g.setColor(Color.GRAY);
-	        			g.drawOval(TOP_LEFT_X + MULT*curX-5, TOP_LEFT_Y + MULT*(DIM_Y - curY)-5, 10, 10);
+	        			g.drawOval(TOP_LEFT_X + MULT*curX-5, TOP_LEFT_Y + MULT*(DIM_Y - curY)-5 + yAdjustment, 10, 10);
 	        		}
 	        	}
 	        	
@@ -329,7 +361,8 @@ public class DrawOnGui2 implements ActionListener {
 	        				&& bottomTabs.get(i) < (5*(numSteps+1)-N2_ADJUST + 450) % 450
 	        			) {
 	        			g.setColor(Color.DARK_GRAY);
-	        			g.drawOval(TOP_LEFT_X + MULT*curX-7, TOP_LEFT_Y + MULT*(DIM_Y - curY)-7, 14, 14);
+	        			//g.drawOval(TOP_LEFT_X + MULT*curX-7, TOP_LEFT_Y + MULT*(DIM_Y - curY)-7 + yAdjustment, 14, 14);
+	        			g.drawRect(TOP_LEFT_X + MULT*curX-7, TOP_LEFT_Y + MULT*(DIM_Y - curY)-7 + yAdjustment, 14, 14);
 	        		}
 	        	}
 	        	//END TODO: there's lots of copy/paste code.
@@ -537,11 +570,30 @@ public class DrawOnGui2 implements ActionListener {
 			N_ADJUST+=5;
 			
 		}
+		if(buttonText.equals("Decrease N2 by 5")) {
+			N2_ADJUST-=5;
+			
+		} else if(buttonText.equals("Decrease N by 5")) {
+			N_ADJUST-=5;
+			
+		}
+		if(buttonText.equals("beep")) {
+			System.out.println("boop");
+		}
+		
 		if(N_ADJUST >= 450) {
 			N_ADJUST -= 450;
 		}
 		if(N2_ADJUST >= 450) {
 			N2_ADJUST -= 450;
+		}
+		
+
+		if(N_ADJUST < 0) {
+			N_ADJUST += 450;
+		}
+		if(N2_ADJUST < 0) {
+			N2_ADJUST += 450;
 		}
 		
 		System.out.println("N_ADJUST: " + N_ADJUST);
