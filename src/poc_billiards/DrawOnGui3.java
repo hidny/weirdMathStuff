@@ -65,10 +65,6 @@ public class DrawOnGui3 implements ActionListener {
 		topTabs.add(327);
 		
 		
-		//450/180 = 2.5
-		//900/180 = 5
-		
-		//Double them
 		
 		for(int i=0; i<bottomNotches.size(); i++) {
 			
@@ -78,30 +74,31 @@ public class DrawOnGui3 implements ActionListener {
 		}
 	}
 	
+	public static final int LENGTH_STRIP = 450;
+	public static final int HALF_LENGTH_STRIP = LENGTH_STRIP / 2;
+	
+	
 	public static int adjustedLengthAlongBox(int notchTabLocation, int adjustment) {
-		//TODO: Magic numbers should be constant!
-		//450 = full length strip
-		//225 = 450/2
 		
-		int notchBasedOnAdjustMent = (notchTabLocation + adjustment) % 450;
+		int notchBasedOnAdjustMent = (notchTabLocation + adjustment) % LENGTH_STRIP;
 		
 		if(notchBasedOnAdjustMent < 0) {
-			notchBasedOnAdjustMent += 450;
+			notchBasedOnAdjustMent += LENGTH_STRIP;
 		}
 		
-		return (450 - 2 * Math.abs(225 - notchBasedOnAdjustMent));
+		return (LENGTH_STRIP - 2 * Math.abs(HALF_LENGTH_STRIP - notchBasedOnAdjustMent));
 	}
 	
 	public static boolean isFirstHalfLengthAlong(int notchTabLocation, int adjustment) {
 
-		int notchBasedOnAdjustMent = (notchTabLocation + adjustment) % 450;
+		int notchBasedOnAdjustMent = (notchTabLocation + adjustment) % LENGTH_STRIP;
 		
 
 		if(notchBasedOnAdjustMent < 0) {
-			notchBasedOnAdjustMent += 450;
+			notchBasedOnAdjustMent += LENGTH_STRIP;
 		}
 		
-		return notchBasedOnAdjustMent < 225;
+		return notchBasedOnAdjustMent < HALF_LENGTH_STRIP;
 	}
 	
 	public DrawOnGui3() {
@@ -159,7 +156,7 @@ public class DrawOnGui3 implements ActionListener {
 	//TODO: make slow version of these table creation algos, so you can sanity check them.
 	
 
-	//public static final int DIM_X = 450;
+	//public static final int DIM_X = LENGTH_STRIP;
 	//public static final int DIM_Y = 6;
 	
 	public static final int SAFE_MULT = 2;
@@ -186,6 +183,7 @@ public class DrawOnGui3 implements ActionListener {
 	//public static final int DIM_Y = 9 * SAFE_MULT;
 	
 
+	//0, 0 is good!
 	//private static int N_ADJUST = 0;
 	//private static int N2_ADJUST = 0;
 	public static final int DIM_X = 90 * SAFE_MULT;
@@ -375,8 +373,8 @@ public class DrawOnGui3 implements ActionListener {
 	        	//TODO: there's lots of copy/paste code here...
 
 	        	for(int i=0; i<bottomNotches.size(); i++) {
-	        		if( adjustedLengthAlongBox(bottomNotches.get(i), N2_ADJUST) >= (5*(numSteps) + 450) % 450
-	        				&& adjustedLengthAlongBox(bottomNotches.get(i), N2_ADJUST) < (5*(numSteps+1) + 450) % 450
+	        		if( adjustedLengthAlongBox(bottomNotches.get(i), N2_ADJUST) >= (5*(numSteps) + LENGTH_STRIP) % LENGTH_STRIP
+	        				&& adjustedLengthAlongBox(bottomNotches.get(i), N2_ADJUST) < (5*(numSteps+1) + LENGTH_STRIP) % LENGTH_STRIP
 	        			) {
 
 	        			if(isFirstHalfLengthAlong(bottomNotches.get(i), N2_ADJUST)) {
@@ -391,8 +389,8 @@ public class DrawOnGui3 implements ActionListener {
 	        	}
 
 	        	for(int i=0; i<bottomTabs.size(); i++) {
-	        		if( adjustedLengthAlongBox(bottomTabs.get(i), N_ADJUST) >= (5*(numSteps) + 450) % 450
-	        				&& adjustedLengthAlongBox(bottomTabs.get(i), N_ADJUST) < (5*(numSteps+1) + 450) % 450
+	        		if( adjustedLengthAlongBox(bottomTabs.get(i), N_ADJUST) >= (5*(numSteps) + LENGTH_STRIP) % LENGTH_STRIP
+	        				&& adjustedLengthAlongBox(bottomTabs.get(i), N_ADJUST) < (5*(numSteps+1) + LENGTH_STRIP) % LENGTH_STRIP
 	        			) {
 	        			
 	        			if(isFirstHalfLengthAlong(bottomTabs.get(i), N_ADJUST)) {
@@ -410,8 +408,8 @@ public class DrawOnGui3 implements ActionListener {
 	        	
 	        } else {
 	        	for(int i=0; i<topTabs.size(); i++) {
-	        		if( adjustedLengthAlongBox(topTabs.get(i) - MAGIC_DIFF, N2_ADJUST) >= (5*(numSteps) + 450) % 450
-	        				&& adjustedLengthAlongBox(topTabs.get(i) - MAGIC_DIFF, N2_ADJUST) < (5*(numSteps+1) + 450) % 450
+	        		if( adjustedLengthAlongBox(topTabs.get(i) - MAGIC_DIFF, N2_ADJUST) >= (5*(numSteps) + LENGTH_STRIP) % LENGTH_STRIP
+	        				&& adjustedLengthAlongBox(topTabs.get(i) - MAGIC_DIFF, N2_ADJUST) < (5*(numSteps+1) + LENGTH_STRIP) % LENGTH_STRIP
 	        			) {
 
 	        			if(isFirstHalfLengthAlong(topTabs.get(i), N2_ADJUST)) {
@@ -426,8 +424,8 @@ public class DrawOnGui3 implements ActionListener {
 	        	}
 
 	        	for(int i=0; i<topNotches.size(); i++) {
-	        		if( adjustedLengthAlongBox(topNotches.get(i) - MAGIC_DIFF, N_ADJUST) >= (5*(numSteps) + 450) % 450
-	        				&& adjustedLengthAlongBox(topNotches.get(i) - MAGIC_DIFF, N_ADJUST) < (5*(numSteps+1) + 450) % 450
+	        		if( adjustedLengthAlongBox(topNotches.get(i) - MAGIC_DIFF, N_ADJUST) >= (5*(numSteps) + LENGTH_STRIP) % LENGTH_STRIP
+	        				&& adjustedLengthAlongBox(topNotches.get(i) - MAGIC_DIFF, N_ADJUST) < (5*(numSteps+1) + LENGTH_STRIP) % LENGTH_STRIP
 	        			) {
 	        			
 	        			if(isFirstHalfLengthAlong(topNotches.get(i), N_ADJUST)) {
@@ -595,7 +593,7 @@ public class DrawOnGui3 implements ActionListener {
 	        
 
 	        System.out.println("new X: " + newX + " new Y : " + newY + "   goRight: " + goRight + " DIMX: " + DIM_X + " go up: " + goUp);
-	        //TODO: put into a function
+	        //TODO: put into a function: (Or put even more into a function)
 
 	        if(! goRight ^ !goUp) {
 		        g.setColor(Color.BLUE);
@@ -607,7 +605,8 @@ public class DrawOnGui3 implements ActionListener {
 	        g.drawLine(TOP_LEFT_X + MULT*curX, TOP_LEFT_Y + MULT*(DIM_Y - curY), TOP_LEFT_X + MULT*newX, TOP_LEFT_Y + MULT*(DIM_Y - newY));
 	        
 	        g.drawOval(TOP_LEFT_X + MULT*curX, TOP_LEFT_Y + MULT*(DIM_Y - curY), 2, 2);
-	        
+
+	        //END TODO: put into function
 	        curX = newX;
 	        curY = newY;
 	        
@@ -660,19 +659,19 @@ public class DrawOnGui3 implements ActionListener {
 			System.out.println("boop");
 		}
 		
-		if(N_ADJUST >= 450) {
-			N_ADJUST -= 450;
+		if(N_ADJUST >= LENGTH_STRIP) {
+			N_ADJUST -= LENGTH_STRIP;
 		}
-		if(N2_ADJUST >= 450) {
-			N2_ADJUST -= 450;
+		if(N2_ADJUST >= LENGTH_STRIP) {
+			N2_ADJUST -= LENGTH_STRIP;
 		}
 		
 
 		if(N_ADJUST < 0) {
-			N_ADJUST += 450;
+			N_ADJUST += LENGTH_STRIP;
 		}
 		if(N2_ADJUST < 0) {
-			N2_ADJUST += 450;
+			N2_ADJUST += LENGTH_STRIP;
 		}
 		
 
