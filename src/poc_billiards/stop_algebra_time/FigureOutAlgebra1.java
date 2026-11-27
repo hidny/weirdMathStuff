@@ -32,9 +32,10 @@ public class FigureOutAlgebra1 {
 			long quotient = area / divs[k];
 			if(divs[k] % 2 == 0 && quotient % 2 == 1) {
 				
-				if(divs[k] > 2 && quotient > 2) {
-					//flat double-sided rectangles must be at least 3 wide and long.
-				validEvenDims.add(divs[k]);
+				if(UtilityFunctions.UtilityFunctions.getGCD(quotient, divs[k]) == 1) {
+					//TODO: Solve for when gcd(length, width) = 1, and widen the strip latter.
+					// For the area 532 solution, the flat flat area is 540, and the gcd 1 area is just 90!
+					validEvenDims.add(divs[k]);
 				}
 			}
 		}

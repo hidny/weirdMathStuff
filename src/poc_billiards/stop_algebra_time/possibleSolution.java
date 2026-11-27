@@ -26,11 +26,11 @@ public class possibleSolution {
 	
 	public static void main(String args[]) {
 		
-		System.out.println(getXFrombottomLeftToTopLeft(2, 3));
+		System.out.println(getXFrombottomLeftToTopLeftSlow(2, 3));
 		
 		
 
-		System.out.println(getXFrombottomLeftToTopLeft(6, 5));
+		System.out.println(getXFrombottomLeftToTopLeftSlow(6, 5));
 		
 	}
 	
@@ -41,7 +41,14 @@ public class possibleSolution {
 	// => x = 0 mod W (w is even)
 	// x = H-1 mod 2H
 	
-	public static int getXFrombottomLeftToTopLeft(int W, int H) {
+	
+	//PRE: gcd(W, H) = 1
+	public static int getXFrombottomLeftToTopLeftSlow(int W, int H) {
+		
+		if(UtilityFunctions.UtilityFunctions.getGCD(W, H) != 1) {
+			System.out.println("ERROR: gcd for getXFrombottomLeftToTopLeftSlow should be 1!");
+			
+		}
 		
 		//TODO: solve Chinese Remainder Theorem! (you already have the relevant code!)
 		
@@ -87,22 +94,7 @@ public class possibleSolution {
 		System.out.println();
 		
 		
-		ArrayList<CRTTuple> listEq = new ArrayList<CRTTuple>();
-		// TODO: gcd(W, 2H) > 1, and that's a problem!
-		//listEq.add( new CRTTuple(0, W) );
-		//listEq.add( new CRTTuple(H-1, 2*H) );
-		
-		//TODO I think gcd(H, W) = 1...
-		//TODO: Also, this is wrong!
-		//Alt:
-		//listEq.add( new CRTTuple(0, 2) );
-		System.out.println(" x = 0 mod " + W);
-		listEq.add( new CRTTuple(0, W) );
-		
-		System.out.println(" x = " + (H-1)/2 + " mod " + H);
-		listEq.add( new CRTTuple((H-1)/2, H) );
-		
-		long ret2 = ChineseRemainderTheoremSolverBigInt.solve(listEq)[0].longValue();
+		int ret2 = getXFrombottomLeftToTopLeftFast(W, H);
 		
 		System.out.println("Ret1: " + ret1 + "  vs  ret2: " + ret2);
 		
@@ -112,6 +104,30 @@ public class possibleSolution {
 		}
 		
 		return ret1;
+	}
+	
+	//PRE: gcd(W, H) = 1 (make it have a gcd > 1 later)
+	public static int getXFrombottomLeftToTopLeftFast(int W, int H) {
+		
+
+		if(UtilityFunctions.UtilityFunctions.getGCD(W, H) != 1) {
+			System.out.println("ERROR: gcd for getXFrombottomLeftToTopLeftFast should be 1!");
+			
+		}
+		
+		ArrayList<CRTTuple> listEq = new ArrayList<CRTTuple>();
+		
+		//Solution by pen and paper:
+		//listEq.add( new CRTTuple(0, W) );
+		//listEq.add( new CRTTuple(H-1, 2*H) );
+		
+		listEq.add( new CRTTuple(0, W) );
+		
+		//By pen and paper, x = H-1 (mod 2H), but it's evenness is already covered by "x = 0 (mod W)",
+		// so set it to "x = H-1 (mod H)" (Chinese Remainder theorem requires coprime mods)
+		listEq.add( new CRTTuple((H-1), H) );
+		
+		return (int)ChineseRemainderTheoremSolverBigInt.solve(listEq)[0].longValue();
 	}
 	
 	
