@@ -106,7 +106,8 @@ public class possibleSolution {
 		return ret1;
 	}
 	
-	//PRE: gcd(W, H) = 1 (make it have a gcd > 1 later)
+	//PRE: 1) gcd(W, H) = 1 (make it have a gcd > 1 later)
+	//     2) W is even and H is odd.
 	public static int getXFrombottomLeftToTopLeftFast(int W, int H) {
 		
 
