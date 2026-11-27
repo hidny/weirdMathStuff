@@ -177,16 +177,18 @@ public class DrawOnGui3 implements ActionListener {
 	// we have to take 12 units away the number for the top notches and tabs.
 	public static int MAGIC_DIFF = 12;
 
-	//public static final int DIM_X =18 * SAFE_MULT;
-	//public static final int DIM_Y =15 * SAFE_MULT;
+	public static final int DIM_X =18 * SAFE_MULT;
+	public static final int DIM_Y =15 * SAFE_MULT;
 	
 	//public static final int DIM_X =30 * SAFE_MULT;
 	//public static final int DIM_Y = 9 * SAFE_MULT;
 	
 
-	//TODO: the UI for 90x3 (1x88 doesn't stop and end at corners! Why?
-	public static final int DIM_X = 90 * SAFE_MULT;
-	public static final int DIM_Y =  3 * SAFE_MULT;
+	// the UI for 90x3 (1x88 doesn't stop and end at corners! Why?
+	//AHA: the location of the strip at the bottom left corner is not necessarily at 0. You will need to adjust it
+	// depending on the dimensions!
+	//public static final int DIM_X = 90 * SAFE_MULT;
+	//public static final int DIM_Y =  3 * SAFE_MULT;
 	
 	//END start config options:
 
@@ -218,6 +220,10 @@ public class DrawOnGui3 implements ActionListener {
 			
 			//I don't the 2nd line isn't used!
 			paintBilliard(g, true);
+			
+			//TODO: the location of the strip at the bottom left corner is not necessarily at 0. You will need to adjust it
+			// depending on the dimensions!
+			//TODO: figure out the linear congruence equations!
 			paintBilliard(g, false);
 
 	}
