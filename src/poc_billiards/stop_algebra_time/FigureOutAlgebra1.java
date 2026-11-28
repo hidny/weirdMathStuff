@@ -2,6 +2,8 @@ package poc_billiards.stop_algebra_time;
 
 import java.util.ArrayList;
 
+import poc_billiards.stop_algebra_time.obj.FlatBoxDimAndDisplacement;
+
 public class FigureOutAlgebra1 {
 
 	public static final int NUM_BOX_TARGET = 4;
@@ -46,6 +48,8 @@ public class FigureOutAlgebra1 {
 			for(int j=0; j<validEvenDims.size(); j++) {
 				
 				System.out.println(validEvenDims.get(j) + " x " + (area / validEvenDims.get(j)));
+				
+				FlatBoxDimAndDisplacement trial = new FlatBoxDimAndDisplacement(area / validEvenDims.get(j), validEvenDims.get(j)  );
 			}
 			
 			System.out.println();
